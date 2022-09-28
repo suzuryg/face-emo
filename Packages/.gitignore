@@ -1,5 +1,3 @@
 /*/
 !com.vrchat.core.*
-
-# Change this to match your new package name
-!com.vrchat.demo-template 
+!jp.suzuryg.facial-expression-switcher

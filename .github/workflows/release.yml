@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches: main
-    paths: Packages/com.vrchat.demo-template/**
+    paths: Packages/jp.suzuryg.facial-expression-switcher/**
 
 env:
-  packageName: "com.vrchat.demo-template"
+  packageName: "jp.suzuryg.facial-expression-switcher"
 
 jobs:
   build:
