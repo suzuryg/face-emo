@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using Newtonsoft.Json;
 
 public class ExampleEditorScript
 {

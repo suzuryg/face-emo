@@ -146,7 +146,9 @@
       "version": "file:jp.suzuryg.facial-expression-switcher",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "2.0.2"
+      }
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

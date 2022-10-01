@@ -4,12 +4,15 @@
   "version": "0.1.0",
   "unity": "2019.4",
   "description": "Facial expression configuration tool for VRChat Avatars 3.0",
-  "vpmDependencies": {
-    "com.vrchat.avatars": "3.1.x"
-  },
   "author": {
     "name": "suzuryg",
     "email": "suzuryg@outlook.com",
     "url": "https://suzuryg.github.io/"
+  },
+  "vpmDependencies": {
+    "com.vrchat.avatars": "3.1.x"
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "2.0.2"
   }
 }
