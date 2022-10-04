@@ -1,0 +1,94 @@
+@startuml FacialExpressionSwitcherObjects
+
+object "表情メニュー" as facialExpressionMenu1
+facialExpressionMenu1 : メニュー表示名: 表情
+facialExpressionMenu1 : メニュー挿入位置: 1
+facialExpressionMenu1 : アバタールート: Koyuki
+facialExpressionMenu1 : デフォルト選択: Wink
+facialExpressionMenu1 : WriteDefaults : 無効
+facialExpressionMenu1 : 表情遷移時間 : 0.1秒
+facialExpressionMenu1 : 表情モード登録先 : Fixed
+
+object "登録されたメニュー項目" as registeredMenuItems1
+object "登録されていないメニュー項目" as unregisteredMenuItems1
+
+registeredMenuItems1 --> facialExpressionMenu1
+unregisteredMenuItems1 --> facialExpressionMenu1
+
+object "表情モード" as facialExpressionMode1
+facialExpressionMode1 : モード名 : Wink
+facialExpressionMode1 : 表情 : Empty
+facialExpressionMode1 : 目トラッキング状態 : 有効
+facialExpressionMode1 : 口トラッキング状態 : 有効
+
+facialExpressionMode1 --> registeredMenuItems1
+
+object "分岐" as facialExpressionBranch1
+facialExpressionBranch1 : 表情 : SmileOpenEyes
+facialExpressionBranch1 : 左トリガー : WinkLeft
+facialExpressionBranch1 : 右トリガー : WinkRight
+facialExpressionBranch1 : 両トリガー : WinkBoth
+facialExpressionBranch1 : 目トラッキング状態 : 無効
+facialExpressionBranch1 : 口トラッキング状態 : 有効
+
+facialExpressionBranch1 --> facialExpressionMode1
+
+object "ハンドジェスチャー条件" as handGestureCondition1
+handGestureCondition1 : 左右 : 任意
+handGestureCondition1 : ジェスチャー : Fist
+handGestureCondition1 : 演算子 : 一致する
+
+handGestureCondition1 --> facialExpressionBranch1
+
+object "分岐" as facialExpressionBranch2
+facialExpressionBranch2 : 表情 : Heart
+facialExpressionBranch2 : 目トラッキング状態 : 有効
+facialExpressionBranch2 : 口トラッキング状態 : 有効
+
+facialExpressionBranch2 --> facialExpressionMode1
+
+object "ハンドジェスチャー条件" as handGestureCondition2
+handGestureCondition2 : 左右 : 両方
+handGestureCondition2 : ジェスチャー : Victory
+handGestureCondition2 : 演算子 : 一致する
+
+handGestureCondition2 --> facialExpressionBranch2
+
+object "表情モード" as facialExpressionMode2
+facialExpressionMode2 : モード名 : Sleeping
+facialExpressionMode2 : 表情 : SleepingMouthOpen
+facialExpressionMode2 : 目トラッキング状態 : 無効
+facialExpressionMode2 : 口トラッキング状態 : 無効
+
+facialExpressionMode2 --> registeredMenuItems1
+
+object "分岐" as facialExpressionBranch3
+facialExpressionBranch3 : 表情 : SleepingMouthClose
+facialExpressionBranch3 : 目トラッキング状態 : 無効
+facialExpressionBranch3 : 口トラッキング状態 : 無効
+
+facialExpressionBranch3 --> facialExpressionMode2
+
+object "ハンドジェスチャー条件" as handGestureCondition3
+handGestureCondition3 : 左右 : 右
+handGestureCondition3 : ジェスチャー : Fist
+handGestureCondition3 : 演算子 : 一致する
+
+handGestureCondition3 --> facialExpressionBranch3
+
+object "表情グループ" as facialExpressionGroup1
+facialExpressionGroup1 : グループ名: Fixed
+
+facialExpressionGroup1 --> registeredMenuItems1
+
+object "表情モード" as facialExpressionMode3
+facialExpressionMode3 : モード名 : Smile
+facialExpressionMode3 : 表情 : Smile
+facialExpressionMode3 : 目トラッキング状態 : 無効
+facialExpressionMode3 : 口トラッキング状態 : 有効
+
+facialExpressionMode3 --> facialExpressionGroup1
+
+object "表情メニュー共通設定" as facialExpressionSwitcherCommonSetting
+
+@enduml

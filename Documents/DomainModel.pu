@@ -1,0 +1,99 @@
+@startuml FacialExpressionSwitcherDomainModel
+
+rectangle "表情メニュー集約" as MenuAggregation {
+    object "表情メニュー\n(Menu)" as Menu
+    Menu : 表示名
+    Menu : 挿入位置
+    Menu : WriteDefaults 
+    Menu : 表情遷移時間
+    note left
+    表示名と同名のサブメニューが存在した場合は上書き
+    表示名を変更して再適用した場合は上書きしないため、ユーザが手動で削除する
+    メニュー挿入位置が項目数より大きい場合は最後尾に挿入
+    アバタールートはインターフェースをとる
+    ExpressionParameterの名前はドメインレイヤで定義しない
+    （重複の可能性が低い名前であればユーザが設定する必要はない）
+    end note
+
+    object "アバター\n(Avatar)" as Avatar
+    Avatar "1" --* "1" Menu
+
+    object "登録メニュー項目\n(RegisteredMenuItems)" as RegisteredMenuItems
+    object "非登録メニュー項目\n(UnregisteredMenuItems)" as UnregisteredMenuItems
+    RegisteredMenuItems "1" --* "1" Menu
+    UnregisteredMenuItems "1" --* "1" Menu
+
+    object "デフォルト選択\n(DefaultSelection)" as DefaultSelection
+    DefaultSelection "1" --* "1" Menu
+    object "表情モード追加先\n(ModeDestination)" as ModeDestination
+    note right
+    指定されたグループに追加できない場合や、
+    グループが指定されていない場合は登録メニュー項目に追加
+    登録メニュー項目に追加できない場合は非登録メニュー項目に追加
+    end note
+    ModeDestination "1" --* "1" Menu
+
+    object "メニュー項目\n(MenuItem)" as MenuItem
+    note left : メニュー項目は順序付きで格納される
+    MenuItem : 表示名
+    MenuItem "0..8" --o "0..1" RegisteredMenuItems
+    MenuItem "0..n" --o "0..1" UnregisteredMenuItems
+
+    object "表情グループ\n(Group)" as Group
+    object "表情モード\n(Mode)" as Mode
+    note right
+    分岐を順序つきで表情モードに格納
+    トリガーが有効かどうかは順序によって決定される
+    分岐は順序入れ替え可能
+    分岐は別の表情モードに移動できない
+    end note
+    Mode : 目トラッキング状態
+    Mode : 口トラッキング状態
+    Group ..|> MenuItem
+    Mode ..|> MenuItem
+    MenuItem "0..8" --o "0..1" Group
+
+    object "分岐\n(Branch)" as Branch
+    note right
+    条件の組み合わせから、
+    どのジェスチャーの組み合わせで分岐が有効になるかを決定する
+    end note
+    Branch : 目トラッキング状態
+    Branch : 口トラッキング状態
+    Branch "0..n" --* "1" Mode
+
+    object "条件\n(Condition)" as Condition
+    object "ハンドジェスチャー条件\n(HandGestureCondition)" as HandGestureCondition
+    HandGestureCondition : 左右
+    HandGestureCondition : ジェスチャー
+    HandGestureCondition : 演算子
+    Condition "1..n" --* "1" Branch
+    HandGestureCondition ..|> Condition
+
+    object "アニメーション\n(Animation)" as Animation
+    note left
+    分岐に格納するアニメーションは下記の4つ
+    - 通常
+    - 左トリガー
+    - 右トリガー
+    - 両トリガー
+    アニメーションの割り当て有無によってBlendTreeの種類を変える
+    end note
+    Animation "1" -right-* "1" Mode
+    Animation "4" -right-* "1" Branch
+
+    Mode "0..1" --o "0..1" DefaultSelection
+    note right : 表情モードが指定されていない場合はデフォルト値を使用する
+    Group "0..1" --o "0..1" ModeDestination
+}
+
+note as MenuAggregationNote
+表情メニューは単一のファイルで保存する
+アバターやアニメーションの実体はアセットGUIDでの参照となるが、
+ドメイン層ではそれを隠蔽するため参照で保持する
+end note
+MenuAggregationNote -- MenuAggregation
+
+object "表情メニュー共通設定\n(CommonSetting)" as CommonSetting
+
+@enduml

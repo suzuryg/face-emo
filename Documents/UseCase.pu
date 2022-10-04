@@ -1,0 +1,75 @@
+@startuml FacialExpressionSwitcherUseCase
+left to right direction
+:AvatarEditor:
+rectangle FacialExpressionSwitcher {
+    (表情メニューを新規作成する) as createMenu
+    AvatarEditor --> createMenu
+    (表情メニューを変更する) as modifyMenu
+    AvatarEditor --> modifyMenu
+    (表情メニューをコピーする) as copyMenu
+    AvatarEditor --> copyMenu
+    (表情メニューを読み込む) as loadMenu
+    AvatarEditor --> loadMenu
+    (表情メニューを削除する) as removeMenu
+    AvatarEditor --> removeMenu
+    (表情メニューをアバターに適用する) as applyToAvatar
+    AvatarEditor --> applyToAvatar
+    (表情メニューの共通設定を変更する) as modifyCommonSetting
+    AvatarEditor --> modifyCommonSetting
+
+    (メニュー階層を変更する) as modifyHierarchy
+    modifyMenu --> modifyHierarchy
+
+    (表情グループを追加する) as addGroup
+    modifyHierarchy --> addGroup
+    (表情グループを移動する) as moveGroup
+    modifyHierarchy --> moveGroup
+    (表情グループを削除する) as removeGroup
+    modifyHierarchy --> removeGroup
+
+    (表情モードを追加する) as addMode
+    modifyMenu --> addMode
+    (表情モードを変更する) as modifyMode
+    modifyMenu --> modifyMode
+    (表情モードをコピーする) as copyMode
+    modifyMenu --> copyMode
+    (表情モードを削除する) as removeMode
+    modifyMenu --> removeMode
+
+    (表情モードを移動する) as moveMode
+    modifyHierarchy --> moveMode
+
+    (分岐を追加する) as addBranch
+    modifyMode --> addBranch
+    (分岐を変更する) as modifyBranch
+    modifyMode --> modifyBranch
+    (分岐の優先順位を変更する) as changeBranchOrder
+    modifyMode --> changeBranchOrder
+    (分岐を削除する) as removeBranch
+    modifyMode --> removeBranch
+
+    (ハンドジェスチャー条件を追加する) as addGestureCondition
+    modifyBranch --> addGestureCondition
+    (ハンドジェスチャー条件を修正する) as modifyGestureCondition
+    modifyBranch --> modifyGestureCondition
+    (ハンドジェスチャー条件を削除する) as removeGestureCondition
+    modifyBranch --> removeGestureCondition
+
+    (表情を変更する) as changeExpression
+    modifyMode --> changeExpression
+    modifyBranch --> changeExpression
+
+    (表情を新規作成してセットする) as setNewExpression
+    changeExpression --> setNewExpression
+    (既存の表情をセットする) as setExistingExpression
+    changeExpression --> setExistingExpression
+    (既存の表情をコピーしてセットする) as  setCopiedExpression
+    changeExpression --> setCopiedExpression
+
+    note right of setExistingExpression
+    既存の表情を選択するためのウインドウを作成する
+    （標準のProjectウインドウを使用する場合、
+    ユーザが画面を固定しないと使いづらいため）
+    end note
+}
+@enduml
