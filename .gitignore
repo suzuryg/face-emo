@@ -64,4 +64,7 @@ Assets/PackageMakerWindowData.asset*
 .vscode
 
 .vsconfig
-Assets/
+Assets/*
+!Assets/Editor
+Assets/Editor/*
+!Assets/Editor/OpenTestRunner.cs

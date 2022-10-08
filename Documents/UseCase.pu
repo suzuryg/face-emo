@@ -17,27 +17,16 @@ rectangle FacialExpressionSwitcher {
     (表情メニューの共通設定を変更する) as modifyCommonSetting
     AvatarEditor --> modifyCommonSetting
 
-    (メニュー階層を変更する) as modifyHierarchy
-    modifyMenu --> modifyHierarchy
-
-    (表情グループを追加する) as addGroup
-    modifyHierarchy --> addGroup
-    (表情グループを移動する) as moveGroup
-    modifyHierarchy --> moveGroup
-    (表情グループを削除する) as removeGroup
-    modifyHierarchy --> removeGroup
-
-    (表情モードを追加する) as addMode
-    modifyMenu --> addMode
     (表情モードを変更する) as modifyMode
     modifyMenu --> modifyMode
-    (表情モードをコピーする) as copyMode
+    (表情モード・グループを追加する) as addMode
+    modifyMenu --> addMode
+    (表情モード・グループを移動する) as moveMode
+    modifyMenu --> moveMode
+    (表情モード・グループをコピーする) as copyMode
     modifyMenu --> copyMode
-    (表情モードを削除する) as removeMode
+    (表情モード・グループを削除する) as removeMode
     modifyMenu --> removeMode
-
-    (表情モードを移動する) as moveMode
-    modifyHierarchy --> moveMode
 
     (分岐を追加する) as addBranch
     modifyMode --> addBranch

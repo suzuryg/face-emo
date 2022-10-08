@@ -18,8 +18,8 @@ rectangle "表情メニュー集約" as MenuAggregation {
     object "アバター\n(Avatar)" as Avatar
     Avatar "1" --* "1" Menu
 
-    object "登録メニュー項目\n(RegisteredMenuItems)" as RegisteredMenuItems
-    object "非登録メニュー項目\n(UnregisteredMenuItems)" as UnregisteredMenuItems
+    object "登録メニュー項目\n(RegisteredMenuItemList)" as RegisteredMenuItems
+    object "非登録メニュー項目\n(UnregisteredMenuItemList)" as UnregisteredMenuItems
     RegisteredMenuItems "1" --* "1" Menu
     UnregisteredMenuItems "1" --* "1" Menu
 
@@ -35,9 +35,14 @@ rectangle "表情メニュー集約" as MenuAggregation {
 
     object "メニュー項目\n(MenuItem)" as MenuItem
     note left : メニュー項目は順序付きで格納される
+    MenuItem : ID
     MenuItem : 表示名
     MenuItem "0..8" --o "0..1" RegisteredMenuItems
     MenuItem "0..n" --o "0..1" UnregisteredMenuItems
+
+    object "メニュー項目リスト\n(MenuItemList)" as MenuItemList
+    RegisteredMenuItems ..|> MenuItemList
+    UnregisteredMenuItems ..|> MenuItemList
 
     object "表情グループ\n(Group)" as Group
     object "表情モード\n(Mode)" as Mode
@@ -50,6 +55,7 @@ rectangle "表情メニュー集約" as MenuAggregation {
     Mode : 目トラッキング状態
     Mode : 口トラッキング状態
     Group ..|> MenuItem
+    Group ..|> MenuItemList
     Mode ..|> MenuItem
     MenuItem "0..8" --o "0..1" Group
 
