@@ -1,6 +1,10 @@
 {
-    "name": "VRChatPackageTemplate.Editor",
-    "references": [],
+    "name": "jp.suzuryg.facial-expression-switcher.Editor",
+    "references": [
+        "jp.suzuryg.facial-expression-switcher.domain.Editor",
+        "jp.suzuryg.facial-expression-switcher.usecase.Editor",
+        "Zenject"
+    ],
     "includePlatforms": [
         "Editor"
     ],
@@ -8,7 +12,8 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "Newtonsoft.Json.dll"
+        "Newtonsoft.Json.dll",
+        "Zenject-usage.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

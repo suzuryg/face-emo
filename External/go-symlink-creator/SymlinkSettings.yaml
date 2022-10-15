@@ -29,3 +29,9 @@ symlinks:
       - CgeLayerForAnalogFistSmoothing.cs
       - CgeLayerForWeightCorrection.cs
     include-meta-file: true
+
+  - src: ..\Extenject\UnityProject\Assets\Plugins
+    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Mathijs-Bakker
+    target:
+      - Zenject
+    include-meta-file: true
