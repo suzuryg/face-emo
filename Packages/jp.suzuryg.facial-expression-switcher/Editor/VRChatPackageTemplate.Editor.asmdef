@@ -3,7 +3,8 @@
     "references": [
         "jp.suzuryg.facial-expression-switcher.domain.Editor",
         "jp.suzuryg.facial-expression-switcher.usecase.Editor",
-        "Zenject"
+        "Zenject",
+        "UniRx"
     ],
     "includePlatforms": [
         "Editor"

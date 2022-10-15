@@ -35,3 +35,14 @@ symlinks:
     target:
       - Zenject
     include-meta-file: true
+
+  - src: ..\UniRx
+    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\neuecc\UniRx
+    target:
+      - LICENSE
+    include-meta-file: false
+  - src: ..\UniRx\Assets\Plugins\UniRx
+    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\neuecc\UniRx
+    target:
+      - Scripts
+    include-meta-file: true
