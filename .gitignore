@@ -68,3 +68,5 @@ Assets/*
 !Assets/Editor
 Assets/Editor/*
 !Assets/Editor/OpenTestRunner.cs
+UIElementsSchema/*
+

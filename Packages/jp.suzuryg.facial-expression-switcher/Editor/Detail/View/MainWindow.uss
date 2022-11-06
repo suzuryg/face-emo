@@ -1,0 +1,69 @@
+﻿.GridItem
+{
+    margin: 5px;
+    border-color: black;
+    border-width: 1px;
+    padding: 5px;
+}
+
+#RootGrid
+{
+    width: 100%;
+    height: 100%;
+
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: center;
+}
+
+#MainRow
+{
+    margin: 0px;
+    border-width: 0px;
+    padding: 0px;
+
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: center;
+
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+#MenuRow
+{
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 100px;
+    align-self: auto;
+}
+
+#HierarchyControl
+{
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+#MenuItemListControl
+{
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+#BranchListControl
+{
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    align-self: auto;
+}

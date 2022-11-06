@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:engine="UnityEngine.UIElements"
+	xmlns:editor="UnityEditor.UIElements"
+	xmlns:fes="Suzuryg.FacialExpressionSwitcher.Detail.View"
+	xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+	xsi:schemaLocation="UnityEngine.UIElements ../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
+>
+	<engine:VisualElement name="RootGrid">
+		<engine:VisualElement name="TopRow">
+			<engine:Label name="TitleLabel"/>
+			<engine:Button name="AddGroupButton"/>
+		</engine:VisualElement>
+		<engine:VisualElement name="HierarchyRow">
+			<engine:Label text="Hierarchy"/>
+			<engine:IMGUIContainer name="TreeViewContainer"/>
+		</engine:VisualElement>
+	</engine:VisualElement>
+</engine:UXML>

@@ -4,11 +4,11 @@
     {
         public static void Check(params object[] objects)
         {
-            foreach (var obj in objects)
+            for (int i = 0; i < objects.Length; i++)
             {
-                if (obj is null)
+                if (objects[i] is null)
                 {
-                    throw new FacialExpressionSwitcherException($"{nameof(obj)} can't be null.");
+                    throw new FacialExpressionSwitcherException($"Arguments can't be null. Index: {i}");
                 }
             }
         }

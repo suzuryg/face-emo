@@ -1,11 +1,9 @@
 {
-    "name": "jp.suzuryg.facial-expression-switcher.appmain.Editor",
+    "name": "jp.suzuryg.facial-expression-switcher.adapter.Editor",
     "references": [
         "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
         "GUID:df45ab4f3bbb8394987fc80e55e039ef",
-        "GUID:8bbcb38c0ade0c94f85f615069fc6559",
-        "GUID:3a369c7d7783a1740996446681282216",
-        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285"
     ],
     "includePlatforms": [
         "Editor"
@@ -13,9 +11,7 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "Zenject-usage.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
