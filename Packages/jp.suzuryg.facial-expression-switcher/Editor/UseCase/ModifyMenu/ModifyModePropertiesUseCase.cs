@@ -5,9 +5,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
     public interface IModifyModePropertiesUseCase
     {
-        void SetPresenter(IModifyModePropertiesPresenter modifyModePropertiesPresenter);
         void Handle(
-            string id,
+            string menuId,
+            string modeId,
             string displayName = null,
             bool? useAnimationNameAsDisplayName = null,
             EyeTrackingControl? eyeTrackingControl = null,
@@ -16,35 +16,44 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public interface IModifyModePropertiesPresenter
     {
-        void Complete(ModifyModePropertiesResult modifyModePropertiesResult, in Menu menu, string errorMessage = "");
+        event Action<ModifyModePropertiesResult, IMenu, string> OnCompleted;
+
+        void Complete(ModifyModePropertiesResult modifyModePropertiesResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum ModifyModePropertiesResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         ModeIsNotContained,
         ArgumentNull,
         Error,
     }
 
+    public class ModifyModePropertiesPresenter : IModifyModePropertiesPresenter
+    {
+        public event Action<ModifyModePropertiesResult, IMenu, string> OnCompleted;
+
+        public void Complete(ModifyModePropertiesResult modifyModePropertiesResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(modifyModePropertiesResult, menu, errorMessage);
+        }
+    }
+
     public class ModifyModePropertiesUseCase : IModifyModePropertiesUseCase
     {
+        IMenuRepository _menuRepository;
         IModifyModePropertiesPresenter _modifyModePropertiesPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public ModifyModePropertiesUseCase(MenuEditingSession menuEditingSession)
+        public ModifyModePropertiesUseCase(IMenuRepository menuRepository, IModifyModePropertiesPresenter modifyModePropertiesPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IModifyModePropertiesPresenter modifyModePropertiesPresenter)
-        {
+            _menuRepository = menuRepository;
             _modifyModePropertiesPresenter = modifyModePropertiesPresenter;
         }
 
         public void Handle(
-            string id,
+            string menuId,
+            string modeId,
             string displayName = null,
             bool? useAnimationNameAsDisplayName = null,
             EyeTrackingControl? eyeTrackingControl = null,
@@ -52,34 +61,34 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
         {
             try
             {
-                if (id is null)
+                if (menuId is null || modeId is null)
                 {
-                    _modifyModePropertiesPresenter?.Complete(ModifyModePropertiesResult.ArgumentNull, null);
+                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _modifyModePropertiesPresenter?.Complete(ModifyModePropertiesResult.MenuIsNotOpened, null);
+                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
-                if (!menu.ContainsMode(id))
+                if (!menu.ContainsMode(modeId))
                 {
-                    _modifyModePropertiesPresenter?.Complete(ModifyModePropertiesResult.ModeIsNotContained, null);
+                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.ModeIsNotContained, null);
                     return;
                 }
 
-                menu.ModifyModeProperties(id, displayName, useAnimationNameAsDisplayName, eyeTrackingControl, mouthTrackingControl);
+                menu.ModifyModeProperties(modeId, displayName, useAnimationNameAsDisplayName, eyeTrackingControl, mouthTrackingControl);
 
-                _menuEditingSession.SetAsModified();
-                _modifyModePropertiesPresenter?.Complete(ModifyModePropertiesResult.Succeeded, menu);
+                _menuRepository.Save(menuId, menu);
+                _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _modifyModePropertiesPresenter?.Complete(ModifyModePropertiesResult.Error, null, ex.ToString());
+                _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Error, null, ex.ToString());
             }
         }
     }

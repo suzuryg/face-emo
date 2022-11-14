@@ -5,77 +5,84 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
     public interface IMoveMenuItemUseCase
     {
-        void SetPresenter(IMoveMenuItemPresenter moveMenuItemPresenter);
-        void Handle(string source, string destination, int? index = null);
+        void Handle(string menuId, string source, string destination, int? index = null);
     }
 
     public interface IMoveMenuItemPresenter
     {
-        void Complete(MoveMenuItemResult moveMenuItemResult, in Menu menu, string errorMessage = "");
+        event Action<MoveMenuItemResult, IMenu, string> OnCompleted;
+
+        void Complete(MoveMenuItemResult moveMenuItemResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum MoveMenuItemResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidSource,
         InvalidDestination,
         ArgumentNull,
         Error,
     }
 
+    public class MoveMenuItemPresenter : IMoveMenuItemPresenter
+    {
+        public event Action<MoveMenuItemResult, IMenu, string> OnCompleted;
+
+        public void Complete(MoveMenuItemResult moveMenuItemResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(moveMenuItemResult, menu, errorMessage);
+        }
+    }
+
     public class MoveMenuItemUseCase : IMoveMenuItemUseCase
     {
+        IMenuRepository _menuRepository;
         IMoveMenuItemPresenter _moveMenuItemPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public MoveMenuItemUseCase(MenuEditingSession menuEditingSession)
+        public MoveMenuItemUseCase(IMenuRepository menuRepository, IMoveMenuItemPresenter moveMenuItemPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IMoveMenuItemPresenter moveMenuItemPresenter)
-        {
+            _menuRepository = menuRepository;
             _moveMenuItemPresenter = moveMenuItemPresenter;
         }
 
-        public void Handle(string source, string destination, int? index = null)
+        public void Handle(string menuId, string source, string destination, int? index = null)
         {
             try
             {
-                if (source is null || destination is null)
+                if (menuId is null || source is null || destination is null)
                 {
-                    _moveMenuItemPresenter?.Complete(MoveMenuItemResult.ArgumentNull, null);
+                    _moveMenuItemPresenter.Complete(MoveMenuItemResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _moveMenuItemPresenter?.Complete(MoveMenuItemResult.MenuIsNotOpened, null);
+                    _moveMenuItemPresenter.Complete(MoveMenuItemResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanMoveMenuItemFrom(source))
                 {
-                    _moveMenuItemPresenter?.Complete(MoveMenuItemResult.InvalidSource, menu);
+                    _moveMenuItemPresenter.Complete(MoveMenuItemResult.InvalidSource, menu);
                     return;
                 }
 
                 if (!menu.CanMoveMenuItemTo(source, destination))
                 {
-                    _moveMenuItemPresenter?.Complete(MoveMenuItemResult.InvalidDestination, menu);
+                    _moveMenuItemPresenter.Complete(MoveMenuItemResult.InvalidDestination, menu);
                     return;
                 }
 
                 menu.MoveMenuItem(source, destination, index);
-                _menuEditingSession.SetAsModified();
-                _moveMenuItemPresenter?.Complete(MoveMenuItemResult.Succeeded, menu);
+                _menuRepository.Save(menuId, menu);
+                _moveMenuItemPresenter.Complete(MoveMenuItemResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _moveMenuItemPresenter?.Complete(MoveMenuItemResult.Error, null, ex.ToString());
+                _moveMenuItemPresenter.Complete(MoveMenuItemResult.Error, null, ex.ToString());
             }
         }
     }

@@ -6,70 +6,78 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 {
     public interface IAddConditionUseCase
     {
-        void SetPresenter(IAddConditionPresenter addConditionPresenter);
-        void Handle(string modeId, int branchIndex, Condition condition);
+        void Handle(string menuId, string modeId, int branchIndex, Condition condition);
     }
 
     public interface IAddConditionPresenter
     {
-        void Complete(AddConditionResult addConditionResult, in Menu menu, string errorMessage = "");
+        event Action<AddConditionResult, IMenu, string> OnCompleted;
+
+        void Complete(AddConditionResult addConditionResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum AddConditionResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidBranch,
         ArgumentNull,
         Error,
     }
 
+    public class AddConditionPresenter : IAddConditionPresenter
+    {
+        public event Action<AddConditionResult, IMenu, string> OnCompleted;
+
+        public void Complete(AddConditionResult addConditionResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(addConditionResult, menu, errorMessage);
+        }
+    }
+
     public class AddConditionUseCase : IAddConditionUseCase
     {
+        IMenuRepository _menuRepository;
         IAddConditionPresenter _addConditionPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public AddConditionUseCase(MenuEditingSession menuEditingSession)
+        public AddConditionUseCase(IMenuRepository menuRepository, IAddConditionPresenter addConditionPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IAddConditionPresenter addConditionPresenter)
-        {
+            _menuRepository = menuRepository;
             _addConditionPresenter = addConditionPresenter;
         }
 
-        public void Handle(string modeId, int branchIndex, Condition condition)
+        public void Handle(string menuId, string modeId, int branchIndex, Condition condition)
         {
             try
             {
-                if (modeId is null)
+                if (menuId is null || modeId is null)
                 {
-                    _addConditionPresenter?.Complete(AddConditionResult.ArgumentNull, null);
+                    _addConditionPresenter.Complete(AddConditionResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _addConditionPresenter?.Complete(AddConditionResult.MenuIsNotOpened, null);
+                    _addConditionPresenter.Complete(AddConditionResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanAddConditionTo(modeId, branchIndex))
                 {
-                    _addConditionPresenter?.Complete(AddConditionResult.InvalidBranch, menu);
+                    _addConditionPresenter.Complete(AddConditionResult.InvalidBranch, menu);
                     return;
                 }
 
                 menu.AddCondition(modeId, branchIndex, condition);
-                _menuEditingSession.SetAsModified();
-                _addConditionPresenter?.Complete(AddConditionResult.Succeeded, menu);
+
+                _menuRepository.Save(menuId, menu);
+                _addConditionPresenter.Complete(AddConditionResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _addConditionPresenter?.Complete(AddConditionResult.Error, null, ex.ToString());
+                _addConditionPresenter.Complete(AddConditionResult.Error, null, ex.ToString());
             }
         }
     }

@@ -6,70 +6,78 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 {
     public interface IAddBranchUseCase
     {
-        void SetPresenter(IAddBranchPresenter addBranchPresenter);
-        void Handle(string destination, IEnumerable<Condition> conditions = null);
+        void Handle(string menuId, string modeId, IEnumerable<Condition> conditions = null);
     }
 
     public interface IAddBranchPresenter
     {
-        void Complete(AddBranchResult addBranchResult, in Menu menu, string errorMessage = "");
+        event Action<AddBranchResult, IMenu, string> OnCompleted;
+
+        void Complete(AddBranchResult addBranchResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum AddBranchResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidDestination,
         ArgumentNull,
         Error,
     }
 
+    public class AddBranchPresenter : IAddBranchPresenter
+    {
+        public event Action<AddBranchResult, IMenu, string> OnCompleted;
+
+        public void Complete(AddBranchResult addBranchResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(addBranchResult, menu, errorMessage);
+        }
+    }
+
     public class AddBranchUseCase : IAddBranchUseCase
     {
+        IMenuRepository _menuRepository;
         IAddBranchPresenter _addBranchPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public AddBranchUseCase(MenuEditingSession menuEditingSession)
+        public AddBranchUseCase(IMenuRepository menuRepository, IAddBranchPresenter addBranchPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IAddBranchPresenter addBranchPresenter)
-        {
+            _menuRepository = menuRepository;
             _addBranchPresenter = addBranchPresenter;
         }
 
-        public void Handle(string destination, IEnumerable<Condition> conditions = null)
+        public void Handle(string menuId, string modeId, IEnumerable<Condition> conditions = null)
         {
             try
             {
-                if (destination is null)
+                if (menuId is null || modeId is null)
                 {
-                    _addBranchPresenter?.Complete(AddBranchResult.ArgumentNull, null);
+                    _addBranchPresenter.Complete(AddBranchResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _addBranchPresenter?.Complete(AddBranchResult.MenuIsNotOpened, null);
+                    _addBranchPresenter.Complete(AddBranchResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
-                if (!menu.CanAddBranchTo(destination))
+                if (!menu.CanAddBranchTo(modeId))
                 {
-                    _addBranchPresenter?.Complete(AddBranchResult.InvalidDestination, menu);
+                    _addBranchPresenter.Complete(AddBranchResult.InvalidDestination, menu);
                     return;
                 }
 
-                menu.AddBranch(destination, conditions);
-                _menuEditingSession.SetAsModified();
-                _addBranchPresenter?.Complete(AddBranchResult.Succeeded, menu);
+                menu.AddBranch(modeId, conditions);
+
+                _menuRepository.Save(menuId, menu);
+                _addBranchPresenter.Complete(AddBranchResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _addBranchPresenter?.Complete(AddBranchResult.Error, null, ex.ToString());
+                _addBranchPresenter.Complete(AddBranchResult.Error, null, ex.ToString());
             }
         }
     }

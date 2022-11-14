@@ -11,7 +11,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
         public MergedMenuItemList Merged;
 
-        public void Complete(MergeExistingMenuResult mergeExistingMenuItemResult, MergedMenuItemList mergedMenuItems, in Menu menu, string errorMessage)
+        public event System.Action<MergeExistingMenuResult, MergedMenuItemList, IMenu, string> OnCompleted;
+
+        public void Complete(MergeExistingMenuResult mergeExistingMenuItemResult, MergedMenuItemList mergedMenuItems, in IMenu menu, string errorMessage)
         {
             Result = mergeExistingMenuItemResult;
             Merged = mergedMenuItems;
@@ -22,7 +24,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         public ApplyMenuResult Result { get; private set; }
 
-        public void Complete(ApplyMenuResult applyMenuResult, in Menu menu, string errorMessage = "")
+        public event System.Action<ApplyMenuResult, IMenu, string> OnCompleted;
+
+        public void Complete(ApplyMenuResult applyMenuResult, in IMenu menu, string errorMessage = "")
         {
             Result = applyMenuResult;
         }
@@ -53,91 +57,94 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             // Setup
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
-            MergeExistingMenuUseCase mergeExistingMenuUseCase = useCaseTestsInstaller.Container.Resolve<MergeExistingMenuUseCase>();
-            ApplyMenuUseCase applyMenuUseCase = useCaseTestsInstaller.Container.Resolve<ApplyMenuUseCase>();
+
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+            System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
+
             var existingMenuItems = new List<IExistingMenuItem>();
             MergedMenuItemList mergedMenuItems;
 
-            MockMergeExistingMenuPresenter mockMergeExistingMenuPresenter = new MockMergeExistingMenuPresenter();
-            mergeExistingMenuUseCase.SetPresenter(mockMergeExistingMenuPresenter);
-            MockApplyMenuPresenter mockApplyMenuPresenter = new MockApplyMenuPresenter();
-            applyMenuUseCase.SetPresenter(mockApplyMenuPresenter);
+            MergeExistingMenuUseCase mergeExistingMenuUseCase = useCaseTestsInstaller.Container.Resolve<MergeExistingMenuUseCase>();
+            ApplyMenuUseCase applyMenuUseCase = useCaseTestsInstaller.Container.Resolve<ApplyMenuUseCase>();
+
+            MockMergeExistingMenuPresenter mockMergeExistingMenuPresenter = useCaseTestsInstaller.Container.Resolve<IMergeExistingMenuPresenter>() as MockMergeExistingMenuPresenter;
+            MockApplyMenuPresenter mockApplyMenuPresenter = useCaseTestsInstaller.Container.Resolve<IApplyMenuPresenter>() as MockApplyMenuPresenter;
 
             // null
-            mergeExistingMenuUseCase.Handle(null);
+            mergeExistingMenuUseCase.Handle(null, new List<IExistingMenuItem>());
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.ArgumentNull));
-            applyMenuUseCase.Handle(null);
+            mergeExistingMenuUseCase.Handle(menuId, null);
+            Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.ArgumentNull));
+            applyMenuUseCase.Handle(null, new MergedMenuItemList());
+            Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.ArgumentNull));
+            applyMenuUseCase.Handle(menuId, null);
             Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.ArgumentNull));
 
             // Menu is not opened
-            mergeExistingMenuUseCase.Handle(new List<IExistingMenuItem>());
-            Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.MenuIsNotOpened));
-            applyMenuUseCase.Handle(new MergedMenuItemList());
-            Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.MenuIsNotOpened));
+            mergeExistingMenuUseCase.Handle(menuId, new List<IExistingMenuItem>());
+            Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.MenuDoesNotExist));
+            applyMenuUseCase.Handle(menuId, new MergedMenuItemList());
+            Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.MenuDoesNotExist));
 
             // Create Menu
-            useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle();
-            var menu = menuEditingSession.Menu;
-            menuEditingSession.SaveAs("dest");
+            useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle(menuId);
 
             // Add item
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
             ModifyModePropertiesUseCase modifyModePropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyModePropertiesUseCase>();
             ModifyGroupPropertiesUseCase modifyGroupPropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyGroupPropertiesUseCase>();
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Group);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Group);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            var g0 = menu.Registered.Order[0];
-            var g1 = menu.Registered.Order[1];
-            var m0 = menu.Registered.Order[2];
-            var m1 = menu.Registered.Order[3];
-            modifyGroupPropertiesUseCase.Handle(g0, displayName: "g0");
-            modifyGroupPropertiesUseCase.Handle(g1, displayName: "g1");
-            modifyModePropertiesUseCase.Handle(m0, displayName:  "m0");
-            modifyModePropertiesUseCase.Handle(m1, displayName:  "m1");
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            var g0 = loadMenu().Registered.Order[0];
+            var g1 = loadMenu().Registered.Order[1];
+            var m0 = loadMenu().Registered.Order[2];
+            var m1 = loadMenu().Registered.Order[3];
+            modifyGroupPropertiesUseCase.Handle(menuId, g0, displayName: "g0");
+            modifyGroupPropertiesUseCase.Handle(menuId, g1, displayName: "g1");
+            modifyModePropertiesUseCase.Handle(menuId, m0, displayName:  "m0");
+            modifyModePropertiesUseCase.Handle(menuId, m1, displayName:  "m1");
 
-            addMenuItemUseCase.Handle(Menu.UnregisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.UnregisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.UnregisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.UnregisteredId, AddMenuItemType.Mode);
-            var m2 = menu.Unregistered.Order[0];
-            var m3 = menu.Unregistered.Order[1];
-            var m4 = menu.Unregistered.Order[2];
-            var m5 = menu.Unregistered.Order[3];
-            modifyModePropertiesUseCase.Handle(m2, displayName: "m2");
-            modifyModePropertiesUseCase.Handle(m3, displayName: "m3");
-            modifyModePropertiesUseCase.Handle(m4, displayName: "m4");
-            modifyModePropertiesUseCase.Handle(m5, displayName: "m5");
-
-            menuEditingSession.Save();
+            addMenuItemUseCase.Handle(menuId, Menu.UnregisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.UnregisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.UnregisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.UnregisteredId, AddMenuItemType.Mode);
+            var m2 = loadMenu().Unregistered.Order[0];
+            var m3 = loadMenu().Unregistered.Order[1];
+            var m4 = loadMenu().Unregistered.Order[2];
+            var m5 = loadMenu().Unregistered.Order[3];
+            modifyModePropertiesUseCase.Handle(menuId, m2, displayName: "m2");
+            modifyModePropertiesUseCase.Handle(menuId, m3, displayName: "m3");
+            modifyModePropertiesUseCase.Handle(menuId, m4, displayName: "m4");
+            modifyModePropertiesUseCase.Handle(menuId, m5, displayName: "m5");
 
             // Apply invalid menu item
             mergedMenuItems = new MergedMenuItemList();
             mergedMenuItems.Add(new MockExistingMenuItem("e0"));
-            mergedMenuItems.Add(menu.GetMode(m1), m1);
+            mergedMenuItems.Add(loadMenu().GetMode(m1), m1);
             mergedMenuItems.Add(new MockExistingMenuItem("e1"));
-            mergedMenuItems.Add(menu.GetGroup(g1), g1);
+            mergedMenuItems.Add(loadMenu().GetGroup(g1), g1);
             mergedMenuItems.Add(new MockExistingMenuItem("e2"));
-            mergedMenuItems.Add(menu.GetGroup(g0), g0);
+            mergedMenuItems.Add(loadMenu().GetGroup(g0), g0);
             mergedMenuItems.Add(new Mode(""), "");
             mergedMenuItems.Add(new MockExistingMenuItem("e3"));
-            //applyMenuUseCase.Handle(mergedMenuItems);
+            //applyMenuUseCase.Handle(menuId, mergedMenuItems);
             //Assert.That(MockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.MenuItemsAreNotContained));
             //Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
             //menuEditingSession.Save();
 
             mergedMenuItems = new MergedMenuItemList();
             mergedMenuItems.Add(new MockExistingMenuItem("e0"));
-            mergedMenuItems.Add(menu.GetMode(m1), m1);
+            mergedMenuItems.Add(loadMenu().GetMode(m1), m1);
             mergedMenuItems.Add(new MockExistingMenuItem("e1"));
             mergedMenuItems.Add(new Group(""), "");
             mergedMenuItems.Add(new MockExistingMenuItem("e2"));
-            mergedMenuItems.Add(menu.GetGroup(g0), g0);
-            mergedMenuItems.Add(menu.GetMode(m0), m0);
+            mergedMenuItems.Add(loadMenu().GetGroup(g0), g0);
+            mergedMenuItems.Add(loadMenu().GetMode(m0), m0);
             mergedMenuItems.Add(new MockExistingMenuItem("e3"));
-            //applyMenuUseCase.Handle(mergedMenuItems);
+            //applyMenuUseCase.Handle(menuId, mergedMenuItems);
             //Assert.That(MockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.MenuItemsAreNotContained));
             //Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
             //menuEditingSession.Save();
@@ -153,10 +160,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem(""));
             existingMenuItems.Add(new MockExistingMenuItem(""));
             existingMenuItems.Add(new MockExistingMenuItem(""));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.InvalidArgument));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             // Too many merged menu items
             mergedMenuItems = new MergedMenuItemList();
@@ -169,17 +174,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             mergedMenuItems.Add(new MockExistingMenuItem(""));
             mergedMenuItems.Add(new MockExistingMenuItem(""));
             mergedMenuItems.Add(new MockExistingMenuItem(""));
-            applyMenuUseCase.Handle(mergedMenuItems);
+            applyMenuUseCase.Handle(menuId, mergedMenuItems);
             Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.InvalidArgument));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             // Merge before applying
             existingMenuItems.Clear();
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(4));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
@@ -196,10 +197,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem("e5"));
             existingMenuItems.Add(new MockExistingMenuItem("e6"));
             existingMenuItems.Add(new MockExistingMenuItem("e7"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(12));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -218,23 +217,21 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             // Apply (re-ordered by user)
             mergedMenuItems = new MergedMenuItemList();
             mergedMenuItems.Add(new MockExistingMenuItem("e0"));
-            mergedMenuItems.Add(menu.GetMode(m1), m1);
+            mergedMenuItems.Add(loadMenu().GetMode(m1), m1);
             mergedMenuItems.Add(new MockExistingMenuItem("e1"));
-            mergedMenuItems.Add(menu.GetGroup(g1), g1);
+            mergedMenuItems.Add(loadMenu().GetGroup(g1), g1);
             mergedMenuItems.Add(new MockExistingMenuItem("e2"));
-            mergedMenuItems.Add(menu.GetGroup(g0), g0);
-            mergedMenuItems.Add(menu.GetMode(m0), m0);
+            mergedMenuItems.Add(loadMenu().GetGroup(g0), g0);
+            mergedMenuItems.Add(loadMenu().GetMode(m0), m0);
             mergedMenuItems.Add(new MockExistingMenuItem("e3"));
-            applyMenuUseCase.Handle(mergedMenuItems);
+            applyMenuUseCase.Handle(menuId, mergedMenuItems);
             Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(true));
-            menuEditingSession.Save();
 
-            Assert.That(menu.Registered.Count, Is.EqualTo(4));
-            Assert.That(menu.Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
-            Assert.That(menu.Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
-            Assert.That(menu.Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g0"));
-            Assert.That(menu.Registered.GetModeAt(3).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(4));
+            Assert.That(loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m0"));
 
             // Re-merge with same existing menu items
             existingMenuItems.Clear();
@@ -242,10 +239,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem("e1"));
             existingMenuItems.Add(new MockExistingMenuItem("e2"));
             existingMenuItems.Add(new MockExistingMenuItem("e3"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(8));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -264,10 +259,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem("e2"));
             existingMenuItems.Add(new MockExistingMenuItem("e3"));
             existingMenuItems.Add(new MockExistingMenuItem("e4"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(9));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -289,10 +282,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem("e5"));
             existingMenuItems.Add(new MockExistingMenuItem("e6"));
             existingMenuItems.Add(new MockExistingMenuItem("e7"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(12));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -313,10 +304,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem("e0"));
             existingMenuItems.Add(new MockExistingMenuItem("e1"));
             existingMenuItems.Add(new MockExistingMenuItem("e3"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(7));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -329,10 +318,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
             existingMenuItems.Clear();
             existingMenuItems.Add(new MockExistingMenuItem("e3"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(5));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e3"));
@@ -344,31 +331,28 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             // Re-merge with more inner menu items
             MoveMenuItemUseCase moveMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<MoveMenuItemUseCase>();
 
-            moveMenuItemUseCase.Handle(m2, Menu.RegisteredId, 4);
-            moveMenuItemUseCase.Handle(m3, Menu.RegisteredId, 5);
-            moveMenuItemUseCase.Handle(m4, Menu.RegisteredId, 6);
-            moveMenuItemUseCase.Handle(m5, Menu.RegisteredId, 7);
-            menuEditingSession.Save();
+            moveMenuItemUseCase.Handle(menuId, m2, Menu.RegisteredId, 4);
+            moveMenuItemUseCase.Handle(menuId, m3, Menu.RegisteredId, 5);
+            moveMenuItemUseCase.Handle(menuId, m4, Menu.RegisteredId, 6);
+            moveMenuItemUseCase.Handle(menuId, m5, Menu.RegisteredId, 7);
 
-            Assert.That(menu.Registered.Count, Is.EqualTo(8));
-            Assert.That(menu.Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
-            Assert.That(menu.Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
-            Assert.That(menu.Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g0"));
-            Assert.That(menu.Registered.GetModeAt(3).DisplayName, Is.EqualTo("m0"));
-            Assert.That(menu.Registered.GetModeAt(4).DisplayName, Is.EqualTo("m2"));
-            Assert.That(menu.Registered.GetModeAt(5).DisplayName, Is.EqualTo("m3"));
-            Assert.That(menu.Registered.GetModeAt(6).DisplayName, Is.EqualTo("m4"));
-            Assert.That(menu.Registered.GetModeAt(7).DisplayName, Is.EqualTo("m5"));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m2"));
+            Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m3"));
+            Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m4"));
+            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m5"));
 
             existingMenuItems.Clear();
             existingMenuItems.Add(new MockExistingMenuItem("e0"));
             existingMenuItems.Add(new MockExistingMenuItem("e1"));
             existingMenuItems.Add(new MockExistingMenuItem("e2"));
             existingMenuItems.Add(new MockExistingMenuItem("e3"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(12));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -393,10 +377,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem("e5"));
             existingMenuItems.Add(new MockExistingMenuItem("e6"));
             existingMenuItems.Add(new MockExistingMenuItem("e7"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(16));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -419,10 +401,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Clear();
             existingMenuItems.Add(new MockExistingMenuItem("e0"));
             existingMenuItems.Add(new MockExistingMenuItem("e1"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(10));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -437,27 +417,24 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetModeAt(9).DisplayName, Is.EqualTo("m5"));
 
             // Re-merge with less inner menu items
-            moveMenuItemUseCase.Handle(m2, Menu.UnregisteredId);
-            moveMenuItemUseCase.Handle(m3, Menu.UnregisteredId);
-            moveMenuItemUseCase.Handle(m4, Menu.UnregisteredId);
-            moveMenuItemUseCase.Handle(m5, Menu.UnregisteredId);
-            moveMenuItemUseCase.Handle(g1, Menu.UnregisteredId);
-            moveMenuItemUseCase.Handle(m1, Menu.UnregisteredId);
-            menuEditingSession.Save();
+            moveMenuItemUseCase.Handle(menuId, m2, Menu.UnregisteredId);
+            moveMenuItemUseCase.Handle(menuId, m3, Menu.UnregisteredId);
+            moveMenuItemUseCase.Handle(menuId, m4, Menu.UnregisteredId);
+            moveMenuItemUseCase.Handle(menuId, m5, Menu.UnregisteredId);
+            moveMenuItemUseCase.Handle(menuId, g1, Menu.UnregisteredId);
+            moveMenuItemUseCase.Handle(menuId, m1, Menu.UnregisteredId);
 
-            Assert.That(menu.Registered.Count, Is.EqualTo(2));
-            Assert.That(menu.Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
-            Assert.That(menu.Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
 
             existingMenuItems.Clear();
             existingMenuItems.Add(new MockExistingMenuItem("e0"));
             existingMenuItems.Add(new MockExistingMenuItem("e1"));
             existingMenuItems.Add(new MockExistingMenuItem("e2"));
             existingMenuItems.Add(new MockExistingMenuItem("e3"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(6));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -476,10 +453,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Add(new MockExistingMenuItem("e5"));
             existingMenuItems.Add(new MockExistingMenuItem("e6"));
             existingMenuItems.Add(new MockExistingMenuItem("e7"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(10));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -496,10 +471,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             existingMenuItems.Clear();
             existingMenuItems.Add(new MockExistingMenuItem("e0"));
             existingMenuItems.Add(new MockExistingMenuItem("e1"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(4));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));
@@ -508,27 +481,24 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetModeAt(3).DisplayName, Is.EqualTo("m0"));
 
             // Re-order inner menu items and re-merge
-            moveMenuItemUseCase.Handle(g0, Menu.RegisteredId, 0);
-            moveMenuItemUseCase.Handle(g1, Menu.RegisteredId, 1);
-            moveMenuItemUseCase.Handle(m0, Menu.RegisteredId, 2);
-            moveMenuItemUseCase.Handle(m1, Menu.RegisteredId, 3);
-            menuEditingSession.Save();
+            moveMenuItemUseCase.Handle(menuId, g0, Menu.RegisteredId, 0);
+            moveMenuItemUseCase.Handle(menuId, g1, Menu.RegisteredId, 1);
+            moveMenuItemUseCase.Handle(menuId, m0, Menu.RegisteredId, 2);
+            moveMenuItemUseCase.Handle(menuId, m1, Menu.RegisteredId, 3);
 
-            Assert.That(menu.Registered.Count, Is.EqualTo(4));
-            Assert.That(menu.Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
-            Assert.That(menu.Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
-            Assert.That(menu.Registered.GetModeAt(2).DisplayName, Is.EqualTo("m0"));
-            Assert.That(menu.Registered.GetModeAt(3).DisplayName, Is.EqualTo("m1"));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(4));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m1"));
 
             existingMenuItems.Clear();
             existingMenuItems.Add(new MockExistingMenuItem("e0"));
             existingMenuItems.Add(new MockExistingMenuItem("e1"));
             existingMenuItems.Add(new MockExistingMenuItem("e2"));
             existingMenuItems.Add(new MockExistingMenuItem("e3"));
-            mergeExistingMenuUseCase.Handle(existingMenuItems);
+            mergeExistingMenuUseCase.Handle(menuId, existingMenuItems);
             Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
-            menuEditingSession.Save();
 
             Assert.That(mockMergeExistingMenuPresenter.Merged.Count, Is.EqualTo(8));
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetExistingMenuItemAt(0).DisplayName, Is.EqualTo("e0"));

@@ -7,7 +7,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     {
         public ModifyModePropertiesResult Result { get; private set; }
 
-        void IModifyModePropertiesPresenter.Complete(ModifyModePropertiesResult modifyModePropertiesResult, in Menu menu, string errorMessage)
+        public event System.Action<ModifyModePropertiesResult, IMenu, string> OnCompleted;
+
+        void IModifyModePropertiesPresenter.Complete(ModifyModePropertiesResult modifyModePropertiesResult, in IMenu menu, string errorMessage)
         {
             Result = modifyModePropertiesResult;
         }
@@ -21,64 +23,62 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             // Setup
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
+
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+            System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
+
             ModifyModePropertiesUseCase modifyModePropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyModePropertiesUseCase>();
-            MockModifyModePropertiesPresenter mockModifyModePropertiesPresenter = new MockModifyModePropertiesPresenter();
-            modifyModePropertiesUseCase.SetPresenter(mockModifyModePropertiesPresenter);
+            MockModifyModePropertiesPresenter mockModifyModePropertiesPresenter = useCaseTestsInstaller.Container.Resolve<IModifyModePropertiesPresenter>() as MockModifyModePropertiesPresenter;
 
             // null
-            modifyModePropertiesUseCase.Handle(null);
+            modifyModePropertiesUseCase.Handle(null, "");
+            Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.ArgumentNull));
+            modifyModePropertiesUseCase.Handle("", null);
             Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.ArgumentNull));
 
             // Menu is not opened
-            modifyModePropertiesUseCase.Handle("");
-            Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.MenuIsNotOpened));
+            modifyModePropertiesUseCase.Handle(menuId, "");
+            Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.MenuDoesNotExist));
 
             // Create Menu
-            useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle();
-            var menu = menuEditingSession.Menu;
-            menuEditingSession.SaveAs("dest");
+            useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle(menuId);
 
             // Mode is not created
-            modifyModePropertiesUseCase.Handle("");
+            modifyModePropertiesUseCase.Handle(menuId, "");
             Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.ModeIsNotContained));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
 
             // Add mode
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            menuEditingSession.Save();
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
 
-            var mode0Id = menu.Registered.Order[0];
-            var mode0 = menu.Registered.GetMode(mode0Id);
+            var mode0Id = loadMenu().Registered.Order[0];
+            var mode0 = loadMenu().Registered.GetMode(mode0Id);
             Assert.That(mode0.DisplayName, Is.EqualTo("NewMode"));
             Assert.That(mode0.UseAnimationNameAsDisplayName, Is.EqualTo(true));
             Assert.That(mode0.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
             Assert.That(mode0.MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
 
-            var mode1Id = menu.Registered.Order[1];
-            var mode1 = menu.Registered.GetMode(mode1Id);
+            var mode1Id = loadMenu().Registered.Order[1];
+            var mode1 = loadMenu().Registered.GetMode(mode1Id);
             Assert.That(mode1.DisplayName, Is.EqualTo("NewMode"));
             Assert.That(mode1.UseAnimationNameAsDisplayName, Is.EqualTo(true));
             Assert.That(mode1.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
             Assert.That(mode1.MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
 
             // Invalid mode
-            modifyModePropertiesUseCase.Handle("");
+            modifyModePropertiesUseCase.Handle(menuId, "");
             Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.ModeIsNotContained));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
 
             // Change mode properties
-            modifyModePropertiesUseCase.Handle(
+            modifyModePropertiesUseCase.Handle(menuId, 
                 mode0Id,
                 displayName: "Changed",
                 useAnimationNameAsDisplayName: false,
                 eyeTrackingControl: EyeTrackingControl.Animation,
                 mouthTrackingControl: MouthTrackingControl.Animation);
             Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(true));
 
             Assert.That(mode0.DisplayName, Is.EqualTo("Changed"));
             Assert.That(mode0.UseAnimationNameAsDisplayName, Is.EqualTo(false));

@@ -4,7 +4,11 @@ using System.Linq;
 
 namespace Suzuryg.FacialExpressionSwitcher.Domain
 {
-    public class Menu
+    public interface IMenu
+    {
+    }
+
+    public class Menu : IMenu
     {
         public static readonly string RegisteredId = "Registered";
         public static readonly string UnregisteredId = "UnRegistered";

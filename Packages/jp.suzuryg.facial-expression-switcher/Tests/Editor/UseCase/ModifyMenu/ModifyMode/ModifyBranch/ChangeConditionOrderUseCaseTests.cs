@@ -10,7 +10,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
     {
         public ChangeConditionOrderResult Result { get; private set; }
 
-        void IChangeConditionOrderPresenter.Complete(ChangeConditionOrderResult changeConditionOrderResult, in Menu menu, string errorMessage)
+        public event System.Action<ChangeConditionOrderResult, IMenu, string> OnCompleted;
+
+        void IChangeConditionOrderPresenter.Complete(ChangeConditionOrderResult changeConditionOrderResult, in IMenu menu, string errorMessage)
         {
             Result = changeConditionOrderResult;
         }
@@ -23,65 +25,60 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
         {
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
+
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+            System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
+
             ChangeConditionOrderUseCase changeConditionOrderUseCase = useCaseTestsInstaller.Container.Resolve<ChangeConditionOrderUseCase>();
-            MockChangeConditionOrderPresenter mockChangeConditionOrderPresenter = new MockChangeConditionOrderPresenter();
-            changeConditionOrderUseCase.SetPresenter(mockChangeConditionOrderPresenter);
+            MockChangeConditionOrderPresenter mockChangeConditionOrderPresenter = useCaseTestsInstaller.Container.Resolve<IChangeConditionOrderPresenter>() as MockChangeConditionOrderPresenter;
 
             // null
-            changeConditionOrderUseCase.Handle(null, 0, 0, 0);
+            changeConditionOrderUseCase.Handle("", null, 0, 0, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.ArgumentNull));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            changeConditionOrderUseCase.Handle(null, "", 0, 0, 0);
+            Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.ArgumentNull));
 
             // Menu is not opened
-            changeConditionOrderUseCase.Handle("", 0, 0, 0);
-            Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.MenuIsNotOpened));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            changeConditionOrderUseCase.Handle(menuId, "", 0, 0, 0);
+            Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.MenuDoesNotExist));
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
-            createMenuUseCase.Handle();
-            menuEditingSession.SaveAs("dest");
-            var menu = menuEditingSession.Menu;
+            createMenuUseCase.Handle(menuId);
 
             // Invalid branch
-            changeConditionOrderUseCase.Handle("", 0, 0, 0);
+            changeConditionOrderUseCase.Handle(menuId, "", 0, 0, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.InvalidCondition));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            changeConditionOrderUseCase.Handle(Menu.RegisteredId, 0, 0, 0);
+            changeConditionOrderUseCase.Handle(menuId, Menu.RegisteredId, 0, 0, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.InvalidCondition));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            changeConditionOrderUseCase.Handle(Menu.UnregisteredId, 0, 0, 0);
+            changeConditionOrderUseCase.Handle(menuId, Menu.UnregisteredId, 0, 0, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.InvalidCondition));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
             // Add mode
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            menuEditingSession.Save();
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
 
             // Add branch
             AddBranchUseCase addBranchUseCase = useCaseTestsInstaller.Container.Resolve<AddBranchUseCase>();
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            menuEditingSession.Save();
-            var b0 = menu.Registered.GetModeAt(0).Branches[0];
-            var b1 = menu.Registered.GetModeAt(0).Branches[1];
-            var b2 = menu.Registered.GetModeAt(0).Branches[2];
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            var b0 = loadMenu().Registered.GetModeAt(0).Branches[0];
+            var b1 = loadMenu().Registered.GetModeAt(0).Branches[1];
+            var b2 = loadMenu().Registered.GetModeAt(0).Branches[2];
 
             // Add condition
             AddConditionUseCase addConditionUseCase = useCaseTestsInstaller.Container.Resolve<AddConditionUseCase>();
-            addConditionUseCase.Handle(menu.Registered.Order[0], 0, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
-            addConditionUseCase.Handle(menu.Registered.Order[0], 0, new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals));
-            addConditionUseCase.Handle(menu.Registered.Order[0], 0, new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual));
-            addConditionUseCase.Handle(menu.Registered.Order[0], 1, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
-            addConditionUseCase.Handle(menu.Registered.Order[0], 1, new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals));
-            addConditionUseCase.Handle(menu.Registered.Order[0], 1, new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual));
-            menuEditingSession.Save();
+            addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
+            addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals));
+            addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual));
+            addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
+            addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals));
+            addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual));
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
@@ -90,10 +87,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
             // Change condition order
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], -1, 0, 0);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], -1, 0, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.InvalidCondition));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
@@ -101,10 +96,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 3, 0, 0);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 3, 0, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.InvalidCondition));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
@@ -112,10 +105,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 0, -1, 0);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, -1, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.InvalidCondition));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
@@ -123,10 +114,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 0, 3, 0);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, 3, 0);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.InvalidCondition));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
@@ -134,10 +123,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 0, 2, -1);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, 2, -1);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
@@ -145,10 +132,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 0, 1, 9999);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, 1, 9999);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
@@ -156,10 +141,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 0, 1, 1);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, 1, 1);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
@@ -167,10 +150,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 0, 0, 1);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, 0, 1);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
@@ -178,10 +159,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(b1.Conditions[1], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b1.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
 
-            changeConditionOrderUseCase.Handle(menu.Registered.Order[0], 1, 0, 1);
+            changeConditionOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, 0, 1);
             Assert.That(mockChangeConditionOrderPresenter.Result, Is.EqualTo(ChangeConditionOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
             Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals)));
             Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
             Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));

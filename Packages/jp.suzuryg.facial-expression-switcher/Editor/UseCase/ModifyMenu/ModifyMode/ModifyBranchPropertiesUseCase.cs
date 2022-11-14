@@ -6,8 +6,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 {
     public interface IModifyBranchPropertiesUseCase
     {
-        void SetPresenter(IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter);
-        void Handle(string modeId, int branchIndex,
+        void Handle(string menuId, string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl = null,
             MouthTrackingControl? mouthTrackingControl = null,
             bool? isLeftTriggerUsed = null,
@@ -16,34 +15,42 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 
     public interface IModifyBranchPropertiesPresenter
     {
-        void Complete(ModifyBranchPropertiesResult modifyBranchPropertiesResult, in Menu menu, string errorMessage = "");
+        event Action<ModifyBranchPropertiesResult, IMenu, string> OnCompleted;
+
+        void Complete(ModifyBranchPropertiesResult modifyBranchPropertiesResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum ModifyBranchPropertiesResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidBranch,
         ArgumentNull,
         Error,
     }
 
+    public class ModifyBranchPropertiesPresenter : IModifyBranchPropertiesPresenter
+    {
+        public event Action<ModifyBranchPropertiesResult, IMenu, string> OnCompleted;
+
+        public void Complete(ModifyBranchPropertiesResult modifyBranchPropertiesResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(modifyBranchPropertiesResult, menu, errorMessage);
+        }
+    }
+
     public class ModifyBranchPropertiesUseCase : IModifyBranchPropertiesUseCase
     {
+        IMenuRepository _menuRepository;
         IModifyBranchPropertiesPresenter _modifyBranchPropertiesPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public ModifyBranchPropertiesUseCase(MenuEditingSession menuEditingSession)
+        public ModifyBranchPropertiesUseCase(IMenuRepository menuRepository, IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter)
-        {
+            _menuRepository = menuRepository;
             _modifyBranchPropertiesPresenter = modifyBranchPropertiesPresenter;
         }
 
-        public void Handle(string modeId, int branchIndex,
+        public void Handle(string menuId, string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl = null,
             MouthTrackingControl? mouthTrackingControl = null,
             bool? isLeftTriggerUsed = null,
@@ -51,33 +58,34 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
         {
             try
             {
-                if (modeId is null)
+                if (menuId is null || modeId is null)
                 {
-                    _modifyBranchPropertiesPresenter?.Complete(ModifyBranchPropertiesResult.ArgumentNull, null);
+                    _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _modifyBranchPropertiesPresenter?.Complete(ModifyBranchPropertiesResult.MenuIsNotOpened, null);
+                    _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanModifyBranchProperties(modeId, branchIndex))
                 {
-                    _modifyBranchPropertiesPresenter?.Complete(ModifyBranchPropertiesResult.InvalidBranch, menu);
+                    _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.InvalidBranch, menu);
                     return;
                 }
 
                 menu.ModifyBranchProperties(modeId, branchIndex, eyeTrackingControl, mouthTrackingControl, isLeftTriggerUsed, isRightTriggerUsed);
-                _menuEditingSession.SetAsModified();
-                _modifyBranchPropertiesPresenter?.Complete(ModifyBranchPropertiesResult.Succeeded, menu);
+
+                _menuRepository.Save(menuId, menu);
+                _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _modifyBranchPropertiesPresenter?.Complete(ModifyBranchPropertiesResult.Error, null, ex.ToString());
+                _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.Error, null, ex.ToString());
             }
         }
     }

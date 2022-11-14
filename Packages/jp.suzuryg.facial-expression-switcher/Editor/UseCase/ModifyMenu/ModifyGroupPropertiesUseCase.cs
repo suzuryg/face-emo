@@ -5,75 +5,84 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
     public interface IModifyGroupPropertiesUseCase
     {
-        void SetPresenter(IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter);
         void Handle(
-            string id,
+            string menuId,
+            string groupId,
             string displayName = null);
     }
 
     public interface IModifyGroupPropertiesPresenter
     {
-        void Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, in Menu menu, string errorMessage = "");
+        event Action<ModifyGroupPropertiesResult, IMenu, string> OnCompleted;
+
+        void Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum ModifyGroupPropertiesResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         GroupIsNotContained,
         ArgumentNull,
         Error,
     }
 
+    public class ModifyGroupPropertiesPresenter : IModifyGroupPropertiesPresenter
+    {
+        public event Action<ModifyGroupPropertiesResult, IMenu, string> OnCompleted;
+
+        public void Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(modifyGroupPropertiesResult, menu, errorMessage);
+        }
+    }
+
     public class ModifyGroupPropertiesUseCase : IModifyGroupPropertiesUseCase
     {
+        IMenuRepository _menuRepository;
         IModifyGroupPropertiesPresenter _modifyGroupPropertiesPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public ModifyGroupPropertiesUseCase(MenuEditingSession menuEditingSession)
+        public ModifyGroupPropertiesUseCase(IMenuRepository menuRepository, IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter)
-        {
+            _menuRepository = menuRepository;
             _modifyGroupPropertiesPresenter = modifyGroupPropertiesPresenter;
         }
 
         public void Handle(
-            string id,
+            string menuId,
+            string groupId,
             string displayName = null)
         {
             try
             {
-                if (id is null)
+                if (menuId is null || groupId is null)
                 {
-                    _modifyGroupPropertiesPresenter?.Complete(ModifyGroupPropertiesResult.ArgumentNull, null);
+                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _modifyGroupPropertiesPresenter?.Complete(ModifyGroupPropertiesResult.MenuIsNotOpened, null);
+                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
-                if (!menu.ContainsGroup(id))
+                if (!menu.ContainsGroup(groupId))
                 {
-                    _modifyGroupPropertiesPresenter?.Complete(ModifyGroupPropertiesResult.GroupIsNotContained, menu);
+                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.GroupIsNotContained, menu);
                     return;
                 }
 
-                menu.ModifyGroupProperties(id, displayName);
+                menu.ModifyGroupProperties(groupId, displayName);
 
-                _menuEditingSession.SetAsModified();
-                _modifyGroupPropertiesPresenter?.Complete(ModifyGroupPropertiesResult.Succeeded, menu);
+                _menuRepository.Save(menuId, menu);
+                _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _modifyGroupPropertiesPresenter?.Complete(ModifyGroupPropertiesResult.Error, null, ex.ToString());
+                _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.Error, null, ex.ToString());
             }
         }
     }

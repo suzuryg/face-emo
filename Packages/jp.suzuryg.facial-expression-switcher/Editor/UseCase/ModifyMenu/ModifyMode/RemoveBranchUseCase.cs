@@ -6,70 +6,78 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 {
     public interface IRemoveBranchUseCase
     {
-        void SetPresenter(IRemoveBranchPresenter removeBranchPresenter);
-        void Handle(string modeId, int branchIndex);
+        void Handle(string menuId, string modeId, int branchIndex);
     }
 
     public interface IRemoveBranchPresenter
     {
-        void Complete(RemoveBranchResult removeBranchResult, in Menu menu, string errorMessage = "");
+        event Action<RemoveBranchResult, IMenu, string> OnCompleted;
+
+        void Complete(RemoveBranchResult removeBranchResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum RemoveBranchResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidBranch,
         ArgumentNull,
         Error,
     }
 
+    public class RemoveBranchPresenter : IRemoveBranchPresenter
+    {
+        public event Action<RemoveBranchResult, IMenu, string> OnCompleted;
+
+        public void Complete(RemoveBranchResult removeBranchResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(removeBranchResult, menu, errorMessage);
+        }
+    }
+
     public class RemoveBranchUseCase : IRemoveBranchUseCase
     {
+        IMenuRepository _menuRepository;
         IRemoveBranchPresenter _removeBranchPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public RemoveBranchUseCase(MenuEditingSession menuEditingSession)
+        public RemoveBranchUseCase(IMenuRepository menuRepository, IRemoveBranchPresenter removeBranchPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IRemoveBranchPresenter removeBranchPresenter)
-        {
+            _menuRepository = menuRepository;
             _removeBranchPresenter = removeBranchPresenter;
         }
 
-        public void Handle(string modeId, int branchIndex)
+        public void Handle(string menuId, string modeId, int branchIndex)
         {
             try
             {
-                if (modeId is null)
+                if (menuId is null || modeId is null)
                 {
-                    _removeBranchPresenter?.Complete(RemoveBranchResult.ArgumentNull, null);
+                    _removeBranchPresenter.Complete(RemoveBranchResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _removeBranchPresenter?.Complete(RemoveBranchResult.MenuIsNotOpened, null);
+                    _removeBranchPresenter.Complete(RemoveBranchResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanRemoveBranch(modeId, branchIndex))
                 {
-                    _removeBranchPresenter?.Complete(RemoveBranchResult.InvalidBranch, menu);
+                    _removeBranchPresenter.Complete(RemoveBranchResult.InvalidBranch, menu);
                     return;
                 }
 
                 menu.RemoveBranch(modeId, branchIndex);
-                _menuEditingSession.SetAsModified();
-                _removeBranchPresenter?.Complete(RemoveBranchResult.Succeeded, menu);
+
+                _menuRepository.Save(menuId, menu);
+                _removeBranchPresenter.Complete(RemoveBranchResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _removeBranchPresenter?.Complete(RemoveBranchResult.Error, null, ex.ToString());
+                _removeBranchPresenter.Complete(RemoveBranchResult.Error, null, ex.ToString());
             }
         }
     }

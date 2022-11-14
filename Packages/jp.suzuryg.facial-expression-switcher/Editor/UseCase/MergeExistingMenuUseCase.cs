@@ -6,68 +6,75 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 {
     public interface IMergeExistingMenuUseCase
     {
-        void SetPresenter(IMergeExistingMenuPresenter mergeExistingMenuPresenter);
-        void Handle(IReadOnlyList<IExistingMenuItem> existingMenuItems);
+        void Handle(string menuId, IReadOnlyList<IExistingMenuItem> existingMenuItems);
     }
 
     public interface IMergeExistingMenuPresenter
     {
-        void Complete(MergeExistingMenuResult mergeExistingMenuResult, MergedMenuItemList mergedMenuItems, in Menu menu, string errorMessage = "");
+        event Action<MergeExistingMenuResult, MergedMenuItemList, IMenu, string> OnCompleted;
+
+        void Complete(MergeExistingMenuResult mergeExistingMenuResult, MergedMenuItemList mergedMenuItems, in IMenu menu, string errorMessage = "");
     }
 
     public enum MergeExistingMenuResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         ArgumentNull,
         InvalidArgument,
         Error,
     }
 
+    public class MergeExistingMenuPresenter : IMergeExistingMenuPresenter
+    {
+        public event Action<MergeExistingMenuResult, MergedMenuItemList, IMenu, string> OnCompleted;
+
+        public void Complete(MergeExistingMenuResult mergeExistingMenuResult, MergedMenuItemList mergedMenuItems, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(mergeExistingMenuResult, mergedMenuItems, menu, errorMessage);
+        }
+    }
+
     public class MergeExistingMenuUseCase : IMergeExistingMenuUseCase
     {
+        IMenuRepository _menuRepository;
         IMergeExistingMenuPresenter _mergeExistingMenuPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public MergeExistingMenuUseCase(MenuEditingSession menuEditingSession)
+        public MergeExistingMenuUseCase(IMenuRepository menuRepository, IMergeExistingMenuPresenter mergeExistingMenuPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IMergeExistingMenuPresenter mergeExistingMenuPresenter)
-        {
+            _menuRepository = menuRepository;
             _mergeExistingMenuPresenter = mergeExistingMenuPresenter;
         }
 
-        public void Handle(IReadOnlyList<IExistingMenuItem> existingMenuItems)
+        public void Handle(string menuId, IReadOnlyList<IExistingMenuItem> existingMenuItems)
         {
             try
             {
-                if (existingMenuItems is null)
+                if (menuId is null || existingMenuItems is null)
                 {
-                    _mergeExistingMenuPresenter?.Complete(MergeExistingMenuResult.ArgumentNull, null, null);
+                    _mergeExistingMenuPresenter.Complete(MergeExistingMenuResult.ArgumentNull, null, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _mergeExistingMenuPresenter?.Complete(MergeExistingMenuResult.MenuIsNotOpened, null, null);
+                    _mergeExistingMenuPresenter.Complete(MergeExistingMenuResult.MenuDoesNotExist, null, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanGetMergedMenu(existingMenuItems))
                 {
-                    _mergeExistingMenuPresenter?.Complete(MergeExistingMenuResult.InvalidArgument, null, menu);
+                    _mergeExistingMenuPresenter.Complete(MergeExistingMenuResult.InvalidArgument, null, menu);
                     return;
                 }
 
-                _mergeExistingMenuPresenter?.Complete(MergeExistingMenuResult.Succeeded, menu.GetMergedMenu(existingMenuItems), menu);
+                _mergeExistingMenuPresenter.Complete(MergeExistingMenuResult.Succeeded, menu.GetMergedMenu(existingMenuItems), menu);
             }
             catch (Exception ex)
             {
-                _mergeExistingMenuPresenter?.Complete(MergeExistingMenuResult.Error, null, null, ex.ToString());
+                _mergeExistingMenuPresenter.Complete(MergeExistingMenuResult.Error, null, null, ex.ToString());
             }
         }
     }

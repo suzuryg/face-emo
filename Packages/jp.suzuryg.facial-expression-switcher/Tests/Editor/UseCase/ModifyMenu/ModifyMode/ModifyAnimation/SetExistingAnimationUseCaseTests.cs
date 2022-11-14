@@ -10,7 +10,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
     {
         public SetExistingAnimationResult Result { get; private set; }
 
-        void ISetExistingAnimationPresenter.Complete(SetExistingAnimationResult setExistingAnimationResult, in Menu menu, string errorMessage)
+        public event System.Action<SetExistingAnimationResult, IMenu, string> OnCompleted;
+
+        void ISetExistingAnimationPresenter.Complete(SetExistingAnimationResult setExistingAnimationResult, in IMenu menu, string errorMessage)
         {
             Result = setExistingAnimationResult;
         }
@@ -23,82 +25,74 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
         {
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
+
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+            System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
+
             SetExistingAnimationUseCase setExistingAnimationUseCase = useCaseTestsInstaller.Container.Resolve<SetExistingAnimationUseCase>();
-            MockSetExistingAnimationPresenter mockSetExistingAnimationPresenter = new MockSetExistingAnimationPresenter();
-            setExistingAnimationUseCase.SetPresenter(mockSetExistingAnimationPresenter);
+            MockSetExistingAnimationPresenter mockSetExistingAnimationPresenter = useCaseTestsInstaller.Container.Resolve<ISetExistingAnimationPresenter>() as MockSetExistingAnimationPresenter;
 
             // null
-            setExistingAnimationUseCase.Handle(null, null);
+            setExistingAnimationUseCase.Handle(null, new MockAnimation(), "");
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.ArgumentNull));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            setExistingAnimationUseCase.Handle("", null, "");
+            Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.ArgumentNull));
+            setExistingAnimationUseCase.Handle("", new MockAnimation(), null);
+            Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.ArgumentNull));
 
             // Menu is not opened
             MockAnimationEditor mockAnimationEditor = new MockAnimationEditor();
             var animation = mockAnimationEditor.Create("");
-            setExistingAnimationUseCase.Handle(animation, ""); 
-            Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.MenuIsNotOpened));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            setExistingAnimationUseCase.Handle(menuId, animation, ""); 
+            Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.MenuDoesNotExist));
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
-            createMenuUseCase.Handle();
-            menuEditingSession.SaveAs("dest");
-            var menu = menuEditingSession.Menu;
+            createMenuUseCase.Handle(menuId);
 
             // Add mode
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            menuEditingSession.Save();
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
 
             // Add branch
             AddBranchUseCase addBranchUseCase = useCaseTestsInstaller.Container.Resolve<AddBranchUseCase>();
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            menuEditingSession.Save();
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
 
             // Invalid destination
-            setExistingAnimationUseCase.Handle(animation, "");
+            setExistingAnimationUseCase.Handle(menuId, animation, "");
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, Menu.RegisteredId);
+            setExistingAnimationUseCase.Handle(menuId, animation, Menu.RegisteredId);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, Menu.UnregisteredId);
+            setExistingAnimationUseCase.Handle(menuId, animation, Menu.UnregisteredId);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, "", 0, BranchAnimationType.Base);
+            setExistingAnimationUseCase.Handle(menuId, animation, "", 0, BranchAnimationType.Base);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, Menu.RegisteredId, 0, BranchAnimationType.Base);
+            setExistingAnimationUseCase.Handle(menuId, animation, Menu.RegisteredId, 0, BranchAnimationType.Base);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, Menu.UnregisteredId, 0, BranchAnimationType.Base);
+            setExistingAnimationUseCase.Handle(menuId, animation, Menu.UnregisteredId, 0, BranchAnimationType.Base);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, menu.Registered.Order[0], -1, BranchAnimationType.Base);
+            setExistingAnimationUseCase.Handle(menuId, animation, loadMenu().Registered.Order[0], -1, BranchAnimationType.Base);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, menu.Registered.Order[0], 1, BranchAnimationType.Base);
+            setExistingAnimationUseCase.Handle(menuId, animation, loadMenu().Registered.Order[0], 1, BranchAnimationType.Base);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            setExistingAnimationUseCase.Handle(animation, menu.Registered.Order[0], 0, null);
+            setExistingAnimationUseCase.Handle(menuId, animation, loadMenu().Registered.Order[0], 0, null);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.InvalidDestination));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
             // Set animation
-            Assert.That(menu.Registered.GetModeAt(0).Animation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BaseAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].LeftHandAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Animation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
 
             var a0 = mockAnimationEditor.Create("");
             var a1 = mockAnimationEditor.Create("");
@@ -113,55 +107,45 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
             ids.Add(a4.GUID);
             CollectionAssert.AllItemsAreUnique(ids);
 
-            setExistingAnimationUseCase.Handle(a0, menu.Registered.Order[0]);
+            setExistingAnimationUseCase.Handle(menuId, a0, loadMenu().Registered.Order[0]);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BaseAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].LeftHandAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
 
-            setExistingAnimationUseCase.Handle(a1, menu.Registered.Order[0], 0, BranchAnimationType.Base);
+            setExistingAnimationUseCase.Handle(menuId, a1, loadMenu().Registered.Order[0], 0, BranchAnimationType.Base);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].LeftHandAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
 
-            setExistingAnimationUseCase.Handle(a2, menu.Registered.Order[0], 0, BranchAnimationType.Left);
+            setExistingAnimationUseCase.Handle(menuId, a2, loadMenu().Registered.Order[0], 0, BranchAnimationType.Left);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].LeftHandAnimation.GUID, Is.EqualTo(a2.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].LeftHandAnimation.GUID, Is.EqualTo(a2.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
 
-            setExistingAnimationUseCase.Handle(a3, menu.Registered.Order[0], 0, BranchAnimationType.Right);
+            setExistingAnimationUseCase.Handle(menuId, a3, loadMenu().Registered.Order[0], 0, BranchAnimationType.Right);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].LeftHandAnimation.GUID, Is.EqualTo(a2.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].RightHandAnimation.GUID, Is.EqualTo(a3.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].LeftHandAnimation.GUID, Is.EqualTo(a2.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].RightHandAnimation.GUID, Is.EqualTo(a3.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
 
-            setExistingAnimationUseCase.Handle(a4, menu.Registered.Order[0], 0, BranchAnimationType.Both);
+            setExistingAnimationUseCase.Handle(menuId, a4, loadMenu().Registered.Order[0], 0, BranchAnimationType.Both);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].LeftHandAnimation.GUID, Is.EqualTo(a2.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].RightHandAnimation.GUID, Is.EqualTo(a3.GUID));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0].BothHandsAnimation.GUID, Is.EqualTo(a4.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Animation.GUID, Is.EqualTo(a0.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BaseAnimation.GUID, Is.EqualTo(a1.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].LeftHandAnimation.GUID, Is.EqualTo(a2.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].RightHandAnimation.GUID, Is.EqualTo(a3.GUID));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BothHandsAnimation.GUID, Is.EqualTo(a4.GUID));
         }
     }
 }

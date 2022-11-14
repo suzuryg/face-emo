@@ -7,7 +7,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         public CreateMenuResult Result { get; private set; }
 
-        void ICreateMenuPresenter.Complete(CreateMenuResult createMenuResult, in Menu menu, string errorMessage)
+        public event System.Action<CreateMenuResult, IMenu, string> OnCompleted;
+
+        void ICreateMenuPresenter.Complete(CreateMenuResult createMenuResult, in IMenu menu, string errorMessage)
         {
             Result = createMenuResult;
         }
@@ -21,35 +23,25 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
 
-            // Before creation
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
-            Assert.That(menuEditingSession.Menu, Is.Null);
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+
+            CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
+            MockCreateMenuPresenter mockCreateMenuPresenter = useCaseTestsInstaller.Container.Resolve<ICreateMenuPresenter>() as MockCreateMenuPresenter;
+
+            // null
+            createMenuUseCase.Handle(null);
+            Assert.That(mockCreateMenuPresenter.Result, Is.EqualTo(CreateMenuResult.ArgumentNull));
 
             // Create new
-            CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
-            MockCreateMenuPresenter mockCreateMenuPresenter = new MockCreateMenuPresenter();
-            createMenuUseCase.SetPresenter(mockCreateMenuPresenter);
-
-            createMenuUseCase.Handle();
+            createMenuUseCase.Handle(menuId);
             Assert.That(mockCreateMenuPresenter.Result, Is.EqualTo(CreateMenuResult.Succeeded));
-            Assert.That(menuEditingSession.Menu, Is.Not.Null);
-            Assert.That(menuEditingSession.IsModified, Is.True);
+            Assert.That(menuRepository.Load(menuId), Is.Not.Null);
 
-            // Re-create
-            createMenuUseCase.Handle();
-            Assert.That(mockCreateMenuPresenter.Result, Is.EqualTo(CreateMenuResult.MenuIsNotSaved));
-            Assert.That(menuEditingSession.Menu, Is.Not.Null);
-            Assert.That(menuEditingSession.IsModified, Is.True);
-
-            // Save & re-create
-            menuEditingSession.SaveAs("destination");
-            Assert.That(menuEditingSession.Menu, Is.Not.Null);
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            createMenuUseCase.Handle();
+            // Overwrite
+            createMenuUseCase.Handle(menuId);
             Assert.That(mockCreateMenuPresenter.Result, Is.EqualTo(CreateMenuResult.Succeeded));
-            Assert.That(menuEditingSession.Menu, Is.Not.Null);
-            Assert.That(menuEditingSession.IsModified, Is.True);
+            Assert.That(menuRepository.Load(menuId), Is.Not.Null);
         }
     }
 }

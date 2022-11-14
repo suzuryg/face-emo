@@ -5,20 +5,21 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
     public interface IAddMenuItemUseCase
     {
-        void SetPresenter(IAddMenuItemPresenter addMenuItemPresenter);
-        void Handle(string destination, AddMenuItemType type);
+        void Handle(string menuId, string menuItemListId, AddMenuItemType type);
     }
 
     public interface IAddMenuItemPresenter
     {
-        void Complete(AddMenuItemResult addMenuItemResult, in Menu menu, string errorMessage = "");
+        event Action<AddMenuItemResult, IMenu, string> OnCompleted;
+
+        void Complete(AddMenuItemResult addMenuItemResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum AddMenuItemResult
     {
         Succeeded,
-        MenuIsNotOpened,
-        InvalidDestination,
+        MenuDoesNotExist,
+        InvalidMenuItemListId,
         ArgumentNull,
         Error,
     }
@@ -29,60 +30,66 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
         Mode,
     }
 
+    public class AddMenuItemPresenter : IAddMenuItemPresenter
+    {
+        public event Action<AddMenuItemResult, IMenu, string> OnCompleted;
+
+        public void Complete(AddMenuItemResult addMenuItemResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(addMenuItemResult, menu, errorMessage);
+        }
+    }
+
     public class AddMenuItemUseCase : IAddMenuItemUseCase
     {
+        IMenuRepository _menuRepository;
         IAddMenuItemPresenter _addMenuItemPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public AddMenuItemUseCase(MenuEditingSession menuEditingSession)
+        public AddMenuItemUseCase(IMenuRepository menuRepository, IAddMenuItemPresenter addMenuItemPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-        
-        public void SetPresenter(IAddMenuItemPresenter addMenuItemPresenter)
-        {
+            _menuRepository = menuRepository;
             _addMenuItemPresenter = addMenuItemPresenter;
         }
 
-        public void Handle(string destination, AddMenuItemType type)
+        public void Handle(string menuId, string menuItemListId, AddMenuItemType type)
         {
             try
             {
-                if (destination is null)
+                if (menuId is null || menuItemListId is null)
                 {
-                    _addMenuItemPresenter?.Complete(AddMenuItemResult.ArgumentNull, null);
+                    _addMenuItemPresenter.Complete(AddMenuItemResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _addMenuItemPresenter?.Complete(AddMenuItemResult.MenuIsNotOpened, null);
+                    _addMenuItemPresenter.Complete(AddMenuItemResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (type == AddMenuItemType.Mode)
                 {
-                    if (menu.CanAddModeTo(destination))
+                    if (menu.CanAddModeTo(menuItemListId))
                     {
-                        menu.AddMode(destination);
+                        menu.AddMode(menuItemListId);
                     }
                     else
                     {
-                        _addMenuItemPresenter?.Complete(AddMenuItemResult.InvalidDestination, menu);
+                        _addMenuItemPresenter.Complete(AddMenuItemResult.InvalidMenuItemListId, menu);
                         return;
                     }
                 }
                 else if (type == AddMenuItemType.Group)
                 {
-                    if (menu.CanAddGroupTo(destination))
+                    if (menu.CanAddGroupTo(menuItemListId))
                     {
-                        menu.AddGroup(destination);
+                        menu.AddGroup(menuItemListId);
                     }
                     else
                     {
-                        _addMenuItemPresenter?.Complete(AddMenuItemResult.InvalidDestination, menu);
+                        _addMenuItemPresenter.Complete(AddMenuItemResult.InvalidMenuItemListId, menu);
                         return;
                     }
                 }
@@ -91,12 +98,12 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                     throw new FacialExpressionSwitcherException("Unknown AddMenuItemType");
                 }
 
-                _menuEditingSession.SetAsModified();
-                _addMenuItemPresenter?.Complete(AddMenuItemResult.Succeeded, menu);
+                _menuRepository.Save(menuId, menu);
+                _addMenuItemPresenter.Complete(AddMenuItemResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _addMenuItemPresenter?.Complete(AddMenuItemResult.Error, null, ex.ToString());
+                _addMenuItemPresenter.Complete(AddMenuItemResult.Error, null, ex.ToString());
             }
         }
     }

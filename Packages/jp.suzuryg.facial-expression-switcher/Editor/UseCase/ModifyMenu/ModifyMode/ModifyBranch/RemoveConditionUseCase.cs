@@ -6,70 +6,78 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 {
     public interface IRemoveConditionUseCase
     {
-        void SetPresenter(IRemoveConditionPresenter removeConditionPresenter);
-        void Handle(string modeId, int branchIndex, int conditionIndex);
+        void Handle(string menuId, string modeId, int branchIndex, int conditionIndex);
     }
 
     public interface IRemoveConditionPresenter
     {
-        void Complete(RemoveConditionResult removeConditionResult, in Menu menu, string errorMessage = "");
+        event Action<RemoveConditionResult, IMenu, string> OnCompleted;
+
+        void Complete(RemoveConditionResult removeConditionResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum RemoveConditionResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidCondition,
         ArgumentNull,
         Error,
     }
 
+    public class RemoveConditionPresenter : IRemoveConditionPresenter
+    {
+        public event Action<RemoveConditionResult, IMenu, string> OnCompleted;
+
+        public void Complete(RemoveConditionResult removeConditionResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(removeConditionResult, menu, errorMessage);
+        }
+    }
+
     public class RemoveConditionUseCase : IRemoveConditionUseCase
     {
+        IMenuRepository _menuRepository;
         IRemoveConditionPresenter _removeConditionPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public RemoveConditionUseCase(MenuEditingSession menuEditingSession)
+        public RemoveConditionUseCase(IMenuRepository menuRepository, IRemoveConditionPresenter removeConditionPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IRemoveConditionPresenter removeConditionPresenter)
-        {
+            _menuRepository = menuRepository;
             _removeConditionPresenter = removeConditionPresenter;
         }
 
-        public void Handle(string modeId, int branchIndex, int conditionIndex)
+        public void Handle(string menuId, string modeId, int branchIndex, int conditionIndex)
         {
             try
             {
-                if (modeId is null)
+                if (menuId is null || modeId is null)
                 {
-                    _removeConditionPresenter?.Complete(RemoveConditionResult.ArgumentNull, null);
+                    _removeConditionPresenter.Complete(RemoveConditionResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _removeConditionPresenter?.Complete(RemoveConditionResult.MenuIsNotOpened, null);
+                    _removeConditionPresenter.Complete(RemoveConditionResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanRemoveCondition(modeId, branchIndex, conditionIndex))
                 {
-                    _removeConditionPresenter?.Complete(RemoveConditionResult.InvalidCondition, menu);
+                    _removeConditionPresenter.Complete(RemoveConditionResult.InvalidCondition, menu);
                     return;
                 }
 
                 menu.RemoveCondition(modeId, branchIndex, conditionIndex);
-                _menuEditingSession.SetAsModified();
-                _removeConditionPresenter?.Complete(RemoveConditionResult.Succeeded, menu);
+
+                _menuRepository.Save(menuId, menu);
+                _removeConditionPresenter.Complete(RemoveConditionResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _removeConditionPresenter?.Complete(RemoveConditionResult.Error, null, ex.ToString());
+                _removeConditionPresenter.Complete(RemoveConditionResult.Error, null, ex.ToString());
             }
         }
     }

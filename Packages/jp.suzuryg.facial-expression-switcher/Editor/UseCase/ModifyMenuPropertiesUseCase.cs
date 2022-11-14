@@ -4,7 +4,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 {
     public interface IModifyMenuPropertiesUseCase
     {
-        void SetPresenter(IModifyMenuPropertiesPresenter modifyMenuPropertiesPresenter);
         void Handle(bool? writeDefaults = null, double? transitionDurationSeconds = null);
     }
 
@@ -22,13 +21,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             _menuEditingSession = menuEditingSession;
         }
 
-        public void SetPresenter(IModifyMenuPropertiesPresenter modifyMenuPropertiesPresenter)
-        {
-            _modifyMenuPropertiesPresenter = modifyMenuPropertiesPresenter;
-        }
-
         public void Handle(bool? writeDefaults = null, double? transitionDurationSeconds = null)
         {
+            throw new System.NotImplementedException();
         }
     }
 }

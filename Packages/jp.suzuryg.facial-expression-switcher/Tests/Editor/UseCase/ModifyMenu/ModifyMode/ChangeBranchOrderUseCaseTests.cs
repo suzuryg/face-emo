@@ -10,7 +10,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     {
         public ChangeBranchOrderResult Result { get; private set; }
 
-        void IChangeBranchOrderPresenter.Complete(ChangeBranchOrderResult changeBranchOrderResult, in Menu menu, string errorMessage)
+        public event System.Action<ChangeBranchOrderResult, IMenu, string> OnCompleted;
+
+        void IChangeBranchOrderPresenter.Complete(ChangeBranchOrderResult changeBranchOrderResult, in IMenu menu, string errorMessage)
         {
             Result = changeBranchOrderResult;
         }
@@ -23,100 +25,84 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
         {
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
+
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+            System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
+
             ChangeBranchOrderUseCase changeBranchOrderUseCase = useCaseTestsInstaller.Container.Resolve<ChangeBranchOrderUseCase>();
-            MockChangeBranchOrderPresenter mockChangeBranchOrderPresenter = new MockChangeBranchOrderPresenter();
-            changeBranchOrderUseCase.SetPresenter(mockChangeBranchOrderPresenter);
+            MockChangeBranchOrderPresenter mockChangeBranchOrderPresenter = useCaseTestsInstaller.Container.Resolve<IChangeBranchOrderPresenter>() as MockChangeBranchOrderPresenter;
 
             // null
-            changeBranchOrderUseCase.Handle(null, 0, 0);
+            changeBranchOrderUseCase.Handle(null, "", 0, 0);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.ArgumentNull));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            changeBranchOrderUseCase.Handle("", null, 0, 0);
+            Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.ArgumentNull));
 
             // Menu is not opened
-            changeBranchOrderUseCase.Handle("", 0, 0);
-            Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.MenuIsNotOpened));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            changeBranchOrderUseCase.Handle(menuId, "", 0, 0);
+            Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.MenuDoesNotExist));
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
-            createMenuUseCase.Handle();
-            menuEditingSession.SaveAs("dest");
-            var menu = menuEditingSession.Menu;
+            createMenuUseCase.Handle(menuId);
 
             // Invalid branch
-            changeBranchOrderUseCase.Handle("", 0, 0);
+            changeBranchOrderUseCase.Handle(menuId, "", 0, 0);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            changeBranchOrderUseCase.Handle(Menu.RegisteredId, 0, 0);
+            changeBranchOrderUseCase.Handle(menuId, Menu.RegisteredId, 0, 0);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            changeBranchOrderUseCase.Handle(Menu.UnregisteredId, 0, 0);
+            changeBranchOrderUseCase.Handle(menuId, Menu.UnregisteredId, 0, 0);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
             // Add mode
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            menuEditingSession.Save();
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
 
             // Add branch
             AddBranchUseCase addBranchUseCase = useCaseTestsInstaller.Container.Resolve<AddBranchUseCase>();
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            menuEditingSession.Save();
-            var b0 = menu.Registered.GetModeAt(0).Branches[0];
-            var b1 = menu.Registered.GetModeAt(0).Branches[1];
-            var b2 = menu.Registered.GetModeAt(0).Branches[2];
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            var b0 = loadMenu().Registered.GetModeAt(0).Branches[0];
+            var b1 = loadMenu().Registered.GetModeAt(0).Branches[1];
+            var b2 = loadMenu().Registered.GetModeAt(0).Branches[2];
 
             // Change branch order
             // Invalid
-            changeBranchOrderUseCase.Handle(menu.Registered.Order[0], -1, 0);
+            changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], -1, 0);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
 
-            changeBranchOrderUseCase.Handle(menu.Registered.Order[0], 3, 0);
+            changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 3, 0);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
 
             // Success
-            changeBranchOrderUseCase.Handle(menu.Registered.Order[0], 2, -1);
+            changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 2, -1);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[1], Is.SameAs(b0));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[2], Is.SameAs(b1));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b0));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b1));
 
-            changeBranchOrderUseCase.Handle(menu.Registered.Order[0], 1, 9999);
+            changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, 9999);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[1], Is.SameAs(b1));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b1));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
 
-            changeBranchOrderUseCase.Handle(menu.Registered.Order[0], 1, 1);
+            changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, 1);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[1], Is.SameAs(b1));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b1));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
 
-            changeBranchOrderUseCase.Handle(menu.Registered.Order[0], 0, 1);
+            changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, 1);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0], Is.SameAs(b1));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[1], Is.SameAs(b2));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b1));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b2));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
         }
     }
 }

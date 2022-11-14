@@ -10,7 +10,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     {
         public RemoveBranchResult Result { get; private set; }
 
-        void IRemoveBranchPresenter.Complete(RemoveBranchResult removeBranchResult, in Menu menu, string errorMessage)
+        public event System.Action<RemoveBranchResult, IMenu, string> OnCompleted;
+
+        void IRemoveBranchPresenter.Complete(RemoveBranchResult removeBranchResult, in IMenu menu, string errorMessage)
         {
             Result = removeBranchResult;
         }
@@ -23,87 +25,73 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
         {
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
+
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+            System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
+
             RemoveBranchUseCase removeBranchUseCase = useCaseTestsInstaller.Container.Resolve<RemoveBranchUseCase>();
-            MockRemoveBranchPresenter mockRemoveBranchPresenter = new MockRemoveBranchPresenter();
-            removeBranchUseCase.SetPresenter(mockRemoveBranchPresenter);
+            MockRemoveBranchPresenter mockRemoveBranchPresenter = useCaseTestsInstaller.Container.Resolve<IRemoveBranchPresenter>() as MockRemoveBranchPresenter;
 
             // null
-            removeBranchUseCase.Handle(null, 0);
+            removeBranchUseCase.Handle(null, "", 0);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.ArgumentNull));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            removeBranchUseCase.Handle("", null, 0);
+            Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.ArgumentNull));
 
             // Menu is not opened
-            removeBranchUseCase.Handle("", 0);
-            Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.MenuIsNotOpened));
-            Assert.That(menuEditingSession.IsModified, Is.False);
+            removeBranchUseCase.Handle(menuId, "", 0);
+            Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.MenuDoesNotExist));
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
-            createMenuUseCase.Handle();
-            menuEditingSession.SaveAs("dest");
-            var menu = menuEditingSession.Menu;
+            createMenuUseCase.Handle(menuId);
 
             // Invalid branch
-            removeBranchUseCase.Handle("", 0);
+            removeBranchUseCase.Handle(menuId, "", 0);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            removeBranchUseCase.Handle(Menu.RegisteredId, 0);
+            removeBranchUseCase.Handle(menuId, Menu.RegisteredId, 0);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
-            removeBranchUseCase.Handle(Menu.UnregisteredId, 0);
+            removeBranchUseCase.Handle(menuId, Menu.UnregisteredId, 0);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
 
             // Add mode
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Mode);
-            menuEditingSession.Save();
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
 
             // Add branch
             AddBranchUseCase addBranchUseCase = useCaseTestsInstaller.Container.Resolve<AddBranchUseCase>();
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            addBranchUseCase.Handle(menu.Registered.Order[0]);
-            menuEditingSession.Save();
-            var b0 = menu.Registered.GetModeAt(0).Branches[0];
-            var b1 = menu.Registered.GetModeAt(0).Branches[1];
-            var b2 = menu.Registered.GetModeAt(0).Branches[2];
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
+            var b0 = loadMenu().Registered.GetModeAt(0).Branches[0];
+            var b1 = loadMenu().Registered.GetModeAt(0).Branches[1];
+            var b2 = loadMenu().Registered.GetModeAt(0).Branches[2];
 
             // Remove branch
-            removeBranchUseCase.Handle(menu.Registered.Order[0], -1);
+            removeBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], -1);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
 
-            removeBranchUseCase.Handle(menu.Registered.Order[0], 3);
+            removeBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], 3);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.InvalidBranch));
-            Assert.That(menuEditingSession.IsModified, Is.False);
-            menuEditingSession.Save();
 
-            removeBranchUseCase.Handle(menu.Registered.Order[0], 1);
+            removeBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Branches.Count, Is.EqualTo(2));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0], Is.SameAs(b0));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[1], Is.SameAs(b2));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches.Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b0));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b2));
 
-            removeBranchUseCase.Handle(menu.Registered.Order[0], 0);
+            removeBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Branches.Count, Is.EqualTo(1));
-            Assert.That(menu.Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches.Count, Is.EqualTo(1));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
 
-            removeBranchUseCase.Handle(menu.Registered.Order[0], 0);
+            removeBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0);
             Assert.That(mockRemoveBranchPresenter.Result, Is.EqualTo(RemoveBranchResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.True);
-            menuEditingSession.Save();
-            Assert.That(menu.Registered.GetModeAt(0).Branches.Count, Is.EqualTo(0));
+            Assert.That(loadMenu().Registered.GetModeAt(0).Branches.Count, Is.EqualTo(0));
         }
     }
 }

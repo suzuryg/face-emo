@@ -6,73 +6,81 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
 {
     public interface ISetNewAnimationUseCase
     {
-        void SetPresenter(ISetNewAnimationPresenter setNewAnimationPresenter);
-        void Handle(string animationPath, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null);
+        void Handle(string menuId, string animationPath, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null);
     }
 
     public interface ISetNewAnimationPresenter
     {
-        void Complete(SetNewAnimationResult setNewAnimationResult, in Menu menu, string errorMessage = "");
+        event Action<SetNewAnimationResult, IMenu, string> OnCompleted;
+
+        void Complete(SetNewAnimationResult setNewAnimationResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum SetNewAnimationResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidDestination,
         ArgumentNull,
         Error,
     }
 
+    public class SetNewAnimationPresenter : ISetNewAnimationPresenter
+    {
+        public event Action<SetNewAnimationResult, IMenu, string> OnCompleted;
+
+        public void Complete(SetNewAnimationResult setNewAnimationResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(setNewAnimationResult, menu, errorMessage);
+        }
+    }
+
     public class SetNewAnimationUseCase : ISetNewAnimationUseCase
     {
-        ISetNewAnimationPresenter _setNewAnimationPresenter;
-        MenuEditingSession _menuEditingSession;
+        IMenuRepository _menuRepository;
         IAnimationEditor _animationEditor;
+        ISetNewAnimationPresenter _setNewAnimationPresenter;
 
-        public SetNewAnimationUseCase(MenuEditingSession menuEditingSession, IAnimationEditor animationEditor)
+        public SetNewAnimationUseCase(IMenuRepository menuRepository, IAnimationEditor animationEditor, ISetNewAnimationPresenter setNewAnimationPresenter)
         {
-            _menuEditingSession = menuEditingSession;
+            _menuRepository = menuRepository;
             _animationEditor = animationEditor;
-        }
-
-        public void SetPresenter(ISetNewAnimationPresenter setNewAnimationPresenter)
-        {
             _setNewAnimationPresenter = setNewAnimationPresenter;
         }
 
-        public void Handle(string animationPath, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null)
+        public void Handle(string menuId, string animationPath, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null)
         {
             try
             {
-                if (animationPath is null || modeId is null)
+                if (menuId is null || animationPath is null || modeId is null)
                 {
-                    _setNewAnimationPresenter?.Complete(SetNewAnimationResult.ArgumentNull, null);
+                    _setNewAnimationPresenter.Complete(SetNewAnimationResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _setNewAnimationPresenter?.Complete(SetNewAnimationResult.MenuIsNotOpened, null);
+                    _setNewAnimationPresenter.Complete(SetNewAnimationResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanSetAnimationTo(modeId, branchIndex, branchAnimationType))
                 {
-                    _setNewAnimationPresenter?.Complete(SetNewAnimationResult.InvalidDestination, menu);
+                    _setNewAnimationPresenter.Complete(SetNewAnimationResult.InvalidDestination, menu);
                     return;
                 }
 
                 var animation = _animationEditor.Create(animationPath);
                 menu.SetAnimation(animation, modeId, branchIndex, branchAnimationType);
-                _menuEditingSession.SetAsModified();
-                _setNewAnimationPresenter?.Complete(SetNewAnimationResult.Succeeded, menu);
+
+                _menuRepository.Save(menuId, menu);
+                _setNewAnimationPresenter.Complete(SetNewAnimationResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _setNewAnimationPresenter?.Complete(SetNewAnimationResult.Error, null, ex.ToString());
+                _setNewAnimationPresenter.Complete(SetNewAnimationResult.Error, null, ex.ToString());
             }
         }
     }

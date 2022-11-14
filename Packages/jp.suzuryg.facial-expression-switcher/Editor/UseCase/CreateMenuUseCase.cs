@@ -5,53 +5,61 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 {
     public interface ICreateMenuUseCase
     {
-        void SetPresenter(ICreateMenuPresenter createMenuPresenter);
-        void Handle();
+        void Handle(string menuId);
     }
 
     public interface ICreateMenuPresenter
     {
-        void Complete(CreateMenuResult createMenuResult, in Menu menu, string errorMessage = "");
+        event Action<CreateMenuResult, IMenu, string> OnCompleted;
+
+        void Complete(CreateMenuResult createMenuResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum CreateMenuResult
     {
         Succeeded,
-        MenuIsNotSaved,
+        ArgumentNull,
         Error,
+    }
+
+    public class CreateMenuPresenter : ICreateMenuPresenter
+    {
+        public event Action<CreateMenuResult, IMenu, string> OnCompleted;
+
+        public void Complete(CreateMenuResult createMenuResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(createMenuResult, menu, errorMessage);
+        }
     }
 
     public class CreateMenuUseCase : ICreateMenuUseCase
     {
+        IMenuRepository _menuRepository;
         ICreateMenuPresenter _createMenuPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public CreateMenuUseCase(MenuEditingSession menuEditingSession)
+        public CreateMenuUseCase(IMenuRepository menuRepository, ICreateMenuPresenter createMenuPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(ICreateMenuPresenter createMenuPresenter)
-        {
+            _menuRepository = menuRepository;
             _createMenuPresenter = createMenuPresenter;
         }
 
-        public void Handle()
+        public void Handle(string menuId)
         {
             try
             {
-                if (_menuEditingSession.Create())
+                if (menuId is null)
                 {
-                    _createMenuPresenter?.Complete(CreateMenuResult.Succeeded, _menuEditingSession.Menu);
+                    _createMenuPresenter.Complete(CreateMenuResult.ArgumentNull, null);
+                    return;
                 }
-                else
-                {
-                    _createMenuPresenter?.Complete(CreateMenuResult.MenuIsNotSaved, _menuEditingSession.Menu);
-                }
+
+                var menu = new Menu();
+                _menuRepository.Save(menuId, menu);
+                _createMenuPresenter.Complete(CreateMenuResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _createMenuPresenter?.Complete(CreateMenuResult.Error, null, ex.ToString());
+                _createMenuPresenter.Complete(CreateMenuResult.Error, null, ex.ToString());
             }
         }
     }

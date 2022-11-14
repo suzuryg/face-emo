@@ -5,70 +5,78 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
     public interface IRemoveMenuItemUseCase
     {
-        void SetPresenter(IRemoveMenuItemPresenter removeMenuItemPresenter);
-        void Handle(string id);
+        void Handle(string menuId, string menuItemId);
     }
 
     public interface IRemoveMenuItemPresenter
     {
-        void Complete(RemoveMenuItemResult removeMenuItemResult, in Menu menu, string errorMessage = "");
+        event Action<RemoveMenuItemResult, IMenu, string> OnCompleted;
+
+        void Complete(RemoveMenuItemResult removeMenuItemResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum RemoveMenuItemResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidId,
         ArgumentNull,
         Error,
     }
 
+    public class RemoveMenuItemPresenter : IRemoveMenuItemPresenter
+    {
+        public event Action<RemoveMenuItemResult, IMenu, string> OnCompleted;
+
+        public void Complete(RemoveMenuItemResult removeMenuItemResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(removeMenuItemResult, menu, errorMessage);
+        }
+    }
+
     public class RemoveMenuItemUseCase : IRemoveMenuItemUseCase
     {
+        IMenuRepository _menuRepository;
         IRemoveMenuItemPresenter _removeMenuItemPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public RemoveMenuItemUseCase(MenuEditingSession menuEditingSession)
+        public RemoveMenuItemUseCase(IMenuRepository menuRepository, IRemoveMenuItemPresenter removeMenuItemPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IRemoveMenuItemPresenter removeMenuItemPresenter)
-        {
+            _menuRepository = menuRepository;
             _removeMenuItemPresenter = removeMenuItemPresenter;
         }
 
-        public void Handle(string id)
+        public void Handle(string menuId, string menuItemId)
         {
             try
             {
-                if (id is null)
+                if (menuId is null || menuItemId is null)
                 {
-                    _removeMenuItemPresenter?.Complete(RemoveMenuItemResult.ArgumentNull, null);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _removeMenuItemPresenter?.Complete(RemoveMenuItemResult.MenuIsNotOpened, null);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
-                if (!menu.CanRemoveMenuItem(id))
+                if (!menu.CanRemoveMenuItem(menuItemId))
                 {
-                    _removeMenuItemPresenter?.Complete(RemoveMenuItemResult.InvalidId, menu);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.InvalidId, menu);
                     return;
                 }
 
-                menu.RemoveMenuItem(id);
-                _menuEditingSession.SetAsModified();
-                _removeMenuItemPresenter?.Complete(RemoveMenuItemResult.Succeeded, menu);
+                menu.RemoveMenuItem(menuItemId);
+
+                _menuRepository.Save(menuId, menu);
+                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _removeMenuItemPresenter?.Complete(RemoveMenuItemResult.Error, null, ex.ToString());
+                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Error, null, ex.ToString());
             }
         }
     }

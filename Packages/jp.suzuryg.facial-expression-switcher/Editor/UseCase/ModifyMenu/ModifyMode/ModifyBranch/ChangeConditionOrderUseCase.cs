@@ -6,70 +6,78 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 {
     public interface IChangeConditionOrderUseCase
     {
-        void SetPresenter(IChangeConditionOrderPresenter changeConditionOrderPresenter);
-        void Handle(string modeId, int branchIndex, int from, int to);
+        void Handle(string menuId, string modeId, int branchIndex, int from, int to);
     }
 
     public interface IChangeConditionOrderPresenter
     {
-        void Complete(ChangeConditionOrderResult changeConditionOrderResult, in Menu menu, string errorMessage = "");
+        event Action<ChangeConditionOrderResult, IMenu, string> OnCompleted;
+
+        void Complete(ChangeConditionOrderResult changeConditionOrderResult, in IMenu menu, string errorMessage = "");
     }
 
     public enum ChangeConditionOrderResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidCondition,
         ArgumentNull,
         Error,
     }
 
+    public class ChangeConditionOrderPresenter : IChangeConditionOrderPresenter
+    {
+        public event Action<ChangeConditionOrderResult, IMenu, string> OnCompleted;
+
+        public void Complete(ChangeConditionOrderResult changeConditionOrderResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(changeConditionOrderResult, menu, errorMessage);
+        }
+    }
+
     public class ChangeConditionOrderUseCase : IChangeConditionOrderUseCase
     {
+        IMenuRepository _menuRepository;
         IChangeConditionOrderPresenter _changeConditionOrderPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public ChangeConditionOrderUseCase(MenuEditingSession menuEditingSession)
+        public ChangeConditionOrderUseCase(IMenuRepository menuRepository, IChangeConditionOrderPresenter changeConditionOrderPresenter)
         {
-            _menuEditingSession = menuEditingSession;
-        }
-
-        public void SetPresenter(IChangeConditionOrderPresenter changeConditionOrderPresenter)
-        {
+            _menuRepository = menuRepository;
             _changeConditionOrderPresenter = changeConditionOrderPresenter;
         }
 
-        public void Handle(string modeId, int branchIndex, int from, int to)
+        public void Handle(string menuId, string modeId, int branchIndex, int from, int to)
         {
             try
             {
-                if (modeId is null)
+                if (menuId is null || modeId is null)
                 {
-                    _changeConditionOrderPresenter?.Complete(ChangeConditionOrderResult.ArgumentNull, null);
+                    _changeConditionOrderPresenter.Complete(ChangeConditionOrderResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _changeConditionOrderPresenter?.Complete(ChangeConditionOrderResult.MenuIsNotOpened, null);
+                    _changeConditionOrderPresenter.Complete(ChangeConditionOrderResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanChangeConditionOrder(modeId, branchIndex, from))
                 {
-                    _changeConditionOrderPresenter?.Complete(ChangeConditionOrderResult.InvalidCondition, menu);
+                    _changeConditionOrderPresenter.Complete(ChangeConditionOrderResult.InvalidCondition, menu);
                     return;
                 }
 
                 menu.ChangeConditionOrder(modeId, branchIndex, from, to);
-                _menuEditingSession.SetAsModified();
-                _changeConditionOrderPresenter?.Complete(ChangeConditionOrderResult.Succeeded, menu);
+
+                _menuRepository.Save(menuId, menu);
+                _changeConditionOrderPresenter.Complete(ChangeConditionOrderResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _changeConditionOrderPresenter?.Complete(ChangeConditionOrderResult.Error, null, ex.ToString());
+                _changeConditionOrderPresenter.Complete(ChangeConditionOrderResult.Error, null, ex.ToString());
             }
         }
     }

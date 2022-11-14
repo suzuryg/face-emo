@@ -13,12 +13,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
         public void Install()
         {
-            Container.Bind<IMenuRepository>().To<MockMenuRepository>().AsTransient();
             Container.Bind<IMenuApplier>().To<MockMenuApplier>().AsTransient();
             Container.Bind<IAnimation>().To<MockAnimation>().AsTransient();
             Container.Bind<IAnimationEditor>().To<MockAnimationEditor>().AsTransient();
 
-            Container.Bind<MenuEditingSession>().AsSingle();
+            Container.Bind<IMenuRepository>().To<InMemoryMenuRepository>().AsSingle();
 
             Container.Bind<CreateMenuUseCase>().AsTransient();
             Container.Bind<AddMenuItemUseCase>().AsTransient();
@@ -38,6 +37,25 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<RemoveConditionUseCase>().AsTransient();
             Container.Bind<SetNewAnimationUseCase>().AsTransient();
             Container.Bind<SetExistingAnimationUseCase>().AsTransient();
+
+            Container.Bind<ICreateMenuPresenter>().To<MockCreateMenuPresenter>().AsSingle();
+            Container.Bind<IAddMenuItemPresenter>().To<MockAddMenuItemPresenter>().AsSingle();
+            Container.Bind<IModifyModePropertiesPresenter>().To<MockModifyModePropertiesPresenter>().AsSingle();
+            Container.Bind<IModifyGroupPropertiesPresenter>().To<MockModifyGroupPropertiesPresenter>().AsSingle();
+            Container.Bind<IMoveMenuItemPresenter>().To<MockMoveMenuItemPresenter>().AsSingle();
+            Container.Bind<IRemoveMenuItemPresenter>().To<MockRemoveMenuItemPresenter>().AsSingle();
+            Container.Bind<IMergeExistingMenuPresenter>().To<MockMergeExistingMenuPresenter>().AsSingle();
+            Container.Bind<IApplyMenuPresenter>().To<MockApplyMenuPresenter>().AsSingle();
+            Container.Bind<IAddBranchPresenter>().To<MockAddBranchPresenter>().AsSingle();
+            Container.Bind<IModifyBranchPropertiesPresenter>().To<MockModifyBranchPropertiesPresenter>().AsSingle();
+            Container.Bind<IChangeBranchOrderPresenter>().To<MockChangeBranchOrderPresenter>().AsSingle();
+            Container.Bind<IRemoveBranchPresenter>().To<MockRemoveBranchPresenter>().AsSingle();
+            Container.Bind<IAddConditionPresenter>().To<MockAddConditionPresenter>().AsSingle();
+            Container.Bind<IChangeConditionOrderPresenter>().To<MockChangeConditionOrderPresenter>().AsSingle();
+            Container.Bind<IModifyConditionPresenter>().To<MockModifyConditionPresenter>().AsSingle();
+            Container.Bind<IRemoveConditionPresenter>().To<MockRemoveConditionPresenter>().AsSingle();
+            Container.Bind<ISetNewAnimationPresenter>().To<MockSetNewAnimationPresenter>().AsSingle();
+            Container.Bind<ISetExistingAnimationPresenter>().To<MockSetExistingAnimationPresenter>().AsSingle();
         }
     }
 }

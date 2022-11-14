@@ -7,7 +7,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     {
         public ModifyGroupPropertiesResult Result { get; private set; }
 
-        void IModifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, in Menu menu, string errorMessage)
+        public event System.Action<ModifyGroupPropertiesResult, IMenu, string> OnCompleted;
+
+        void IModifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, in IMenu menu, string errorMessage)
         {
             Result = modifyGroupPropertiesResult;
         }
@@ -21,55 +23,53 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             // Setup
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
             useCaseTestsInstaller.Install();
-            MenuEditingSession menuEditingSession = useCaseTestsInstaller.Container.Resolve<MenuEditingSession>();
+
+            var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
+            var menuId = UseCaseTestSetting.MenuId;
+            System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
+
             ModifyGroupPropertiesUseCase modifyGroupPropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyGroupPropertiesUseCase>();
-            MockModifyGroupPropertiesPresenter mockModifyGroupPropertiesPresenter = new MockModifyGroupPropertiesPresenter();
-            modifyGroupPropertiesUseCase.SetPresenter(mockModifyGroupPropertiesPresenter);
+            MockModifyGroupPropertiesPresenter mockModifyGroupPropertiesPresenter = useCaseTestsInstaller.Container.Resolve<IModifyGroupPropertiesPresenter>() as MockModifyGroupPropertiesPresenter;
 
             // null
-            modifyGroupPropertiesUseCase.Handle(null);
+            modifyGroupPropertiesUseCase.Handle(null, "");
+            Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.ArgumentNull));
+            modifyGroupPropertiesUseCase.Handle("", null);
             Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.ArgumentNull));
 
             // Menu is not opened
-            modifyGroupPropertiesUseCase.Handle("");
-            Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.MenuIsNotOpened));
+            modifyGroupPropertiesUseCase.Handle(menuId, "");
+            Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.MenuDoesNotExist));
 
             // Create Menu
-            useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle();
-            var menu = menuEditingSession.Menu;
-            menuEditingSession.SaveAs("dest");
+            useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle(menuId);
 
             // Group is not created
-            modifyGroupPropertiesUseCase.Handle("");
+            modifyGroupPropertiesUseCase.Handle(menuId, "");
             Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.GroupIsNotContained));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
 
             // Add group
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Group);
-            addMenuItemUseCase.Handle(Menu.RegisteredId, AddMenuItemType.Group);
-            menuEditingSession.Save();
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
 
-            var group0Id = menu.Registered.Order[0];
-            var group0 = menu.Registered.GetGroup(group0Id);
+            var group0Id = loadMenu().Registered.Order[0];
+            var group0 = loadMenu().Registered.GetGroup(group0Id);
             Assert.That(group0.DisplayName, Is.EqualTo("NewGroup"));
 
-            var group1Id = menu.Registered.Order[1];
-            var group1 = menu.Registered.GetGroup(group1Id);
+            var group1Id = loadMenu().Registered.Order[1];
+            var group1 = loadMenu().Registered.GetGroup(group1Id);
             Assert.That(group1.DisplayName, Is.EqualTo("NewGroup"));
 
             // Invalid group
-            modifyGroupPropertiesUseCase.Handle("");
+            modifyGroupPropertiesUseCase.Handle(menuId, "");
             Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.GroupIsNotContained));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(false));
 
             // Change gruop properties
-            modifyGroupPropertiesUseCase.Handle(
+            modifyGroupPropertiesUseCase.Handle(menuId, 
                 group0Id,
                 displayName: "Changed");
             Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.Succeeded));
-            Assert.That(menuEditingSession.IsModified, Is.EqualTo(true));
 
             Assert.That(group0.DisplayName, Is.EqualTo("Changed"));
 

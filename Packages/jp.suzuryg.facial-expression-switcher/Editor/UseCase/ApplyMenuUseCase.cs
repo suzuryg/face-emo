@@ -6,13 +6,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 {
     public interface IApplyMenuUseCase
     {
-        void SetPresenter(IApplyMenuPresenter applyMenuPresenter);
-        void Handle(MergedMenuItemList mergedMenuItems);
+        void Handle(string menuId, MergedMenuItemList mergedMenuItems);
     }
 
     public interface IApplyMenuPresenter
     {
-        void Complete(ApplyMenuResult applyMenuResult, in Menu menu, string errorMessage = "");
+        event Action<ApplyMenuResult, IMenu, string> OnCompleted;
+
+        void Complete(ApplyMenuResult applyMenuResult, in IMenu menu, string errorMessage = "");
     }
 
     public interface IMenuApplier
@@ -25,67 +26,75 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     public enum ApplyMenuResult
     {
         Succeeded,
-        MenuIsNotOpened,
+        MenuDoesNotExist,
         InvalidArgument,
         ArgumentNull,
         Error,
     }
 
+    public class ApplyMenuPresenter : IApplyMenuPresenter
+    {
+        public event Action<ApplyMenuResult, IMenu, string> OnCompleted;
+
+        public void Complete(ApplyMenuResult applyMenuResult, in IMenu menu, string errorMessage = "")
+        {
+            OnCompleted(applyMenuResult, menu, errorMessage);
+        }
+    }
+
     public class ApplyMenuUseCase : IApplyMenuUseCase
     {
-        IApplyMenuPresenter _applyMenuPresenter;
-        MenuEditingSession _menuEditingSession;
+        IMenuRepository _menuRepository;
         IMenuApplier _menuApplier;
+        IApplyMenuPresenter _applyMenuPresenter;
 
-        public ApplyMenuUseCase(MenuEditingSession menuEditingSession, IMenuApplier menuApplier)
+        public ApplyMenuUseCase(IMenuRepository menuRepository, IMenuApplier menuApplier, IApplyMenuPresenter applyMenuPresenter)
         {
-            _menuEditingSession = menuEditingSession;
+            _menuRepository = menuRepository;
             _menuApplier = menuApplier;
-        }
-
-        public void SetPresenter(IApplyMenuPresenter applyMenuPresenter)
-        {
             _applyMenuPresenter = applyMenuPresenter;
         }
 
-        public void Handle(MergedMenuItemList mergedMenuItems)
+        public void Handle(string menuId, MergedMenuItemList mergedMenuItems)
         {
             try
             {
-                if (mergedMenuItems is null)
+                if (menuId is null || mergedMenuItems is null)
                 {
-                    _applyMenuPresenter?.Complete(ApplyMenuResult.ArgumentNull, null);
+                    _applyMenuPresenter.Complete(ApplyMenuResult.ArgumentNull, null);
                     return;
                 }
 
-                if (!_menuEditingSession.IsOpened)
+                if (!_menuRepository.Exists(menuId))
                 {
-                    _applyMenuPresenter?.Complete(ApplyMenuResult.MenuIsNotOpened, null);
+                    _applyMenuPresenter.Complete(ApplyMenuResult.MenuDoesNotExist, null);
                     return;
                 }
 
-                var menu = _menuEditingSession.Menu;
+                var menu = _menuRepository.Load(menuId);
 
                 if (!menu.CanUpdateOrderAndInsertIndices(mergedMenuItems))
                 {
-                    _applyMenuPresenter?.Complete(ApplyMenuResult.InvalidArgument, menu);
+                    _applyMenuPresenter.Complete(ApplyMenuResult.InvalidArgument, menu);
                     return;
                 }
 
                 //if (!AreMenuItemsContained(menu, mergedMenuItems))
                 //{
-                //    _applyMenuPresenter?.Complete(ApplyMenuResult.MenuItemsAreNotContained, menu);
+                //    _applyMenuPresenter.Complete(ApplyMenuResult.MenuItemsAreNotContained, menu);
                 //    return;
                 //}
 
                 menu.UpdateOrderAndInsertIndices(mergedMenuItems);
-                _menuEditingSession.SetAsModified();
+
+                _menuRepository.Save(menuId, menu);
+
                 _menuApplier.Apply(mergedMenuItems, menu);
-                _applyMenuPresenter?.Complete(ApplyMenuResult.Succeeded, menu);
+                _applyMenuPresenter.Complete(ApplyMenuResult.Succeeded, menu);
             }
             catch (Exception ex)
             {
-                _applyMenuPresenter?.Complete(ApplyMenuResult.Error, null, ex.ToString());
+                _applyMenuPresenter.Complete(ApplyMenuResult.Error, null, ex.ToString());
             }
         }
 
