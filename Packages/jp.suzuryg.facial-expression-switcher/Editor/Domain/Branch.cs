@@ -16,10 +16,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         bool CanLeftTriggerUsed { get; }
         bool CanRightTriggerUsed { get; }
 
-        IAnimation BaseAnimation { get; }
-        IAnimation LeftHandAnimation { get; }
-        IAnimation RightHandAnimation { get; }
-        IAnimation BothHandsAnimation { get; }
+        Animation BaseAnimation { get; }
+        Animation LeftHandAnimation { get; }
+        Animation RightHandAnimation { get; }
+        Animation BothHandsAnimation { get; }
     }
 
     public class Branch : IBranch
@@ -34,10 +34,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public bool CanLeftTriggerUsed { get; set; } = false;
         public bool CanRightTriggerUsed { get; set; } = false;
 
-        public IAnimation BaseAnimation { get; private set; }
-        public IAnimation LeftHandAnimation { get; private set; }
-        public IAnimation RightHandAnimation { get; private set; }
-        public IAnimation BothHandsAnimation { get; private set; }
+        public Animation BaseAnimation { get; private set; }
+        public Animation LeftHandAnimation { get; private set; }
+        public Animation RightHandAnimation { get; private set; }
+        public Animation BothHandsAnimation { get; private set; }
 
         private List<Condition> _conditions = new List<Condition>();
 
@@ -169,7 +169,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             return true;
         }
 
-        public void SetAnimation(IAnimation animation, BranchAnimationType? branchAnimationType)
+        public void SetAnimation(Animation animation, BranchAnimationType? branchAnimationType)
         {
             switch (branchAnimationType)
             {

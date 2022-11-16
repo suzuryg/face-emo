@@ -77,7 +77,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                 }
 
                 menu.MoveMenuItem(source, destination, index);
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "MoveMenuItem");
                 _moveMenuItemPresenter.Complete(MoveMenuItemResult.Succeeded, menu);
             }
             catch (Exception ex)

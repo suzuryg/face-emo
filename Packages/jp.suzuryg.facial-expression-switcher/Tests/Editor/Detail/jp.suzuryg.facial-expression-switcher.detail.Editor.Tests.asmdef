@@ -1,0 +1,25 @@
+{
+    "name": "jp.suzuryg.facial-expression-switcher.detail.Editor.Tests",
+    "references": [
+        "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
+        "GUID:df45ab4f3bbb8394987fc80e55e039ef",
+        "GUID:3a369c7d7783a1740996446681282216",
+        "GUID:79c0d231dad4cc84e8226bd51341a07b",
+        "GUID:de391cc2fec5f0c46a6c12407de85fe3",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Zenject-usage.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

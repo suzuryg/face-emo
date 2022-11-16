@@ -3,6 +3,7 @@ using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranch;
+using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Zenject;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase
@@ -14,10 +15,17 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
         public void Install()
         {
             Container.Bind<IMenuApplier>().To<MockMenuApplier>().AsTransient();
-            Container.Bind<IAnimation>().To<MockAnimation>().AsTransient();
             Container.Bind<IAnimationEditor>().To<MockAnimationEditor>().AsTransient();
 
-            Container.Bind<IMenuRepository>().To<InMemoryMenuRepository>().AsSingle();
+            if (UseCaseTestSetting.UseActualRepository)
+            {
+                Container.Bind<SerializableMenu>().FromNewComponentOnNewGameObject().AsTransient();
+                Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
+            }
+            else
+            {
+                Container.Bind<IMenuRepository>().To<InMemoryMenuRepository>().AsSingle();
+            }
 
             Container.Bind<CreateMenuUseCase>().AsTransient();
             Container.Bind<AddMenuItemUseCase>().AsTransient();

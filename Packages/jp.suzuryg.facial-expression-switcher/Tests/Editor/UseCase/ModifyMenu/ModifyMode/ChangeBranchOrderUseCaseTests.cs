@@ -40,8 +40,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.ArgumentNull));
 
             // Menu is not opened
-            changeBranchOrderUseCase.Handle(menuId, "", 0, 0);
-            Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.MenuDoesNotExist));
+            if (!UseCaseTestSetting.UseActualRepository)
+            {
+                changeBranchOrderUseCase.Handle(menuId, "", 0, 0);
+                Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.MenuDoesNotExist));
+            }
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
@@ -64,12 +67,12 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 
             // Add branch
             AddBranchUseCase addBranchUseCase = useCaseTestsInstaller.Container.Resolve<AddBranchUseCase>();
-            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
-            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
-            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
-            var b0 = loadMenu().Registered.GetModeAt(0).Branches[0];
-            var b1 = loadMenu().Registered.GetModeAt(0).Branches[1];
-            var b2 = loadMenu().Registered.GetModeAt(0).Branches[2];
+            var c0 = new List<Condition>() { new Condition(Hand.Left, HandGesture.Fingerpoint, ComparisonOperator.Equals) };
+            var c1 = new List<Condition>() { new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.NotEqual) };
+            var c2 = new List<Condition>() { new Condition(Hand.Both, HandGesture.HandGun, ComparisonOperator.Equals) };
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], c0);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], c1);
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], c2);
 
             // Change branch order
             // Invalid
@@ -82,27 +85,27 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
             // Success
             changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 2, -1);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b0));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b1));
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[0].Conditions, c2);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[1].Conditions, c0);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[2].Conditions, c1);
 
             changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, 9999);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b1));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[0].Conditions, c2);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[1].Conditions, c1);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[2].Conditions, c0);
 
             changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 1, 1);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b2));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b1));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[0].Conditions, c2);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[1].Conditions, c1);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[2].Conditions, c0);
 
             changeBranchOrderUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, 1);
             Assert.That(mockChangeBranchOrderPresenter.Result, Is.EqualTo(ChangeBranchOrderResult.Succeeded));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0], Is.SameAs(b1));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1], Is.SameAs(b2));
-            Assert.That(loadMenu().Registered.GetModeAt(0).Branches[2], Is.SameAs(b0));
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[0].Conditions, c1);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[1].Conditions, c2);
+            CollectionAssert.AreEqual(loadMenu().Registered.GetModeAt(0).Branches[2].Conditions, c0);
         }
     }
 }

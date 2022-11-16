@@ -87,7 +87,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
                 menu.UpdateOrderAndInsertIndices(mergedMenuItems);
 
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "ApplyMenu");
 
                 _menuApplier.Apply(mergedMenuItems, menu);
                 _applyMenuPresenter.Complete(ApplyMenuResult.Succeeded, menu);

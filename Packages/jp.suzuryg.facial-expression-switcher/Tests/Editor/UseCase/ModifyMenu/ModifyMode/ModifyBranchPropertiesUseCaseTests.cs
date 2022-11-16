@@ -40,8 +40,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
             Assert.That(mockModifyBranchPropertiesPresenter.Result, Is.EqualTo(ModifyBranchPropertiesResult.ArgumentNull));
 
             // Menu is not opened
-            modifyBranchPropertiesUseCase.Handle(menuId, "", 0);
-            Assert.That(mockModifyBranchPropertiesPresenter.Result, Is.EqualTo(ModifyBranchPropertiesResult.MenuDoesNotExist));
+            if (!UseCaseTestSetting.UseActualRepository)
+            {
+                modifyBranchPropertiesUseCase.Handle(menuId, "", 0);
+                Assert.That(mockModifyBranchPropertiesPresenter.Result, Is.EqualTo(ModifyBranchPropertiesResult.MenuDoesNotExist));
+            }
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();

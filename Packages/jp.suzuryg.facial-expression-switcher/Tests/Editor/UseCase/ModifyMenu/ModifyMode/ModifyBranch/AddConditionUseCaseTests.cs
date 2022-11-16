@@ -40,8 +40,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.ArgumentNull));
 
             // Menu is not opened
-            addConditionUseCase.Handle(menuId, "", 0, null);
-            Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.MenuDoesNotExist));
+            if (!UseCaseTestSetting.UseActualRepository)
+            {
+                addConditionUseCase.Handle(menuId, "", 0, null);
+                Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.MenuDoesNotExist));
+            }
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
@@ -67,61 +70,59 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
             addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
             addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
             addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0]);
-            var b0 = loadMenu().Registered.GetModeAt(0).Branches[0];
-            var b1 = loadMenu().Registered.GetModeAt(0).Branches[1];
-            var b2 = loadMenu().Registered.GetModeAt(0).Branches[2];
-            Assert.That(b0.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b1.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b2.Conditions.Count, Is.EqualTo(0));
+            System.Func<IMode> mode0 = () => loadMenu().Registered.GetModeAt(0);
+            Assert.That(mode0().Branches[0].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[1].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[2].Conditions.Count, Is.EqualTo(0));
 
             // Add Condition
             // Invalid
             addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], -1, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
             Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.InvalidBranch));
-            Assert.That(b0.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b1.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b2.Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[0].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[1].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[2].Conditions.Count, Is.EqualTo(0));
 
             addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 3, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
             Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.InvalidBranch));
-            Assert.That(b0.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b1.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b2.Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[0].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[1].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[2].Conditions.Count, Is.EqualTo(0));
 
             // Success
             addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
             Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.Succeeded));
-            Assert.That(b0.Conditions.Count, Is.EqualTo(1));
-            Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
-            Assert.That(b1.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b2.Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[0].Conditions.Count, Is.EqualTo(1));
+            Assert.That(mode0().Branches[0].Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
+            Assert.That(mode0().Branches[1].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[2].Conditions.Count, Is.EqualTo(0));
 
             addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
             Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.Succeeded));
-            Assert.That(b0.Conditions.Count, Is.EqualTo(2));
-            Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
-            Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
-            Assert.That(b1.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b2.Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[0].Conditions.Count, Is.EqualTo(2));
+            Assert.That(mode0().Branches[0].Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
+            Assert.That(mode0().Branches[0].Conditions[1], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
+            Assert.That(mode0().Branches[1].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[2].Conditions.Count, Is.EqualTo(0));
 
             addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 0, new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual));
             Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.Succeeded));
-            Assert.That(b0.Conditions.Count, Is.EqualTo(3));
-            Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
-            Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
-            Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
-            Assert.That(b1.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b2.Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[0].Conditions.Count, Is.EqualTo(3));
+            Assert.That(mode0().Branches[0].Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
+            Assert.That(mode0().Branches[0].Conditions[1], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
+            Assert.That(mode0().Branches[0].Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
+            Assert.That(mode0().Branches[1].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[2].Conditions.Count, Is.EqualTo(0));
 
             addConditionUseCase.Handle(menuId, loadMenu().Registered.Order[0], 2, new Condition(Hand.Either, HandGesture.HandGun, ComparisonOperator.NotEqual));
             Assert.That(mockAddConditionPresenter.Result, Is.EqualTo(AddConditionResult.Succeeded));
-            Assert.That(b0.Conditions.Count, Is.EqualTo(3));
-            Assert.That(b0.Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
-            Assert.That(b0.Conditions[1], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
-            Assert.That(b0.Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
-            Assert.That(b1.Conditions.Count, Is.EqualTo(0));
-            Assert.That(b2.Conditions.Count, Is.EqualTo(1));
-            Assert.That(b2.Conditions[0], Is.EqualTo(new Condition(Hand.Either, HandGesture.HandGun, ComparisonOperator.NotEqual)));
+            Assert.That(mode0().Branches[0].Conditions.Count, Is.EqualTo(3));
+            Assert.That(mode0().Branches[0].Conditions[0], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
+            Assert.That(mode0().Branches[0].Conditions[1], Is.EqualTo(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals)));
+            Assert.That(mode0().Branches[0].Conditions[2], Is.EqualTo(new Condition(Hand.Both, HandGesture.Fist, ComparisonOperator.NotEqual)));
+            Assert.That(mode0().Branches[1].Conditions.Count, Is.EqualTo(0));
+            Assert.That(mode0().Branches[2].Conditions.Count, Is.EqualTo(1));
+            Assert.That(mode0().Branches[2].Conditions[0], Is.EqualTo(new Condition(Hand.Either, HandGesture.HandGun, ComparisonOperator.NotEqual)));
         }
     }
 }

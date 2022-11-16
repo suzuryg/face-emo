@@ -14,7 +14,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         IReadOnlyList<IBranch> Branches { get; }
         IBranch GetGestureCell(HandGesture left, HandGesture right);
 
-        IAnimation Animation { get; }
+        Animation Animation { get; }
     }
 
     public class Mode : IMode
@@ -29,7 +29,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public IReadOnlyList<IBranch> Branches => _branches;
         public IBranch GetGestureCell(HandGesture left, HandGesture right) => _gestureTable[(left, right)];
 
-        public IAnimation Animation { get; private set; }
+        public Animation Animation { get; private set; }
 
         public MenuItemListBase Parent { get; set; }
 
@@ -118,7 +118,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             _branches[branchIndex].ChangeBranchOrder(from, to);
         }
 
-        public void SetAnimation(IAnimation animation, int? branchIndex, BranchAnimationType? branchAnimationType)
+        public void SetAnimation(Animation animation, int? branchIndex, BranchAnimationType? branchAnimationType)
         {
             if (branchIndex.HasValue)
             {

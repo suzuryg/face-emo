@@ -83,7 +83,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
                 menu.ModifyModeProperties(modeId, displayName, useAnimationNameAsDisplayName, eyeTrackingControl, mouthTrackingControl);
 
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "ModifyModeProperties");
                 _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Succeeded, menu);
             }
             catch (Exception ex)

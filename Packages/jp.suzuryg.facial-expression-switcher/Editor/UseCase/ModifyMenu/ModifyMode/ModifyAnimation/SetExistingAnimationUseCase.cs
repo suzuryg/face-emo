@@ -6,7 +6,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
 {
     public interface ISetExistingAnimationUseCase
     {
-        void Handle(string menuId, IAnimation animation, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null);
+        void Handle(string menuId, Animation animation, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null);
     }
 
     public interface ISetExistingAnimationPresenter
@@ -46,7 +46,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
             _setExistingAnimationPresenter = setExistingAnimationPresenter;
         }
 
-        public void Handle(string menuId, IAnimation animation, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null)
+        public void Handle(string menuId, Animation animation, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
 
                 menu.SetAnimation(animation, modeId, branchIndex, branchAnimationType);
 
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "SetExistingAnimation");
                 _setExistingAnimationPresenter.Complete(SetExistingAnimationResult.Succeeded, menu);
             }
             catch (Exception ex)

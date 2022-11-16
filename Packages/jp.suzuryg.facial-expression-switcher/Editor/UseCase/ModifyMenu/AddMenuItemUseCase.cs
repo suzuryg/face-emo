@@ -98,7 +98,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                     throw new FacialExpressionSwitcherException("Unknown AddMenuItemType");
                 }
 
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "AddMenuItem");
                 _addMenuItemPresenter.Complete(AddMenuItemResult.Succeeded, menu);
             }
             catch (Exception ex)

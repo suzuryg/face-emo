@@ -34,18 +34,21 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
             MockSetExistingAnimationPresenter mockSetExistingAnimationPresenter = useCaseTestsInstaller.Container.Resolve<ISetExistingAnimationPresenter>() as MockSetExistingAnimationPresenter;
 
             // null
-            setExistingAnimationUseCase.Handle(null, new MockAnimation(), "");
+            setExistingAnimationUseCase.Handle(null, new Animation(""), "");
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.ArgumentNull));
             setExistingAnimationUseCase.Handle("", null, "");
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.ArgumentNull));
-            setExistingAnimationUseCase.Handle("", new MockAnimation(), null);
+            setExistingAnimationUseCase.Handle("", new Animation(""), null);
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.ArgumentNull));
 
             // Menu is not opened
             MockAnimationEditor mockAnimationEditor = new MockAnimationEditor();
             var animation = mockAnimationEditor.Create("");
-            setExistingAnimationUseCase.Handle(menuId, animation, ""); 
-            Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.MenuDoesNotExist));
+            if (!UseCaseTestSetting.UseActualRepository)
+            {
+                setExistingAnimationUseCase.Handle(menuId, animation, ""); 
+                Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.MenuDoesNotExist));
+            }
 
             // Create menu
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();

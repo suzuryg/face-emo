@@ -72,7 +72,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 
                 menu.RemoveBranch(modeId, branchIndex);
 
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "RemoveBranch");
                 _removeBranchPresenter.Complete(RemoveBranchResult.Succeeded, menu);
             }
             catch (Exception ex)

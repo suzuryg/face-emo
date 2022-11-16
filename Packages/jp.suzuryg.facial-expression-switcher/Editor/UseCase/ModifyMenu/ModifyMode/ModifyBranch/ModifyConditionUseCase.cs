@@ -72,7 +72,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 
                 menu.ModifyCondition(modeId, branchIndex, conditionIndex, condition);
 
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "ModifyCondition");
                 _modifyConditionPresenter.Complete(ModifyConditionResult.Succeeded, menu);
             }
             catch (Exception ex)

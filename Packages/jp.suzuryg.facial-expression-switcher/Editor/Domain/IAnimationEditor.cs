@@ -2,7 +2,7 @@
 {
     public interface IAnimationEditor
     {
-        IAnimation Create(string path);
-        void Open(IAnimation animation);
+        Animation Create(string path);
+        void Open(Animation animation);
     }
 }

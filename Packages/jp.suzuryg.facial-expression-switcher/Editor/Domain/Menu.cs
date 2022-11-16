@@ -6,6 +6,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 {
     public interface IMenu
     {
+        bool WriteDefaults { get; }
+        double TransitionDurationSeconds { get; }
+        IMenuItemList Registered { get; }
+        IMenuItemList Unregistered { get; }
+        IReadOnlyList<int> InsertIndices { get; }
     }
 
     public class Menu : IMenu
@@ -13,10 +18,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public static readonly string RegisteredId = "Registered";
         public static readonly string UnregisteredId = "UnRegistered";
 
-        public bool WriteDefaults { get; } = false;
-        public double TransitionDurationSeconds { get; } = 0.1;
+        public bool WriteDefaults { get; set; } = false;
+        public double TransitionDurationSeconds { get; set; } = 0.1;
         public IMenuItemList Registered => _registered;
         public IMenuItemList Unregistered => _unregistered;
+        public IReadOnlyList<int> InsertIndices => _registered.InsertIndices;
 
         private IAvatar _avatar;
         private Mode _defaultSelection;
@@ -53,6 +59,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             group.DisplayName = displayName ?? group.DisplayName;
         }
 
+        public bool IsUsedId(string id) => ContainsMode(id) || ContainsGroup(id);
+
         public bool CanAddModeTo(string destination)
         {
             if (destination == RegisteredId)
@@ -69,13 +77,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
         }
 
-        public void AddMode(string destination)
+        public string AddMode(string destination, string id = null)
         {
             NullChecker.Check(destination);
 
-            var mode = new Mode("NewMode");
+            if (id is string && IsUsedId(id))
+            {
+                throw new FacialExpressionSwitcherException("The id is used.");
+            }
 
-            var id = GetNewId();
+            if (id is null)
+            {
+                id = GetNewId();
+            }
+
+            var mode = new Mode("NewMode");
 
             if (destination == RegisteredId)
             {
@@ -94,17 +110,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
 
             _modes[id] = mode;
+
+            return id;
         }
 
         public bool CanAddGroupTo(string destination) => CanAddModeTo(destination);
 
-        public void AddGroup(string destination)
+        public string AddGroup(string destination, string id = null)
         {
             NullChecker.Check(destination);
 
-            var group = new Group("NewGroup");
+            if (id is string && IsUsedId(id))
+            {
+                throw new FacialExpressionSwitcherException("The id is used.");
+            }
 
-            var id = GetNewId();
+            if (id is null)
+            {
+                id = GetNewId();
+            }
+
+            var group = new Group("NewGroup");
 
             if (destination == RegisteredId)
             {
@@ -123,6 +149,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
 
             _groups[id] = group;
+
+            return id;
         }
 
         public bool CanRemoveMenuItem(string id) => ContainsMode(id) || ContainsGroup(id);
@@ -277,6 +305,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
         }
 
+        public void SetInsertIndices(IReadOnlyList<int> insertIndices) => _registered.SetInsertIndices(insertIndices);
+
         public bool CanAddBranchTo(string destination) => ContainsMode(destination);
 
         public void AddBranch(string destination, IEnumerable<Condition> conditions = null)
@@ -348,12 +378,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
         }
 
-        public void SetAnimation(IAnimation animation, string modeId, int? branchIndex, BranchAnimationType? branchAnimationType) => _modes[modeId].SetAnimation(animation, branchIndex, branchAnimationType);
+        public void SetAnimation(Animation animation, string modeId, int? branchIndex = null, BranchAnimationType? branchAnimationType = null) => _modes[modeId].SetAnimation(animation, branchIndex, branchAnimationType);
 
         private string GetNewId()
         {
             var id = Guid.NewGuid().ToString("N");
-            while (ContainsMode(id) || ContainsGroup(id))
+            while (IsUsedId(id))
             {
                 id = Guid.NewGuid().ToString("N");
             }

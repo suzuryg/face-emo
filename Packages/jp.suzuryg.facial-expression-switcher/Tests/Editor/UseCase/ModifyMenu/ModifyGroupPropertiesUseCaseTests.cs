@@ -38,8 +38,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.ArgumentNull));
 
             // Menu is not opened
-            modifyGroupPropertiesUseCase.Handle(menuId, "");
-            Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.MenuDoesNotExist));
+            if (!UseCaseTestSetting.UseActualRepository)
+            {
+                modifyGroupPropertiesUseCase.Handle(menuId, "");
+                Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.MenuDoesNotExist));
+            }
 
             // Create Menu
             useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle(menuId);
@@ -54,12 +57,10 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
 
             var group0Id = loadMenu().Registered.Order[0];
-            var group0 = loadMenu().Registered.GetGroup(group0Id);
-            Assert.That(group0.DisplayName, Is.EqualTo("NewGroup"));
+            Assert.That(loadMenu().GetGroup(group0Id).DisplayName, Is.EqualTo("NewGroup"));
 
             var group1Id = loadMenu().Registered.Order[1];
-            var group1 = loadMenu().Registered.GetGroup(group1Id);
-            Assert.That(group1.DisplayName, Is.EqualTo("NewGroup"));
+            Assert.That(loadMenu().GetGroup(group1Id).DisplayName, Is.EqualTo("NewGroup"));
 
             // Invalid group
             modifyGroupPropertiesUseCase.Handle(menuId, "");
@@ -71,9 +72,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                 displayName: "Changed");
             Assert.That(mockModifyGroupPropertiesPresenter.Result, Is.EqualTo(ModifyGroupPropertiesResult.Succeeded));
 
-            Assert.That(group0.DisplayName, Is.EqualTo("Changed"));
+            Assert.That(loadMenu().GetGroup(group0Id).DisplayName, Is.EqualTo("Changed"));
 
-            Assert.That(group1.DisplayName, Is.EqualTo("NewGroup"));
+            Assert.That(loadMenu().GetGroup(group1Id).DisplayName, Is.EqualTo("NewGroup"));
         }
     }
 }

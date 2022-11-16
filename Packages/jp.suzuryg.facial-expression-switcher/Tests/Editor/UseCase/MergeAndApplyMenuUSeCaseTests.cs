@@ -82,10 +82,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.ArgumentNull));
 
             // Menu is not opened
-            mergeExistingMenuUseCase.Handle(menuId, new List<IExistingMenuItem>());
-            Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.MenuDoesNotExist));
-            applyMenuUseCase.Handle(menuId, new MergedMenuItemList());
-            Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.MenuDoesNotExist));
+            if (!UseCaseTestSetting.UseActualRepository)
+            {
+                mergeExistingMenuUseCase.Handle(menuId, new List<IExistingMenuItem>());
+                Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.MenuDoesNotExist));
+                applyMenuUseCase.Handle(menuId, new MergedMenuItemList());
+                Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.MenuDoesNotExist));
+            }
 
             // Create Menu
             useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle(menuId);

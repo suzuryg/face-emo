@@ -54,7 +54,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
                 }
 
                 var menu = new Menu();
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "CreateMenu");
                 _createMenuPresenter.Complete(CreateMenuResult.Succeeded, menu);
             }
             catch (Exception ex)

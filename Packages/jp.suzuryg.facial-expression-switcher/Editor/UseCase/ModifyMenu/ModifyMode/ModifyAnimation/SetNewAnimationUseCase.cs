@@ -75,7 +75,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
                 var animation = _animationEditor.Create(animationPath);
                 menu.SetAnimation(animation, modeId, branchIndex, branchAnimationType);
 
-                _menuRepository.Save(menuId, menu);
+                _menuRepository.Save(menuId, menu, "SetNewAnimation");
                 _setNewAnimationPresenter.Complete(SetNewAnimationResult.Succeeded, menu);
             }
             catch (Exception ex)

@@ -14,11 +14,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     public class ModifyMenuPropertiesUseCase : IModifyMenuPropertiesUseCase
     {
         IModifyMenuPropertiesPresenter _modifyMenuPropertiesPresenter;
-        MenuEditingSession _menuEditingSession;
 
-        public ModifyMenuPropertiesUseCase(MenuEditingSession menuEditingSession)
+        public ModifyMenuPropertiesUseCase()
         {
-            _menuEditingSession = menuEditingSession;
         }
 
         public void Handle(bool? writeDefaults = null, double? transitionDurationSeconds = null)

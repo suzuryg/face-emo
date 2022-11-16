@@ -8,6 +8,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     {
         public override bool IsFull => Order.Count >= CommonSetting.MenuItemNums;
 
+        public IReadOnlyList<int> InsertIndices => _insertIndices;
+
         private List<int> _insertIndices = new List<int>();
 
         public bool CanGetMergedMenu(IReadOnlyList<IExistingMenuItem> existingMenuItems)
@@ -96,6 +98,26 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                     _insertIndices.Add(i);
                 }
             }
+        }
+
+        public void SetInsertIndices(IReadOnlyList<int> insertIndices)
+        {
+            NullChecker.Check(insertIndices);
+
+            if (insertIndices.Count > 0)
+            {
+                if (insertIndices.Min() < 0 || insertIndices.Max() >= CommonSetting.MenuItemNums)
+                {
+                    throw new FacialExpressionSwitcherException($"InsertIndices must be in [{0}, {CommonSetting.MenuItemNums - 1}].");
+                }
+            }
+
+            if (insertIndices.Count != new HashSet<int>(insertIndices).Count)
+            {
+                throw new FacialExpressionSwitcherException($"InsertIndices can't be duplicated.");
+            }
+
+            _insertIndices = new List<int>(insertIndices);
         }
 
         /*public List<IMenuItem> Merge(List<IMenuItem> existingMenuItems)

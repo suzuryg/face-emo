@@ -8,14 +8,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         private HashSet<string> _idSet = new HashSet<string>();
 
-        public IAnimation Create(string path)
+        public Animation Create(string path)
         {
-            var animation = new MockAnimation();
-            animation.GUID = GetNewId();
+            var animation = new Animation(GetNewId());
             return animation;
         }
 
-        public void Open(IAnimation animation)
+        public void Open(Animation animation)
         {
             // NOP
         }

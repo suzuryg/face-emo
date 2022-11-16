@@ -9,5 +9,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     public class UseCaseTestSetting
     {
         public static readonly string MenuId = "UseCaseTestMenuId";
+        public static readonly bool UseActualRepository = true;
     }
 }
