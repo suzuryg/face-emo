@@ -12,13 +12,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         public DiContainer Container { get; } = new DiContainer();
 
-        public void Install()
+        public UseCaseTestsInstaller()
         {
             Container.Bind<IMenuApplier>().To<MockMenuApplier>().AsTransient();
             Container.Bind<IAnimationEditor>().To<MockAnimationEditor>().AsTransient();
 
             if (UseCaseTestConstants.UseActualRepository)
             {
+                // Re-use usecase tests for menu-repository's test.
                 Container.Bind<SerializableMenu>().FromNewComponentOnNewGameObject().AsTransient();
                 Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
             }

@@ -56,7 +56,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
         {
             // Setup
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
-            useCaseTestsInstaller.Install();
 
             var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
             var menuId = UseCaseTestConstants.MenuId;

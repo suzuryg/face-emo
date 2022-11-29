@@ -22,7 +22,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
         {
             // Setup
             UseCaseTestsInstaller useCaseTestsInstaller = new UseCaseTestsInstaller();
-            useCaseTestsInstaller.Install();
 
             var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
             var menuId = UseCaseTestConstants.MenuId;
