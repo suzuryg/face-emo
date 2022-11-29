@@ -46,7 +46,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                     }
                     catch (System.Exception ex)
                     {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Failed to launch.\n{ex.ToString()}", "OK");
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Failed to launch. Please see the console.", "OK");
+                        Debug.LogError(ex.ToString());
                     }
                 }
                 else

@@ -16,7 +16,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 
     public interface IModifyBranchPropertiesPresenter
     {
-        IObservable<(ModifyBranchPropertiesResult, IMenu, string)> Observable { get; }
+        IObservable<(ModifyBranchPropertiesResult modifyBranchPropertiesResult, IMenu menu, string errorMessage)> Observable { get; }
 
         void Complete(ModifyBranchPropertiesResult modifyBranchPropertiesResult, in IMenu menu, string errorMessage = "");
     }

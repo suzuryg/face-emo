@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public class HierarchyViewState : MonoBehaviour
     {
-        public string TestState;
+        public TreeViewState TreeViewState;
     }
 }

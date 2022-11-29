@@ -16,6 +16,7 @@
 		</engine:VisualElement>
 
 		<engine:VisualElement name="MenuRow" class="GridItem">
+			<editor:EnumField name="LocaleField" label="Dummy"/>
 		</engine:VisualElement>
 	</engine:VisualElement>
 </engine:UXML>

@@ -12,7 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
     public interface IMergeExistingMenuPresenter
     {
-        IObservable<(MergeExistingMenuResult, MergedMenuItemList, IMenu, string)> Observable { get; }
+        IObservable<(MergeExistingMenuResult mergeExistingMenuResult, MergedMenuItemList mergedMenuItemList, IMenu menu, string errorMessage)> Observable { get; }
 
         void Complete(MergeExistingMenuResult mergeExistingMenuResult, MergedMenuItemList mergedMenuItems, in IMenu menu, string errorMessage = "");
     }

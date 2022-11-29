@@ -12,7 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 
     public interface IRemoveConditionPresenter
     {
-        IObservable<(RemoveConditionResult, IMenu, string)> Observable { get; }
+        IObservable<(RemoveConditionResult removeConditionResult, IMenu menu, string errorMessage)> Observable { get; }
 
         void Complete(RemoveConditionResult removeConditionResult, in IMenu menu, string errorMessage = "");
     }

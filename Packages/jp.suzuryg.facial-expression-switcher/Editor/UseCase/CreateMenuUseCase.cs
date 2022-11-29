@@ -11,7 +11,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
     public interface ICreateMenuPresenter
     {
-        IObservable<(CreateMenuResult, IMenu, string)> Observable { get; }
+        IObservable<(CreateMenuResult createMenuResult, IMenu menu, string errorMessage)> Observable { get; }
 
         void Complete(CreateMenuResult createMenuResult, in IMenu menu, string errorMessage = "");
     }

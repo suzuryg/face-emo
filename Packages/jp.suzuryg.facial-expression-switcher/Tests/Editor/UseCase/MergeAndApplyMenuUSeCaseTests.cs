@@ -130,7 +130,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             mergedMenuItems.Add(loadMenu().GetGroup(g1), g1);
             mergedMenuItems.Add(new MockExistingMenuItem("e2"));
             mergedMenuItems.Add(loadMenu().GetGroup(g0), g0);
-            mergedMenuItems.Add(new Mode(""), "");
+            mergedMenuItems.Add(new Mode("", null), "");
             mergedMenuItems.Add(new MockExistingMenuItem("e3"));
             //applyMenuUseCase.Handle(menuId, mergedMenuItems);
             //Assert.That(MockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.MenuItemsAreNotContained));
@@ -141,7 +141,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             mergedMenuItems.Add(new MockExistingMenuItem("e0"));
             mergedMenuItems.Add(loadMenu().GetMode(m1), m1);
             mergedMenuItems.Add(new MockExistingMenuItem("e1"));
-            mergedMenuItems.Add(new Group(""), "");
+            mergedMenuItems.Add(new Group("", null), "");
             mergedMenuItems.Add(new MockExistingMenuItem("e2"));
             mergedMenuItems.Add(loadMenu().GetGroup(g0), g0);
             mergedMenuItems.Add(loadMenu().GetMode(m0), m0);

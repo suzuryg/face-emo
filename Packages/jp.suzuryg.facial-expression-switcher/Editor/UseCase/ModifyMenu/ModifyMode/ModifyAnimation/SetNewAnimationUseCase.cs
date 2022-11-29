@@ -12,7 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
 
     public interface ISetNewAnimationPresenter
     {
-        IObservable<(SetNewAnimationResult, IMenu, string)> Observable { get; }
+        IObservable<(SetNewAnimationResult setNewAnimationResult, IMenu menu, string errorMessage)> Observable { get; }
 
         void Complete(SetNewAnimationResult setNewAnimationResult, in IMenu menu, string errorMessage = "");
     }

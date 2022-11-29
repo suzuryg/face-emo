@@ -14,6 +14,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         IReadOnlyList<IBranch> Branches { get; }
         IBranch GetGestureCell(HandGesture left, HandGesture right);
 
+        IMenuItemList Parent { get; }
+
         Animation Animation { get; }
     }
 
@@ -31,14 +33,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public Animation Animation { get; private set; }
 
+        IMenuItemList IMode.Parent => Parent;
         public MenuItemListBase Parent { get; set; }
 
         private List<Branch> _branches = new List<Branch>();
         private Dictionary<(HandGesture left, HandGesture right), Branch> _gestureTable = new Dictionary<(HandGesture left, HandGesture right), Branch>();
 
-        public Mode(string displayName)
+        public Mode(string displayName, MenuItemListBase parent)
         {
             DisplayName = displayName;
+            Parent = parent;
 
             foreach (var left in GestureList)
             {

@@ -17,4 +17,48 @@
     align-content: stretch;
     align-items: stretch;
     justify-content: space-between;
+
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+#TopRow_ButtonCol
+{
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: space-between;
+}
+
+#TreeViewContainer
+{
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+.Button
+{
+    background-color: #404040;
+}
+
+.Icon
+{
+    background-color: transparent;
+    width: 24px;
+    height: 24px;
+}
+
+#AddGroupIcon
+{
+    --unity-image: url("/Packages/jp.suzuryg.facial-expression-switcher/Editor/Detail/View/Icon/create_new_folder_FILL0_wght400_GRAD200_opsz48.png");
+}
+
+#RemoveGroupIcon
+{
+    --unity-image: url("/Packages/jp.suzuryg.facial-expression-switcher/Editor/Detail/View/Icon/delete_FILL0_wght400_GRAD200_opsz48.png");
 }

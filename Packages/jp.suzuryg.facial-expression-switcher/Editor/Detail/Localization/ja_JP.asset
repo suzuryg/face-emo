@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HierarchyView_Title: "\u968E\u5C64\u30D3\u30E5\u30FC"
   HierarchyView_AddButton: "\u8FFD\u52A0"
+  HierarchyView_RegisteredMenuItemList: "\u767B\u9332\u3059\u308B\u9805\u76EE"
+  HierarchyView_UnregisteredMenuItemList: "\u767B\u9332\u3057\u306A\u3044\u9805\u76EE"

@@ -67,3 +67,8 @@
     flex-basis: auto;
     align-self: auto;
 }
+
+#LocaleField
+{
+    width: 300px;
+}

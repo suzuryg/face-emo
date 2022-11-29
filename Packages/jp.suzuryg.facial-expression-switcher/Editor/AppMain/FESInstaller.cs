@@ -1,6 +1,12 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
+using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu;
+using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode;
+using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
+using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranch;
+using Suzuryg.FacialExpressionSwitcher.Detail;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
+using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using UnityEngine;
@@ -35,17 +41,51 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
             Container.Bind<UpdateMenuSubject>().AsSingle();
 
-            // TODO: Should it be transient?
-            Container.Bind<SettingRepository>().AsTransient();
+            Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
 
             Container.Bind<ICreateMenuUseCase>().To<CreateMenuUseCase>().AsTransient();
+            Container.Bind<IAddMenuItemUseCase>().To<AddMenuItemUseCase>().AsTransient();
+            Container.Bind<IModifyModePropertiesUseCase>().To<ModifyModePropertiesUseCase>().AsTransient();
+            Container.Bind<IModifyGroupPropertiesUseCase>().To<ModifyGroupPropertiesUseCase>().AsTransient();
+            Container.Bind<IMoveMenuItemUseCase>().To<MoveMenuItemUseCase>().AsTransient();
+            Container.Bind<IRemoveMenuItemUseCase>().To<RemoveMenuItemUseCase>().AsTransient();
+            Container.Bind<IMergeExistingMenuUseCase>().To<MergeExistingMenuUseCase>().AsTransient();
+            Container.Bind<IApplyMenuUseCase>().To<ApplyMenuUseCase>().AsTransient();
+            Container.Bind<IAddBranchUseCase>().To<AddBranchUseCase>().AsTransient();
+            Container.Bind<IModifyBranchPropertiesUseCase>().To<ModifyBranchPropertiesUseCase>().AsTransient();
+            Container.Bind<IChangeBranchOrderUseCase>().To<ChangeBranchOrderUseCase>().AsTransient();
+            Container.Bind<IRemoveBranchUseCase>().To<RemoveBranchUseCase>().AsTransient();
+            Container.Bind<IAddConditionUseCase>().To<AddConditionUseCase>().AsTransient();
+            Container.Bind<IChangeConditionOrderUseCase>().To<ChangeConditionOrderUseCase>().AsTransient();
+            Container.Bind<IModifyConditionUseCase>().To<ModifyConditionUseCase>().AsTransient();
+            Container.Bind<IRemoveConditionUseCase>().To<RemoveConditionUseCase>().AsTransient();
+            Container.Bind<ISetNewAnimationUseCase>().To<SetNewAnimationUseCase>().AsTransient();
+            Container.Bind<ISetExistingAnimationUseCase>().To<SetExistingAnimationUseCase>().AsTransient();
 
             Container.Bind<ICreateMenuPresenter>().To<CreateMenuPresenter>().AsSingle();
+            Container.Bind<IAddMenuItemPresenter>().To<AddMenuItemPresenter>().AsSingle();
+            Container.Bind<IModifyModePropertiesPresenter>().To<ModifyModePropertiesPresenter>().AsSingle();
+            Container.Bind<IModifyGroupPropertiesPresenter>().To<ModifyGroupPropertiesPresenter>().AsSingle();
+            Container.Bind<IMoveMenuItemPresenter>().To<MoveMenuItemPresenter>().AsSingle();
+            Container.Bind<IRemoveMenuItemPresenter>().To<RemoveMenuItemPresenter>().AsSingle();
+            Container.Bind<IMergeExistingMenuPresenter>().To<MergeExistingMenuPresenter>().AsSingle();
+            Container.Bind<IApplyMenuPresenter>().To<ApplyMenuPresenter>().AsSingle();
+            Container.Bind<IAddBranchPresenter>().To<AddBranchPresenter>().AsSingle();
+            Container.Bind<IModifyBranchPropertiesPresenter>().To<ModifyBranchPropertiesPresenter>().AsSingle();
+            Container.Bind<IChangeBranchOrderPresenter>().To<ChangeBranchOrderPresenter>().AsSingle();
+            Container.Bind<IRemoveBranchPresenter>().To<RemoveBranchPresenter>().AsSingle();
+            Container.Bind<IAddConditionPresenter>().To<AddConditionPresenter>().AsSingle();
+            Container.Bind<IChangeConditionOrderPresenter>().To<ChangeConditionOrderPresenter>().AsSingle();
+            Container.Bind<IModifyConditionPresenter>().To<ModifyConditionPresenter>().AsSingle();
+            Container.Bind<IRemoveConditionPresenter>().To<RemoveConditionPresenter>().AsSingle();
+            Container.Bind<ISetNewAnimationPresenter>().To<SetNewAnimationPresenter>().AsSingle();
+            Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
 
             Container.Bind<HierarchyView>().AsTransient();
             Container.Bind<MenuItemListView>().AsTransient();
             Container.Bind<BranchListView>().AsTransient();
             Container.Bind<MainView>().AsTransient();
+            Container.Bind<UseCaseErrorHandler>().AsTransient();
         }
     }
 }

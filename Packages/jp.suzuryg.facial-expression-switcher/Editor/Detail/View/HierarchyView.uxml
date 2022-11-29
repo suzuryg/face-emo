@@ -11,11 +11,15 @@
 	<engine:VisualElement name="RootGrid">
 		<engine:VisualElement name="TopRow">
 			<engine:Label name="TitleLabel"/>
-			<engine:Button name="AddGroupButton"/>
+			<engine:VisualElement name="TopRow_ButtonCol">
+				<engine:Button name="AddGroupButton" class="Button">
+					<engine:Image name="AddGroupIcon" class ="Icon"/>
+				</engine:Button>
+				<engine:Button name="RemoveGroupButton" class="Button">
+					<engine:Image name="RemoveGroupIcon" class ="Icon"/>
+				</engine:Button>
+			</engine:VisualElement>
 		</engine:VisualElement>
-		<engine:VisualElement name="HierarchyRow">
-			<engine:Label text="Hierarchy"/>
-			<engine:IMGUIContainer name="TreeViewContainer"/>
-		</engine:VisualElement>
+		<engine:IMGUIContainer name="TreeViewContainer"/>
 	</engine:VisualElement>
 </engine:UXML>

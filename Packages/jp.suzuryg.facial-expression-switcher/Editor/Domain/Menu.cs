@@ -11,6 +11,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         IMenuItemList Registered { get; }
         IMenuItemList Unregistered { get; }
         IReadOnlyList<int> InsertIndices { get; }
+
+        bool ContainsMode(string id);
+        IMode GetMode(string id);
+        bool ContainsGroup(string id);
+        IGroup GetGroup(string id);
     }
 
     public class Menu : IMenu
@@ -91,22 +96,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                 id = GetNewId();
             }
 
-            var mode = new Mode("NewMode");
+            Mode mode;
+            var name = "NewMode";
 
             if (destination == RegisteredId)
             {
+                mode = new Mode(name, _registered);
                 _registered.Insert(mode, id);
-                mode.Parent = _registered;
             }
             else if (destination== UnregisteredId)
             {
+                mode = new Mode(name, _unregistered);
                 _unregistered.Insert(mode, id);
-                mode.Parent = _unregistered;
             }
             else
             {
+                mode = new Mode(name, _groups[destination]);
                 _groups[destination].Insert(mode, id);
-                mode.Parent = _groups[destination];
             }
 
             _modes[id] = mode;
@@ -130,22 +136,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                 id = GetNewId();
             }
 
-            var group = new Group("NewGroup");
+            Group group;
+            var name = "NewGroup";
 
             if (destination == RegisteredId)
             {
+                group = new Group(name, _registered);
                 _registered.Insert(group, id);
-                group.Parent = _registered;
             }
             else if (destination== UnregisteredId)
             {
+                group = new Group(name, _unregistered);
                 _unregistered.Insert(group, id);
-                group.Parent = _unregistered;
             }
             else
             {
+                group = new Group(name, _groups[destination]);
                 _groups[destination].Insert(group, id);
-                group.Parent = _groups[destination];
             }
 
             _groups[id] = group;

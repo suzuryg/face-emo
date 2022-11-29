@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
+using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
     {
         [SerializeField] private string _launcherObjectPath;
         private MainView _mainView;
+        private Undo.UndoRedoCallback _undoRedoCallback;
 
         public MainWindow()
         {
@@ -61,9 +63,17 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 _mainView.Initialize(rootVisualElement);
 
                 var menuRepository = installer.Container.Resolve<IMenuRepository>();
-                var menu = menuRepository.Load(null);
                 var updateMenuSubject = installer.Container.Resolve<UpdateMenuSubject>();
-                updateMenuSubject.Notify(menu);
+                updateMenuSubject.OnNext(menuRepository.Load(null));
+
+                _undoRedoCallback = () =>
+                {
+                    if (menuRepository is MenuRepository && updateMenuSubject is UpdateMenuSubject)
+                    {
+                        updateMenuSubject.OnNext(menuRepository.Load(null));
+                    }
+                };
+                Undo.undoRedoPerformed += _undoRedoCallback;
             }
         }
 
@@ -71,6 +81,11 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         {
             _mainView?.Dispose();
             _mainView = null;
+
+            if (_undoRedoCallback is Undo.UndoRedoCallback)
+            {
+                Undo.undoRedoPerformed -= _undoRedoCallback;
+            }
         }
 
         private void OnEnable()
