@@ -13,7 +13,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
     // TODO: Is interface needed?
     public class SettingRepository
     {
-        private static readonly string SettingPath = $"Assets/Suzuryg/{CommonSetting.SystemName}/{CommonSetting.SystemName}Setting.asset";
+        private static readonly string SettingPath = $"Assets/Suzuryg/{DomainConstants.SystemName}/{DomainConstants.SystemName}Setting.asset";
 
         public bool Exists()
         {

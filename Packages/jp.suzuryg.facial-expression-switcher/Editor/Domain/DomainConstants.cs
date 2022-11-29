@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Suzuryg.FacialExpressionSwitcher.Domain
 {
-    public class CommonSetting
+    public class DomainConstants
     {
         public static readonly int MenuItemNums = 8;
         public static readonly int MaxModeNums = 256;

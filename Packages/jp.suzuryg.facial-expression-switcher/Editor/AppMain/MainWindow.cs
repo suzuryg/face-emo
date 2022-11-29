@@ -35,14 +35,14 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             {
                 if (!_launcherObjectPath.StartsWith("/"))
                 {
-                    EditorUtility.DisplayDialog(CommonSetting.SystemName, $"{_launcherObjectPath} is not a full path.", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_launcherObjectPath} is not a full path.", "OK");
                     return;
                 }
 
                 var launcherObject = GameObject.Find(_launcherObjectPath);
                 if (launcherObject is null)
                 {
-                    EditorUtility.DisplayDialog(CommonSetting.SystemName, $"{_launcherObjectPath} was not found. Please activate the GameObject.", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_launcherObjectPath} was not found. Please activate the GameObject.", "OK");
                     return;
                 }
 
@@ -52,7 +52,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 launcherObject.SetActive(true);
                 if (anotherObject is GameObject)
                 {
-                    EditorUtility.DisplayDialog(CommonSetting.SystemName, $"{_launcherObjectPath} has duplicate path. Please change GameObject's name.", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_launcherObjectPath} has duplicate path. Please change GameObject's name.", "OK");
                     return;
                 }
 

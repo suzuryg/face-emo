@@ -17,7 +17,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<IMenuApplier>().To<MockMenuApplier>().AsTransient();
             Container.Bind<IAnimationEditor>().To<MockAnimationEditor>().AsTransient();
 
-            if (UseCaseTestSetting.UseActualRepository)
+            if (UseCaseTestConstants.UseActualRepository)
             {
                 Container.Bind<SerializableMenu>().FromNewComponentOnNewGameObject().AsTransient();
                 Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();

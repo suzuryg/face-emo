@@ -39,8 +39,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public void Initialize(VisualElement root)
         {
-            var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{CommonSetting.ViewDirectory}/{nameof(HierarchyView)}.uxml");
-            var style = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{CommonSetting.ViewDirectory}/{nameof(HierarchyView)}.uss");
+            var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{DomainConstants.ViewDirectory}/{nameof(HierarchyView)}.uxml");
+            var style = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{DomainConstants.ViewDirectory}/{nameof(HierarchyView)}.uss");
             NullChecker.Check(uxml, style);
 
             root.styleSheets.Add(style);

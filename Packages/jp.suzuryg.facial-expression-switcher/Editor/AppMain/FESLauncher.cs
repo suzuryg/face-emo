@@ -14,7 +14,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         public static void Create(MenuCommand menuCommand)
         {
             // Create GameObject which has unique name in acitive scene.
-            var baseName = CommonSetting.SystemName;
+            var baseName = DomainConstants.SystemName;
             var objectName = baseName;
             var cnt = 1;
             while (GameObject.Find(objectName))
@@ -25,7 +25,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
             var gameObject = new GameObject(objectName, typeof(FESLauncherComponent));
             GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject);
-            Undo.RegisterCreatedObjectUndo(gameObject, $"Create {CommonSetting.SystemName} Object");
+            Undo.RegisterCreatedObjectUndo(gameObject, $"Create {DomainConstants.SystemName} Object");
             Selection.activeObject = gameObject;
         }
 
@@ -33,7 +33,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         {
             base.OnInspectorGUI();
 
-            if (GUILayout.Button($"Launch {CommonSetting.SystemName}"))
+            if (GUILayout.Button($"Launch {DomainConstants.SystemName}"))
             {
                 if (!EditorApplication.isPlaying)
                 {
@@ -46,12 +46,12 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                     }
                     catch (System.Exception ex)
                     {
-                        EditorUtility.DisplayDialog(CommonSetting.SystemName, $"Failed to launch.\n{ex.ToString()}", "OK");
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Failed to launch.\n{ex.ToString()}", "OK");
                     }
                 }
                 else
                 {
-                    EditorUtility.DisplayDialog(CommonSetting.SystemName, $"Please launch in EditorMode.", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Please launch in EditorMode.", "OK");
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             {
                 if (window.titleContent.text == windowTitle)
                 {
-                    EditorUtility.DisplayDialog(CommonSetting.SystemName, $"This menu's window is opening.", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"This menu's window is opening.", "OK");
                     return;
                 }
             }
@@ -82,7 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
             if (PrefabUtility.IsAnyPrefabInstanceRoot(rootObject))
             {
-                if (EditorUtility.DisplayDialog(CommonSetting.SystemName, "You need to unpack prefab. Continue?", "OK", "Cancel"))
+                if (EditorUtility.DisplayDialog(DomainConstants.SystemName, "You need to unpack prefab. Continue?", "OK", "Cancel"))
                 {
                     PrefabUtility.UnpackPrefabInstance(rootObject, PrefabUnpackMode.Completely, InteractionMode.UserAction);
                     return true;

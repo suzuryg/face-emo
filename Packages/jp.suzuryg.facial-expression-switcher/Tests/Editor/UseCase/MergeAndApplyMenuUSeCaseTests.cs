@@ -59,7 +59,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             useCaseTestsInstaller.Install();
 
             var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
-            var menuId = UseCaseTestSetting.MenuId;
+            var menuId = UseCaseTestConstants.MenuId;
             System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
 
             var existingMenuItems = new List<IExistingMenuItem>();
@@ -82,7 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Assert.That(mockApplyMenuPresenter.Result, Is.EqualTo(ApplyMenuResult.ArgumentNull));
 
             // Menu is not opened
-            if (!UseCaseTestSetting.UseActualRepository)
+            if (!UseCaseTestConstants.UseActualRepository)
             {
                 mergeExistingMenuUseCase.Handle(menuId, new List<IExistingMenuItem>());
                 Assert.That(mockMergeExistingMenuPresenter.Result, Is.EqualTo(MergeExistingMenuResult.MenuDoesNotExist));

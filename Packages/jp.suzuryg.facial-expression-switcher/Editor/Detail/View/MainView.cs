@@ -30,9 +30,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public void Initialize(VisualElement root)
         {
-            var commonStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{CommonSetting.ViewDirectory}/Common.uss");
-            var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{CommonSetting.ViewDirectory}/{nameof(MainView)}.uxml");
-            var style = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{CommonSetting.ViewDirectory}/{nameof(MainView)}.uss");
+            var commonStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{DomainConstants.ViewDirectory}/Common.uss");
+            var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{DomainConstants.ViewDirectory}/{nameof(MainView)}.uxml");
+            var style = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{DomainConstants.ViewDirectory}/{nameof(MainView)}.uss");
             NullChecker.Check(commonStyle, uxml, style);
 
             root.styleSheets.Add(commonStyle);

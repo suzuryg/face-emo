@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase
 {
-    public class UseCaseTestSetting
+    public class UseCaseTestConstants
     {
         public static readonly string MenuId = "UseCaseTestMenuId";
         public static readonly bool UseActualRepository = true;

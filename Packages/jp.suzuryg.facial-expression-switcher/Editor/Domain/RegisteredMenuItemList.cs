@@ -6,7 +6,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 {
     public class RegisteredMenuItemList : MenuItemListBase
     {
-        public override bool IsFull => Order.Count >= CommonSetting.MenuItemNums;
+        public override bool IsFull => Order.Count >= DomainConstants.MenuItemNums;
 
         public IReadOnlyList<int> InsertIndices => _insertIndices;
 
@@ -14,7 +14,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public bool CanGetMergedMenu(IReadOnlyList<IExistingMenuItem> existingMenuItems)
         {
-            if (existingMenuItems is List<IExistingMenuItem> && existingMenuItems.Count <= CommonSetting.MenuItemNums)
+            if (existingMenuItems is List<IExistingMenuItem> && existingMenuItems.Count <= DomainConstants.MenuItemNums)
             {
                 return true;
             }
@@ -75,7 +75,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public bool CanUpdateInsertIndices(MergedMenuItemList mergedMenuItemList)
         {
-            if (mergedMenuItemList is MergedMenuItemList && mergedMenuItemList.Order.Count <= CommonSetting.MenuItemNums)
+            if (mergedMenuItemList is MergedMenuItemList && mergedMenuItemList.Order.Count <= DomainConstants.MenuItemNums)
             {
                 return true;
             }
@@ -106,9 +106,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
             if (insertIndices.Count > 0)
             {
-                if (insertIndices.Min() < 0 || insertIndices.Max() >= CommonSetting.MenuItemNums)
+                if (insertIndices.Min() < 0 || insertIndices.Max() >= DomainConstants.MenuItemNums)
                 {
-                    throw new FacialExpressionSwitcherException($"InsertIndices must be in [{0}, {CommonSetting.MenuItemNums - 1}].");
+                    throw new FacialExpressionSwitcherException($"InsertIndices must be in [{0}, {DomainConstants.MenuItemNums - 1}].");
                 }
             }
 

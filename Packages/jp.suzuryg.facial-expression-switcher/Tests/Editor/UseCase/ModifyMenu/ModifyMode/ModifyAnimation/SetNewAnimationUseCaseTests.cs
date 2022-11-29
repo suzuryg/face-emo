@@ -27,7 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
             useCaseTestsInstaller.Install();
 
             var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
-            var menuId = UseCaseTestSetting.MenuId;
+            var menuId = UseCaseTestConstants.MenuId;
             System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
 
             SetNewAnimationUseCase setNewAnimationUseCase = useCaseTestsInstaller.Container.Resolve<SetNewAnimationUseCase>();
@@ -44,7 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
             // Menu is not opened
             MockAnimationEditor mockAnimationEditor = new MockAnimationEditor();
             var animation = mockAnimationEditor.Create("");
-            if (!UseCaseTestSetting.UseActualRepository)
+            if (!UseCaseTestConstants.UseActualRepository)
             {
                 setNewAnimationUseCase.Handle(menuId, "", "");
                 Assert.That(mockSetNewAnimationPresenter.Result, Is.EqualTo(SetNewAnimationResult.MenuDoesNotExist));

@@ -24,7 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             useCaseTestsInstaller.Install();
 
             var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
-            var menuId = UseCaseTestSetting.MenuId;
+            var menuId = UseCaseTestConstants.MenuId;
 
             CreateMenuUseCase createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
             MockCreateMenuPresenter mockCreateMenuPresenter = useCaseTestsInstaller.Container.Resolve<ICreateMenuPresenter>() as MockCreateMenuPresenter;

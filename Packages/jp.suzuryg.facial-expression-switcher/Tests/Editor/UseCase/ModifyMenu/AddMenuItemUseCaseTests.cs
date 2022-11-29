@@ -24,7 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             useCaseTestsInstaller.Install();
 
             var menuRepository = useCaseTestsInstaller.Container.Resolve<IMenuRepository>();
-            var menuId = UseCaseTestSetting.MenuId;
+            var menuId = UseCaseTestConstants.MenuId;
             System.Func<Menu> loadMenu = () => menuRepository.Load(menuId);
 
             AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
@@ -37,7 +37,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.ArgumentNull));
 
             // Menu does not exist
-            if (!UseCaseTestSetting.UseActualRepository)
+            if (!UseCaseTestConstants.UseActualRepository)
             {
                 addMenuItemUseCase.Handle(menuId, "", AddMenuItemType.Mode);
                 Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.MenuDoesNotExist));
