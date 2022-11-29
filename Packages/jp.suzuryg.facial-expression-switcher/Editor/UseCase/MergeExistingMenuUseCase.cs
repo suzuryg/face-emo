@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using System;
 using System.Collections.Generic;
+using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase
 {
@@ -11,7 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
     public interface IMergeExistingMenuPresenter
     {
-        event Action<MergeExistingMenuResult, MergedMenuItemList, IMenu, string> OnCompleted;
+        IObservable<(MergeExistingMenuResult, MergedMenuItemList, IMenu, string)> Observable { get; }
 
         void Complete(MergeExistingMenuResult mergeExistingMenuResult, MergedMenuItemList mergedMenuItems, in IMenu menu, string errorMessage = "");
     }
@@ -27,11 +28,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
     public class MergeExistingMenuPresenter : IMergeExistingMenuPresenter
     {
-        public event Action<MergeExistingMenuResult, MergedMenuItemList, IMenu, string> OnCompleted;
+        public IObservable<(MergeExistingMenuResult, MergedMenuItemList, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+
+        private Subject<(MergeExistingMenuResult, MergedMenuItemList, IMenu, string)> _subject = new Subject<(MergeExistingMenuResult, MergedMenuItemList, IMenu, string)>();
 
         public void Complete(MergeExistingMenuResult mergeExistingMenuResult, MergedMenuItemList mergedMenuItems, in IMenu menu, string errorMessage = "")
         {
-            OnCompleted(mergeExistingMenuResult, mergedMenuItems, menu, errorMessage);
+            _subject.OnNext((mergeExistingMenuResult, mergedMenuItems, menu, errorMessage));
         }
     }
 

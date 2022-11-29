@@ -10,7 +10,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     {
         public RemoveBranchResult Result { get; private set; }
 
-        public event System.Action<RemoveBranchResult, IMenu, string> OnCompleted;
+        public System.IObservable<(RemoveBranchResult, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         void IRemoveBranchPresenter.Complete(RemoveBranchResult removeBranchResult, in IMenu menu, string errorMessage)
         {

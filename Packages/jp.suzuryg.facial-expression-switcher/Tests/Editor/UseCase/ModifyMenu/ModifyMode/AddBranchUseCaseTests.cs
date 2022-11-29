@@ -10,7 +10,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     {
         public AddBranchResult Result { get; private set; }
 
-        public event System.Action<AddBranchResult, IMenu, string> OnCompleted;
+        public System.IObservable<(AddBranchResult, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         void IAddBranchPresenter.Complete(AddBranchResult addBranchResult, in IMenu menu, string errorMessage)
         {

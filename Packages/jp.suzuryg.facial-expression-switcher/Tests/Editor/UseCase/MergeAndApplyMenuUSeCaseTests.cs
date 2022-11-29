@@ -11,7 +11,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
         public MergedMenuItemList Merged;
 
-        public event System.Action<MergeExistingMenuResult, MergedMenuItemList, IMenu, string> OnCompleted;
+        public System.IObservable<(MergeExistingMenuResult, MergedMenuItemList, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         public void Complete(MergeExistingMenuResult mergeExistingMenuItemResult, MergedMenuItemList mergedMenuItems, in IMenu menu, string errorMessage)
         {
@@ -24,7 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         public ApplyMenuResult Result { get; private set; }
 
-        public event System.Action<ApplyMenuResult, IMenu, string> OnCompleted;
+        public System.IObservable<(ApplyMenuResult, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         public void Complete(ApplyMenuResult applyMenuResult, in IMenu menu, string errorMessage = "")
         {

@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using System;
 using System.Collections.Generic;
+using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation
 {
@@ -11,7 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
 
     public interface ISetNewAnimationPresenter
     {
-        event Action<SetNewAnimationResult, IMenu, string> OnCompleted;
+        IObservable<(SetNewAnimationResult, IMenu, string)> Observable { get; }
 
         void Complete(SetNewAnimationResult setNewAnimationResult, in IMenu menu, string errorMessage = "");
     }
@@ -27,11 +28,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
 
     public class SetNewAnimationPresenter : ISetNewAnimationPresenter
     {
-        public event Action<SetNewAnimationResult, IMenu, string> OnCompleted;
+        public IObservable<(SetNewAnimationResult, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+
+        private Subject<(SetNewAnimationResult, IMenu, string)> _subject = new Subject<(SetNewAnimationResult, IMenu, string)>();
 
         public void Complete(SetNewAnimationResult setNewAnimationResult, in IMenu menu, string errorMessage = "")
         {
-            OnCompleted(setNewAnimationResult, menu, errorMessage);
+            _subject.OnNext((setNewAnimationResult, menu, errorMessage));
         }
     }
 

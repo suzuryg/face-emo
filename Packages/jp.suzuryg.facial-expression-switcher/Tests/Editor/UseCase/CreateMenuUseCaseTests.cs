@@ -7,7 +7,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         public CreateMenuResult Result { get; private set; }
 
-        public event System.Action<CreateMenuResult, IMenu, string> OnCompleted;
+        public System.IObservable<(CreateMenuResult, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         void ICreateMenuPresenter.Complete(CreateMenuResult createMenuResult, in IMenu menu, string errorMessage)
         {

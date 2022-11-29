@@ -10,7 +10,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
     {
         public RemoveConditionResult Result { get; private set; }
 
-        public event System.Action<RemoveConditionResult, IMenu, string> OnCompleted;
+        public System.IObservable<(RemoveConditionResult, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         void IRemoveConditionPresenter.Complete(RemoveConditionResult removeConditionResult, in IMenu menu, string errorMessage)
         {

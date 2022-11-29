@@ -10,7 +10,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
     {
         public SetExistingAnimationResult Result { get; private set; }
 
-        public event System.Action<SetExistingAnimationResult, IMenu, string> OnCompleted;
+        public System.IObservable<(SetExistingAnimationResult, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         void ISetExistingAnimationPresenter.Complete(SetExistingAnimationResult setExistingAnimationResult, in IMenu menu, string errorMessage)
         {

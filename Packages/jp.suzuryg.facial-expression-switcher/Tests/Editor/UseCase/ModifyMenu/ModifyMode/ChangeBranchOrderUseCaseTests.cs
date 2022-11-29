@@ -10,7 +10,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     {
         public ChangeBranchOrderResult Result { get; private set; }
 
-        public event System.Action<ChangeBranchOrderResult, IMenu, string> OnCompleted;
+        public System.IObservable<(ChangeBranchOrderResult, IMenu, string)> Observable => throw new System.NotImplementedException();
 
         void IChangeBranchOrderPresenter.Complete(ChangeBranchOrderResult changeBranchOrderResult, in IMenu menu, string errorMessage)
         {

@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using System;
 using System.Collections.Generic;
+using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranch
 {
@@ -11,7 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 
     public interface IAddConditionPresenter
     {
-        event Action<AddConditionResult, IMenu, string> OnCompleted;
+        IObservable<(AddConditionResult, IMenu, string)> Observable { get; }
 
         void Complete(AddConditionResult addConditionResult, in IMenu menu, string errorMessage = "");
     }
@@ -27,11 +28,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 
     public class AddConditionPresenter : IAddConditionPresenter
     {
-        public event Action<AddConditionResult, IMenu, string> OnCompleted;
+        public IObservable<(AddConditionResult, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+
+        private Subject<(AddConditionResult, IMenu, string)> _subject = new Subject<(AddConditionResult, IMenu, string)>();
 
         public void Complete(AddConditionResult addConditionResult, in IMenu menu, string errorMessage = "")
         {
-            OnCompleted(addConditionResult, menu, errorMessage);
+            _subject.OnNext((addConditionResult, menu, errorMessage));
         }
     }
 
