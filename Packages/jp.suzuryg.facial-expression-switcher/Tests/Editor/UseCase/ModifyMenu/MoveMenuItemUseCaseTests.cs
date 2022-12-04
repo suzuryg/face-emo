@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
@@ -30,13 +31,28 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             MoveMenuItemUseCase moveMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<MoveMenuItemUseCase>();
             MockMoveMenuItemPresenter mockMoveMenuItemPresenter = useCaseTestsInstaller.Container.Resolve<IMoveMenuItemPresenter>() as MockMoveMenuItemPresenter;
 
-            // null
+            // null or empty
             moveMenuItemUseCase.Handle(null, "", "");
-            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNull));
-            moveMenuItemUseCase.Handle("", null, "");
-            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNull));
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNullOrEmpty));
+
+            string nullId = null;
+            moveMenuItemUseCase.Handle("", nullId, "");
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNullOrEmpty));
+
+            List<string> nullList = null;
+            moveMenuItemUseCase.Handle("", nullList, "");
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNullOrEmpty));
+
+            nullList = new List<string>();
+            moveMenuItemUseCase.Handle("", nullList, "");
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNullOrEmpty));
+
+            nullList.Add(null);
+            moveMenuItemUseCase.Handle("", nullList, "");
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNullOrEmpty));
+
             moveMenuItemUseCase.Handle("", "", null);
-            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNull));
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.ArgumentNullOrEmpty));
 
             // Menu is not opened
             if (!UseCaseTestConstants.UseActualRepository)
@@ -173,7 +189,31 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.InvalidDestination));
 
             // swap
-            moveMenuItemUseCase.Handle(menuId, m0, Menu.RegisteredId, 6);
+            moveMenuItemUseCase.Handle(menuId, m1, Menu.RegisteredId, 5);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
+            Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m3"));
+            Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m1"));
+            Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m4"));
+            Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m5"));
+            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
+
+            moveMenuItemUseCase.Handle(menuId, m1, Menu.RegisteredId, 2);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m1"));
+            Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m2"));
+            Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m3"));
+            Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m4"));
+            Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m5"));
+            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
+
+            moveMenuItemUseCase.Handle(menuId, m0, Menu.RegisteredId, 7);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
             Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
@@ -185,7 +225,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
-            moveMenuItemUseCase.Handle(menuId, m8, g0, 5);
+            moveMenuItemUseCase.Handle(menuId, m8, g0, 6);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
             Assert.That(loadMenu().Registered.GetGroupAt(0).Count, Is.EqualTo(8));
             Assert.That(loadMenu().Registered.GetGroupAt(0).GetGroupAt(0).DisplayName, Is.EqualTo("g1"));
@@ -388,6 +428,250 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(2));
             Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
             Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g0"));
+
+            // multiple selection
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m7, m9, m11, m8, m12, m13 }, Menu.RegisteredId);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.InvalidDestination));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m2, m3, m0 }, Menu.RegisteredId, 6);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g1"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
+            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m15"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(6));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m7"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(2).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(3).DisplayName, Is.EqualTo("m8"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(4).DisplayName, Is.EqualTo("m12"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(5).DisplayName, Is.EqualTo("m13"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(2).Count, Is.EqualTo(3));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(0).DisplayName, Is.EqualTo("m16"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(1).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(2).DisplayName, Is.EqualTo("m4"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g0"));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m7, m11, m12 }, g1, 2);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g1"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
+            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m15"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(3));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m8"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(2).DisplayName, Is.EqualTo("m13"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(2).Count, Is.EqualTo(6));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(0).DisplayName, Is.EqualTo("m16"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(1).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(2).DisplayName, Is.EqualTo("m7"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(3).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(4).DisplayName, Is.EqualTo("m12"));
+            Assert.That(loadMenu().Registered.GetGroupAt(2).GetModeAt(5).DisplayName, Is.EqualTo("m4"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g0"));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { g1, m0, m15 }, Menu.UnregisteredId, 1);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(5));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m6"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).Count, Is.EqualTo(3));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(1).DisplayName, Is.EqualTo("m8"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(2).DisplayName, Is.EqualTo("m13"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(6));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m16"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(2).DisplayName, Is.EqualTo("m7"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(3).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(4).DisplayName, Is.EqualTo("m12"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(5).DisplayName, Is.EqualTo("m4"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(2).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(3).DisplayName, Is.EqualTo("m15"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).DisplayName, Is.EqualTo("g0"));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m7, m11, m4 }, g1, 1);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(5));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m6"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).Count, Is.EqualTo(3));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(1).DisplayName, Is.EqualTo("m8"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(2).DisplayName, Is.EqualTo("m13"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(6));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m16"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m7"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(2).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(3).DisplayName, Is.EqualTo("m4"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(4).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(5).DisplayName, Is.EqualTo("m12"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(2).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(3).DisplayName, Is.EqualTo("m15"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(4).DisplayName, Is.EqualTo("g0"));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m8, m7, m0 }, Menu.RegisteredId, 2);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m7"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
+            Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(1).DisplayName, Is.EqualTo("m13"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m16"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(2).DisplayName, Is.EqualTo("m4"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(3).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(4).DisplayName, Is.EqualTo("m12"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(4));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(2).DisplayName, Is.EqualTo("m15"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).DisplayName, Is.EqualTo("g0"));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m16, m11, m4 }, g0);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m7"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
+            Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(1).DisplayName, Is.EqualTo("m13"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(2).DisplayName, Is.EqualTo("m16"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(3).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(4).DisplayName, Is.EqualTo("m4"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m12"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(4));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(2).DisplayName, Is.EqualTo("m15"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).DisplayName, Is.EqualTo("g0"));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m9, m13, m16 }, g1, int.MaxValue);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m7"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
+            Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(1).DisplayName, Is.EqualTo("m4"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m12"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(2).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(3).DisplayName, Is.EqualTo("m13"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(4).DisplayName, Is.EqualTo("m16"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(4));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(2).DisplayName, Is.EqualTo("m15"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).DisplayName, Is.EqualTo("g0"));
+
+            moveMenuItemUseCase.Handle(menuId, new List<string>() { m16, m14, m12 }, g0, -1);
+            Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
+
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
+            Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
+            Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
+            Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m7"));
+            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
+            Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
+            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m16"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(1).DisplayName, Is.EqualTo("m14"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(2).DisplayName, Is.EqualTo("m12"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(3).DisplayName, Is.EqualTo("m11"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(4).DisplayName, Is.EqualTo("m4"));
+
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m13"));
+
+            Assert.That(loadMenu().Unregistered.Count, Is.EqualTo(4));
+            Assert.That(loadMenu().Unregistered.GetModeAt(0).DisplayName, Is.EqualTo("m10"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(1).DisplayName, Is.EqualTo("g1"));
+            Assert.That(loadMenu().Unregistered.GetModeAt(2).DisplayName, Is.EqualTo("m15"));
+            Assert.That(loadMenu().Unregistered.GetGroupAt(3).DisplayName, Is.EqualTo("g0"));
         }
     }
 }

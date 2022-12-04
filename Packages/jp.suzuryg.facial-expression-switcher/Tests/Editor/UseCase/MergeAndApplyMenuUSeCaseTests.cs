@@ -333,10 +333,10 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             // Re-merge with more inner menu items
             MoveMenuItemUseCase moveMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<MoveMenuItemUseCase>();
 
-            moveMenuItemUseCase.Handle(menuId, m2, Menu.RegisteredId, 4);
-            moveMenuItemUseCase.Handle(menuId, m3, Menu.RegisteredId, 5);
-            moveMenuItemUseCase.Handle(menuId, m4, Menu.RegisteredId, 6);
-            moveMenuItemUseCase.Handle(menuId, m5, Menu.RegisteredId, 7);
+            moveMenuItemUseCase.Handle(menuId, m2, Menu.RegisteredId);
+            moveMenuItemUseCase.Handle(menuId, m3, Menu.RegisteredId);
+            moveMenuItemUseCase.Handle(menuId, m4, Menu.RegisteredId);
+            moveMenuItemUseCase.Handle(menuId, m5, Menu.RegisteredId);
 
             Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
             Assert.That(loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
@@ -483,10 +483,10 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Assert.That(mockMergeExistingMenuPresenter.Merged.GetModeAt(3).DisplayName, Is.EqualTo("m0"));
 
             // Re-order inner menu items and re-merge
-            moveMenuItemUseCase.Handle(menuId, g0, Menu.RegisteredId, 0);
-            moveMenuItemUseCase.Handle(menuId, g1, Menu.RegisteredId, 1);
-            moveMenuItemUseCase.Handle(menuId, m0, Menu.RegisteredId, 2);
-            moveMenuItemUseCase.Handle(menuId, m1, Menu.RegisteredId, 3);
+            moveMenuItemUseCase.Handle(menuId, g0, Menu.RegisteredId);
+            moveMenuItemUseCase.Handle(menuId, g1, Menu.RegisteredId);
+            moveMenuItemUseCase.Handle(menuId, m0, Menu.RegisteredId);
+            moveMenuItemUseCase.Handle(menuId, m1, Menu.RegisteredId);
 
             Assert.That(loadMenu().Registered.Count, Is.EqualTo(4));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));

@@ -10,6 +10,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         IReadOnlyList<string> Order { get; }
 
         bool IsFull { get; }
+        int FreeSpace { get; }
 
         MenuItemType GetType(string id);
         IMode GetMode(string id);
@@ -32,6 +33,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public int Count => _order.Count;
         public IReadOnlyList<string> Order => _order;
         public abstract bool IsFull { get; }
+        public abstract int FreeSpace { get; }
 
         public MenuItemType GetType(string id) => _types[id];
         public IMode GetMode(string id) => _modes[id];

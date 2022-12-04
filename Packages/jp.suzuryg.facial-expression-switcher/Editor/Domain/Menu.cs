@@ -194,28 +194,43 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
         }
 
-        public bool CanMoveMenuItemFrom(string id) => ContainsMode(id) || ContainsGroup(id);
-
-        public bool CanMoveMenuItemTo(string id, string destination)
+        public bool CanMoveMenuItemFrom(IReadOnlyList<string> ids)
         {
-            if (id is null || destination is null)
+            foreach (var id in ids)
+            {
+                if (!ContainsMode(id) && !ContainsGroup(id))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool CanMoveMenuItemTo(IReadOnlyList<string> ids, string destination)
+        {
+            // Check null
+            if (ids is null || ids.Contains(null) || destination is null)
             {
                 return false;
             }
-            else if (id == destination)
+            // Check source != destination
+            else if (ids.Contains(destination))
             {
                 return false;
             }
+            // Check free space
             else if (destination == RegisteredId)
             {
-                if (Registered.Order.Contains(id))
+                int count = 0;
+                foreach (var id in ids)
                 {
-                    return true;
+                    if (!Registered.Order.Contains(id))
+                    {
+                        count++;
+                    }
                 }
-                else
-                {
-                    return !Registered.IsFull;
-                }
+
+                return count <= Registered.FreeSpace;
             }
             else if (destination == UnregisteredId)
             {
@@ -223,68 +238,108 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
             else if (ContainsGroup(destination))
             {
-                if (_groups[destination].Order.Contains(id))
+                int count = 0;
+                foreach (var id in ids)
                 {
-                    return true;
+                    if (!_groups[destination].Order.Contains(id))
+                    {
+                        count++;
+                    }
                 }
-                else
-                {
-                    return !_groups[destination].IsFull;
-                }
+
+                return count <= _groups[destination].FreeSpace;
             }
+            // Exception
             else
             {
                 return false;
             }
         }
 
-        public void MoveMenuItem(string id, string destination, int? index = null)
+        public void MoveMenuItem(IReadOnlyList<string> ids, string destination, int? index = null)
         {
-            NullChecker.Check(id, destination);
-
-            if (ContainsMode(id))
+            // Check null
+            NullChecker.Check(ids, destination);
+            for (int i = 0; i < ids.Count; i++)
             {
-                _modes[id].Parent.Remove(id);
-
-                if (destination == RegisteredId)
+                if (ids[i] is null)
                 {
-                    _registered.Insert(_modes[id], id, index);
-                    _modes[id].Parent = _registered;
-                }
-                else if (destination == UnregisteredId)
-                {
-                    _unregistered.Insert(_modes[id], id, index);
-                    _modes[id].Parent = _unregistered;
-                }
-                else
-                {
-                    _groups[destination].Insert(_modes[id], id, index);
-                    _modes[id].Parent = _groups[destination];
+                    throw new FacialExpressionSwitcherException($"ids[{i}] is null.");
                 }
             }
-            else if (ContainsGroup(id))
-            {
-                _groups[id].Parent.Remove(id);
 
-                if (destination == RegisteredId)
-                {
-                    _registered.Insert(_groups[id], id, index);
-                    _groups[id].Parent = _registered;
-                }
-                else if (destination == UnregisteredId)
-                {
-                    _unregistered.Insert(_groups[id], id, index);
-                    _groups[id].Parent = _unregistered;
-                }
-                else
-                {
-                    _groups[destination].Insert(_groups[id], id, index);
-                    _groups[id].Parent = _groups[destination];
-                }
+            // Select destination list
+            MenuItemListBase destList;
+            if (destination == RegisteredId)
+            {
+                destList = _registered;
+            }
+            else if (destination == UnregisteredId)
+            {
+                destList = _unregistered;
             }
             else
             {
-                throw new FacialExpressionSwitcherException("This menu does not contain the specified MenuItem.");
+                destList = _groups[destination];
+            }
+
+            // Clamping
+            if (!index.HasValue || index.Value > destList.Count)
+            {
+                index = destList.Count;
+            }
+            else if (index.Value < 0)
+            {
+                index = 0;
+            }
+
+            // Calculate index after removal
+            int indexAfterRemoval = index.Value;
+            for (int i = 0; i < destList.Order.Count && i < index.Value; i++)
+            {
+                if (ids.Contains(destList.Order[i]))
+                {
+                    indexAfterRemoval--;
+                }
+            }
+            index = indexAfterRemoval;
+
+            // Remove the moving targets
+            foreach (var id in ids)
+            {
+                if (ContainsMode(id))
+                {
+                    _modes[id].Parent.Remove(id);
+                }
+                else if (ContainsGroup(id))
+                {
+                    _groups[id].Parent.Remove(id);
+                }
+                else
+                {
+                    throw new FacialExpressionSwitcherException("This menu does not contain the specified MenuItem.");
+                }
+            }
+
+            // Add to the specified index in reverse order
+            var reversed = new List<string>(ids);
+            reversed.Reverse();
+            foreach (var id in reversed)
+            {
+                if (ContainsMode(id))
+                {
+                    destList.Insert(_modes[id], id, index);
+                    _modes[id].Parent = destList;
+                }
+                else if (ContainsGroup(id))
+                {
+                    destList.Insert(_groups[id], id, index);
+                    _groups[id].Parent = destList;
+                }
+                else
+                {
+                    throw new FacialExpressionSwitcherException("This menu does not contain the specified MenuItem.");
+                }
             }
         }
 
@@ -300,7 +355,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
             _registered.UpdateInsertIndices(mergedMenuItemList);
 
+            // Insert to the head sequencially
             var reorderedIds = mergedMenuItemList.Order.Where(x => mergedMenuItemList.ContainsMode(x) || mergedMenuItemList.ContainsGroup(x)).ToList();
+            reorderedIds.Reverse();
             for (int i = 0; i < reorderedIds.Count; i++)
             {
                 var id = reorderedIds[i];
@@ -308,7 +365,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                 {
                     throw new FacialExpressionSwitcherException("Merged menu contains invalid menu items.");
                 }
-                MoveMenuItem(id, RegisteredId, i);
+                MoveMenuItem(new List<string>(){ id }, RegisteredId, -1);
             }
         }
 

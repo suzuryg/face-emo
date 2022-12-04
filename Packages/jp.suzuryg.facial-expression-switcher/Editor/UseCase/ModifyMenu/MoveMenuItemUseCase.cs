@@ -1,5 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
@@ -7,6 +9,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     public interface IMoveMenuItemUseCase
     {
         void Handle(string menuId, string source, string destination, int? index = null);
+        void Handle(string menuId, IReadOnlyList<string> sources, string destination, int? index = null);
     }
 
     public interface IMoveMenuItemPresenter
@@ -22,7 +25,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
         MenuDoesNotExist,
         InvalidSource,
         InvalidDestination,
-        ArgumentNull,
+        ArgumentNullOrEmpty,
         Error,
     }
 
@@ -51,11 +54,16 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
         public void Handle(string menuId, string source, string destination, int? index = null)
         {
+            Handle(menuId, new List<string>() { source }, destination, index);
+        }
+
+        public void Handle(string menuId, IReadOnlyList<string> sources, string destination, int? index = null)
+        {
             try
             {
-                if (menuId is null || source is null || destination is null)
+                if (menuId is null || sources is null || sources.Contains(null) || sources.Count == 0 || destination is null)
                 {
-                    _moveMenuItemPresenter.Complete(MoveMenuItemResult.ArgumentNull, null);
+                    _moveMenuItemPresenter.Complete(MoveMenuItemResult.ArgumentNullOrEmpty, null);
                     return;
                 }
 
@@ -67,19 +75,19 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
                 var menu = _menuRepository.Load(menuId);
 
-                if (!menu.CanMoveMenuItemFrom(source))
+                if (!menu.CanMoveMenuItemFrom(sources))
                 {
                     _moveMenuItemPresenter.Complete(MoveMenuItemResult.InvalidSource, menu);
                     return;
                 }
 
-                if (!menu.CanMoveMenuItemTo(source, destination))
+                if (!menu.CanMoveMenuItemTo(sources, destination))
                 {
                     _moveMenuItemPresenter.Complete(MoveMenuItemResult.InvalidDestination, menu);
                     return;
                 }
 
-                menu.MoveMenuItem(source, destination, index);
+                menu.MoveMenuItem(sources, destination, index);
                 _menuRepository.Save(menuId, menu, "MoveMenuItem");
                 _moveMenuItemPresenter.Complete(MoveMenuItemResult.Succeeded, menu);
             }

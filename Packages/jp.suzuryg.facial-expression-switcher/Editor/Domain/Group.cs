@@ -15,6 +15,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     {
         public override bool IsFull => Order.Count >= DomainConstants.MenuItemNums;
 
+        public override int FreeSpace => DomainConstants.MenuItemNums - Count;
+
         public string DisplayName { get; set; }
 
         IMenuItemList IGroup.Parent => Parent;
