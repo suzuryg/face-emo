@@ -8,5 +8,10 @@
 	xsi:schemaLocation="UnityEngine.UIElements ../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
 						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
 >
-	<engine:Label text="BranchList"/>
+	<engine:VisualElement name="RootGrid">
+		<engine:VisualElement name="TopRow">
+			<engine:Label name="TitleLabel"/>
+		</engine:VisualElement>
+		<engine:IMGUIContainer name="BranchListContainer"/>
+	</engine:VisualElement>
 </engine:UXML>

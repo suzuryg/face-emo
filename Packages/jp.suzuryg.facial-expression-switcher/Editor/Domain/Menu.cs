@@ -6,8 +6,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 {
     public interface IMenu
     {
+        Avatar Avatar { get; }
         bool WriteDefaults { get; }
         double TransitionDurationSeconds { get; }
+        string DefaultSelection { get; }
+
         IMenuItemList Registered { get; }
         IMenuItemList Unregistered { get; }
         IReadOnlyList<int> InsertIndices { get; }
@@ -23,20 +26,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public static readonly string RegisteredId = "Registered";
         public static readonly string UnregisteredId = "UnRegistered";
 
+        public Avatar Avatar { get; set; }
         public bool WriteDefaults { get; set; } = false;
         public double TransitionDurationSeconds { get; set; } = 0.1;
+        public string DefaultSelection { get; private set; }
+
         public IMenuItemList Registered => _registered;
         public IMenuItemList Unregistered => _unregistered;
         public IReadOnlyList<int> InsertIndices => _registered.InsertIndices;
 
-        private IAvatar _avatar;
-        private Mode _defaultSelection;
         private RegisteredMenuItemList _registered = new RegisteredMenuItemList();
         private UnregisteredMenuItemList _unregistered = new UnregisteredMenuItemList();
         private Dictionary<string, Mode> _modes = new Dictionary<string, Mode>();
         private Dictionary<string, Group> _groups = new Dictionary<string, Group>();
 
-        public bool ContainsMode(string id) => _modes.ContainsKey(id);
+        public bool ContainsMode(string id)
+        {
+            return id is string && _modes.ContainsKey(id);
+        }
 
         public IMode GetMode(string id) => _modes[id];
 
@@ -54,9 +61,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             mode.MouthTrackingControl = mouthTrackingControl ?? mode.MouthTrackingControl;
         }
 
-        public bool ContainsGroup(string id) => _groups.ContainsKey(id);
+        public bool ContainsGroup(string id)
+        {
+            return id is string && _groups.ContainsKey(id);
+        }
 
         public IGroup GetGroup(string id) => _groups[id];
+
+        public bool CanSetDefaultSelectionTo(string id) => ContainsMode(id);
+
+        public void SetDefaultSelection(string id)
+        {
+            if (ContainsMode(id))
+            {
+                DefaultSelection = id;
+            }
+        }
 
         public void ModifyGroupProperties(string id, string displayName = null)
         {
@@ -329,12 +349,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                 if (ContainsMode(id))
                 {
                     destList.Insert(_modes[id], id, index);
-                    _modes[id].Parent = destList;
+                    _modes[id].ChangeParent(destList);
                 }
                 else if (ContainsGroup(id))
                 {
                     destList.Insert(_groups[id], id, index);
-                    _groups[id].Parent = destList;
+                    _groups[id].ChangeParent(destList);
                 }
                 else
                 {

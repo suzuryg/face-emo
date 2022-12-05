@@ -36,7 +36,31 @@
     align-self: auto;
 }
 
-#MenuRow
+#HierarchyView
+{
+    flex-grow: 0.5;
+    flex-shrink: 1.0;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+#MenuItemListView
+{
+    flex-grow: 1.0;
+    flex-shrink: 1.0;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+#BranchListView
+{
+    flex-grow: 3.0;
+    flex-shrink: 1.0;
+    flex-basis: auto;
+    align-self: auto;
+}
+
+#SettingView
 {
     flex-grow: 0;
     flex-shrink: 0;
@@ -44,31 +68,3 @@
     align-self: auto;
 }
 
-#HierarchyControl
-{
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
-    align-self: auto;
-}
-
-#MenuItemListControl
-{
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
-    align-self: auto;
-}
-
-#BranchListControl
-{
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
-    align-self: auto;
-}
-
-#LocaleField
-{
-    width: 300px;
-}

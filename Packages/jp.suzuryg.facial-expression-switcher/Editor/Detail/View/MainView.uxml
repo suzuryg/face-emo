@@ -10,13 +10,10 @@
 >
 	<engine:VisualElement name="RootGrid">
 		<engine:VisualElement name="MainRow" class="GridItem">
-			<engine:VisualElement name="HierarchyControl" class="GridItem"/>
-			<engine:VisualElement name="MenuItemListControl" class="GridItem"/>
-			<engine:VisualElement name="BranchListControl" class="GridItem"/>
+			<engine:VisualElement name="HierarchyView" class="GridItem"/>
+			<engine:VisualElement name="MenuItemListView" class="GridItem"/>
+			<engine:VisualElement name="BranchListView" class="GridItem"/>
 		</engine:VisualElement>
-
-		<engine:VisualElement name="MenuRow" class="GridItem">
-			<editor:EnumField name="LocaleField" label="Dummy"/>
-		</engine:VisualElement>
+		<engine:VisualElement name="SettingView" class="GridItem"/>
 	</engine:VisualElement>
 </engine:UXML>

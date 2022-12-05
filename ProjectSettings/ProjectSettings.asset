@@ -625,7 +625,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: VRC_SDK_VRCSDK3
+    1: VRC_SDK_VRCSDK3;TPS
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

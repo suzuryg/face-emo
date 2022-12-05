@@ -12,9 +12,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public IReadOnlyList<int> InsertIndices => _insertIndices;
 
+        public override MenuItemListBase Parent => null;
+
         private List<int> _insertIndices = new List<int>();
 
-        public bool CanGetMergedMenu(IReadOnlyList<IExistingMenuItem> existingMenuItems)
+        public override string GetId() => Menu.RegisteredId;
+
+         public bool CanGetMergedMenu(IReadOnlyList<IExistingMenuItem> existingMenuItems)
         {
             if (existingMenuItems is List<IExistingMenuItem> && existingMenuItems.Count <= DomainConstants.MenuItemNums)
             {

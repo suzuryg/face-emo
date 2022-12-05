@@ -9,6 +9,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         int Count { get; }
         IReadOnlyList<string> Order { get; }
 
+        IMenuItemList Parent { get; }
+        string GetId();
+
         bool IsFull { get; }
         int FreeSpace { get; }
 
@@ -32,6 +35,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     {
         public int Count => _order.Count;
         public IReadOnlyList<string> Order => _order;
+
+        IMenuItemList IMenuItemList.Parent => Parent;
+        public abstract MenuItemListBase Parent { get; }
+        public abstract string GetId();
+
         public abstract bool IsFull { get; }
         public abstract int FreeSpace { get; }
 

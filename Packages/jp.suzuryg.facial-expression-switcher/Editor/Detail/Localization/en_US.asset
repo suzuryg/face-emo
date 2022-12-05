@@ -12,6 +12,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400add5ab2f7cbf448558d4a8505230b, type: 3}
   m_Name: en_US
   m_EditorClassIdentifier: 
-  Sample01: "\u30B5\u30F3\u30D7\u30EB01"
-  Sapmle02: "\u30B5\u30F3\u30D7\u30EB02"
-  Sapmle03: "\u30B5\u30F3\u30D7\u30EB03"
+  MainView_Language: Language
+  MainView_UpdateThumbnails: Update Thumbnails
+  HierarchyView_Title: HierarchyView
+  HierarchyView_RegisteredMenuItemList: ItemsToRegister
+  HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
+  MenuItemListView_Title: MenuItemListView
+  MenuItemListView_UseAnimationNameAsDisplayName: Use Animation Name As  Mode Name
+  MenuItemListView_Blinking: Blinking
+  MenuItemListView_LipSync: Lip Sync
+  MenuItemListView_Enable: Enable
+  MenuItemListView_Disable: Disable
+  MenuItemListView_Empty: This group is empty.
+  BranchListView_Title: BranchView
+  BranchListView_UseLeftTrigger: Use Left Trigger
+  BranchListView_UseRightTrigger: Use Right Trigger
+  BranchListView_LeftTriggerAnimation: Left Trigger
+  BranchListView_RightTriggerAnimation: Right Trigger
+  BranchListView_BothTriggersAnimation: Both Triggers
+  BranchListView_EmptyBranch: There are no branches.
+  BranchListView_EmptyCondition: There are no conditions.
+  BranchListView_Condition: Conditions
+  BranchListView_Left: LeftHand
+  BranchListView_Right: RightHand
+  BranchListView_OneSide: OneHand
+  BranchListView_Either: EitherHands
+  BranchListView_Both: BothHands
+  BranchListView_Neutral: Neutral
+  BranchListView_Fist: Fist
+  BranchListView_HandOpen: HandOpen
+  BranchListView_Fingerpoint: Fingerpoint
+  BranchListView_Victory: Victory
+  BranchListView_RockNRoll: RockNRoll
+  BranchListView_HandGun: HandGun
+  BranchListView_ThumbsUp: ThumbsUp
+  BranchListView_Equals: Equals
+  BranchListView_NotEqual: NotEqual
+  GestureTableView_Left: 
+  GestureTableView_Right: 
+  GestureTableView_Neutral: Neutral
+  GestureTableView_Fist: Fist
+  GestureTableView_HandOpen: HandOpen
+  GestureTableView_Fingerpoint: Fingerpoint
+  GestureTableView_Victory: Victory
+  GestureTableView_RockNRoll: RockNRoll
+  GestureTableView_HandGun: HandGun
+  GestureTableView_ThumbsUp: ThumbsUp

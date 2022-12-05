@@ -14,5 +14,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         public static string IconDirectory => $"{ViewDirectory}/Icon";
         public static string LocalizationDirectory => $"Packages/{PackageName}/Editor/Detail/Localization";
         public static readonly string DragAndDropDataKey_MenuItemIds = $"{DomainConstants.SystemName}_MenuItemIds";
+
+        public static readonly int MinMainThumbnailSize = 100;
+        public static readonly int MaxMainThumbnailSize = 300;
+        public static readonly string KeyMainThumbnailSize = "MainThumbnailSize";
+
+        public static readonly int MinGestureThumbnailSize = 100;
+        public static readonly int MaxGestureThumbnailSize = 300;
+        public static readonly string KeyGestureThumbnailSize = "GestureThumbnailSize";
     }
 }

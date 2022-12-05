@@ -7,9 +7,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     public interface IGroup : IMenuItemList
     {
         string DisplayName { get; }
-
-        IMenuItemList Parent { get; }
-        string GetId();
     }
 
     public class Group : MenuItemListBase, IGroup
@@ -20,16 +17,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public string DisplayName { get; set; }
 
-        IMenuItemList IGroup.Parent => Parent;
-        public MenuItemListBase Parent { get; set; }
+        public override MenuItemListBase Parent => _parent;
+        private MenuItemListBase _parent;
 
         public Group(string displayName, MenuItemListBase parent)
         {
             DisplayName = displayName;
-            Parent = parent;
+            _parent = parent;
         }
 
-        public string GetId()
+        public void ChangeParent(MenuItemListBase parent)
+        {
+            _parent = parent;
+        }
+
+        public override string GetId()
         {
             foreach (var id in Parent.Order)
             {

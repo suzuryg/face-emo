@@ -15,127 +15,43 @@ using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 {
-    public class HierarchyTreeElement : TreeView
+    public class HierarchyTreeElement : TreeElementBase
     {
-        private static readonly int RootId = int.MinValue;
+        private static readonly Color SelectedRowColor = new Color(0f, 0.5f, 1f, 0.4f);
 
+        public IObservable<(string menuItemId, string displayName)> OnModeRenamed => _onModeRenamed.AsObservable();
         public IObservable<(string menuItemId, string displayName)> OnGroupRenamed => _onGroupRenamed.AsObservable();
-        public IObservable<(IMenu menu, IReadOnlyList<string> menuItemIds)> OnSelectionChanged => _onSelectionChanged.AsObservable();
-        public IObservable<(IReadOnlyList<string> source, string destination, int? index)> OnDropped => _onDropped.AsObservable();
 
-        private IMenu _menu;
-        private Dictionary<string, int> _menuItemIdToElementId = new Dictionary<string, int>();
+        private Subject<(string menuItemId, string displayName)> _onModeRenamed = new Subject<(string menuItemId, string displayName)>();
         private Subject<(string menuItemId, string displayName)> _onGroupRenamed = new Subject<(string menuItemId, string displayName)>();
-        private Subject<(IMenu menu, IReadOnlyList<string> menuItemIds)> _onSelectionChanged = new Subject<(IMenu menu, IReadOnlyList<string> menuItemIds)>();
-        private Subject<(IReadOnlyList<string> source, string destination, int? index)> _onDropped = new Subject<(IReadOnlyList<string> source, string destination, int? index)>();
 
-        private string Text_RegisteredMenuItemList;
-        private string Text_UnregisteredMenuItemList;
+        private string _registeredText;
+        private string _unregisteredText;
 
-        private Texture2D _openFolder;
-        private Texture2D _closeFolder;
+        private Texture2D _fileIcon;
+        private Texture2D _openFolderIcon;
+        private Texture2D _closeFolderIcon;
+        private Texture2D _selectedBackgroundTexture;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
-
-        public HierarchyTreeElement(IReadOnlyLocalizationSetting localizationSetting, TreeViewState treeViewState) : base(treeViewState)
+        public HierarchyTreeElement(IReadOnlyLocalizationSetting localizationSetting, TreeViewState treeViewState) : base(localizationSetting, treeViewState)
         {
-            Action<LocalizationTable> setText = loc =>
-            {
-                Text_RegisteredMenuItemList = loc.HierarchyView_RegisteredMenuItemList;
-                Text_UnregisteredMenuItemList = loc.HierarchyView_UnregisteredMenuItemList;
-                Reload();
-            };
-            setText(localizationSetting.Table);
-            localizationSetting.OnTableChanged.Synchronize().Subscribe(setText).AddTo(_disposables);
+            // Set icon
+            _fileIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/description_FILL0_wght400_GRAD200_opsz20.png");
+            _openFolderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz20.png");
+            _closeFolderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_FILL0_wght400_GRAD200_opsz20.png");
+            NullChecker.Check(_fileIcon, _openFolderIcon, _closeFolderIcon);
 
-            _openFolder = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz20.png");
-            _closeFolder = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_FILL0_wght400_GRAD200_opsz20.png");
-            NullChecker.Check(_openFolder, _closeFolder);
+            // Textures
+            _selectedBackgroundTexture = new Texture2D(1, 1);
+            _selectedBackgroundTexture.SetPixel(0, 0, SelectedRowColor);
+            _selectedBackgroundTexture.Apply();
         }
 
-        public void Setup(IMenu menu)
+        protected override void SetText(LocalizationTable localizationTable)
         {
-            _menu = menu;
-            Reload();
-        }
-
-        public IReadOnlyList<string> GetSelectedMenuItemIds() => GetMenuItemIds(GetSelection());
-
-        private IReadOnlyList<string> GetMenuItemIds(IList<int> elementIds)
-        {
-            if (elementIds is null || elementIds.Count == 0 || _menuItemIdToElementId.Count == 0)
-            {
-                return null;
-            }
-
-            var menuItemIds = new List<string>();
-            foreach (var elementId in elementIds)
-            {
-                var matched = _menuItemIdToElementId.Where(x => x.Value == elementId);
-                if (matched is null || matched.Count() == 0)
-                {
-                    return null;
-                }
-                menuItemIds.Add(matched.First().Key);
-            }
-
-            return menuItemIds;
-        }
-
-        // TODO: Use presenter's argument
-        public void ExpandSelectedElement()
-        {
-            var selection = GetSelection();
-            if (selection is null || selection.Count == 0)
-            {
-                return;
-            }
-
-            var elementId = selection[0];
-            SetExpanded(elementId, true);
-        }
-
-        // TODO: Use presenter's argument
-        public void SelectNearest()
-        {
-            var selection = GetSelection();
-            if (selection is null || selection.Count == 0)
-            {
-                return;
-            }
-
-            var elementId = selection[0];
-            var element = FindItem(elementId, rootItem);
-            if (element is null || element.parent is null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < element.parent.children.Count; i++)
-            {
-                var child = element.parent.children[i];
-                if (child.id == element.id)
-                {
-                    if (i + 1 < element.parent.children.Count)
-                    {
-                        SetSelection(new List<int>(){ element.parent.children[i + 1].id });
-                    }
-                    else if (i - 1 >= 0)
-                    {
-                        SetSelection(new List<int>(){ element.parent.children[i - 1].id });
-                    }
-                    else
-                    {
-                        SetSelection(new List<int>(){ element.parent.id });
-                    }
-                    break;
-                }
-            }
-        }
-
-        protected override TreeViewItem BuildRoot()
-        {
-            return new TreeViewItem { id = RootId, depth = -1, displayName = "Root" };
+            _registeredText = localizationTable.HierarchyView_RegisteredMenuItemList;
+            _unregisteredText = localizationTable.HierarchyView_UnregisteredMenuItemList;
+            base.SetText(localizationTable);
         }
 
         protected override IList<TreeViewItem> BuildRows(TreeViewItem root)
@@ -143,31 +59,38 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             var rows = GetRows() ?? new List<TreeViewItem>();
             rows.Clear();
 
-            var registeredTree = new TreeViewItem { id = GetId(Domain.Menu.RegisteredId), displayName = Text_RegisteredMenuItemList };
+            if (Menu is null)
+            {
+                return rows;
+            }
+
+            // Registered menu items
+            var registeredTree = new TreeViewItem { id = GetElementId(Domain.Menu.RegisteredId), displayName = _registeredText };
             root.AddChild(registeredTree);
             rows.Add(registeredTree);
-            if (IsExpanded(registeredTree.id) && _menu is IMenu)
+            if (IsExpanded(registeredTree.id) && Menu is IMenu)
             {
-                registeredTree.icon = _openFolder;
-                AddChildrenRecursive(_menu.Registered, registeredTree, rows);
+                registeredTree.icon = _openFolderIcon;
+                AddChildrenRecursive(Menu.Registered, registeredTree, rows);
             }
             else
             {
-                registeredTree.icon = _closeFolder;
+                registeredTree.icon = _closeFolderIcon;
                 registeredTree.children = CreateChildListForCollapsedParent();
             }
 
-            var unregisteredTree = new TreeViewItem { id = GetId(Domain.Menu.UnregisteredId), displayName = Text_UnregisteredMenuItemList };
+            // Unregistered menu items
+            var unregisteredTree = new TreeViewItem { id = GetElementId(Domain.Menu.UnregisteredId), displayName = _unregisteredText };
             root.AddChild(unregisteredTree);
             rows.Add(unregisteredTree);
-            if (IsExpanded(unregisteredTree.id) && _menu is IMenu)
+            if (IsExpanded(unregisteredTree.id) && Menu is IMenu)
             {
-                unregisteredTree.icon = _openFolder;
-                AddChildrenRecursive(_menu.Unregistered, unregisteredTree, rows);
+                unregisteredTree.icon = _openFolderIcon;
+                AddChildrenRecursive(Menu.Unregistered, unregisteredTree, rows);
             }
             else
             {
-                unregisteredTree.icon = _closeFolder;
+                unregisteredTree.icon = _closeFolderIcon;
                 unregisteredTree.children = CreateChildListForCollapsedParent();
             }
 
@@ -176,49 +99,50 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             return rows;
         }
 
-        private void AddChildrenRecursive (IMenuItemList menuItemList, TreeViewItem item, IList<TreeViewItem> rows)
+        private void AddChildrenRecursive(IMenuItemList menuItemList, TreeViewItem item, IList<TreeViewItem> rows)
         {
             foreach (var menuItemId in menuItemList.Order)
             {
-                if (menuItemList.GetType(menuItemId) == MenuItemType.Group)
+                if (menuItemList.GetType(menuItemId) == MenuItemType.Mode)
+                {
+                    var mode = menuItemList.GetMode(menuItemId);
+                    var modeTree = new TreeViewItem { id = GetElementId(menuItemId), displayName = mode.DisplayName };
+                    item.AddChild(modeTree);
+                    rows.Add(modeTree);
+                    modeTree.icon = _fileIcon;
+                }
+                else if (menuItemList.GetType(menuItemId) == MenuItemType.Group)
                 {
                     var group = menuItemList.GetGroup(menuItemId);
-                    var groupTree = new TreeViewItem { id = GetId(menuItemId), displayName = group.DisplayName };
+                    var groupTree = new TreeViewItem { id = GetElementId(menuItemId), displayName = group.DisplayName };
                     item.AddChild(groupTree);
                     rows.Add(groupTree);
                     if (IsExpanded(groupTree.id))
                     {
-                        groupTree.icon = _openFolder;
+                        groupTree.icon = _openFolderIcon;
                         AddChildrenRecursive(group, groupTree, rows);
                     }
                     else
                     {
-                        groupTree.icon = _closeFolder;
-                        groupTree.children = CreateChildListForCollapsedParent();
+                        groupTree.icon = _closeFolderIcon;
+                        if (group.Count > 0)
+                        {
+                            groupTree.children = CreateChildListForCollapsedParent();
+                        }
                     }
                 }
             }
         }
 
-        private int GetId(string menuItemId)
+        protected override void RowGUI(RowGUIArgs args)
         {
-            if (_menuItemIdToElementId.ContainsKey(menuItemId))
+            // Draw background
+            if (args.selected)
             {
-                return _menuItemIdToElementId[menuItemId];
+                GUI.DrawTexture(args.rowRect, _selectedBackgroundTexture);
             }
-
-            var seed = menuItemId;
-            int newId = seed.GetHashCode();
-            while (_menuItemIdToElementId.ContainsValue(newId) || newId == RootId)
-            {
-                seed = seed + menuItemId;
-                newId = seed.GetHashCode();
-            }
-            _menuItemIdToElementId[menuItemId] = newId;
-            return newId;
+            base.RowGUI(args);
         }
-
-        protected override bool CanMultiSelect(TreeViewItem item) => true;
 
         protected override bool CanRename(TreeViewItem item)
         {
@@ -227,91 +151,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         protected override void RenameEnded(RenameEndedArgs args)
         {
-            if (args.acceptedRename)
+            if (args.acceptedRename && Menu is IMenu)
             {
-                var menuItemIds = GetMenuItemIds(new List<int>() { args.itemID });
-                if (menuItemIds is IReadOnlyList<string> && menuItemIds.Count == 1)
+                var menuItemId = GetMenuItemId(args.itemID);
+                if (menuItemId is string)
                 {
-                    _onGroupRenamed.OnNext((menuItemIds[0], args.newName));
-                }
-            }
-        }
-
-        public void ChangeSelectionDummy() => SelectionChanged(GetSelection());
-
-        protected override void SelectionChanged(IList<int> selectedIds) => _onSelectionChanged.OnNext((_menu, GetSelectedMenuItemIds()));
-
-        protected override bool CanBeParent(TreeViewItem item) => true;
-
-        protected override bool CanStartDrag(CanStartDragArgs args)
-        {
-            if (args.draggedItemIDs is null || args.draggedItemIDs.Count == 0)
-            {
-                return false;
-            }
-            else
-            {
-                if (args.draggedItemIDs.Contains(GetId(Domain.Menu.RegisteredId)) || args.draggedItemIDs.Contains(GetId(Domain.Menu.UnregisteredId)))
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-
-        protected override void SetupDragAndDrop(SetupDragAndDropArgs args)
-        {
-            if (args.draggedItemIDs is null || args.draggedItemIDs.Count == 0)
-            {
-                return;
-            }
-
-            var menuItemIds = GetMenuItemIds(SortItemIDsInRowOrder(args.draggedItemIDs));
-            if (menuItemIds is null || menuItemIds.Count == 0)
-            {
-                return;
-            }
-
-            DragAndDrop.PrepareStartDrag();
-            DragAndDrop.SetGenericData(DetailConstants.DragAndDropDataKey_MenuItemIds, menuItemIds);
-            DragAndDrop.StartDrag(DetailConstants.DragAndDropDataKey_MenuItemIds);
-        }
-
-        protected override DragAndDropVisualMode HandleDragAndDrop(DragAndDropArgs args)
-        {
-            if (args.performDrop)
-            {
-                var genericData = DragAndDrop.GetGenericData(DetailConstants.DragAndDropDataKey_MenuItemIds);
-
-                if (genericData is IReadOnlyList<string> menuItemIds && menuItemIds.Count > 0)
-                {
-                    if (args.dragAndDropPosition == DragAndDropPosition.UponItem)
+                    if (Menu.ContainsMode(menuItemId))
                     {
-                        var parentMenuItemId = GetMenuItemIds(new List<int>() { args.parentItem.id });
-                        if (parentMenuItemId is IReadOnlyList<string> && parentMenuItemId.Count == 1)
-                        {
-                            _onDropped.OnNext((menuItemIds, parentMenuItemId[0], null));
-                        }
+                        _onModeRenamed.OnNext((menuItemId, args.newName));
                     }
-                    else if (args.dragAndDropPosition == DragAndDropPosition.BetweenItems)
+                    else if (Menu.ContainsGroup(menuItemId))
                     {
-                        var parentMenuItemId = GetMenuItemIds(new List<int>() { args.parentItem.id });
-                        if (parentMenuItemId is IReadOnlyList<string> && parentMenuItemId.Count == 1)
-                        {
-                            _onDropped.OnNext((menuItemIds, parentMenuItemId[0], args.insertAtIndex));
-                        }
+                        _onGroupRenamed.OnNext((menuItemId, args.newName));
                     }
                 }
-                else
-                {
-                    return DragAndDropVisualMode.None;
-                }
             }
-
-            return DragAndDropVisualMode.Move;
         }
     }
 }

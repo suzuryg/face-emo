@@ -8,5 +8,22 @@
 	xsi:schemaLocation="UnityEngine.UIElements ../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
 						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
 >
-	<engine:Label text="MenuItemList"/>
+	<engine:VisualElement name="RootGrid">
+		<engine:VisualElement name="TopRow">
+			<engine:Label name="TitleLabel"/>
+			<engine:VisualElement name="TopRow_ButtonCol">
+				<engine:Button name="AddModeButton" class="Button">
+					<engine:Image name="AddModeIcon" class ="Icon"/>
+				</engine:Button>
+				<engine:Button name="AddGroupButton" class="Button">
+					<engine:Image name="AddGroupIcon" class ="Icon"/>
+				</engine:Button>
+				<engine:Button name="RemoveButton" class="Button">
+					<engine:Image name="RemoveIcon" class ="Icon"/>
+				</engine:Button>
+			</engine:VisualElement>
+		</engine:VisualElement>
+		<engine:IMGUIContainer name="AddressBarContainer"/>
+		<engine:IMGUIContainer name="TreeViewContainer"/>
+	</engine:VisualElement>
 </engine:UXML>

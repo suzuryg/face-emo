@@ -35,7 +35,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public Animation Animation { get; private set; }
 
         IMenuItemList IMode.Parent => Parent;
-        public MenuItemListBase Parent { get; set; }
+        public MenuItemListBase Parent => _parent;
+        private MenuItemListBase _parent;
 
         private List<Branch> _branches = new List<Branch>();
         private Dictionary<(HandGesture left, HandGesture right), Branch> _gestureTable = new Dictionary<(HandGesture left, HandGesture right), Branch>();
@@ -43,7 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public Mode(string displayName, MenuItemListBase parent)
         {
             DisplayName = displayName;
-            Parent = parent;
+            _parent = parent;
 
             foreach (var left in GestureList)
             {
@@ -52,6 +53,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                     _gestureTable[(left, right)] = null;
                 }
             }
+        }
+
+        public void ChangeParent(MenuItemListBase parent)
+        {
+            _parent = parent;
         }
 
         public string GetId()

@@ -1,0 +1,19 @@
+﻿#LocaleField
+{
+    width: 300px;
+}
+
+#AvatarField
+{
+    width: 300px;
+}
+
+#UpdateThumbnailButton
+{
+    width: 300px;
+}
+
+#ThumbnailSizeSlider
+{
+    width: 300px;
+}

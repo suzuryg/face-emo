@@ -6,6 +6,7 @@ using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnima
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranch;
 using Suzuryg.FacialExpressionSwitcher.Detail;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
@@ -29,21 +30,35 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             }
             Container.Bind<SerializableMenu>().FromInstance(serializableMenu).AsSingle();
 
-            var viewState = launcherObject.GetComponent<HierarchyViewState>();
-            if (viewState is null)
+            var hierarchyViewState = launcherObject.GetComponent<HierarchyViewState>();
+            if (hierarchyViewState is null)
             {
-                viewState = launcherObject.AddComponent<HierarchyViewState>();
+                hierarchyViewState = launcherObject.AddComponent<HierarchyViewState>();
             }
-            Container.Bind<HierarchyViewState>().FromInstance(viewState).AsSingle();
+            Container.Bind<HierarchyViewState>().FromInstance(hierarchyViewState).AsSingle();
+
+            var menuItemiListViewState = launcherObject.GetComponent<MenuItemListViewState>();
+            if (menuItemiListViewState is null)
+            {
+                menuItemiListViewState = launcherObject.AddComponent<MenuItemListViewState>();
+            }
+            Container.Bind<MenuItemListViewState>().FromInstance(menuItemiListViewState).AsSingle();
 
             // Bind non-MonoBehaviour classes
             Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
 
             Container.Bind<UpdateMenuSubject>().AsSingle();
+            Container.Bind<ChangeHierarchySelectionSubject>().AsSingle();
+            Container.Bind<ChangeMenuItemListRootSubject>().AsSingle();
+            Container.Bind<ChangeMenuItemListSelectionSubject>().AsSingle();
+            Container.Bind<ChangeBranchSelectionSubject>().AsSingle();
+
+            Container.Bind<ThumbnailDrawer>().AsSingle();
 
             Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
 
             Container.Bind<ICreateMenuUseCase>().To<CreateMenuUseCase>().AsTransient();
+            Container.Bind<IModifyMenuPropertiesUseCase>().To<ModifyMenuPropertiesUseCase>().AsTransient();
             Container.Bind<IAddMenuItemUseCase>().To<AddMenuItemUseCase>().AsTransient();
             Container.Bind<IModifyModePropertiesUseCase>().To<ModifyModePropertiesUseCase>().AsTransient();
             Container.Bind<IModifyGroupPropertiesUseCase>().To<ModifyGroupPropertiesUseCase>().AsTransient();
@@ -63,6 +78,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<ISetExistingAnimationUseCase>().To<SetExistingAnimationUseCase>().AsTransient();
 
             Container.Bind<ICreateMenuPresenter>().To<CreateMenuPresenter>().AsSingle();
+            Container.Bind<IModifyMenuPropertiesPresenter>().To<ModifyMenuPropertiesPresenter>().AsSingle();
             Container.Bind<IAddMenuItemPresenter>().To<AddMenuItemPresenter>().AsSingle();
             Container.Bind<IModifyModePropertiesPresenter>().To<ModifyModePropertiesPresenter>().AsSingle();
             Container.Bind<IModifyGroupPropertiesPresenter>().To<ModifyGroupPropertiesPresenter>().AsSingle();
@@ -81,10 +97,12 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<ISetNewAnimationPresenter>().To<SetNewAnimationPresenter>().AsSingle();
             Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
 
+            Container.Bind<MainView>().AsTransient();
             Container.Bind<HierarchyView>().AsTransient();
             Container.Bind<MenuItemListView>().AsTransient();
             Container.Bind<BranchListView>().AsTransient();
-            Container.Bind<MainView>().AsTransient();
+            Container.Bind<SettingView>().AsTransient();
+            Container.Bind<GestureTableView>().AsTransient();
             Container.Bind<UseCaseErrorHandler>().AsTransient();
         }
     }

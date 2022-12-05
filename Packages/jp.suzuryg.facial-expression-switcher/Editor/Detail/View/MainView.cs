@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using System;
 using System.Collections;
@@ -15,34 +16,41 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public class MainView : IDisposable
     {
-        private HierarchyView _hierarchyControl;
-        private MenuItemListView _menuItemListControl;
-        private BranchListView _branchListControl;
+        private HierarchyView _hierarchyView;
+        private MenuItemListView _menuItemListView;
+        private BranchListView _branchListView;
+        private SettingView _settingView;
 
-        private ICreateMenuUseCase _createMenuUseCase;
-
-        private ILocalizationSetting _localizationSetting;
-
-        private EnumField _localeField;
+        private UseCaseErrorHandler _useCaseErrorHandler;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
-        public MainView(HierarchyView hierarchyControl, MenuItemListView menuItemListControl, BranchListView branchListControl,
-            ICreateMenuUseCase createMenuUseCase, ILocalizationSetting localizationSetting, UseCaseErrorHandler useCaseErrorHandler)
+        public MainView(
+            HierarchyView hierarchyView,
+            MenuItemListView menuItemListView,
+            BranchListView branchListView,
+            SettingView settingView,
+
+            UseCaseErrorHandler useCaseErrorHandler)
         {
-            _hierarchyControl = hierarchyControl.AddTo(_disposables);
-            _menuItemListControl = menuItemListControl;
-            _branchListControl = branchListControl;
+            // Views
+            _hierarchyView = hierarchyView.AddTo(_disposables);
+            _menuItemListView = menuItemListView.AddTo(_disposables);
+            _branchListView = branchListView.AddTo(_disposables);
+            _settingView = settingView.AddTo(_disposables);
 
-            _createMenuUseCase = createMenuUseCase;
+            // Others
+            _useCaseErrorHandler = useCaseErrorHandler.AddTo(_disposables);
+        }
 
-            _localizationSetting = localizationSetting;
-
-            _disposables.Add(useCaseErrorHandler);
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
 
         public void Initialize(VisualElement root)
         {
+            // Load UXML and style
             var commonStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{DetailConstants.ViewDirectory}/Common.uss");
             var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{DetailConstants.ViewDirectory}/{nameof(MainView)}.uxml");
             var style = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{DetailConstants.ViewDirectory}/{nameof(MainView)}.uss");
@@ -52,35 +60,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             root.styleSheets.Add(style);
             uxml.CloneTree(root);
 
-            _hierarchyControl.Initialize(root.Q<VisualElement>("HierarchyControl"));
-            _menuItemListControl.Initialize(root.Q<VisualElement>("MenuItemListControl"));
-            _branchListControl.Initialize(root.Q<VisualElement>("BranchListControl"));
+            // Query Elements
+            var hierarchyArea = root.Q<VisualElement>("HierarchyView");
+            var menuItemListArea = root.Q<VisualElement>("MenuItemListView");
+            var branchListArea =  root.Q<VisualElement>("BranchListView");
+            var settingArea =  root.Q<VisualElement>("SettingView");
+            NullChecker.Check(hierarchyArea, menuItemListArea, branchListArea, settingArea);
 
-            _localeField = root.Q<EnumField>("LocaleField");
-            NullChecker.Check(_localeField);
-
-            _localizationSetting.OnTableChanged.Synchronize().Subscribe(_ => {
-                if (_localeField.value != _localizationSetting.Locale as Enum)
-                {
-                    _localeField.Init(_localizationSetting.Locale);
-                }
-            }).AddTo(_disposables);
-
-            _localeField.Init(_localizationSetting.Locale);
-            _localeField.label = "Locale"; // test
-            _localeField.RegisterValueChangedCallback(LocaleChangedCallback);
-        }
-
-        public void Dispose()
-        {
-            _disposables.Dispose();
-            _localeField.UnregisterValueChangedCallback(LocaleChangedCallback);
-        }
-
-        private void LocaleChangedCallback(ChangeEvent<Enum> changeEvent)
-        {
-            var locale = (Locale)changeEvent.newValue;
-            _localizationSetting.SetLocale(locale);
+            // Initialize Views
+            _hierarchyView.Initialize(hierarchyArea);
+            _menuItemListView.Initialize(menuItemListArea);
+            _branchListView.Initialize(branchListArea);
+            _settingView.Initialize(settingArea);
         }
     }
 }
