@@ -15,6 +15,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         IBranch GetGestureCell(HandGesture left, HandGesture right);
 
         IMenuItemList Parent { get; }
+        string GetId();
 
         Animation Animation { get; }
     }
@@ -51,6 +52,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                     _gestureTable[(left, right)] = null;
                 }
             }
+        }
+
+        public string GetId()
+        {
+            foreach (var id in Parent.Order)
+            {
+                if (Parent.GetType(id) == MenuItemType.Mode && ReferenceEquals(Parent.GetMode(id), this))
+                {
+                    return id;
+                }
+            }
+            throw new FacialExpressionSwitcherException("The parent does not have this mode.");
         }
         
         public void AddBranch(IEnumerable<Condition> conditions = null)

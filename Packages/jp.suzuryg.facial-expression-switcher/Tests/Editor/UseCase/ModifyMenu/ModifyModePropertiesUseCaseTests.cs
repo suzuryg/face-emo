@@ -7,9 +7,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     {
         public ModifyModePropertiesResult Result { get; private set; }
 
-        public System.IObservable<(ModifyModePropertiesResult, IMenu, string)> Observable => throw new System.NotImplementedException();
+        System.IObservable<(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, IMenu menu, string errorMessage)> IModifyModePropertiesPresenter.Observable => throw new System.NotImplementedException();
 
-        void IModifyModePropertiesPresenter.Complete(ModifyModePropertiesResult modifyModePropertiesResult, in IMenu menu, string errorMessage)
+        public void Complete(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, in IMenu menu, string errorMessage = "")
         {
             Result = modifyModePropertiesResult;
         }

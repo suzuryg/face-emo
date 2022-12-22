@@ -31,9 +31,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public class MoveMenuItemPresenter : IMoveMenuItemPresenter
     {
-        public IObservable<(MoveMenuItemResult, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+        public IObservable<(MoveMenuItemResult moveMenuItemResult, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
 
-        private Subject<(MoveMenuItemResult, IMenu, string)> _subject = new Subject<(MoveMenuItemResult, IMenu, string)>();
+        private Subject<(MoveMenuItemResult moveMenuItemResult, IMenu menu, string errorMessage)> _subject = new Subject<(MoveMenuItemResult moveMenuItemResult, IMenu menu, string errorMessage)>();
 
         public void Complete(MoveMenuItemResult moveMenuItemResult, in IMenu menu, string errorMessage = "")
         {

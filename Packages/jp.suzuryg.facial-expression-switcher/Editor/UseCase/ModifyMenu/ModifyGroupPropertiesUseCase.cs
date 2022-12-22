@@ -14,9 +14,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public interface IModifyGroupPropertiesPresenter
     {
-        IObservable<(ModifyGroupPropertiesResult modifyGroupPropertiesResult, IMenu menu, string errorMessage)> Observable { get; }
+        IObservable<(ModifyGroupPropertiesResult modifyGroupPropertiesResult, string modifiedGroupId, IMenu menu, string errorMessage)> Observable { get; }
 
-        void Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, in IMenu menu, string errorMessage = "");
+        void Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, string modifiedGroupId, in IMenu menu, string errorMessage = "");
     }
 
     public enum ModifyGroupPropertiesResult
@@ -30,13 +30,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public class ModifyGroupPropertiesPresenter : IModifyGroupPropertiesPresenter
     {
-        public IObservable<(ModifyGroupPropertiesResult, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+        public IObservable<(ModifyGroupPropertiesResult modifyGroupPropertiesResult, string modifiedGroupId, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
 
-        private Subject<(ModifyGroupPropertiesResult, IMenu, string)> _subject = new Subject<(ModifyGroupPropertiesResult, IMenu, string)>();
+        private Subject<(ModifyGroupPropertiesResult modifyGroupPropertiesResult, string modifiedGroupId, IMenu menu, string errorMessage)> _subject = new Subject<(ModifyGroupPropertiesResult modifyGroupPropertiesResult, string modifiedGroupId, IMenu menu, string errorMessage)>();
 
-        public void Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, in IMenu menu, string errorMessage = "")
+        public void Complete(ModifyGroupPropertiesResult modifyGroupPropertiesResult, string modifiedGroupId, in IMenu menu, string errorMessage = "")
         {
-            _subject.OnNext((modifyGroupPropertiesResult, menu, errorMessage));
+            _subject.OnNext((modifyGroupPropertiesResult, modifiedGroupId, menu, errorMessage));
         }
     }
 
@@ -60,13 +60,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             {
                 if (menuId is null || groupId is null)
                 {
-                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.ArgumentNull, null);
+                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.ArgumentNull, groupId, null);
                     return;
                 }
 
                 if (!_menuRepository.Exists(menuId))
                 {
-                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.MenuDoesNotExist, null);
+                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.MenuDoesNotExist, groupId, null);
                     return;
                 }
 
@@ -74,18 +74,18 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
                 if (!menu.ContainsGroup(groupId))
                 {
-                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.GroupIsNotContained, menu);
+                    _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.GroupIsNotContained, groupId, menu);
                     return;
                 }
 
                 menu.ModifyGroupProperties(groupId, displayName);
 
                 _menuRepository.Save(menuId, menu, "ModifyGroupProperties");
-                _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.Succeeded, menu);
+                _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.Succeeded, groupId, menu);
             }
             catch (Exception ex)
             {
-                _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.Error, null, ex.ToString());
+                _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.Error, groupId, null, ex.ToString());
             }
         }
     }

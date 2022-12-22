@@ -9,6 +9,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         string DisplayName { get; }
 
         IMenuItemList Parent { get; }
+        string GetId();
     }
 
     public class Group : MenuItemListBase, IGroup
@@ -26,6 +27,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         {
             DisplayName = displayName;
             Parent = parent;
+        }
+
+        public string GetId()
+        {
+            foreach (var id in Parent.Order)
+            {
+                if (Parent.GetType(id) == MenuItemType.Group && ReferenceEquals(Parent.GetGroup(id), this))
+                {
+                    return id;
+                }
+            }
+            throw new FacialExpressionSwitcherException("The parent does not have this group.");
         }
     }
 }

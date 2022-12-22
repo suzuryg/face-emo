@@ -11,9 +11,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public interface IRemoveMenuItemPresenter
     {
-        IObservable<(RemoveMenuItemResult removeMenuItemResult, IMenu menu, string errorMessage)> Observable { get; }
+        IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> Observable { get; }
 
-        void Complete(RemoveMenuItemResult removeMenuItemResult, in IMenu menu, string errorMessage = "");
+        void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, in IMenu menu, string errorMessage = "");
     }
 
     public enum RemoveMenuItemResult
@@ -27,13 +27,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public class RemoveMenuItemPresenter : IRemoveMenuItemPresenter
     {
-        public IObservable<(RemoveMenuItemResult, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+        public IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
 
-        private Subject<(RemoveMenuItemResult, IMenu, string)> _subject = new Subject<(RemoveMenuItemResult, IMenu, string)>();
+        private Subject<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> _subject = new Subject<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)>();
 
-        public void Complete(RemoveMenuItemResult removeMenuItemResult, in IMenu menu, string errorMessage = "")
+        public void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, in IMenu menu, string errorMessage = "")
         {
-            _subject.OnNext((removeMenuItemResult, menu, errorMessage));
+            _subject.OnNext((removeMenuItemResult, removedItemId, menu, errorMessage));
         }
     }
 
@@ -54,32 +54,41 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             {
                 if (menuId is null || menuItemId is null)
                 {
-                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.ArgumentNull, null);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.ArgumentNull, menuItemId, null);
                     return;
                 }
 
                 if (!_menuRepository.Exists(menuId))
                 {
-                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.MenuDoesNotExist, null);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.MenuDoesNotExist, menuItemId, null);
                     return;
                 }
 
                 var menu = _menuRepository.Load(menuId);
 
+                if (menu.ContainsMode(menuItemId))
+                {
+                    var mode = menu.GetMode(menuItemId);
+                    var parent = mode.Parent;
+                }
+                else if (menu.ContainsGroup(menuItemId))
+                {
+                }
+
                 if (!menu.CanRemoveMenuItem(menuItemId))
                 {
-                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.InvalidId, menu);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.InvalidId, menuItemId, menu);
                     return;
                 }
 
                 menu.RemoveMenuItem(menuItemId);
 
                 _menuRepository.Save(menuId, menu, "RemoveMenuItem");
-                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Succeeded, menu);
+                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Succeeded, menuItemId, menu);
             }
             catch (Exception ex)
             {
-                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Error, null, ex.ToString());
+                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Error, menuItemId, null, ex.ToString());
             }
         }
     }

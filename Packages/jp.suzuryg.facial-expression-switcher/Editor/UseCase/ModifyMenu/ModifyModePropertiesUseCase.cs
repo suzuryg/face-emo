@@ -17,9 +17,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public interface IModifyModePropertiesPresenter
     {
-        IObservable<(ModifyModePropertiesResult modifyModePropertiesResult, IMenu menu, string errorMessage)> Observable { get; }
+        IObservable<(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, IMenu menu, string errorMessage)> Observable { get; }
 
-        void Complete(ModifyModePropertiesResult modifyModePropertiesResult, in IMenu menu, string errorMessage = "");
+        void Complete(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, in IMenu menu, string errorMessage = "");
     }
 
     public enum ModifyModePropertiesResult
@@ -33,13 +33,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
     public class ModifyModePropertiesPresenter : IModifyModePropertiesPresenter
     {
-        public IObservable<(ModifyModePropertiesResult, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+        public IObservable<(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
 
-        private Subject<(ModifyModePropertiesResult, IMenu, string)> _subject = new Subject<(ModifyModePropertiesResult, IMenu, string)>();
+        private Subject<(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, IMenu menu, string errorMessage)> _subject = new Subject<(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, IMenu menu, string errorMessage)>();
 
-        public void Complete(ModifyModePropertiesResult modifyModePropertiesResult, in IMenu menu, string errorMessage = "")
+        public void Complete(ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, in IMenu menu, string errorMessage = "")
         {
-            _subject.OnNext((modifyModePropertiesResult, menu, errorMessage));
+            _subject.OnNext((modifyModePropertiesResult, modifiedModeId, menu, errorMessage));
         }
     }
 
@@ -66,13 +66,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             {
                 if (menuId is null || modeId is null)
                 {
-                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.ArgumentNull, null);
+                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.ArgumentNull, modeId, null);
                     return;
                 }
 
                 if (!_menuRepository.Exists(menuId))
                 {
-                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.MenuDoesNotExist, null);
+                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.MenuDoesNotExist, modeId, null);
                     return;
                 }
 
@@ -80,18 +80,18 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
                 if (!menu.ContainsMode(modeId))
                 {
-                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.ModeIsNotContained, null);
+                    _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.ModeIsNotContained, modeId, null);
                     return;
                 }
 
                 menu.ModifyModeProperties(modeId, displayName, useAnimationNameAsDisplayName, eyeTrackingControl, mouthTrackingControl);
 
                 _menuRepository.Save(menuId, menu, "ModifyModeProperties");
-                _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Succeeded, menu);
+                _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Succeeded, modeId, menu);
             }
             catch (Exception ex)
             {
-                _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Error, null, ex.ToString());
+                _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Error, modeId, null, ex.ToString());
             }
         }
     }

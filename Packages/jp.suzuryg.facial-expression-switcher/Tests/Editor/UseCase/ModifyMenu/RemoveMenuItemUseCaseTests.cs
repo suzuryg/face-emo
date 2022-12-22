@@ -7,9 +7,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     {
         public RemoveMenuItemResult Result { get; private set; }
 
-        public System.IObservable<(RemoveMenuItemResult, IMenu, string)> Observable => throw new System.NotImplementedException();
+        System.IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> IRemoveMenuItemPresenter.Observable => throw new System.NotImplementedException();
 
-        void IRemoveMenuItemPresenter.Complete(RemoveMenuItemResult removeMenuItemResult, in IMenu menu, string errorMessage)
+        public void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, in IMenu menu, string errorMessage = "")
         {
             Result = removeMenuItemResult;
         }
