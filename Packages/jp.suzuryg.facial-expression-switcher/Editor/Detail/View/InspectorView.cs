@@ -1,0 +1,192 @@
+﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.UseCase;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
+using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
+using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEditor;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
+using UniRx;
+using UnityEditorInternal;
+using System.Linq;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
+using UnityEditor.IMGUI.Controls;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
+
+namespace Suzuryg.FacialExpressionSwitcher.Detail.View
+{
+    public class InspectorView : IDisposable
+    {
+        public IObservable<Unit> OnLaunchButtonClicked => _onLaunchButtonClicked.AsObservable();
+        public IObservable<Locale> OnLocaleChanged => _onLocaleChanged.AsObservable();
+
+        private Subject<Unit> _onLaunchButtonClicked = new Subject<Unit>();
+        private Subject<Locale> _onLocaleChanged = new Subject<Locale>();
+
+        private IMenuRepository _menuRepository; // TODO: Use use-case instead
+        private ILocalizationSetting _localizationSetting;
+        private UpdateMenuSubject _updateMenuSubject;
+
+        private IMenu _menu;
+
+        private bool _isMouthMorphBlendShapesOpened = false;
+        private ReorderableList _mouthMorphBlendShapes;
+        private string[] _faceBlendShapes = new string[0];
+
+        private bool _isMenuPropertiesSettingOpened = false;
+
+        private string _mouthMorphBlendShapesText;
+        private string _addText;
+        private string _cancelText;
+        private string _menuPropertiesText;
+        private string _smoothAnalogFistText;
+
+        private CompositeDisposable _disposables = new CompositeDisposable();
+
+        public InspectorView(
+            IMenuRepository menuRepository,
+            ILocalizationSetting localizationSetting,
+            UpdateMenuSubject updateMenuSubject)
+        {
+            _menuRepository = menuRepository;
+            _localizationSetting = localizationSetting;
+            _updateMenuSubject = updateMenuSubject;
+
+            // Update menu event handler
+            _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
+
+            // Localization table changed event handler
+            _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
+
+            // Mouth morph blendshapes
+            _mouthMorphBlendShapes = new ReorderableList(null, typeof(string));
+            _mouthMorphBlendShapes.onAddCallback = AddMouthMorphBlendShape;
+            _mouthMorphBlendShapes.onRemoveCallback = RemoveMouthMorphBlendShape;
+            _mouthMorphBlendShapes.draggable = false;
+            _mouthMorphBlendShapes.headerHeight = 0;
+
+            // Set text
+            SetText(_localizationSetting.Table);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+        }
+
+        public void OnGUI()
+        {
+            if (GUILayout.Button($"Launch {DomainConstants.SystemName}"))
+            {
+                _onLaunchButtonClicked.OnNext(Unit.Default);
+            }
+
+            var oldLocale = _localizationSetting.Locale;
+            var newLocale = (Locale)EditorGUILayout.EnumPopup(oldLocale);
+            if (newLocale != oldLocale)
+            {
+                _localizationSetting.SetLocale(newLocale);
+                _onLocaleChanged.OnNext(newLocale);
+                SetText(_localizationSetting.Table);
+            }
+
+            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened, _mouthMorphBlendShapesText);
+            if (_isMouthMorphBlendShapesOpened)
+            {
+                _mouthMorphBlendShapes.DoLayoutList();
+            }
+
+            _isMenuPropertiesSettingOpened = EditorGUILayout.Foldout(_isMenuPropertiesSettingOpened, _menuPropertiesText);
+            if (_isMenuPropertiesSettingOpened)
+            {
+                MenuPropertiesGUI();
+            }
+        }
+
+        private void SetText(LocalizationTable localizationTable)
+        {
+            if (localizationTable.HierarchyView_Title == "HierarchyView")
+            {
+                _mouthMorphBlendShapesText = "MouthMorphBlendShapes";
+                _addText = "Add";
+                _cancelText = "Cancel";
+                _menuPropertiesText = "Menu Properties";
+                _smoothAnalogFistText = "Smooth Analog Fist";
+            }
+            else
+            {
+                _mouthMorphBlendShapesText = "口変形キャンセル用シェイプキー";
+                _addText = "追加";
+                _cancelText = "キャンセル";
+                _menuPropertiesText = "メニュー設定";
+                _smoothAnalogFistText = "アナログ値のスムージング";
+            }
+        }
+
+        private void OnMenuUpdated(IMenu menu)
+        {
+            _menu = menu;
+            _mouthMorphBlendShapes.list = _menu?.MouthMorphBlendShapes.ToList();
+            if (_menu.Avatar is Domain.Avatar)
+            {
+                _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(AV3Utility.GetAvatarDescriptor(_menu.Avatar)).Select(x => x.name).ToArray();
+            }
+        }
+
+        private void AddMouthMorphBlendShape(ReorderableList reorderableList)
+        {
+            UnityEditor.PopupWindow.Show(
+                new Rect(Event.current.mousePosition, Vector2.one),
+                new ListSelectPopupContent<string>(_faceBlendShapes, _addText, _cancelText,
+                new Action<IReadOnlyList<string>>(blendShapes =>
+                {
+                    // TODO: Add use-case
+                    var menu = _menuRepository.Load(null);
+                    foreach (var blendShape in blendShapes)
+                    {
+                        menu.AddMouthMorphBlendShape(blendShape);
+                    }
+                    _menuRepository.Save(string.Empty, menu, "AddMouthMorphBlendShapes");
+                    _updateMenuSubject.OnNext(menu);
+                })));
+        }
+
+        private void RemoveMouthMorphBlendShape(ReorderableList reorderableList)
+        {
+            if (_mouthMorphBlendShapes.index >= _mouthMorphBlendShapes.list.Count)
+            {
+                return;
+            }
+
+            var selected = _mouthMorphBlendShapes.list[_mouthMorphBlendShapes.index] as string;
+
+            // TODO: Add use-case
+            var menu = _menuRepository.Load(null);
+            menu.RemoveMouthMorphBlendShape(selected);
+            _menuRepository.Save(string.Empty, menu, "RemoveMouthMorphBlendShapes");
+            _updateMenuSubject.OnNext(menu);
+        }
+
+        private void MenuPropertiesGUI()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var smooth = EditorGUILayout.Toggle(string.Empty, _menu.SmoothAnalogFist, GUILayout.Width(15));
+                if (smooth != _menu.SmoothAnalogFist)
+                {
+                    // TODO: Add use-case
+                    var menu = _menuRepository.Load(null);
+                    menu.SmoothAnalogFist = smooth;
+                    _menuRepository.Save(string.Empty, menu, "ChangeSmoothAnalogFist");
+                    _updateMenuSubject.OnNext(menu);
+                }
+                GUILayout.Label(_smoothAnalogFistText);
+            }
+        }
+    }
+}

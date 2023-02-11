@@ -15,6 +15,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
         public bool UseAnimationNameAsDisplayName;
         public EyeTrackingControl EyeTrackingControl;
         public MouthTrackingControl MouthTrackingControl;
+        public bool BlinkEnabled;
+        public bool MouthMorphCancelerEnabled;
 
         public SerializableAnimation Animation;
 
@@ -27,6 +29,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             UseAnimationNameAsDisplayName = mode.UseAnimationNameAsDisplayName;
             EyeTrackingControl = mode.EyeTrackingControl;
             MouthTrackingControl = mode.MouthTrackingControl;
+            BlinkEnabled = mode.BlinkEnabled;
+            MouthMorphCancelerEnabled = mode.MouthMorphCancelerEnabled;
 
             if (mode.Animation is Domain.Animation)
             {
@@ -49,7 +53,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
                 displayName: DisplayName,
                 useAnimationNameAsDisplayName: UseAnimationNameAsDisplayName,
                 eyeTrackingControl: EyeTrackingControl,
-                mouthTrackingControl: MouthTrackingControl);
+                mouthTrackingControl: MouthTrackingControl,
+                blinkEnabled: BlinkEnabled,
+                mouthMorphCancelerEnabled: MouthMorphCancelerEnabled);
 
             menu.SetAnimation(Animation?.Load(), id);
 

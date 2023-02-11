@@ -1,0 +1,19 @@
+{
+    "name": "jp.suzuryg.facial-expression-switcher.domain.Editor.Tests",
+    "references": [
+        "GUID:ad29c40ce7d8264468d6c7634e6a3a40"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

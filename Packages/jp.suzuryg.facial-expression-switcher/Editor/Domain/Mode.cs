@@ -10,6 +10,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         bool UseAnimationNameAsDisplayName { get; }
         EyeTrackingControl EyeTrackingControl { get; }
         MouthTrackingControl MouthTrackingControl { get; }
+        bool BlinkEnabled { get; }
+        bool MouthMorphCancelerEnabled { get; }
 
         IReadOnlyList<IBranch> Branches { get; }
         IBranch GetGestureCell(HandGesture left, HandGesture right);
@@ -28,6 +30,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public bool UseAnimationNameAsDisplayName { get; set; } = true;
         public EyeTrackingControl EyeTrackingControl { get; set; } = EyeTrackingControl.Tracking;
         public MouthTrackingControl MouthTrackingControl { get; set; } = MouthTrackingControl.Tracking;
+        public bool BlinkEnabled { get; set; } = true;
+        public bool MouthMorphCancelerEnabled { get; set; } = false;
 
         public IReadOnlyList<IBranch> Branches => _branches;
         public IBranch GetGestureCell(HandGesture left, HandGesture right) => _gestureTable[(left, right)];
@@ -81,12 +85,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public void ModifyBranchProperties(int branchIndex,
             EyeTrackingControl? eyeTrackingControl = null,
             MouthTrackingControl? mouthTrackingControl = null,
+            bool? blinkEnabled = null,
+            bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
             bool? isRightTriggerUsed = null)
         {
             var branch = _branches[branchIndex];
             branch.EyeTrackingControl = eyeTrackingControl ?? branch.EyeTrackingControl;
             branch.MouthTrackingControl = mouthTrackingControl ?? branch.MouthTrackingControl;
+            branch.BlinkEnabled = blinkEnabled ?? branch.BlinkEnabled;
+            branch.MouthMorphCancelerEnabled = mouthMorphCancelerEnabled ?? branch.MouthMorphCancelerEnabled;
             branch.IsLeftTriggerUsed = isLeftTriggerUsed ?? branch.IsLeftTriggerUsed;
             branch.IsRightTriggerUsed = isRightTriggerUsed ?? branch.IsRightTriggerUsed;
         }

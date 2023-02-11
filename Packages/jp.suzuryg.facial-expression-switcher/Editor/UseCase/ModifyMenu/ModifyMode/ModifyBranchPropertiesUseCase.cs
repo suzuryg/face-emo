@@ -10,6 +10,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
         void Handle(string menuId, string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl = null,
             MouthTrackingControl? mouthTrackingControl = null,
+            bool? blinkEnabled = null,
+            bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
             bool? isRightTriggerUsed = null);
     }
@@ -56,6 +58,8 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
         public void Handle(string menuId, string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl = null,
             MouthTrackingControl? mouthTrackingControl = null,
+            bool? blinkEnabled = null,
+            bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
             bool? isRightTriggerUsed = null)
         {
@@ -81,7 +85,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
                     return;
                 }
 
-                menu.ModifyBranchProperties(modeId, branchIndex, eyeTrackingControl, mouthTrackingControl, isLeftTriggerUsed, isRightTriggerUsed);
+                menu.ModifyBranchProperties(modeId, branchIndex, eyeTrackingControl, mouthTrackingControl, blinkEnabled, mouthMorphCancelerEnabled, isLeftTriggerUsed, isRightTriggerUsed);
 
                 _menuRepository.Save(menuId, menu, "ModifyBranchProperties");
                 _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.Succeeded, menu);

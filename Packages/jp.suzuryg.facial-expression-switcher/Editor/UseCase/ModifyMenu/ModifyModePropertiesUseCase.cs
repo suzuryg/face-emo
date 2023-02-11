@@ -12,7 +12,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             string displayName = null,
             bool? useAnimationNameAsDisplayName = null,
             EyeTrackingControl? eyeTrackingControl = null,
-            MouthTrackingControl? mouthTrackingControl = null);
+            MouthTrackingControl? mouthTrackingControl = null,
+            bool? blinkEnabled = null,
+            bool? mouthMorphCancelerEnabled = null);
     }
 
     public interface IModifyModePropertiesPresenter
@@ -60,7 +62,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             string displayName = null,
             bool? useAnimationNameAsDisplayName = null,
             EyeTrackingControl? eyeTrackingControl = null,
-            MouthTrackingControl? mouthTrackingControl = null)
+            MouthTrackingControl? mouthTrackingControl = null,
+            bool? blinkEnabled = null,
+            bool? mouthMorphCancelerEnabled = null)
         {
             try
             {
@@ -84,7 +88,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                     return;
                 }
 
-                menu.ModifyModeProperties(modeId, displayName, useAnimationNameAsDisplayName, eyeTrackingControl, mouthTrackingControl);
+                menu.ModifyModeProperties(modeId, displayName, useAnimationNameAsDisplayName, eyeTrackingControl, mouthTrackingControl, blinkEnabled, mouthMorphCancelerEnabled);
 
                 _menuRepository.Save(menuId, menu, "ModifyModeProperties");
                 _modifyModePropertiesPresenter.Complete(ModifyModePropertiesResult.Succeeded, modeId, menu);

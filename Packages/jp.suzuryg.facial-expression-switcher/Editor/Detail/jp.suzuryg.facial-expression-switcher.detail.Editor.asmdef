@@ -5,6 +5,8 @@
         "GUID:df45ab4f3bbb8394987fc80e55e039ef",
         "GUID:8bbcb38c0ade0c94f85f615069fc6559",
         "GUID:79c0d231dad4cc84e8226bd51341a07b",
+        "GUID:5759013b5d941f847b7a53f3f967d66a",
+        "GUID:0d0562413cdff7044981c47249bdf492",
         "GUID:560b04d1a97f54a4e82edc0cbbb69285"
     ],
     "includePlatforms": [
@@ -13,7 +15,10 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "VRCSDKBase.dll",
+        "VRCSDK3A.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],

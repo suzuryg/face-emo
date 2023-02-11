@@ -12,6 +12,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
     {
         public EyeTrackingControl EyeTrackingControl;
         public MouthTrackingControl MouthTrackingControl;
+        public bool BlinkEnabled;
+        public bool MouthMorphCancelerEnabled;
         public bool IsLeftTriggerUsed;
         public bool IsRightTriggerUsed;
 
@@ -26,6 +28,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
         {
             EyeTrackingControl = branch.EyeTrackingControl;
             MouthTrackingControl = branch.MouthTrackingControl;
+            BlinkEnabled = branch.BlinkEnabled;
+            MouthMorphCancelerEnabled = branch.MouthMorphCancelerEnabled;
             IsLeftTriggerUsed = branch.IsLeftTriggerUsed;
             IsRightTriggerUsed = branch.IsRightTriggerUsed;
 
@@ -64,6 +68,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             menu.ModifyBranchProperties(id, index,
                 eyeTrackingControl: EyeTrackingControl,
                 mouthTrackingControl: MouthTrackingControl,
+                blinkEnabled: BlinkEnabled,
+                mouthMorphCancelerEnabled: MouthMorphCancelerEnabled,
                 isLeftTriggerUsed: IsLeftTriggerUsed,
                 isRightTriggerUsed: IsRightTriggerUsed);
 

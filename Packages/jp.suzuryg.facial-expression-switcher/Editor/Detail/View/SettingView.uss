@@ -1,9 +1,4 @@
-﻿#LocaleField
-{
-    width: 300px;
-}
-
-#AvatarField
+﻿#AvatarField
 {
     width: 300px;
 }
@@ -14,6 +9,11 @@
 }
 
 #ThumbnailSizeSlider
+{
+    width: 300px;
+}
+
+#GenerateButton
 {
     width: 300px;
 }

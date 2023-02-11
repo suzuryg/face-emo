@@ -9,9 +9,9 @@
 						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
 >
 	<engine:VisualElement name="RootGrid">
-		<editor:EnumField name="LocaleField" label="Dummy"/>
 		<editor:ObjectField name="AvatarField" allow-scene-objects="true"/>
 		<engine:Button name="UpdateThumbnailButton"/>
 		<engine:SliderInt name="ThumbnailSizeSlider"/>
+		<engine:Button name="GenerateButton"/>
 	</engine:VisualElement>
 </engine:UXML>

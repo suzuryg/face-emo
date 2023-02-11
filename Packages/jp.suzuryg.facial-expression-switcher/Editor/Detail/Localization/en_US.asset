@@ -12,21 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400add5ab2f7cbf448558d4a8505230b, type: 3}
   m_Name: en_US
   m_EditorClassIdentifier: 
-  MainView_Language: Language
   MainView_UpdateThumbnails: Update Thumbnails
   HierarchyView_Title: HierarchyView
   HierarchyView_RegisteredMenuItemList: ItemsToRegister
   HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
   MenuItemListView_Title: MenuItemListView
   MenuItemListView_UseAnimationNameAsDisplayName: Use Animation Name As  Mode Name
-  MenuItemListView_Blinking: Blinking
-  MenuItemListView_LipSync: Lip Sync
-  MenuItemListView_Enable: Enable
-  MenuItemListView_Disable: Disable
+  MenuItemListView_EyeTracking: Enable Eye Tracking
+  MenuItemListView_MouthTracking: Enable Mouth Tracking
+  MenuItemListView_Blink: Enable Blink
+  MenuItemListView_MouthMorphCanceler: Enable Mouth Morph Canceler
   MenuItemListView_Empty: This group is empty.
   BranchListView_Title: BranchView
   BranchListView_UseLeftTrigger: Use Left Trigger
   BranchListView_UseRightTrigger: Use Right Trigger
+  BranchListView_NotReachableBranch: This branch is not used.
   BranchListView_LeftTriggerAnimation: Left Trigger
   BranchListView_RightTriggerAnimation: Right Trigger
   BranchListView_BothTriggersAnimation: Both Triggers
@@ -48,8 +48,7 @@ MonoBehaviour:
   BranchListView_ThumbsUp: ThumbsUp
   BranchListView_Equals: Equals
   BranchListView_NotEqual: NotEqual
-  GestureTableView_Left: 
-  GestureTableView_Right: 
+  GestureTableView_AddBranch: Add Branch
   GestureTableView_Neutral: Neutral
   GestureTableView_Fist: Fist
   GestureTableView_HandOpen: HandOpen

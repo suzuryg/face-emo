@@ -315,14 +315,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             string displayName,
             bool? useAnimationNameAsDisplayName,
             EyeTrackingControl? eyeTrackingControl,
-            MouthTrackingControl? mouthTrackingControl) args)
+            MouthTrackingControl? mouthTrackingControl,
+            bool? blinkEnabled,
+            bool? mouthMorphCancelerEnabled) args)
         {
             _modifyModePropertiesUseCase.Handle("",
                 args.modeId,
                 args.displayName,
                 args.useAnimationNameAsDisplayName,
                 args.eyeTrackingControl,
-                args.mouthTrackingControl);
+                args.mouthTrackingControl,
+                args.blinkEnabled,
+                args.mouthMorphCancelerEnabled);
         }
 
         private void OnGroupPropertiesModified((string groupId, string displayName) args)

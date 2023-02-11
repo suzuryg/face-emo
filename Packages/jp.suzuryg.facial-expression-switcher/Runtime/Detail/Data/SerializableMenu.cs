@@ -13,8 +13,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
         [HideInInspector] public double Version = 1.0;
         [HideInInspector] public string AvatarPath;
         [HideInInspector] public bool WriteDefaults;
+        [HideInInspector] public bool SmoothAnalogFist;
         [HideInInspector] public double TransitionDurationSeconds;
         [HideInInspector] public string DefaultSelection;
+        [HideInInspector] public List<string> MouthMorphBlendShapes = new List<string>();
         [HideInInspector] public SerializableRegisteredMenuItemList Registered;
         [HideInInspector] public SerializableUnregisteredMenuItemList Unregistered;
 
@@ -22,8 +24,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
         {
             AvatarPath = menu.Avatar?.Path;
             WriteDefaults = menu.WriteDefaults;
+            SmoothAnalogFist = menu.SmoothAnalogFist;
             TransitionDurationSeconds = menu.TransitionDurationSeconds;
             DefaultSelection = menu.DefaultSelection;
+            MouthMorphBlendShapes = menu.MouthMorphBlendShapes.ToList();
 
             Registered = ScriptableObject.CreateInstance<SerializableRegisteredMenuItemList>();
             Registered.Save(menu.Registered, menu.InsertIndices);
@@ -42,12 +46,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             }
 
             menu.WriteDefaults = WriteDefaults;
+            menu.SmoothAnalogFist = SmoothAnalogFist;
             menu.TransitionDurationSeconds = TransitionDurationSeconds;
 
             Registered?.Load(menu);
             Unregistered?.Load(menu);
 
             menu.SetDefaultSelection(DefaultSelection);
+
+            foreach (var blendShape in MouthMorphBlendShapes)
+            {
+                menu.AddMouthMorphBlendShape(blendShape);
+            }
 
             return menu;
         }

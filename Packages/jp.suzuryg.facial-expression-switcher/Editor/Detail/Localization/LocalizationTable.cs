@@ -5,7 +5,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 {
     public class LocalizationTable : ScriptableObject
     {
-        public string MainView_Language = "Language";
         public string MainView_UpdateThumbnails = "Update Thumbnails";
 
         public string HierarchyView_Title = "HierarchyView";
@@ -14,10 +13,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string MenuItemListView_Title = "MenuItemView";
         public string MenuItemListView_UseAnimationNameAsDisplayName = "Use Animation Name As Mode Name";
-        public string MenuItemListView_Blinking = "Blinking";
-        public string MenuItemListView_LipSync = "Lip Sync";
-        public string MenuItemListView_Enable = "Enable";
-        public string MenuItemListView_Disable = "Disable";
+
+        public string MenuItemListView_EyeTracking = "Enable Eye Tracking";
+        public string MenuItemListView_MouthTracking = "Enable Mouth Tracking";
+        public string MenuItemListView_Blink = "Enable Blink";
+        public string MenuItemListView_MouthMorphCanceler = "Enable Mouth Morph Canceler";
         public string MenuItemListView_Empty = "This group is empty.";
 
         public string BranchListView_Title = "BranchView";

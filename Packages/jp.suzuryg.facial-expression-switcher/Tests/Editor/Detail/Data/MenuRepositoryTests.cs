@@ -145,17 +145,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             menu.AddBranch(r0, new List<Condition>() { new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.NotEqual) });
             menu.AddBranch(r4, new List<Condition>() { new Condition(Hand.Both, HandGesture.HandGun, ComparisonOperator.Equals),  new Condition(Hand.Either, HandGesture.HandOpen, ComparisonOperator.NotEqual)});
 
-            menu.ModifyBranchProperties(r0, 0, EyeTrackingControl.Animation, MouthTrackingControl.Animation, true, true);
-            menu.ModifyBranchProperties(r0, 1, EyeTrackingControl.Animation, MouthTrackingControl.Tracking, false, true);
-            menu.ModifyBranchProperties(r4, 0, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking, false, false);
+            menu.ModifyBranchProperties(r0, 0, EyeTrackingControl.Animation, MouthTrackingControl.Animation, true, false, true, true);
+            menu.ModifyBranchProperties(r0, 1, EyeTrackingControl.Animation, MouthTrackingControl.Tracking, true, false, false, true);
+            menu.ModifyBranchProperties(r4, 0, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking, true, false, false, false);
 
             menu.AddBranch(u1, new List<Condition>() { new Condition(Hand.OneSide, HandGesture.Neutral, ComparisonOperator.Equals) });
             menu.AddBranch(u5, new List<Condition>() { new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.NotEqual) });
             menu.AddBranch(u5, new List<Condition>() { new Condition(Hand.Either, HandGesture.ThumbsUp, ComparisonOperator.Equals),  new Condition(Hand.Left, HandGesture.Victory, ComparisonOperator.NotEqual)});
 
-            menu.ModifyBranchProperties(u1, 0, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking, true, true);
-            menu.ModifyBranchProperties(u5, 0, EyeTrackingControl.Animation, MouthTrackingControl.Animation, false, true);
-            menu.ModifyBranchProperties(u5, 1, EyeTrackingControl.Tracking, MouthTrackingControl.Animation, false, false);
+            menu.ModifyBranchProperties(u1, 0, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking, true, false, true, true);
+            menu.ModifyBranchProperties(u5, 0, EyeTrackingControl.Animation, MouthTrackingControl.Animation, true, false, false, true);
+            menu.ModifyBranchProperties(u5, 1, EyeTrackingControl.Tracking, MouthTrackingControl.Animation, true, false, false, false);
 
             menu.SetAnimation(new Animation("anim00"), r0);
             menu.SetAnimation(new Animation("anim01"), r0, 0, BranchAnimationType.Base);

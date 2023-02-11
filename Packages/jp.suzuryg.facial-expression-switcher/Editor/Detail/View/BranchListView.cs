@@ -213,10 +213,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnModifyBranchPropertiesButtonClicked((string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl,
             MouthTrackingControl? mouthTrackingControl,
+            bool? blinkEnabled,
+            bool? mouthMorphCancelerEnabled,
             bool? isLeftTriggerUsed,
             bool? isRightTriggerUsed) args)
         {
-            _modifyBranchPropertiesUseCase.Handle("", args.modeId, args.branchIndex, args.eyeTrackingControl, args.mouthTrackingControl, args.isLeftTriggerUsed, args.isRightTriggerUsed);
+            _modifyBranchPropertiesUseCase.Handle("", args.modeId, args.branchIndex, args.eyeTrackingControl, args.mouthTrackingControl, args.blinkEnabled, args.mouthMorphCancelerEnabled, args.isLeftTriggerUsed, args.isRightTriggerUsed);
         }
 
         private void OnBranchOrderChanged((string modeId, int from, int to) args)

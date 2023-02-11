@@ -12,17 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400add5ab2f7cbf448558d4a8505230b, type: 3}
   m_Name: ja_JP
   m_EditorClassIdentifier: 
-  MainView_Language: "\u8A00\u8A9E"
   MainView_UpdateThumbnails: "\u30B5\u30E0\u30CD\u30A4\u30EB\u3092\u66F4\u65B0"
   HierarchyView_Title: "\u968E\u5C64\u30D3\u30E5\u30FC"
   HierarchyView_RegisteredMenuItemList: "\u767B\u9332\u3059\u308B\u9805\u76EE"
   HierarchyView_UnregisteredMenuItemList: "\u767B\u9332\u3057\u306A\u3044\u9805\u76EE"
   MenuItemListView_Title: "\u9805\u76EE\u30D3\u30E5\u30FC"
   MenuItemListView_UseAnimationNameAsDisplayName: "\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u540D\u3092\u30E2\u30FC\u30C9\u540D\u3068\u3057\u3066\u4F7F\u7528"
-  MenuItemListView_Blinking: "\u307E\u3070\u305F\u304D"
-  MenuItemListView_LipSync: "\u30EA\u30C3\u30D7\u30B7\u30F3\u30AF"
-  MenuItemListView_Enable: "\u3059\u308B"
-  MenuItemListView_Disable: "\u3057\u306A\u3044"
+  MenuItemListView_EyeTracking: "\u76EE\u30C8\u30E9\u30C3\u30AD\u30F3\u30B0\u6709\u52B9"
+  MenuItemListView_MouthTracking: "\u53E3\u30C8\u30E9\u30C3\u30AD\u30F3\u30B0\u6709\u52B9"
+  MenuItemListView_Blink: "\u307E\u3070\u305F\u304D\u6709\u52B9"
+  MenuItemListView_MouthMorphCanceler: "\u53E3\u5909\u5F62\u30AD\u30E3\u30F3\u30BB\u30EB\u6709\u52B9"
   MenuItemListView_Empty: "\u3053\u306E\u30B0\u30EB\u30FC\u30D7\u306F\u7A7A\u3067\u3059\u3002"
   BranchListView_Title: "\u5206\u5C90\u30D3\u30E5\u30FC"
   BranchListView_UseLeftTrigger: "\u5DE6\u30C8\u30EA\u30AC\u30FC\u3092\u4F7F\u7528\u3059\u308B"

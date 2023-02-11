@@ -5,6 +5,7 @@ using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranch;
 using Suzuryg.FacialExpressionSwitcher.Detail;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
@@ -46,6 +47,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
             // Bind non-MonoBehaviour classes
             Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
+            Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
 
             Container.Bind<UpdateMenuSubject>().AsSingle();
             Container.Bind<ChangeHierarchySelectionSubject>().AsSingle();
@@ -66,6 +68,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IRemoveMenuItemUseCase>().To<RemoveMenuItemUseCase>().AsTransient();
             Container.Bind<IMergeExistingMenuUseCase>().To<MergeExistingMenuUseCase>().AsTransient();
             Container.Bind<IApplyMenuUseCase>().To<ApplyMenuUseCase>().AsTransient();
+            Container.Bind<IGenerateFxUseCase>().To<GenerateFxUseCase>().AsTransient();
             Container.Bind<IAddBranchUseCase>().To<AddBranchUseCase>().AsTransient();
             Container.Bind<IModifyBranchPropertiesUseCase>().To<ModifyBranchPropertiesUseCase>().AsTransient();
             Container.Bind<IChangeBranchOrderUseCase>().To<ChangeBranchOrderUseCase>().AsTransient();
@@ -86,6 +89,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IRemoveMenuItemPresenter>().To<RemoveMenuItemPresenter>().AsSingle();
             Container.Bind<IMergeExistingMenuPresenter>().To<MergeExistingMenuPresenter>().AsSingle();
             Container.Bind<IApplyMenuPresenter>().To<ApplyMenuPresenter>().AsSingle();
+            Container.Bind<IGenerateFxPresenter>().To<GenerateFxPresenter>().AsSingle();
             Container.Bind<IAddBranchPresenter>().To<AddBranchPresenter>().AsSingle();
             Container.Bind<IModifyBranchPropertiesPresenter>().To<ModifyBranchPropertiesPresenter>().AsSingle();
             Container.Bind<IChangeBranchOrderPresenter>().To<ChangeBranchOrderPresenter>().AsSingle();
@@ -103,7 +107,36 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<BranchListView>().AsTransient();
             Container.Bind<SettingView>().AsTransient();
             Container.Bind<GestureTableView>().AsTransient();
+            Container.Bind<InspectorView>().AsTransient();
             Container.Bind<UseCaseErrorHandler>().AsTransient();
+        }
+
+        public static FESInstaller GetInstaller(string rootObjectPath)
+        {
+            if (!rootObjectPath.StartsWith("/"))
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} is not a full path.", "OK");
+                return null;
+            }
+
+            var launcherObject = GameObject.Find(rootObjectPath);
+            if (launcherObject is null)
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} was not found. Please activate the GameObject.", "OK");
+                return null;
+            }
+
+            // Unity's bug: If the object is nested more than 1 level, the object is found even if it is deactivated. This code does not deal with the bug.
+            launcherObject.SetActive(false);
+            var anotherObject = GameObject.Find(rootObjectPath);
+            launcherObject.SetActive(true);
+            if (anotherObject is GameObject)
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} has duplicate path. Please change GameObject's name.", "OK");
+                return null;
+            }
+
+            return new FESInstaller(launcherObject);
         }
     }
 }

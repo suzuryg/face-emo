@@ -29,6 +29,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             IRemoveMenuItemPresenter removeMenuItemPresenter,
             IMergeExistingMenuPresenter mergeExistingMenuPresenter,
             IApplyMenuPresenter applyMenuPresenter,
+            IGenerateFxPresenter generateFxPresenter,
             IAddBranchPresenter addBranchPresenter,
             IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter,
             IChangeBranchOrderPresenter changeBranchOrderPresenter,
@@ -117,6 +118,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
                 if (x.applyMenuResult != ApplyMenuResult.Succeeded)
                 {
                     EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.applyMenuResult.GetType().Name}: {x.applyMenuResult}", "OK");
+                    if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
+                }
+            }).AddTo(_disposables);
+
+            generateFxPresenter.Observable.Synchronize().Subscribe(x =>
+            {
+                if (x.generateFxResult != GenerateFxResult.Succeeded)
+                {
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.generateFxResult.GetType().Name}: {x.generateFxResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);

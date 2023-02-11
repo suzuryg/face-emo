@@ -8,8 +8,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     {
         Avatar Avatar { get; }
         bool WriteDefaults { get; }
+        bool SmoothAnalogFist { get; }
         double TransitionDurationSeconds { get; }
         string DefaultSelection { get; }
+        IReadOnlyList<string> MouthMorphBlendShapes { get; }
 
         IMenuItemList Registered { get; }
         IMenuItemList Unregistered { get; }
@@ -28,13 +30,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public Avatar Avatar { get; set; }
         public bool WriteDefaults { get; set; } = false;
+        public bool SmoothAnalogFist { get; set; } = true;
         public double TransitionDurationSeconds { get; set; } = 0.1;
         public string DefaultSelection { get; private set; }
+        public IReadOnlyList<string> MouthMorphBlendShapes => _mouthMorphBlendShapes;
 
         public IMenuItemList Registered => _registered;
         public IMenuItemList Unregistered => _unregistered;
         public IReadOnlyList<int> InsertIndices => _registered.InsertIndices;
 
+        private List<string> _mouthMorphBlendShapes = new List<string>();
         private RegisteredMenuItemList _registered = new RegisteredMenuItemList();
         private UnregisteredMenuItemList _unregistered = new UnregisteredMenuItemList();
         private Dictionary<string, Mode> _modes = new Dictionary<string, Mode>();
@@ -52,13 +57,30 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             string displayName = null,
             bool? useAnimationNameAsDisplayName = null,
             EyeTrackingControl? eyeTrackingControl = null,
-            MouthTrackingControl? mouthTrackingControl = null)
+            MouthTrackingControl? mouthTrackingControl = null,
+            bool? blinkEnabled = null,
+            bool? mouthMorphCancelerEnabled = null)
         {
             var mode = _modes[id];
             mode.DisplayName = displayName ?? mode.DisplayName;
             mode.UseAnimationNameAsDisplayName = useAnimationNameAsDisplayName ?? mode.UseAnimationNameAsDisplayName;
             mode.EyeTrackingControl = eyeTrackingControl ?? mode.EyeTrackingControl;
             mode.MouthTrackingControl = mouthTrackingControl ?? mode.MouthTrackingControl;
+            mode.BlinkEnabled = blinkEnabled ?? mode.BlinkEnabled;
+            mode.MouthMorphCancelerEnabled = mouthMorphCancelerEnabled ?? mode.MouthMorphCancelerEnabled;
+        }
+
+        public void AddMouthMorphBlendShape(string name)
+        {
+            if (!_mouthMorphBlendShapes.Contains(name))
+            {
+                _mouthMorphBlendShapes.Add(name);
+            }
+        }
+
+        public void RemoveMouthMorphBlendShape(string name)
+        {
+            _mouthMorphBlendShapes = _mouthMorphBlendShapes.Where(x => x != name).ToList();
         }
 
         public bool ContainsGroup(string id)
@@ -137,6 +159,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
             _modes[id] = mode;
 
+            if (DefaultSelection is null)
+            {
+                DefaultSelection = id;
+            }
+
             return id;
         }
 
@@ -190,6 +217,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             {
                 _modes[id].Parent.Remove(id);
                 _modes.Remove(id);
+
+                if (DefaultSelection == id)
+                {
+                    ReselectDefaultSelection();
+                }
             }
             else if (ContainsGroup(id))
             {
@@ -406,10 +438,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public void ModifyBranchProperties(string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl = null,
             MouthTrackingControl? mouthTrackingControl = null,
+            bool? blinkEnabled = null,
+            bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
             bool? isRightTriggerUsed = null)
         {
-            _modes[modeId].ModifyBranchProperties(branchIndex, eyeTrackingControl, mouthTrackingControl, isLeftTriggerUsed, isRightTriggerUsed);
+            _modes[modeId].ModifyBranchProperties(branchIndex, eyeTrackingControl, mouthTrackingControl, blinkEnabled, mouthMorphCancelerEnabled, isLeftTriggerUsed, isRightTriggerUsed);
         }
 
         public bool CanChangeBranchOrder(string modeId, int from) => ContainsBranch(modeId, from);
@@ -472,6 +506,35 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                 id = Guid.NewGuid().ToString("N");
             }
             return id;
+        }
+
+        private void ReselectDefaultSelection()
+        {
+            DefaultSelection = null;
+            var queue = new Queue<string>();
+
+            foreach (var id in Registered.Order)
+            {
+                queue.Enqueue(id);
+            }
+
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                if (ContainsMode(current))
+                {
+                    DefaultSelection = current;
+                    break;
+                }
+                else if (ContainsGroup(current))
+                {
+                    var group = GetGroup(current);
+                    foreach (var id in group.Order)
+                    {
+                        queue.Enqueue(id);
+                    }
+                }
+            }
         }
     }
 }

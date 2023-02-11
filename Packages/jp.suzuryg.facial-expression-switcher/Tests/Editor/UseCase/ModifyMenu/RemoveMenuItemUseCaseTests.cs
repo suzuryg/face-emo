@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
@@ -164,6 +165,44 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(!loadMenu().ContainsGroup(g1));
             Assert.That(!loadMenu().ContainsGroup(m0));
             Assert.That(loadMenu().Registered.Count, Is.EqualTo(0));
+
+            // Default selection
+            Assert.That(loadMenu().DefaultSelection, Is.Null);
+
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
+            var r_g = loadMenu().Registered.Order[0];
+            Assert.That(loadMenu().DefaultSelection, Is.Null);
+
+            addMenuItemUseCase.Handle(menuId, r_g, AddMenuItemType.Group);
+            var r_g_g = loadMenu().GetGroup(r_g).Order[0];
+            Assert.That(loadMenu().DefaultSelection, Is.Null);
+
+            addMenuItemUseCase.Handle(menuId, r_g_g, AddMenuItemType.Mode);
+            var r_g_g_m = loadMenu().GetGroup(r_g_g).Order[0];
+            Assert.That(loadMenu().DefaultSelection, Is.EqualTo(r_g_g_m));
+
+            addMenuItemUseCase.Handle(menuId, r_g, AddMenuItemType.Mode);
+            var r_g_m = loadMenu().GetGroup(r_g).Order[1];
+            Assert.That(loadMenu().DefaultSelection, Is.EqualTo(r_g_g_m));
+
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            var r_m = loadMenu().Registered.Order[1];
+            Assert.That(loadMenu().DefaultSelection, Is.EqualTo(r_g_g_m));
+
+            Assert.That(loadMenu().Registered.Order[0], Is.EqualTo(r_g));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).Order[0], Is.EqualTo(r_g_g));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).Order[1], Is.EqualTo(r_g_m));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetGroupAt(0).Order[0], Is.EqualTo(r_g_g_m));
+            Assert.That(loadMenu().Registered.Order[1], Is.EqualTo(r_m));
+
+            removeMenuItemUseCase.Handle(menuId, r_g_g_m);
+            Assert.That(loadMenu().DefaultSelection, Is.EqualTo(r_m));
+
+            removeMenuItemUseCase.Handle(menuId, r_m);
+            Assert.That(loadMenu().DefaultSelection, Is.EqualTo(r_g_m));
+
+            removeMenuItemUseCase.Handle(menuId, r_g);
+            Assert.That(loadMenu().DefaultSelection, Is.Null);
         }
     }
 }

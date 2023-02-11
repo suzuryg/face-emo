@@ -37,35 +37,20 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Build();
         }
 
+        public void ChangeLocale(Locale locale)
+        {
+            if (_installer is FESInstaller)
+            {
+                _installer.Container.Resolve<ILocalizationSetting>().SetLocale(locale);
+            }
+        }
+
         private void Build()
         {
             Clean();
             if (_launcherObjectPath is string)
             {
-                if (!_launcherObjectPath.StartsWith("/"))
-                {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_launcherObjectPath} is not a full path.", "OK");
-                    return;
-                }
-
-                var launcherObject = GameObject.Find(_launcherObjectPath);
-                if (launcherObject is null)
-                {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_launcherObjectPath} was not found. Please activate the GameObject.", "OK");
-                    return;
-                }
-
-                // Unity's bug: If the object is nested more than 1 level, the object is found even if it is deactivated. This code does not deal with the bug.
-                launcherObject.SetActive(false);
-                var anotherObject = GameObject.Find(_launcherObjectPath);
-                launcherObject.SetActive(true);
-                if (anotherObject is GameObject)
-                {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_launcherObjectPath} has duplicate path. Please change GameObject's name.", "OK");
-                    return;
-                }
-
-                _installer = new FESInstaller(launcherObject);
+                _installer = FESInstaller.GetInstaller(_launcherObjectPath);
                 _mainView = _installer.Container.Resolve<MainView>().AddTo(_disposables);
                 _mainView.Initialize(rootVisualElement);
 

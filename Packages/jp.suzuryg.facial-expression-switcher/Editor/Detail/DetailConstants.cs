@@ -10,9 +10,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
     public class DetailConstants
     {
         public static readonly string PackageName = "jp.suzuryg.facial-expression-switcher";
-        public static string ViewDirectory => $"Packages/{PackageName}/Editor/Detail/View";
+        public static string DetailDirectory => $"Packages/{PackageName}/Editor/Detail";
+        public static string ViewDirectory => $"{DetailDirectory}/View";
         public static string IconDirectory => $"{ViewDirectory}/Icon";
-        public static string LocalizationDirectory => $"Packages/{PackageName}/Editor/Detail/Localization";
+        public static string LocalizationDirectory => $"{DetailDirectory}/Localization";
+
         public static readonly string DragAndDropDataKey_MenuItemIds = $"{DomainConstants.SystemName}_MenuItemIds";
 
         public static readonly int MinMainThumbnailSize = 100;

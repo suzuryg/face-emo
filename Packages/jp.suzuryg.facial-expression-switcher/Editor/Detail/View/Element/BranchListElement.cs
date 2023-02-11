@@ -42,6 +42,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         public IObservable<(string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl,
             MouthTrackingControl? mouthTrackingControl,
+            bool? blinkEnabled,
+            bool? mouthMorphCancelerEnabled,
             bool? isLeftTriggerUsed,
             bool? isRightTriggerUsed)> OnModifyBranchPropertiesButtonClicked => _onModifyBranchPropertiesButtonClicked.AsObservable();
         public IObservable<(string modeId, int from, int to)> OnBranchOrderChanged => _onBranchOrderChanged.AsObservable();
@@ -63,8 +65,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl,
             MouthTrackingControl? mouthTrackingControl,
+            bool? blinkEnabled,
+            bool? mouthMorphCancelerEnabled,
             bool? isLeftTriggerUsed,
-            bool? isRightTriggerUsed)> _onModifyBranchPropertiesButtonClicked = new Subject<(string modeId, int branchIndex, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? isLeftTriggerUsed, bool? isRightTriggerUsed)>();
+            bool? isRightTriggerUsed)> _onModifyBranchPropertiesButtonClicked = new Subject<(string modeId, int branchIndex, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? blinkEnabled, bool? mouthMorphCancelerEnabled, bool? isLeftTriggerUsed, bool? isRightTriggerUsed)>();
         private Subject<(string modeId, int from, int to)> _onBranchOrderChanged = new Subject<(string modeId, int from, int to)>();
         private Subject<(string modeId, int branchIndex)> _onRemoveBranchButtonClicked = new Subject<(string modeId, int branchIndex)>(); 
 
@@ -84,10 +88,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Texture2D _activeBackgroundTexture;
         private Texture2D _focusedBackgroundTexture;
 
-        private string _blinkingText;
-        private string _lipSyncText;
-        private string _enableText;
-        private string _disableText;
+        private string _eyeTrackingText;
+        private string _mouthTrackingText;
+        private string _blinkText;
+        private string _mouthMorphCancelerText;
         private string _emptyText;
         private string _useLeftTriggerText;
         private string _useRightTriggerText;
@@ -209,10 +213,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void SetText(LocalizationTable localizationTable)
         {
-            _blinkingText = localizationTable.MenuItemListView_Blinking;
-            _lipSyncText = localizationTable.MenuItemListView_LipSync;
-            _enableText = localizationTable.MenuItemListView_Enable;
-            _disableText = localizationTable.MenuItemListView_Disable;
+            _eyeTrackingText = localizationTable.MenuItemListView_EyeTracking;
+            _mouthTrackingText = localizationTable.MenuItemListView_MouthTracking;
+            _blinkText = localizationTable.MenuItemListView_Blink;
+            _mouthMorphCancelerText = localizationTable.MenuItemListView_MouthMorphCanceler;
             _emptyText = localizationTable.BranchListView_EmptyBranch;
             _useLeftTriggerText = localizationTable.BranchListView_UseLeftTrigger;
             _useRightTriggerText = localizationTable.BranchListView_UseRightTrigger;
@@ -342,40 +346,46 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
             xCurrent += ConditionListElement.GetWidth() + upperHorizontalMargin;
 
-            // Blinking
-            GUI.Label(new Rect(xCurrent, yCurrent, PropertiesWidth / 2, EditorGUIUtility.singleLineHeight), _blinkingText);
-            var oldBlinking = branch.EyeTrackingControl == EyeTrackingControl.Tracking ? 0 : 1;
-            var newBlinking = EditorGUI.Popup(new Rect(xCurrent + PropertiesWidth / 2, yCurrent, PropertiesWidth / 2, EditorGUIUtility.singleLineHeight),
-                string.Empty, oldBlinking, new[] { _enableText, _disableText });
-            if (newBlinking != oldBlinking)
+            // Eye tracking
+            Func<EyeTrackingControl, bool> eyeToBool = (EyeTrackingControl eyeTrackingControl) => eyeTrackingControl == EyeTrackingControl.Tracking;
+            Func<bool, EyeTrackingControl> boolToEye = (bool value) => value ? EyeTrackingControl.Tracking : EyeTrackingControl.Animation;
+            var eyeTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), eyeToBool(branch.EyeTrackingControl), string.Empty);
+            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _eyeTrackingText);
+            if (eyeTracking != eyeToBool(branch.EyeTrackingControl))
             {
-                if (newBlinking == 0)
-                {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, EyeTrackingControl.Tracking, null, null, null));
-                }
-                else
-                {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, EyeTrackingControl.Animation, null, null, null));
-                }
+                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null));
             }
 
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
 
-            // Lip sync
-            GUI.Label(new Rect(xCurrent, yCurrent, PropertiesWidth / 2, EditorGUIUtility.singleLineHeight), _lipSyncText);
-            var oldLipSync = branch.MouthTrackingControl == MouthTrackingControl.Tracking ? 0 : 1;
-            var newLipSync = EditorGUI.Popup(new Rect(xCurrent + PropertiesWidth / 2, yCurrent, PropertiesWidth / 2, EditorGUIUtility.singleLineHeight),
-                string.Empty, oldLipSync, new[] { _enableText, _disableText });
-            if (newLipSync != oldLipSync)
+            // Blink
+            var blink = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.BlinkEnabled, string.Empty);
+            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _blinkText);
+            if (blink != branch.BlinkEnabled)
             {
-                if (newLipSync == 0)
-                {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, MouthTrackingControl.Tracking, null, null));
-                }
-                else
-                {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, MouthTrackingControl.Animation, null, null));
-                }
+                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, blink, null, null, null));
+            }
+
+            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+
+            // Mouth tracking
+            Func<MouthTrackingControl, bool> mouthToBool = (MouthTrackingControl mouthTrackingControl) => mouthTrackingControl == MouthTrackingControl.Tracking;
+            Func<bool, MouthTrackingControl> boolToMouth = (bool value) => value ? MouthTrackingControl.Tracking : MouthTrackingControl.Animation;
+            var mouthTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), mouthToBool(branch.MouthTrackingControl), string.Empty);
+            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthTrackingText);
+            if (mouthTracking != mouthToBool(branch.MouthTrackingControl))
+            {
+                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null));
+            }
+
+            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+
+            // Mouth morph cancel
+            var mouthMorphCancel = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.MouthMorphCancelerEnabled, string.Empty);
+            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
+            if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
+            {
+                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, mouthMorphCancel, null, null));
             }
 
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
@@ -387,7 +397,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useLeftTriggerText);
                 if (useLeftTrigger != branch.IsLeftTriggerUsed)
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, useLeftTrigger, null));
+                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, useLeftTrigger, null));
                 }
             }
 
@@ -400,7 +410,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useRightTriggerText);
                 if (useRightTrigger != branch.IsRightTriggerUsed)
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, useRightTrigger));
+                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, null, useRightTrigger));
                 }
             }
 
