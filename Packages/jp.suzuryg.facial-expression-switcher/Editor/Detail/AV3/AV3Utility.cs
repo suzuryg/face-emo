@@ -55,6 +55,38 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
+        public static void RemoveLayer(AnimatorController animatorController, string layerName)
+        {
+            var layers = animatorController.layers;
+            var layerCount = layers.Where(x => x.name == layerName).Count();
+            if (layerCount == 1)
+            {
+                var removed = layers.Where(x => x.name != layerName);
+                animatorController.layers = removed.ToArray();
+            }
+            else
+            {
+                throw new FacialExpressionSwitcherException($"Num of layers which has name {layerName} was not 1: {layerCount}");
+            }
+        }
+
+        public static void MoveLayer(AnimatorController animatorController, string layerName, int newIndex)
+        {
+            var layers = animatorController.layers;
+            var layerCount = layers.Where(x => x.name == layerName).Count();
+            if (layerCount == 1)
+            {
+                var target = layers.Where(x => x.name == layerName).First();
+                var removed = layers.Where(x => x.name != layerName).ToList();
+                removed.Insert(newIndex, target);
+                animatorController.layers = removed.ToArray();
+            }
+            else
+            {
+                throw new FacialExpressionSwitcherException($"Num of layers which has name {layerName} was not 1: {layerCount}");
+            }
+        }
+
         public static VRCAvatarDescriptor GetAvatarDescriptor(Domain.Avatar avatar)
         {
             if (avatar is Domain.Avatar &&
@@ -138,7 +170,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         public static HashSet<string> GetBlendShapeNamesToBeExcluded(VRCAvatarDescriptor avatarDescriptor)
         {
-            HashSet<string> toBeExcluded = new HashSet<string>();
+            var eyeLids = GetEyeLidsBlendShapes(avatarDescriptor);
+            HashSet<string> toBeExcluded = new HashSet<string>(eyeLids);
+
             if (avatarDescriptor.VisemeBlendShapes is string[])
             {
                 foreach (var name in avatarDescriptor.VisemeBlendShapes)
@@ -146,6 +180,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     toBeExcluded.Add(name);
                 }
             }
+            return toBeExcluded;
+        }
+
+        public static List<string> GetEyeLidsBlendShapes(VRCAvatarDescriptor avatarDescriptor)
+        {
+            var ret = new List<string>();
             if (avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes is int[] &&
                 avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh is SkinnedMeshRenderer &&
                 avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh is Mesh sharedMesh)
@@ -154,11 +194,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 {
                     if (index < sharedMesh.blendShapeCount)
                     {
-                        toBeExcluded.Add(sharedMesh.GetBlendShapeName(index));
+                        ret.Add(sharedMesh.GetBlendShapeName(index));
                     }
                 }
             }
-            return toBeExcluded;
+            return ret;
         }
 
         public static bool IsExcluded(string name, HashSet<string> toBeExcluded)
@@ -236,6 +276,31 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             return blendShapes;
+        }
+
+        // https://hacchi-man.hatenablog.com/entry/2020/08/23/220000
+        public static void CreateFolderRecursively(string path)
+        {
+            // If it doesn't start with Assets, it can't be processed.
+            if (!path.StartsWith("Assets/"))
+            {
+                return;
+            }
+         
+            // AssetDatabase, so the delimiter is /.
+            var dirs = path.Split('/');
+            var combinePath = dirs[0];
+
+            // Skip the Assets part.
+            foreach (var dir in dirs.Skip(1))
+            {
+                // Check existence of directory
+                if (!AssetDatabase.IsValidFolder(combinePath + '/' + dir))
+                {
+                    AssetDatabase.CreateFolder(combinePath, dir);
+                }
+                combinePath += '/' + dir;
+            }
         }
     }
 }

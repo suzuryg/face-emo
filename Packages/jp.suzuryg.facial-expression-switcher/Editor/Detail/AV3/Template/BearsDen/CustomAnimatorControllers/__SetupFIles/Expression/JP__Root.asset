@@ -1,0 +1,65 @@
+﻿%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: JP__Root
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u8A2D\u5B9A"
+    icon: {fileID: 2800000, guid: 11bfe80afcb0cea49946f2b365359f5c, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 1994a1f7c87283340a3b8e2614f1995d, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5"
+    icon: {fileID: 2800000, guid: af1ba8919b0ccb94a99caf43ac36f97d, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: dc159631c85fb114a97505f31194645d, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u30CF\u30F3\u30C9\u30B5\u30A4\u30F3\u30D1\u30BF\u30FC\u30F3"
+    icon: {fileID: 2800000, guid: b4a615d4b1248c9499b06aa6ea7adaf3, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 7bcefc1c97839bf42bd8e8b8b9a852d1, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u30A8\u30E2\u30FC\u30C8"
+    icon: {fileID: 2800000, guid: 011229dd2f6f5f64f8965a08d3434654, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 543f3d3f7ac97034997241c247bf4201, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u30C4\u30FC\u30EB"
+    icon: {fileID: 2800000, guid: 7e8d7e83d45aa85459c29009c1dc8138, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: e8aef46d66b75004caf81d7dd876d5cc, type: 2}
+    subParameters: []
+    labels: []

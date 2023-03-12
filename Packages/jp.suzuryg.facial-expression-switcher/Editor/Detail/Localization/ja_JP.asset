@@ -57,3 +57,18 @@ MonoBehaviour:
   GestureTableView_RockNRoll: Rock
   GestureTableView_HandGun: Gun
   GestureTableView_ThumbsUp: Thumbs
+  ExMenu_Setting: "\u8A2D\u5B9A"
+  ExMenu_EmoteLock: "\u8868\u60C5\u56FA\u5B9AON [NOT Saved]"
+  ExMenu_BlinkOff: "\u307E\u3070\u305F\u304DOFF [NOT Saved]"
+  ExMenu_DanceGimmick: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF\u6709\u52B9 [NOT
+    Saved]"
+  ExMenu_ContactLock: "Contact\u8868\u60C5\u56FA\u5B9A\u6709\u52B9"
+  ExMenu_Override: "\u8868\u60C5\u4E0A\u66F8\u304D\u6709\u52B9"
+  ExMenu_HandPriority: "\u5DE6\u53F3\u512A\u5148\u8A2D\u5B9A"
+  ExMenu_HandPriority_PrimeLeft: "\u5DE6\u624B\u512A\u5148"
+  ExMenu_HandPriority_PrimeRight: "\u53F3\u624B\u512A\u5148"
+  ExMenu_HandPriority_OnlyLeft: "\u5DE6\u624B\u306E\u307F"
+  ExMenu_HandPriority_OnlyRight: "\u53F3\u624B\u306E\u307F"
+  ExMenu_Controller: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u5207\u308A\u66FF\u3048"
+  ExMenu_Controller_Quest: "Quest\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC"
+  ExMenu_Controller_Index: "Index\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC"

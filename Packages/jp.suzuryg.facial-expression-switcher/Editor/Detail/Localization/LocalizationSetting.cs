@@ -15,6 +15,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         Locale Locale { get; }
         LocalizationTable Table { get; }
         IObservable<LocalizationTable> OnTableChanged { get; }
+
+        LocalizationTable GetCurrentLocaleTable();
     }
 
     public interface ILocalizationSetting
@@ -22,7 +24,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         Locale Locale { get; }
         LocalizationTable Table { get; }
         IObservable<LocalizationTable> OnTableChanged { get; }
+
         void SetLocale(Locale locale);
+        LocalizationTable GetCurrentLocaleTable();
     }
 
     public class LocalizationSetting : IReadOnlyLocalizationSetting, ILocalizationSetting
@@ -70,6 +74,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             else
             {
                 throw new FacialExpressionSwitcherException("Failed to load localization table.");
+            }
+        }
+
+        // TODO: Table property is unnecessary?
+        public LocalizationTable GetCurrentLocaleTable()
+        {
+            var localeString = EditorPrefs.GetString(LocalePrefKey);
+            if (localeString is string && Enum.TryParse<Locale>(localeString, out var locale) && Enum.IsDefined(typeof(Locale), locale))
+            {
+                if (locale == Locale.ja_JP)
+                {
+                    return AssetDatabase.LoadAssetAtPath<LocalizationTable>($"{DetailConstants.LocalizationDirectory}/ja_JP.asset");
+                }
+                else
+                {
+                    return AssetDatabase.LoadAssetAtPath<LocalizationTable>($"{DetailConstants.LocalizationDirectory}/en_US.asset");
+                }
+            }
+            else
+            {
+                return new LocalizationTable();
             }
         }
     }

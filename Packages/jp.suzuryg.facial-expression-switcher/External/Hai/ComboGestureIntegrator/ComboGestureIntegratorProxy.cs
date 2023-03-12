@@ -11,9 +11,9 @@ namespace Suzuryg.FacialExpressionSwitcher.External.Hai.ComboGestureIntegrator
 {
     public class ComboGestureIntegratorProxy
     {
-        public static void DoGenerate(AnimatorController animatorController, string folderToCreateAssetIn, bool writeDefaults)
+        public static void DoGenerate(AnimatorController animatorController, RuntimeAnimatorController assetContainer, bool writeDefaults)
         {
-            new ComboGestureCompilerInternal(animatorController, folderToCreateAssetIn, writeDefaults).IntegrateWeightCorrection();
+            new ComboGestureCompilerInternal(animatorController, assetContainer, writeDefaults).IntegrateWeightCorrection();
         }
     }
 
@@ -25,12 +25,12 @@ namespace Suzuryg.FacialExpressionSwitcher.External.Hai.ComboGestureIntegrator
         private readonly bool _universalAnalogSupport;
         private readonly AvatarMask _nothingMask;
 
-        public ComboGestureCompilerInternal(AnimatorController animatorController, string folderToCreateAssetIn, bool writeDefaults)
+        public ComboGestureCompilerInternal(AnimatorController animatorController, RuntimeAnimatorController assetContainer, bool writeDefaults)
         {
             _animatorController = animatorController;
             _conflictPrevention = CgeConflictPrevention.OfIntegrator(writeDefaults);
 
-            _assetContainer = CgeAssetContainer.CreateNew(folderToCreateAssetIn);
+            _assetContainer = CgeAssetContainer.FromExisting(assetContainer);
             _universalAnalogSupport = false;
         }
 

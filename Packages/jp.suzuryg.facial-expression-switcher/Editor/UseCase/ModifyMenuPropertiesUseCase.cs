@@ -9,8 +9,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
         void Handle(
             string menuId,
             Avatar avatar = null,
-            bool? writeDefaults = null,
-            double? transitionDurationSeconds = null,
             string defaultSelection = null);
     }
 
@@ -56,8 +54,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
         public void Handle(
             string menuId,
             Avatar avatar = null,
-            bool? writeDefaults = null,
-            double? transitionDurationSeconds = null,
             string defaultSelection = null)
         {
             try
@@ -77,8 +73,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
                 var menu = _menuRepository.Load(menuId);
 
                 menu.Avatar = avatar ?? menu.Avatar;
-                menu.WriteDefaults = writeDefaults.HasValue ? writeDefaults.Value : menu.WriteDefaults;
-                menu.TransitionDurationSeconds = transitionDurationSeconds.HasValue ? transitionDurationSeconds.Value : menu.TransitionDurationSeconds;
                 
                 if (defaultSelection is string)
                 {

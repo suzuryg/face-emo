@@ -13,9 +13,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
     public class TemplateFxGenerator
     {
-        private static readonly string TemplatePath = $"{DetailConstants.DetailDirectory}/AV3/BearsDen/FES_FX.controller"; // test
-        private static readonly string DummyContainerPath = "Assets/Temp/DummyContainer.controller"; // test
-
         private static readonly IReadOnlyList<PatternLRPriority> PatternsLRPriority = Enum.GetValues(typeof(PatternLRPriority)).Cast<PatternLRPriority>().ToList();
 
         private enum PatternLRPriority
@@ -27,6 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             OnlyRight,
         }
 
+        // After importing CustomAnimatorControllers, deep copy with CopyAssetsWithDependency (to change GUID).
         [MenuItem( "Suzuryg/GenerateTemplateFx" )]
         public static void Generate()
         {
@@ -34,25 +32,40 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             {
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Start generation Template FX controller.", 0);
 
-                // Load template
-                var templateFx = AssetDatabase.LoadAssetAtPath<AnimatorController>(TemplatePath);
-                if (templateFx is null)
+                // Copy template FX controller
+                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_BearsDenFx) is null)
                 {
-                    throw new FacialExpressionSwitcherException("FX template was not found.");
+                    throw new FacialExpressionSwitcherException("Original template was not found.");
                 }
+                else if (!AssetDatabase.CopyAsset(AV3Constants.Path_BearsDenFx, AV3Constants.Path_FxTemplate))
+                {
+                    throw new FacialExpressionSwitcherException("Failed to copy FX template.");
+                }
+                var animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate);
+
 
                 // Create container
-                var dummyContainer = AssetDatabase.LoadAssetAtPath<AnimatorController>(DummyContainerPath);
+                var dummyContainer = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_TemplateContainer);
                 if (dummyContainer is AnimatorController)
                 {
-                    AssetDatabase.DeleteAsset(DummyContainerPath);
+                    AssetDatabase.DeleteAsset(AV3Constants.Path_TemplateContainer);
                 }
                 dummyContainer = new AnimatorController();
-                AssetDatabase.CreateAsset(dummyContainer, DummyContainerPath);
+                AssetDatabase.CreateAsset(dummyContainer, AV3Constants.Path_TemplateContainer);
 
                 var aac = AacV0.Create(GetConfiguration(dummyContainer, writeDefaults: false));
 
-                GenerateFaceEmoteControlLayer(aac, templateFx);
+                AV3Utility.RemoveLayer(animatorController, AV3Constants.LayerName_Base);
+                AV3Utility.RemoveLayer(animatorController, AV3Constants.LayerName_FaceEmoteOverride);
+                AV3Utility.RemoveLayer(animatorController, AV3Constants.LayerName_LocalIndicatorSound);
+                AV3Utility.MoveLayer(animatorController, AV3Constants.LayerName_DefaultFace, 0);
+
+                // If not initialized, layer replacement process will be slower.
+                aac.CreateSupportingArbitraryControllerLayer(animatorController, AV3Constants.LayerName_FaceEmoteSetControl);
+                aac.CreateSupportingArbitraryControllerLayer(animatorController, AV3Constants.LayerName_DefaultFace);
+                aac.CreateSupportingArbitraryControllerLayer(animatorController, AV3Constants.LayerName_FaceEmotePlayer);
+
+                GenerateFaceEmoteControlLayer(aac, animatorController);
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
             }

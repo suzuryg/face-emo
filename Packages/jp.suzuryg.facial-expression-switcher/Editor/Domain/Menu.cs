@@ -7,9 +7,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     public interface IMenu
     {
         Avatar Avatar { get; }
-        bool WriteDefaults { get; }
-        bool SmoothAnalogFist { get; }
-        double TransitionDurationSeconds { get; }
         string DefaultSelection { get; }
         IReadOnlyList<string> MouthMorphBlendShapes { get; }
 
@@ -29,9 +26,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public static readonly string UnregisteredId = "UnRegistered";
 
         public Avatar Avatar { get; set; }
-        public bool WriteDefaults { get; set; } = false;
-        public bool SmoothAnalogFist { get; set; } = true;
-        public double TransitionDurationSeconds { get; set; } = 0.1;
         public string DefaultSelection { get; private set; }
         public IReadOnlyList<string> MouthMorphBlendShapes => _mouthMorphBlendShapes;
 

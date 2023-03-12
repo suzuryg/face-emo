@@ -13,6 +13,7 @@ using System.Threading;
 using VRC.SDKBase;
 using NUnit.Framework.Constraints;
 using UnityEditor.Graphs;
+using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail
 {
@@ -73,7 +74,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         {
             var layerNames = new[] { AV3Constants.LayerName_FaceEmoteControl, };
 
-            var fxGenerator = new FxGenerator();
+            var localizationSetting = new LocalizationSetting();
+            var fxGenerator = new FxGenerator(localizationSetting, new AV3Setting());
             fxGenerator.Generate(_menu);
 
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(DestinationPath);

@@ -1,13 +1,17 @@
 {
     "name": "jp.suzuryg.facial-expression-switcher.detail.Runtime",
     "references": [
-        "GUID:ad29c40ce7d8264468d6c7634e6a3a40"
+        "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
+        "GUID:fc900867c0f47cd49b6e2ae4ef907300"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "VRCSDKBase.dll",
+        "VRCSDK3A.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],

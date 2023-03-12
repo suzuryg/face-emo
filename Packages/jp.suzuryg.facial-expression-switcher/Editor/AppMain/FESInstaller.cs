@@ -45,6 +45,13 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             }
             Container.Bind<MenuItemListViewState>().FromInstance(menuItemiListViewState).AsSingle();
 
+            var aV3Setting = launcherObject.GetComponent<AV3Setting>();
+            if (aV3Setting is null)
+            {
+                aV3Setting = launcherObject.AddComponent<AV3Setting>();
+            }
+            Container.Bind<AV3Setting>().FromInstance(aV3Setting).AsSingle();
+
             // Bind non-MonoBehaviour classes
             Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
             Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();

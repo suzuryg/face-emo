@@ -30,6 +30,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private IMenuRepository _menuRepository; // TODO: Use use-case instead
         private ILocalizationSetting _localizationSetting;
+        private SerializedObject _av3Setting;
         private UpdateMenuSubject _updateMenuSubject;
 
         private IMenu _menu;
@@ -45,16 +46,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private string _cancelText;
         private string _menuPropertiesText;
         private string _smoothAnalogFistText;
+        private string _transitionDurationSecondsText;
+        private string _replaceBlinkText;
+        private string _disableTrackingControlsText;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public InspectorView(
             IMenuRepository menuRepository,
             ILocalizationSetting localizationSetting,
+            AV3Setting av3Setting,
             UpdateMenuSubject updateMenuSubject)
         {
             _menuRepository = menuRepository;
             _localizationSetting = localizationSetting;
+            _av3Setting = new SerializedObject(av3Setting);
             _updateMenuSubject = updateMenuSubject;
 
             // Update menu event handler
@@ -117,6 +123,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 _cancelText = "Cancel";
                 _menuPropertiesText = "Menu Properties";
                 _smoothAnalogFistText = "Smooth Analog Fist";
+                _transitionDurationSecondsText = "Transition Duration (sec)";
+                _replaceBlinkText = "Replace blink with animation at build time (recommended)";
+                _disableTrackingControlsText = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
             }
             else
             {
@@ -125,6 +134,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 _cancelText = "キャンセル";
                 _menuPropertiesText = "メニュー設定";
                 _smoothAnalogFistText = "アナログ値のスムージング";
+                _transitionDurationSecondsText = "遷移時間（秒）";
+                _replaceBlinkText = "ビルド時にまばたきをアニメーションに置き換える（推奨）";
+                _disableTrackingControlsText = "ビルド時に目と口のVRCTrackingControlを無効にする（推奨）";
             }
         }
 
@@ -174,18 +186,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void MenuPropertiesGUI()
         {
+            _av3Setting.Update();
+            using (new EditorGUILayout.VerticalScope())
+            {
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _smoothAnalogFistText);
+                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_transitionDurationSecondsText));
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _replaceBlinkText);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _disableTrackingControlsText);
+            }
+            _av3Setting.ApplyModifiedProperties();
+        }
+
+        private static void TogglePropertyField(SerializedProperty serializedProperty, string label)
+        {
             using (new EditorGUILayout.HorizontalScope())
             {
-                var smooth = EditorGUILayout.Toggle(string.Empty, _menu.SmoothAnalogFist, GUILayout.Width(15));
-                if (smooth != _menu.SmoothAnalogFist)
+                var value = EditorGUILayout.Toggle(string.Empty, serializedProperty.boolValue, GUILayout.Width(15));
+                if (value != serializedProperty.boolValue)
                 {
-                    // TODO: Add use-case
-                    var menu = _menuRepository.Load(null);
-                    menu.SmoothAnalogFist = smooth;
-                    _menuRepository.Save(string.Empty, menu, "ChangeSmoothAnalogFist");
-                    _updateMenuSubject.OnNext(menu);
+                    serializedProperty.boolValue = value;
                 }
-                GUILayout.Label(_smoothAnalogFistText);
+                GUILayout.Label(label);
             }
         }
     }

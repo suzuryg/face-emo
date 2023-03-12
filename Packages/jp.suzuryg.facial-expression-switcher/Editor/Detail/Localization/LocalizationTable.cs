@@ -55,5 +55,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string GestureTableView_RockNRoll = "RockNRoll";
         public string GestureTableView_HandGun = "HandGun";
         public string GestureTableView_ThumbsUp = "ThumbsUp";
+
+        public string ExMenu_Setting = "Setting";
+        public string ExMenu_EmoteLock = "Emote Lock ON [NOT Saved]";
+        public string ExMenu_BlinkOff = "Blink OFF [NOT Saved]";
+        public string ExMenu_DanceGimmick = "Enable Dance Gimmick [NOT Saved]";
+        public string ExMenu_ContactLock = "Enable Contact Emote Lock";
+        public string ExMenu_Override = "Enable Emote Override";
+        public string ExMenu_HandPriority = "Hand Priority";
+        public string ExMenu_HandPriority_PrimeLeft = "Prime Left";
+        public string ExMenu_HandPriority_PrimeRight = "Prime Right";
+        public string ExMenu_HandPriority_OnlyLeft = "Only Left";
+        public string ExMenu_HandPriority_OnlyRight = "Only Right";
+        public string ExMenu_Controller = "Controller";
+        public string ExMenu_Controller_Quest = "Quest Controller";
+        public string ExMenu_Controller_Index = "Index Controller";
     }
 }

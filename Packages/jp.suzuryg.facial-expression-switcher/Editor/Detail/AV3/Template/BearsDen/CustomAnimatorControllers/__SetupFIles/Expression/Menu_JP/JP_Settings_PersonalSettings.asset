@@ -1,0 +1,65 @@
+﻿%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: JP_Settings_PersonalSettings
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC"
+    icon: {fileID: 2800000, guid: a19cba1ede0d82c4f962ea04f4cae6a7, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 724070e196e95ec49902e8c3a28f5563, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5\u6307\u5B9A\u30BF\u30A4\u30D7"
+    icon: {fileID: 2800000, guid: 3643331f9f2869347bd1cb5d358a556a, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: d3f0c5de36e410642b2c4a8d6b8ed455, type: 2}
+    subParameters: []
+    labels: []
+  - name: "Contact\u8868\u60C5\u56FA\u5B9A\u6709\u52B9"
+    icon: {fileID: 2800000, guid: 429dcfce96c878343af372195fd1caa1, type: 3}
+    type: 102
+    parameter:
+      name: CN_CONTACT_EMOTE_LOCK_ENABLE
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5\u4E0A\u66F8\u304D\u6709\u52B9"
+    icon: {fileID: 2800000, guid: 3643331f9f2869347bd1cb5d358a556a, type: 3}
+    type: 102
+    parameter:
+      name: SYNC_CN_EMOTE_OVERRIDE_ENABLE
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "AFK\u5FA9\u5E30\u6642\u79FB\u52D5\u6709\u52B9"
+    icon: {fileID: 2800000, guid: 44b822c693fbd174d8f994ee312dd8e4, type: 3}
+    type: 102
+    parameter:
+      name: SYNC_CN_AFK_LOCOMOTION_ENABLE
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []

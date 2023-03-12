@@ -1,0 +1,95 @@
+﻿%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: JP_BodyEmote_CustomEmote_Sit_OneShot_2
+  m_EditorClassIdentifier: 
+  controls:
+  - name: OneShot 232
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 232
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: OneShot 233
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 233
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: OneShot 234
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 234
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: OneShot 235
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 235
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: OneShot 236
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 236
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: OneShot 237
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 237
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: OneShot 238
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 238
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: OneShot 239
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 239
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
