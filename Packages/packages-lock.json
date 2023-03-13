@@ -157,6 +157,14 @@
         "com.unity.nuget.newtonsoft-json": "2.0.2"
       }
     },
+    "nadena.dev.modular-avatar": {
+      "version": "file:nadena.dev.modular-avatar",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "2.0.0"
+      }
+    },
     "vrchat.blackstartx.gesture-manager": {
       "version": "file:vrchat.blackstartx.gesture-manager",
       "depth": 0,
