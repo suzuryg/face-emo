@@ -128,7 +128,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private static void LoadTexture()
         {
-            if (BlackTranslucent is null)
+            if (BlackTranslucent == null)
             {
                 BlackTranslucent = new Texture2D(1, 1, TextureFormat.RGBA32, true);
                 BlackTranslucent.wrapMode = TextureWrapMode.Repeat;
