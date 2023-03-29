@@ -1,9 +1,7 @@
 {
-    "name": "jp.suzuryg.facial-expression-switcher.domain.Editor",
+    "name": "jp.suzuryg.facial-expression-switcher.domain.Runtime",
     "references": [],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

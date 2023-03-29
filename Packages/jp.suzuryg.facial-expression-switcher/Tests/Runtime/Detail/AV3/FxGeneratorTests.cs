@@ -1,4 +1,6 @@
-﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+﻿// The Runtime assembly references UnityEditor, causing an error during avatar build. Will fix later.
+#if UNITY_EDITOR
+using Suzuryg.FacialExpressionSwitcher.Domain;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEditor;
@@ -738,3 +740,4 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         }
     }
 }
+#endif

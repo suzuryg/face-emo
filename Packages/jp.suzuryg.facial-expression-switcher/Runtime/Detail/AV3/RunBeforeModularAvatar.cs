@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 using nadena.dev.modular_avatar.core;
 
@@ -18,8 +12,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 #else
         private static bool isPlaying => true;
 #endif
-
-        private void Awake()
+        /**
+        * For the moment, no support for AV3Emu.
+        * When using GestureManager, it appears that the changes in the current version of ModularAvatar are not reflected.
+        * If GestureManager is started by following the procedure below, the changes will be reflected, so let's use that as a work-around (without using the "Enter PlayMode" button).
+        * (1) Press the Play button with no GestureManager object selected.
+        * (2) Switch to Scene view.
+        * (3) Select the GesureManager object.
+        */
+        private void Start()
         {
             if (!isPlaying || this == null) return;
             try

@@ -1,14 +1,13 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDKBase;
+
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.Animations;
+#endif
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
@@ -20,6 +19,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         protected override void OnPreProcessAvatar()
         {
+#if UNITY_EDITOR
             var avatarDescriptor = GetAvatarDescriptor();
 
             // Get Fx layer
@@ -57,8 +57,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             avatarDescriptor.baseAnimationLayers[fxIndex].animatorController = clonedFxController;
+#endif
         }
 
+#if UNITY_EDITOR
         private static void DisableTrackingControlRecursively(AnimatorStateMachine animatorStateMachine)
         {
             foreach (var childStateMachine in animatorStateMachine.stateMachines)
@@ -84,5 +86,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 }
             }
         }
+#endif
     }
 }
