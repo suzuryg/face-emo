@@ -15,5 +15,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         [HideInInspector] public double TransitionDurationSeconds = 0.1;
         [HideInInspector] public bool ReplaceBlink = true;
         [HideInInspector] public bool DisableTrackingControls = true;
+        [HideInInspector] public bool DoNotTransitionWhenSpeaking = false;
     }
 }

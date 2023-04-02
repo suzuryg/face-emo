@@ -49,6 +49,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private string _transitionDurationSecondsText;
         private string _replaceBlinkText;
         private string _disableTrackingControlsText;
+        private string _doNotTransitionWhenSpeakingText;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -124,6 +125,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 _menuPropertiesText = "Menu Properties";
                 _smoothAnalogFistText = "Smooth Analog Fist";
                 _transitionDurationSecondsText = "Transition Duration (sec)";
+                _doNotTransitionWhenSpeakingText = "Do Not Transition When Speaking.";
                 _replaceBlinkText = "Replace blink with animation at build time (recommended)";
                 _disableTrackingControlsText = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
             }
@@ -135,6 +137,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 _menuPropertiesText = "メニュー設定";
                 _smoothAnalogFistText = "アナログ値のスムージング";
                 _transitionDurationSecondsText = "遷移時間（秒）";
+                _doNotTransitionWhenSpeakingText = "発話中は表情遷移しない";
                 _replaceBlinkText = "ビルド時にまばたきをアニメーションに置き換える（推奨）";
                 _disableTrackingControlsText = "ビルド時に目と口のVRCTrackingControlを無効にする（推奨）";
             }
@@ -191,6 +194,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _smoothAnalogFistText);
                 EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_transitionDurationSecondsText));
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DoNotTransitionWhenSpeaking)), _doNotTransitionWhenSpeakingText);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _replaceBlinkText);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _disableTrackingControlsText);
             }

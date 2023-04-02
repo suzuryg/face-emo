@@ -344,20 +344,29 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                     emoteState.TransitionsFromEntry()
                         .When(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE).IsEqualTo(emoteIndex));
-                    emoteState.Exits()
+
+                    var exitEmote = emoteState.Exits()
                         .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
-                        .When(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE).IsNotEqualTo(emoteIndex))
-                        .And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold))
+                        .When(layer.Av3().AFK.IsTrue())
                         .Or()
-                        .When(layer.Av3().AFK.IsTrue());
+                        .When(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE).IsNotEqualTo(emoteIndex));
+
+                    if (aV3Setting.DoNotTransitionWhenSpeaking)
+                    {
+                        exitEmote.And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
+                    }
 
                     // If use over-limit mode, extra-exit-transition is needed
                     if (useOverLimitMode)
                     {
-                        emoteState.Exits()
-                        .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
-                        .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex))
-                        .And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
+                        var exitEmoteOverlimit = emoteState.Exits()
+                            .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
+                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex));
+
+                        if (aV3Setting.DoNotTransitionWhenSpeaking)
+                        {
+                            exitEmoteOverlimit.And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
+                        }
                     }
                 }
 
