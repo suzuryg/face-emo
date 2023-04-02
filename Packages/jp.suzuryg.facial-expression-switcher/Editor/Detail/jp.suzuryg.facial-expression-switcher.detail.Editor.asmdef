@@ -18,7 +18,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "VRCSDKBase.dll",
-        "VRCSDK3A.dll"
+        "VRCSDK3A.dll",
+        "VRCSDKBase-Editor.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

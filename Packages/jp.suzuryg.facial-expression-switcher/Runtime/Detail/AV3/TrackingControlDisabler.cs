@@ -17,7 +17,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         // TODO: Is asset creation needed?
         private static readonly string DestinationPath = $"Assets/Suzuryg/{DomainConstants.SystemName}/Generated/TrackingControlDisabled.controller";
 
-        protected override void OnPreProcessAvatar()
+        public override void OnPreProcessAvatar()
         {
 #if UNITY_EDITOR
             var avatarDescriptor = GetAvatarDescriptor();
