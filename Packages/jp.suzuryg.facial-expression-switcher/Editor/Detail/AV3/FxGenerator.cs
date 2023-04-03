@@ -628,7 +628,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 // Config (Not saved) (Bool)
                 new ExParam() { name = AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,         valueType = ExType.Bool, defaultValue = 0, saved = false, },
-                new ExParam() { name = AV3Constants.ParamName_CN_EMOTE_PRELOCK_ENABLE,      valueType = ExType.Bool, defaultValue = 0, saved = false, },
                 new ExParam() { name = AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,  valueType = ExType.Bool, defaultValue = 0, saved = false, },
                 new ExParam() { name = AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE, valueType = ExType.Bool, defaultValue = 0, saved = false, },
 
@@ -749,7 +748,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Config (Not saved) (Bool)
             modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_PRELOCK_ENABLE,       syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, });
             if (_aV3Setting.ReplaceBlink)
             {
                 modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE, syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, });

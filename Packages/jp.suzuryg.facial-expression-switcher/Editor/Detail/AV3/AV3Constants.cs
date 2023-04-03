@@ -44,7 +44,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         // Config (Not saved) (Bool)
         public static readonly string ParamName_CN_EMOTE_LOCK_ENABLE = "CN_EMOTE_LOCK_ENABLE";
-        public static readonly string ParamName_CN_EMOTE_PRELOCK_ENABLE = "CN_EMOTE_PRELOCK_ENABLE";
         public static readonly string ParamName_SYNC_CN_FORCE_BLINK_DISABLE = "SYNC_CN_FORCE_BLINK_DISABLE";
         public static readonly string ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE = "SYNC_CN_DANCE_GIMMICK_ENABLE";
 

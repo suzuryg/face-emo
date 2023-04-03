@@ -249,11 +249,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                         rightState.TransitionsFromEntry()
                             .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_SELECT_R).IsEqualTo(rightIndex));
                         rightState.Exits()
-                            .When(layer.BoolParameters(AV3Constants.ParamName_CN_EMOTE_PRELOCK_ENABLE, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE).AreFalse())
-                            .And(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_SELECT_L).IsNotEqualTo(leftIndex))
+                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_SELECT_L).IsNotEqualTo(leftIndex))
                             .Or()
-                            .When(layer.BoolParameters(AV3Constants.ParamName_CN_EMOTE_PRELOCK_ENABLE, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE).AreFalse())
-                            .And(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_SELECT_R).IsNotEqualTo(rightIndex));
+                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_SELECT_R).IsNotEqualTo(rightIndex));
 
                         // Add parameter driver
                         var converted = ConvertGeture(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex], priority);
