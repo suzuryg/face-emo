@@ -223,7 +223,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       _localizationTable.InspectorView_AddConfig_EmoteLock);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)),     _localizationTable.InspectorView_AddConfig_ContactLock);
+                using (new EditorGUI.DisabledScope(!_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)).boolValue))
+                {
+                    TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock);
+                }
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPriority)),    _localizationTable.InspectorView_AddConfig_HandPriority);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);

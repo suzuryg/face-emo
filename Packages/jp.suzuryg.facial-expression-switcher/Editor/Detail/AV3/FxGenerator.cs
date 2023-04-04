@@ -549,7 +549,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             // Contact emote lock setting
-            if (_aV3Setting.AddConfig_ContactLock)
+            if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock)
             {
                 settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_ContactLock, AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE));
             }
@@ -774,7 +774,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,    syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
             if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,         syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
             if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,        syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
-            if (_aV3Setting.AddConfig_ContactLock) {    modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE,      syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
+            if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock) { modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE, syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
             if (_aV3Setting.AddConfig_Override) {       modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,     syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
 
             // Config (Saved) (Int)
