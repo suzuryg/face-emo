@@ -14,7 +14,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
         public UseCaseTestsInstaller()
         {
-            Container.Bind<IMenuApplier>().To<MockMenuApplier>().AsTransient();
             Container.Bind<IAnimationEditor>().To<MockAnimationEditor>().AsTransient();
 
             if (UseCaseTestConstants.UseActualRepository)
@@ -34,8 +33,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<ModifyGroupPropertiesUseCase>().AsTransient();
             Container.Bind<MoveMenuItemUseCase>().AsTransient();
             Container.Bind<RemoveMenuItemUseCase>().AsTransient();
-            Container.Bind<MergeExistingMenuUseCase>().AsTransient();
-            Container.Bind<ApplyMenuUseCase>().AsTransient();
             Container.Bind<AddBranchUseCase>().AsTransient();
             Container.Bind<ModifyBranchPropertiesUseCase>().AsTransient();
             Container.Bind<ChangeBranchOrderUseCase>().AsTransient();
@@ -53,8 +50,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<IModifyGroupPropertiesPresenter>().To<MockModifyGroupPropertiesPresenter>().AsSingle();
             Container.Bind<IMoveMenuItemPresenter>().To<MockMoveMenuItemPresenter>().AsSingle();
             Container.Bind<IRemoveMenuItemPresenter>().To<MockRemoveMenuItemPresenter>().AsSingle();
-            Container.Bind<IMergeExistingMenuPresenter>().To<MockMergeExistingMenuPresenter>().AsSingle();
-            Container.Bind<IApplyMenuPresenter>().To<MockApplyMenuPresenter>().AsSingle();
             Container.Bind<IAddBranchPresenter>().To<MockAddBranchPresenter>().AsSingle();
             Container.Bind<IModifyBranchPropertiesPresenter>().To<MockModifyBranchPropertiesPresenter>().AsSingle();
             Container.Bind<IChangeBranchOrderPresenter>().To<MockChangeBranchOrderPresenter>().AsSingle();

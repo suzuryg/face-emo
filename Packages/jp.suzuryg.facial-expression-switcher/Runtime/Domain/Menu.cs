@@ -12,7 +12,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         IMenuItemList Registered { get; }
         IMenuItemList Unregistered { get; }
-        IReadOnlyList<int> InsertIndices { get; }
 
         bool ContainsMode(string id);
         IMode GetMode(string id);
@@ -31,7 +30,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public IMenuItemList Registered => _registered;
         public IMenuItemList Unregistered => _unregistered;
-        public IReadOnlyList<int> InsertIndices => _registered.InsertIndices;
 
         private List<string> _mouthMorphBlendShapes = new List<string>();
         private RegisteredMenuItemList _registered = new RegisteredMenuItemList();
@@ -388,34 +386,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
                 }
             }
         }
-
-        public bool CanGetMergedMenu(IReadOnlyList<IExistingMenuItem> existingMenuItems) => _registered.CanGetMergedMenu(existingMenuItems);
-
-        public MergedMenuItemList GetMergedMenu(IReadOnlyList<IExistingMenuItem> existingMenuItems) => _registered.GetMergedMenu(existingMenuItems);
-
-        public bool CanUpdateOrderAndInsertIndices(MergedMenuItemList mergedMenuItemList) => _registered.CanUpdateInsertIndices(mergedMenuItemList);
-
-        public void UpdateOrderAndInsertIndices(MergedMenuItemList mergedMenuItemList)
-        {
-            NullChecker.Check(mergedMenuItemList);
-
-            _registered.UpdateInsertIndices(mergedMenuItemList);
-
-            // Insert to the head sequencially
-            var reorderedIds = mergedMenuItemList.Order.Where(x => mergedMenuItemList.ContainsMode(x) || mergedMenuItemList.ContainsGroup(x)).ToList();
-            reorderedIds.Reverse();
-            for (int i = 0; i < reorderedIds.Count; i++)
-            {
-                var id = reorderedIds[i];
-                if (!Registered.Order.Contains(id))
-                {
-                    throw new FacialExpressionSwitcherException("Merged menu contains invalid menu items.");
-                }
-                MoveMenuItem(new List<string>(){ id }, RegisteredId, -1);
-            }
-        }
-
-        public void SetInsertIndices(IReadOnlyList<int> insertIndices) => _registered.SetInsertIndices(insertIndices);
 
         public bool CanAddBranchTo(string destination) => ContainsMode(destination);
 

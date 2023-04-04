@@ -94,7 +94,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             menuRepository.Save(null, menu, "MenuRepositoryTests(Clear)");
 
             menu = menuRepository.Load(null);
-            Assert.That(menu.InsertIndices.Count, Is.EqualTo(0));
             Assert.That(menu.Registered.Count, Is.EqualTo(0));
             Assert.That(menu.Unregistered.Count, Is.EqualTo(0));
         }
@@ -106,8 +105,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             var menuRepository = new MenuRepository(serializableMenu);
 
             var menu = new Menu();
-
-            menu.SetInsertIndices(new List<int>() { 0, 2, 5 });
 
             var r0 = menu.AddMode(Menu.RegisteredId);
             var r1 = menu.AddGroup(Menu.RegisteredId);
@@ -193,8 +190,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             var menuRepository = new MenuRepository(serializableMenu);
 
             var menu = menuRepository.Load(null);
-
-            CollectionAssert.AreEqual(menu.InsertIndices, new List<int>() { 0, 2, 5 });
 
             Assert.That(menu.Registered.GetModeAt(0).DisplayName, Is.EqualTo("r0"));
             Assert.That(menu.Registered.GetGroupAt(1).DisplayName, Is.EqualTo("r1"));

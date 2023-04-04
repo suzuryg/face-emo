@@ -24,7 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             MouthMorphBlendShapes = menu.MouthMorphBlendShapes.ToList();
 
             Registered = ScriptableObject.CreateInstance<SerializableRegisteredMenuItemList>();
-            Registered.Save(menu.Registered, menu.InsertIndices);
+            Registered.Save(menu.Registered);
 
             Unregistered = ScriptableObject.CreateInstance<SerializableUnregisteredMenuItemList>();
             Unregistered.Save(menu.Unregistered);

@@ -27,8 +27,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter,
             IMoveMenuItemPresenter moveMenuItemPresenter,
             IRemoveMenuItemPresenter removeMenuItemPresenter,
-            IMergeExistingMenuPresenter mergeExistingMenuPresenter,
-            IApplyMenuPresenter applyMenuPresenter,
             IGenerateFxPresenter generateFxPresenter,
             IAddBranchPresenter addBranchPresenter,
             IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter,
@@ -100,24 +98,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
                 if (x.removeMenuItemResult != RemoveMenuItemResult.Succeeded)
                 {
                     EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.removeMenuItemResult.GetType().Name}: {x.removeMenuItemResult}", "OK");
-                    if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
-                }
-            }).AddTo(_disposables);
-
-            mergeExistingMenuPresenter.Observable.Synchronize().Subscribe(x =>
-            {
-                if (x.mergeExistingMenuResult != MergeExistingMenuResult.Succeeded)
-                {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.mergeExistingMenuResult.GetType().Name}: {x.mergeExistingMenuResult}", "OK");
-                    if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
-                }
-            }).AddTo(_disposables);
-
-            applyMenuPresenter.Observable.Synchronize().Subscribe(x =>
-            {
-                if (x.applyMenuResult != ApplyMenuResult.Succeeded)
-                {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.applyMenuResult.GetType().Name}: {x.applyMenuResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
