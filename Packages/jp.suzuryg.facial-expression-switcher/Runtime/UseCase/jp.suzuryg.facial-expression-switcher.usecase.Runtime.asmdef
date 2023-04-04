@@ -1,12 +1,10 @@
 {
-    "name": "jp.suzuryg.facial-expression-switcher.usecase.Editor",
+    "name": "jp.suzuryg.facial-expression-switcher.usecase.Runtime",
     "references": [
         "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
         "GUID:560b04d1a97f54a4e82edc0cbbb69285"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

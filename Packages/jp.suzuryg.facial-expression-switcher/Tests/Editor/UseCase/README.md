@@ -1,0 +1,2 @@
+UseCase is a Runtime assembly, but the tests of UseCase are diverted to test MenuRepository, so the tests of UseCase are done in the Editor assembly.
+MenuRepository is defined in the Editor assembly because it uses Undo.
