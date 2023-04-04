@@ -198,9 +198,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public void ChangeBranchSelection(int branchIndex)
         {
-            if (branchIndex < _reorderableList.count)
+            if (0 <=  branchIndex && branchIndex < _reorderableList.count)
             {
                 _reorderableList.index = branchIndex;
+
+                // Scroll to the selected branch.
+                var yPosition = 0f;
+                for (int i = 0; i < branchIndex; i++)
+                {
+                    yPosition += GetElementHeight(i);
+                }
+                _scrollPosition = new Vector2() { x = 0 , y = yPosition };
             }
             else
             {
