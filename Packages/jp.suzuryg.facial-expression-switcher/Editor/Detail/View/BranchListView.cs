@@ -3,6 +3,7 @@ using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranch;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
@@ -46,6 +47,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private UpdateMenuSubject _updateMenuSubject;
         private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
         private ChangeBranchSelectionSubject _changeBranchSelectionSubject;
+        private AV3Setting _aV3Setting;
         private ThumbnailDrawer _thumbnailDrawer;
 
         private Label _titleLabel;
@@ -80,6 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             UpdateMenuSubject updateMenuSubject,
             ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
             ChangeBranchSelectionSubject changeBranchSelectionSubject,
+            AV3Setting aV3Setting,
             ThumbnailDrawer thumbnailDrawer)
         {
             // Usecases
@@ -109,10 +112,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _updateMenuSubject = updateMenuSubject;
             _changeMenuItemListSelectionSubject = changeMenuItemListSelectionSubject;
             _changeBranchSelectionSubject = changeBranchSelectionSubject;
+            _aV3Setting = aV3Setting;
             _thumbnailDrawer = thumbnailDrawer;
 
             // Branch list element
-            _branchListElement = new BranchListElement(_localizationSetting, _thumbnailDrawer).AddTo(_disposables);
+            _branchListElement = new BranchListElement(_localizationSetting, _aV3Setting, _thumbnailDrawer).AddTo(_disposables);
 
             _branchListElement.OnAnimationChanged.Synchronize().Subscribe(OnAnimationChanged).AddTo(_disposables);
 

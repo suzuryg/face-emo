@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
@@ -79,6 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<int> _onBranchSelectionChanged = new Subject<int>();
 
         private ThumbnailDrawer _thumbnailDrawer;
+        private AV3Setting _aV3Setting;
         private IReadOnlyLocalizationSetting _localizationSetting;
 
         private ReorderableList _reorderableList;
@@ -108,11 +110,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public BranchListElement(
             IReadOnlyLocalizationSetting localizationSetting,
+            AV3Setting aV3Setting,
             ThumbnailDrawer thumbnailDrawer)
         {
             // Dependencies
             _localizationSetting = localizationSetting;
             _thumbnailDrawer = thumbnailDrawer;
+            _aV3Setting = aV3Setting;
 
             // Reorderable List
             _reorderableList = new ReorderableList(new List<IBranch>(), typeof(IBranch));
@@ -359,11 +363,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
 
             // Blink
-            var blink = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.BlinkEnabled, string.Empty);
-            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _blinkText);
-            if (blink != branch.BlinkEnabled)
+            using (new EditorGUI.DisabledScope(!_aV3Setting.ReplaceBlink))
             {
-                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, blink, null, null, null));
+                var blink = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.BlinkEnabled, string.Empty);
+                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _blinkText);
+                if (blink != branch.BlinkEnabled)
+                {
+                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, blink, null, null, null));
+                }
             }
 
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;

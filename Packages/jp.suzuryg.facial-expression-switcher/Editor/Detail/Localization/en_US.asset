@@ -19,7 +19,7 @@ MonoBehaviour:
   MenuItemListView_Title: MenuItemListView
   MenuItemListView_UseAnimationNameAsDisplayName: Use Animation Name As  Mode Name
   MenuItemListView_EyeTracking: Enable Eye Tracking
-  MenuItemListView_MouthTracking: Enable Mouth Tracking
+  MenuItemListView_MouthTracking: Enable Lip Sync
   MenuItemListView_Blink: Enable Blink
   MenuItemListView_MouthMorphCanceler: Enable Mouth Morph Canceler
   MenuItemListView_Empty: This group is empty.

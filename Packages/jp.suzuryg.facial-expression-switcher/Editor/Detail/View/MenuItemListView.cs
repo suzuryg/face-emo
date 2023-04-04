@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
@@ -42,6 +43,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private ChangeMenuItemListRootSubject _changeMenuItemListRootSubject;
         private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
         private ThumbnailDrawer _thumbnailDrawer;
+        private AV3Setting _aV3Setting;
         private MenuItemListViewState _menuItemListViewState;
 
         private Label _titleLabel;
@@ -78,6 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             ChangeMenuItemListRootSubject changeMenuItemListRootSubject,
             ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
             ThumbnailDrawer thumbnailDrawer,
+            AV3Setting aV3Setting,
             MenuItemListViewState menuItemListViewState)
         {
             // Usecases
@@ -103,6 +106,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _changeMenuItemListRootSubject = changeMenuItemListRootSubject;
             _changeMenuItemListSelectionSubject = changeMenuItemListSelectionSubject;
             _thumbnailDrawer = thumbnailDrawer;
+            _aV3Setting = aV3Setting;
             _menuItemListViewState = menuItemListViewState;
 
             // Address bar element
@@ -185,7 +189,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 _menuItemListViewState.TreeViewState = new TreeViewState();
             }
-            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _thumbnailDrawer, _menuItemListViewState).AddTo(_treeElementDisposables);
+            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _thumbnailDrawer, _aV3Setting, _menuItemListViewState).AddTo(_treeElementDisposables);
 
             // Tree element event handlers
             _menuItemTreeElement.OnModePropertiesModified.Synchronize().Subscribe(OnModePropertiesModified).AddTo(_treeElementDisposables);

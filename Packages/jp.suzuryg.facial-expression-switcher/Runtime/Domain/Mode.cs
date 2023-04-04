@@ -31,7 +31,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public EyeTrackingControl EyeTrackingControl { get; set; } = EyeTrackingControl.Tracking;
         public MouthTrackingControl MouthTrackingControl { get; set; } = MouthTrackingControl.Tracking;
         public bool BlinkEnabled { get; set; } = true;
-        public bool MouthMorphCancelerEnabled { get; set; } = false;
+        public bool MouthMorphCancelerEnabled { get; set; } = true;
 
         public IReadOnlyList<IBranch> Branches => _branches;
         public IBranch GetGestureCell(HandGesture left, HandGesture right) => _gestureTable[(left, right)];

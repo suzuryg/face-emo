@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
@@ -51,6 +52,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(string modeId, string clipGUID)> _onAnimationChanged = new Subject<(string modeId, string clipGUID)>();
 
         private ThumbnailDrawer _thumbnailDrawer;
+        private AV3Setting _aV3Setting;
         private MenuItemListViewState _menuItemListViewState;
 
         private bool _isLayoutInitialized = false;
@@ -72,6 +74,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         public MenuItemTreeElement(
             IReadOnlyLocalizationSetting localizationSetting,
             ThumbnailDrawer thumbnailDrawer,
+            AV3Setting aV3Setting,
             MenuItemListViewState menuItemListViewState) : base(localizationSetting, menuItemListViewState.TreeViewState)
         {
             // Drawer
@@ -83,6 +86,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 _menuItemListViewState.RootGroupId = Domain.Menu.RegisteredId;
             }
+
+            // Others
+            _aV3Setting = aV3Setting;
 
             // Set icon
             _folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_FILL0_wght400_GRAD200_opsz48.png");
@@ -337,6 +343,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     }
 
                     // Blink
+                    using (new EditorGUI.DisabledScope(!_aV3Setting.ReplaceBlink))
                     using (new EditorGUILayout.HorizontalScope())
                     {
                         var blink = EditorGUILayout.Toggle(string.Empty, mode.BlinkEnabled, GUILayout.Width(15));
