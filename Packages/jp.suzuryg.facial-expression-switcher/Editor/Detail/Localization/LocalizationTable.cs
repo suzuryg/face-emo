@@ -56,6 +56,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string GestureTableView_HandGun = "HandGun";
         public string GestureTableView_ThumbsUp = "ThumbsUp";
 
+        public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
+        public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";
+        public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick (1bit)";
+        public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock (1bit)";
+        public string InspectorView_AddConfig_Override = "Emote Override (1bit)";
+        public string InspectorView_AddConfig_HandPriority = "Hand Priority (4bit)";
+        public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
+
         public string ExMenu_Setting = "Setting";
         public string ExMenu_EmoteLock = "Emote Lock ON [NOT Saved]";
         public string ExMenu_BlinkOff = "Blink OFF [NOT Saved]";

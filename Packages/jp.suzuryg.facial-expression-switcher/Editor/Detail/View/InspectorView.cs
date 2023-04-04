@@ -51,6 +51,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private string _disableTrackingControlsText;
         private string _doNotTransitionWhenSpeakingText;
 
+        private LocalizationTable _localizationTable;
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public InspectorView(
@@ -117,6 +119,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
+
             if (localizationTable.HierarchyView_Title == "HierarchyView")
             {
                 _mouthMorphBlendShapesText = "MouthMorphBlendShapes";
@@ -197,6 +201,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DoNotTransitionWhenSpeaking)), _doNotTransitionWhenSpeakingText);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _replaceBlinkText);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _disableTrackingControlsText);
+
+                EditorGUILayout.Space();
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       _localizationTable.InspectorView_AddConfig_EmoteLock);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)),     _localizationTable.InspectorView_AddConfig_ContactLock);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPriority)),    _localizationTable.InspectorView_AddConfig_HandPriority);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);
             }
             _av3Setting.ApplyModifiedProperties();
         }

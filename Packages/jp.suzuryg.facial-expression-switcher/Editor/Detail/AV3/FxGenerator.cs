@@ -526,38 +526,65 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var settingRoot = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             settingRoot.name = loc.ExMenu_Setting;
 
-            settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE));
-            if (_aV3Setting.ReplaceBlink)
+            // Emote lock setting
+            if (_aV3Setting.AddConfig_EmoteLock)
+            {
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE));
+            }
+
+            // Blink off setting
+            if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink)
             {
                 settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_BlinkOff,  AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE));
             }
-            settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_DanceGimmick, AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE));
-            settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_ContactLock, AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE));
-            settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Override, AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE));
+
+            // Dance gimmick setting
+            if (_aV3Setting.AddConfig_DanceGimmick)
+            {
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_DanceGimmick, AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE));
+            }
+
+            // Contact emote lock setting
+            if (_aV3Setting.AddConfig_ContactLock)
+            {
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_ContactLock, AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE));
+            }
+
+            // Emote override setting
+            if (_aV3Setting.AddConfig_Override)
+            {
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Override, AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE));
+            }
 
             // Hand priority setting
-            var handPrioritySetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
-            handPrioritySetting.name = loc.ExMenu_HandPriority;
-            handPrioritySetting.controls = new List<VRCExpressionsMenu.Control>()
+            if (_aV3Setting.AddConfig_HandPriority)
             {
-                CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT),
-                CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeRight, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT),
-                CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT),
-                CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyRight, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT),
-            };
-            settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_HandPriority, handPrioritySetting));
-            AssetDatabase.AddObjectToAsset(handPrioritySetting, container);
+                var handPrioritySetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                handPrioritySetting.name = loc.ExMenu_HandPriority;
+                handPrioritySetting.controls = new List<VRCExpressionsMenu.Control>()
+                {
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT),
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeRight, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT),
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT),
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyRight, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT),
+                };
+                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_HandPriority, handPrioritySetting));
+                AssetDatabase.AddObjectToAsset(handPrioritySetting, container);
+            }
 
             // Controller setting
-            var controllerSetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
-            controllerSetting.name = loc.ExMenu_Controller;
-            controllerSetting.controls = new List<VRCExpressionsMenu.Control>()
+            if (_aV3Setting.AddConfig_Controller)
             {
-                CreateBoolToggleControl(loc.ExMenu_Controller_Quest, AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST),
-                CreateBoolToggleControl(loc.ExMenu_Controller_Index, AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX),
-            };
-            settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_Controller, controllerSetting));
-            AssetDatabase.AddObjectToAsset(controllerSetting, container);
+                var controllerSetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                controllerSetting.name = loc.ExMenu_Controller;
+                controllerSetting.controls = new List<VRCExpressionsMenu.Control>()
+                {
+                    CreateBoolToggleControl(loc.ExMenu_Controller_Quest, AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST),
+                    CreateBoolToggleControl(loc.ExMenu_Controller_Index, AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX),
+                };
+                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_Controller, controllerSetting));
+                AssetDatabase.AddObjectToAsset(controllerSetting, container);
+            }
 
             parent.controls.Add(CreateSubMenuControl(loc.ExMenu_Setting, settingRoot));
             AssetDatabase.AddObjectToAsset(settingRoot, container);
@@ -591,6 +618,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return control;
         }
 
+// ExParam generation is not used
+#if false
         private void GenerateExParams(IReadOnlyList<ModeEx> modes, IMenu menu, string exParamsPath)
         {
             AssetDatabase.DeleteAsset(exParamsPath);
@@ -637,6 +666,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             AssetDatabase.CreateAsset(exParams, exParamsPath);
         }
+#endif
 
         private static GameObject GetMARootObject(VRCAvatarDescriptor avatarDescriptor)
         {
@@ -734,25 +764,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EXPRESSION_PARAMETER_LOADING_COMP, syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true });
 
             // Config (Saved) (Bool)
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,    syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,    syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,         syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,        syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE,      syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, });
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,     syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, });
+            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
+            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,    syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,    syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,         syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,        syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
+            if (_aV3Setting.AddConfig_ContactLock) {    modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE,      syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
+            if (_aV3Setting.AddConfig_Override) {       modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,     syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
 
             // Config (Saved) (Int)
             modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_EM_EMOTE_PATTERN, syncType = ParameterSyncType.Int, defaultValue = defaultModeIndex, saved = true, });
 
             // Config (Not saved) (Bool)
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, });
-            if (_aV3Setting.ReplaceBlink)
-            {
-                modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE, syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, });
-            }
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE,  syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, });
+            if (_aV3Setting.AddConfig_EmoteLock) {                              modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, }); }
+            if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,   syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, }); }
+            if (_aV3Setting.AddConfig_DanceGimmick) {                           modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE,  syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, }); }
 
             // Synced (Int)
             modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_EM_EMOTE, syncType = ParameterSyncType.Int, defaultValue = 0, saved = false, });

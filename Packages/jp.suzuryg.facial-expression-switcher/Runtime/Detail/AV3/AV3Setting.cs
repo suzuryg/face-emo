@@ -16,5 +16,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         [HideInInspector] public bool ReplaceBlink = true;
         [HideInInspector] public bool DisableTrackingControls = true;
         [HideInInspector] public bool DoNotTransitionWhenSpeaking = false;
+
+        [HideInInspector] public bool AddConfig_EmoteLock = true;
+        [HideInInspector] public bool AddConfig_BlinkOff = true;
+        [HideInInspector] public bool AddConfig_DanceGimmick = true;
+        [HideInInspector] public bool AddConfig_ContactLock = true;
+        [HideInInspector] public bool AddConfig_Override = true;
+        [HideInInspector] public bool AddConfig_HandPriority = true;
+        [HideInInspector] public bool AddConfig_Controller = true;
     }
 }

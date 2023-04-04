@@ -57,6 +57,15 @@ MonoBehaviour:
   GestureTableView_RockNRoll: Rock
   GestureTableView_HandGun: Gun
   GestureTableView_ThumbsUp: Thumbs
+  InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u56FA\u5B9A (1bit)"
+  InspectorView_AddConfig_BlinkOff: "\u307E\u3070\u305F\u304DOFF (1bit)"
+  InspectorView_AddConfig_DanceGimmick: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF
+    (1bit)"
+  InspectorView_AddConfig_ContactLock: "Contact\u8868\u60C5\u56FA\u5B9A (1bit)"
+  InspectorView_AddConfig_Override: "\u8868\u60C5\u4E0A\u66F8\u304D (1bit)"
+  InspectorView_AddConfig_HandPriority: "\u5DE6\u53F3\u512A\u5148\u8A2D\u5B9A (4bit)"
+  InspectorView_AddConfig_Controller: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u5207\u308A\u66FF\u3048
+    (2bit)"
   ExMenu_Setting: "\u8A2D\u5B9A"
   ExMenu_EmoteLock: "\u8868\u60C5\u56FA\u5B9AON [NOT Saved]"
   ExMenu_BlinkOff: "\u307E\u3070\u305F\u304DOFF [NOT Saved]"
