@@ -30,13 +30,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IMoveMenuItemUseCase _moveMenuItemUseCase;
         private ISetExistingAnimationUseCase _setExistingAnimationUseCase;
 
-        private IAddMenuItemPresenter _addMenuItemPresenter;
-        private IRemoveMenuItemPresenter _removeMenuItemPresenter;
-        private IModifyModePropertiesPresenter _modifyModePropertiesPresenter;
-        private IModifyGroupPropertiesPresenter _modifyGroupPropertiesPresenter;
-        private IMoveMenuItemPresenter _moveMenuItemPresenter;
-        private ISetExistingAnimationPresenter _setExistingAnimationPresenter;
-
         private IReadOnlyLocalizationSetting _localizationSetting;
 
         private UpdateMenuSubject _updateMenuSubject;
@@ -68,13 +61,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IMoveMenuItemUseCase moveMenuItemUseCase,
             ISetExistingAnimationUseCase setExistingAnimationUseCase,
 
-            IAddMenuItemPresenter addMenuItemPresenter,
-            IRemoveMenuItemPresenter removeMenuItemPresenter,
-            IModifyModePropertiesPresenter modifyModePropertiesPresenter,
-            IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter,
-            IMoveMenuItemPresenter moveMenuItemPresenter,
-            ISetExistingAnimationPresenter setExistingAnimationPresenter,
-
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             ChangeHierarchySelectionSubject changeHierarchySelectionSubject,
@@ -91,14 +77,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _modifyGroupPropertiesUseCase = modifyGroupPropertiesUseCase;
             _moveMenuItemUseCase = moveMenuItemUseCase;
             _setExistingAnimationUseCase = setExistingAnimationUseCase;
-
-            // Presenters
-            _addMenuItemPresenter = addMenuItemPresenter;
-            _removeMenuItemPresenter = removeMenuItemPresenter;
-            _modifyModePropertiesPresenter = modifyModePropertiesPresenter;
-            _modifyGroupPropertiesPresenter = modifyGroupPropertiesPresenter;
-            _moveMenuItemPresenter = moveMenuItemPresenter;
-            _setExistingAnimationPresenter = setExistingAnimationPresenter;
 
             // Others
             _localizationSetting = localizationSetting;
@@ -122,14 +100,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Change hierarchy selection event handler
             _changeHierarchySelectionSubject.Observable.Synchronize().Subscribe(OnHierarchySelectionChanged).AddTo(_disposables);
-
-            // Presenter event handlers
-            _addMenuItemPresenter.Observable.Synchronize().Subscribe(OnAddMenuItemPresenterCompleted).AddTo(_disposables);
-            _removeMenuItemPresenter.Observable.Synchronize().Subscribe(OnRemoveMenuItemPresenterCompleted).AddTo(_disposables);
-            _modifyModePropertiesPresenter.Observable.Synchronize().Subscribe(OnModifyModePropertiesPresenterCompleted).AddTo(_disposables);
-            _modifyGroupPropertiesPresenter.Observable.Synchronize().Subscribe(OnModifyGroupPropertiesPresenterCompleted).AddTo(_disposables);
-            _moveMenuItemPresenter.Observable.Synchronize().Subscribe(OnMoveMenuItemPresenterCompleted).AddTo(_disposables);
-            _setExistingAnimationPresenter.Observable.Synchronize().Subscribe(OnSetExistingAnimationPresenterCompleted).AddTo(_disposables);
 
             // Initialize tree element
             InitializeTreeElement();
@@ -385,60 +355,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (ids is IReadOnlyList<string> && ids.Count == 1)
             {
                 _removeMenuItemUseCase.Handle("", ids[0]);
-            }
-        }
-
-        private void OnAddMenuItemPresenterCompleted(
-            (AddMenuItemResult addMenuItemResult, string addedItemId, IMenu menu, string errorMessage) args)
-        {
-            if (args.addMenuItemResult == AddMenuItemResult.Succeeded)
-            {
-                UpdateTree(args.menu);
-            }
-        }
-
-        private void OnRemoveMenuItemPresenterCompleted(
-            (RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage) args)
-        {
-            if (args.removeMenuItemResult == RemoveMenuItemResult.Succeeded)
-            {
-                UpdateTree(args.menu);
-            }
-        }
-
-        private void OnModifyModePropertiesPresenterCompleted(
-            (ModifyModePropertiesResult modifyModePropertiesResult, string modifiedModeId, IMenu menu, string errorMessage) args)
-        {
-            if (args.modifyModePropertiesResult == ModifyModePropertiesResult.Succeeded)
-            {
-                UpdateTree(args.menu);
-            }
-        }
-
-        private void OnModifyGroupPropertiesPresenterCompleted(
-            (ModifyGroupPropertiesResult modifyGroupPropertiesResult, string modifiedGroupId, IMenu menu, string errorMessage) args)
-        {
-            if (args.modifyGroupPropertiesResult == ModifyGroupPropertiesResult.Succeeded)
-            {
-                UpdateTree(args.menu);
-            }
-        }
-
-        private void OnMoveMenuItemPresenterCompleted(
-            (MoveMenuItemResult moveMenuItemResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.moveMenuItemResult == MoveMenuItemResult.Succeeded)
-            {
-                UpdateTree(args.menu);
-            }
-        }
-
-        private void OnSetExistingAnimationPresenterCompleted(
-            (SetExistingAnimationResult setExistingAnimationResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.setExistingAnimationResult == SetExistingAnimationResult.Succeeded)
-            {
-                UpdateTree(args.menu);
             }
         }
     }

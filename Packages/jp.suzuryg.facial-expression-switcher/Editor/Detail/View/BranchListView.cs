@@ -32,17 +32,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IModifyConditionUseCase _modifyConditionUseCase;
         private IRemoveConditionUseCase _removeConditionUseCase;
 
-        // TODO: 他のViewで使用しているPresenterに対応する
-        private ISetExistingAnimationPresenter _setExistingAnimationPresenter;
-        private IAddBranchPresenter _addBranchPresenter;
-        private IChangeBranchOrderPresenter _changeBranchOrderPresenter;
-        private IModifyBranchPropertiesPresenter _modifyBranchPropertiesPresenter;
-        private IRemoveBranchPresenter _removeBranchPresenter;
-        private IAddConditionPresenter _addConditionPresenter;
-        private IChangeConditionOrderPresenter _changeConditionOrderPresenter;
-        private IModifyConditionPresenter _modifyConditionPresenter;
-        private IRemoveConditionPresenter _removeConditionPresenter;
-
         private IReadOnlyLocalizationSetting _localizationSetting;
         private UpdateMenuSubject _updateMenuSubject;
         private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
@@ -68,16 +57,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IModifyConditionUseCase modifyConditionUseCase,
             IRemoveConditionUseCase removeConditionUseCase,
 
-            ISetExistingAnimationPresenter setExistingAnimationPresenter,
-            IAddBranchPresenter addBranchPresenter,
-            IChangeBranchOrderPresenter changeBranchOrderPresenter,
-            IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter,
-            IRemoveBranchPresenter removeBranchPresenter,
-            IAddConditionPresenter addConditionPresenter,
-            IChangeConditionOrderPresenter changeConditionOrderPresenter,
-            IModifyConditionPresenter modifyConditionPresenter,
-            IRemoveConditionPresenter removeConditionPresenter,
-
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
@@ -95,17 +74,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _changeConditionOrderUseCase = changeConditionOrderUseCase;
             _modifyConditionUseCase = modifyConditionUseCase;
             _removeConditionUseCase = removeConditionUseCase;
-
-            // Presenters
-            _setExistingAnimationPresenter = setExistingAnimationPresenter;
-            _addBranchPresenter = addBranchPresenter;
-            _changeBranchOrderPresenter = changeBranchOrderPresenter;
-            _modifyBranchPropertiesPresenter = modifyBranchPropertiesPresenter;
-            _removeBranchPresenter = removeBranchPresenter;
-            _addConditionPresenter = addConditionPresenter;
-            _changeConditionOrderPresenter = changeConditionOrderPresenter;
-            _modifyConditionPresenter = modifyConditionPresenter;
-            _removeConditionPresenter = removeConditionPresenter;
 
             // Others
             _localizationSetting = localizationSetting;
@@ -142,19 +110,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Change branch selection event handler
             _changeBranchSelectionSubject.Observable.Synchronize().Subscribe(OnGestureTableViewSelectionChanged).AddTo(_disposables);
-
-            // Presenter event handlers
-            _setExistingAnimationPresenter.Observable.Synchronize().Subscribe(OnSetExistingAnimationPresenterCompleted).AddTo(_disposables);
-
-            _addBranchPresenter.Observable.Synchronize().Subscribe(OnAddBranchPresenterCompleted).AddTo(_disposables);
-            _changeBranchOrderPresenter.Observable.Synchronize().Subscribe(OnChangeBranchOrderPresenterCompleted).AddTo(_disposables);
-            _modifyBranchPropertiesPresenter.Observable.Synchronize().Subscribe(OnModifyBranchPropertiesPresenterCompleted).AddTo(_disposables);
-            _removeBranchPresenter.Observable.Synchronize().Subscribe(OnRemoveBranchPresenterCompleted).AddTo(_disposables);
-
-            _addConditionPresenter.Observable.Synchronize().Subscribe(OnAddConditionPresenterCompleted).AddTo(_disposables);
-            _changeConditionOrderPresenter.Observable.Synchronize().Subscribe(OnChangeConditionOrderPresenterCompleted).AddTo(_disposables);
-            _modifyConditionPresenter.Observable.Synchronize().Subscribe(OnModifyConditionPresenterCompleted).AddTo(_disposables);
-            _removeConditionPresenter.Observable.Synchronize().Subscribe(OnRemoveConditionPresenterCompleted).AddTo(_disposables);
         }
 
         public void Dispose() => _disposables.Dispose();
@@ -199,6 +154,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnMenuUpdated(IMenu menu)
         {
             _branchListElement.Setup(menu);
+            _branchListContainer.MarkDirtyRepaint();
         }
 
         private void OnMenuItemListSelectionChanged(IReadOnlyList<string> selectedMenuItemIds)
@@ -273,89 +229,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             BranchAnimationType branchAnimationType) args)
         {
             _setExistingAnimationUseCase.Handle("", new Domain.Animation(args.clipGUID), args.modeId, args.branchIndex, args.branchAnimationType);
-        }
-
-        private void OnSetExistingAnimationPresenterCompleted(
-            (SetExistingAnimationResult setExistingAnimationResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.setExistingAnimationResult == SetExistingAnimationResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
-        }
-
-        private void OnAddBranchPresenterCompleted(
-            (AddBranchResult addBranchResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.addBranchResult == AddBranchResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-                // This presenter can be called by gesture table view.
-                _branchListContainer.MarkDirtyRepaint();
-            }
-        }
-
-        private void OnChangeBranchOrderPresenterCompleted(
-            (ChangeBranchOrderResult changeBranchOrderResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.changeBranchOrderResult == ChangeBranchOrderResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
-        }
-
-        private void OnModifyBranchPropertiesPresenterCompleted(
-            (ModifyBranchPropertiesResult modifyBranchPropertiesResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.modifyBranchPropertiesResult == ModifyBranchPropertiesResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
-        }
-
-        private void OnRemoveBranchPresenterCompleted(
-            (RemoveBranchResult removeBranchResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.removeBranchResult == RemoveBranchResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
-        }
-
-        private void OnAddConditionPresenterCompleted(
-            (AddConditionResult addConditionResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.addConditionResult == AddConditionResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
-        }
-
-        private void OnChangeConditionOrderPresenterCompleted(
-            (ChangeConditionOrderResult changeConditionOrderResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.changeConditionOrderResult == ChangeConditionOrderResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
-        }
-
-        private void OnModifyConditionPresenterCompleted(
-            (ModifyConditionResult modifyConditionResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.modifyConditionResult == ModifyConditionResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
-        }
-
-        private void OnRemoveConditionPresenterCompleted(
-            (RemoveConditionResult removeConditionResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.removeConditionResult == RemoveConditionResult.Succeeded)
-            {
-                _branchListElement.Setup(args.menu);
-            }
         }
     }
 }

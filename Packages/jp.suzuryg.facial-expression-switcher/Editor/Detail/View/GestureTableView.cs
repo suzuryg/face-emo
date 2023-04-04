@@ -21,9 +21,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
     {
         private IAddBranchUseCase _addBranchUseCase;
 
-        // TODO: 他のViewで使用しているPresenterに対応する
-        private IAddBranchPresenter _addBranchPresenter;
-
         private IReadOnlyLocalizationSetting _localizationSetting;
         private UpdateMenuSubject _updateMenuSubject;
         private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
@@ -40,9 +37,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public GestureTableView(
             IAddBranchUseCase addBranchUseCase,
-
-            IAddBranchPresenter addBranchPresenter,
-
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
@@ -51,9 +45,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             // Usecases
             _addBranchUseCase = addBranchUseCase;
-
-            // Presenters
-            _addBranchPresenter = addBranchPresenter;
 
             // Others
             _localizationSetting = localizationSetting;
@@ -78,9 +69,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Change branch selection event handler
             _changeBranchSelectionSubject.Observable.Synchronize().Subscribe(OnBranchListViewSelectionChanged).AddTo(_disposables);
-
-            // Presenter event handlers
-            _addBranchPresenter.Observable.Synchronize().Subscribe(OnAddBranchPresenterCompleted).AddTo(_disposables);
         }
 
         public void Dispose()
@@ -177,15 +165,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 new Condition(Hand.Right, _gestureTableElement.TargetRightHand, ComparisonOperator.Equals),
             };
             _addBranchUseCase.Handle("", _gestureTableElement.SelectedModeId, conditions);
-        }
-
-        private void OnAddBranchPresenterCompleted(
-            (AddBranchResult addBranchResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.addBranchResult == AddBranchResult.Succeeded)
-            {
-                _gestureTableElement.Setup(args.menu);
-            }
         }
     }
 }

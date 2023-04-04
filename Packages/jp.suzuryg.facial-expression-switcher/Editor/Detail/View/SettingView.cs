@@ -11,20 +11,16 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UniRx;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public class SettingView : IDisposable
     {
-        private IModifyMenuPropertiesUseCase _modifyMenuPropertiesUseCase;
         private IGenerateFxUseCase _generateFxUseCase;
 
-        private IModifyMenuPropertiesPresenter _modifyMenuPropertiesPresenter;
         private IGenerateFxPresenter _generateFxPresenter;
 
         private ILocalizationSetting _localizationSetting;
-        private UpdateMenuSubject _updateMenuSubject;
         private ThumbnailDrawer _thumbnailDrawer;
 
         private Button _updateThumbnailButton;
@@ -34,37 +30,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public SettingView(
-            IModifyMenuPropertiesUseCase modifyMenuPropertiesUseCase,
             IGenerateFxUseCase generateFxUseCase,
-
-            IModifyMenuPropertiesPresenter modifyMenuPropertiesPresenter,
             IGenerateFxPresenter generateFxPresenter,
-
             ILocalizationSetting localizationSetting,
-            UpdateMenuSubject updateMenuSubject,
             ThumbnailDrawer thumbnailDrawer)
         {
             // Usecases
-            _modifyMenuPropertiesUseCase = modifyMenuPropertiesUseCase;
             _generateFxUseCase = generateFxUseCase;
 
             // Presenters
-            _modifyMenuPropertiesPresenter = modifyMenuPropertiesPresenter;
             _generateFxPresenter = generateFxPresenter;
 
             // Others
             _localizationSetting = localizationSetting;
-            _updateMenuSubject = updateMenuSubject;
             _thumbnailDrawer = thumbnailDrawer;
-
-            // Update menu event handler
-            _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
 
             // Presenter event handlers
-            _modifyMenuPropertiesPresenter.Observable.Synchronize().Subscribe(OnModifyMenuPropertiesPresenterCompleted).AddTo(_disposables);
             _generateFxPresenter.Observable.Synchronize().Subscribe(OnGenerateFxPresenterCompleted).AddTo(_disposables);
         }
 
@@ -112,11 +96,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _generateButton.text = "Generate";
         }
 
-        private void OnMenuUpdated(IMenu menu)
-        {
-            // NOP
-        }
-
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
         {
             EditorPrefs.SetInt(DetailConstants.KeyMainThumbnailSize, changeEvent.newValue);
@@ -131,15 +110,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnGenerateButtonClicked()
         {
             _generateFxUseCase.Handle("");
-        }
-
-        private void OnModifyMenuPropertiesPresenterCompleted(
-            (ModifyMenuPropertiesResult modifyMenuPropertiesResult, IMenu menu, string errorMessage) args)
-        {
-            if (args.modifyMenuPropertiesResult == ModifyMenuPropertiesResult.Succeeded)
-            {
-                // NOP
-            }
         }
 
         private void OnGenerateFxPresenterCompleted(
