@@ -11,7 +11,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
     public class SerializableMenu : MonoBehaviour
     {
         [HideInInspector] public double Version = 1.0;
-        [HideInInspector] public string AvatarPath;
         [HideInInspector] public string DefaultSelection;
         [HideInInspector] public List<string> MouthMorphBlendShapes = new List<string>();
         [HideInInspector] public SerializableRegisteredMenuItemList Registered;
@@ -19,7 +18,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 
         public void Save(IMenu menu)
         {
-            AvatarPath = menu.Avatar?.Path;
             DefaultSelection = menu.DefaultSelection;
             MouthMorphBlendShapes = menu.MouthMorphBlendShapes.ToList();
 
@@ -33,11 +31,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
         public Menu Load()
         {
             var menu = new Menu();
-
-            if (AvatarPath is string && AvatarPath.StartsWith("/"))
-            {
-                menu.Avatar = new Domain.Avatar(AvatarPath);
-            }
 
             Registered?.Load(menu);
             Unregistered?.Load(menu);

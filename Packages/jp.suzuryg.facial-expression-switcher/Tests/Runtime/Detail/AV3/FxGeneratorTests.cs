@@ -23,7 +23,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
     {
         private static readonly string AnimationDir = "Assets/Temp/Animation";
         private static readonly string DestinationPath = "Assets/Temp/GeneratedFx.controller";
-        private static readonly string AvatarPath = "/Avatar";
 
         private static readonly string ParamName_IsLocal = "IsLocal";
         private static readonly string ParamName_AFK = "AFK";
@@ -36,7 +35,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         private static readonly string ParamName_EM_EMOTE_SELECT_L = "EM_EMOTE_SELECT_L";
         private static readonly string ParamName_EM_EMOTE_SELECT_R = "EM_EMOTE_SELECT_R";
 
-        private GameObject _avatar;
         private Domain.Menu _menu;
 
         private GameObject _animatorRoot;
@@ -46,10 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         [SetUp]
         public void SetUp()
         {
-            _avatar = new GameObject(Path.GetFileName(AvatarPath));
-            _avatar.AddComponent<VRCAvatarDescriptor>();
             _menu = new Domain.Menu();
-            _menu.Avatar = new Domain.Avatar(AvatarPath);
 
             _animatorRoot = new GameObject("AnimatorRoot");
             _animator = _animatorRoot.AddComponent<Animator>();
@@ -63,7 +58,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         [TearDown]
         public void TearDown()
         {
-            Object.Destroy(_avatar);
             Object.Destroy(_animatorRoot);
             foreach (var path in _animationPaths)
             {

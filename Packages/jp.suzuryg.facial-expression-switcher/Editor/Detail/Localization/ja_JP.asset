@@ -57,6 +57,7 @@ MonoBehaviour:
   GestureTableView_RockNRoll: Rock
   GestureTableView_HandGun: Gun
   GestureTableView_ThumbsUp: Thumbs
+  InspectorView_TargetAvatar: "\u5BFE\u8C61\u30A2\u30D0\u30BF\u30FC"
   InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u56FA\u5B9A (1bit)"
   InspectorView_AddConfig_BlinkOff: "\u307E\u3070\u305F\u304DOFF (1bit)"
   InspectorView_AddConfig_DanceGimmick: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF

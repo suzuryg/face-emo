@@ -151,10 +151,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _menu = menu;
             _mouthMorphBlendShapes.list = _menu?.MouthMorphBlendShapes.ToList();
-            if (_menu.Avatar is Domain.Avatar)
-            {
-                _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(AV3Utility.GetAvatarDescriptor(_menu.Avatar)).Select(x => x.name).ToArray();
-            }
         }
 
         private void AddMouthMorphBlendShape(ReorderableList reorderableList)
@@ -196,6 +192,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _av3Setting.Update();
             using (new EditorGUILayout.VerticalScope())
             {
+                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)), new GUIContent(_localizationTable.InspectorView_TargetAvatar));
+                EditorGUILayout.Space();
+
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _smoothAnalogFistText);
                 EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_transitionDurationSecondsText));
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DoNotTransitionWhenSpeaking)), _doNotTransitionWhenSpeakingText);

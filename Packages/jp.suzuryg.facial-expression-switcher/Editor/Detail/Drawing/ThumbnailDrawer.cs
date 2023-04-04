@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 {
@@ -13,20 +14,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         private static readonly string EmptyClipKey = "EmptyClipKey";
 
-        private Animator _avatarAnimator;
+        private AV3Setting _aV3Setting;
+
         private Dictionary<string, (Texture2D main, Texture2D gesture)> _cache = new Dictionary<string, (Texture2D main, Texture2D gesture)>();
         private HashSet<string> _prioritized = new HashSet<string>();
 
         private Texture2D _errorIcon;
 
-        public ThumbnailDrawer()
+        public ThumbnailDrawer(AV3Setting aV3Setting)
         {
-            _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz48.png");
-        }
+            // Dependencies
+            _aV3Setting = aV3Setting;
 
-        public void SetAvatar(Animator avatarAnimator)
-        {
-            _avatarAnimator = avatarAnimator;
+            // Others
+            _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz48.png");
         }
 
         public (Texture2D main, Texture2D gesture) GetThumbnail(Domain.Animation animation)
@@ -85,19 +86,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         // TODO: Use IEnumerable
         private void Update(IReadOnlyList<string> guids)
         {
-            if (_avatarAnimator is null)
+            var avatarAnimator = _aV3Setting?.TargetAvatar?.GetComponent<Animator>();
+            if (avatarAnimator is null)
             {
                 return;
             }
 
-            var wasActive = _avatarAnimator.gameObject.activeSelf;
+            var wasActive = avatarAnimator.gameObject.activeSelf;
             GameObject clonedAvatar = null;
             GameObject cameraRoot = new GameObject();
             try
             {
-                clonedAvatar = UnityEngine.Object.Instantiate(_avatarAnimator.gameObject);
+                clonedAvatar = UnityEngine.Object.Instantiate(avatarAnimator.gameObject);
                 clonedAvatar.SetActive(true);
-                _avatarAnimator.gameObject.SetActive(false);
+                avatarAnimator.gameObject.SetActive(false);
 
                 var camera = GetCamera(cameraRoot);
 
@@ -129,7 +131,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
             finally
             {
-                _avatarAnimator.gameObject.SetActive(wasActive);
+                avatarAnimator.gameObject.SetActive(wasActive);
                 if (cameraRoot is GameObject)
                 {
                     UnityEngine.Object.DestroyImmediate(cameraRoot);

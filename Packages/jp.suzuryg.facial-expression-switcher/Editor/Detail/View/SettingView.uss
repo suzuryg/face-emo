@@ -1,9 +1,4 @@
-﻿#AvatarField
-{
-    width: 300px;
-}
-
-#UpdateThumbnailButton
+﻿#UpdateThumbnailButton
 {
     width: 300px;
 }

@@ -87,20 +87,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
-        public static VRCAvatarDescriptor GetAvatarDescriptor(Domain.Avatar avatar)
-        {
-            if (avatar is Domain.Avatar &&
-                GameObject.Find(avatar.Path) is GameObject gameObject &&
-                gameObject.GetComponent<VRCAvatarDescriptor>() is VRCAvatarDescriptor avatarDescriptor)
-            {
-                return avatarDescriptor;
-            }
-            else
-            {
-                throw new FacialExpressionSwitcherException("AvatarDescriptor was not found.");
-            }
-        }
-
         public static VRC_AnimatorTrackingControl.TrackingType ConvertEyeTrackingType(EyeTrackingControl eyeTrackingControl)
         {
             switch (eyeTrackingControl)

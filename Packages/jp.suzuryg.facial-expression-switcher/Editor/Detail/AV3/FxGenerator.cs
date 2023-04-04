@@ -79,7 +79,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 // Generate layers
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating layers...", 0);
-                var avatarDescriptor = AV3Utility.GetAvatarDescriptor(menu.Avatar);
+                var avatarDescriptor = _aV3Setting.TargetAvatar;
+                if (avatarDescriptor is null)
+                {
+                    throw new FacialExpressionSwitcherException("AvatarDescriptor was not found.");
+                }
                 var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, _aV3Setting.WriteDefaults));
                 var modes = FlattenMenuItemList(menu.Registered);
                 var emoteCount = GetEmoteCount(modes);

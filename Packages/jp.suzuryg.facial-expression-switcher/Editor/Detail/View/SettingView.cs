@@ -27,7 +27,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private UpdateMenuSubject _updateMenuSubject;
         private ThumbnailDrawer _thumbnailDrawer;
 
-        private ObjectField _avatarField;
         private Button _updateThumbnailButton;
         private SliderInt _thumbnailSizeSlider;
         private Button _generateButton;
@@ -72,7 +71,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         public void Dispose()
         {
             _disposables.Dispose();
-            _avatarField.UnregisterValueChangedCallback(OnAvatarChanged);
             _thumbnailSizeSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
         }
 
@@ -87,20 +85,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             uxml.CloneTree(root);
 
             // Query Elements
-            _avatarField = root.Q<ObjectField>("AvatarField");
             _updateThumbnailButton = root.Q<Button>("UpdateThumbnailButton");
             _thumbnailSizeSlider = root.Q<SliderInt>("ThumbnailSizeSlider");
             _generateButton = root.Q<Button>("GenerateButton");
-            NullChecker.Check(_avatarField, _updateThumbnailButton, _thumbnailSizeSlider, _generateButton);
+            NullChecker.Check(_updateThumbnailButton, _thumbnailSizeSlider, _generateButton);
 
             // Initialize fields
-            _avatarField.objectType = typeof(Animator);
             _thumbnailSizeSlider.lowValue = DetailConstants.MinMainThumbnailSize;
             _thumbnailSizeSlider.highValue = DetailConstants.MaxMainThumbnailSize;
             _thumbnailSizeSlider.value = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
 
             // Add event handlers
-            _avatarField.RegisterValueChangedCallback(OnAvatarChanged);
             _thumbnailSizeSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnUpdateThumbnailButtonClicked()).AddTo(_disposables);
@@ -117,48 +112,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _generateButton.text = "Generate";
         }
 
-        private void SetAvatar(Domain.Avatar avatar)
-        {
-            if (avatar is Domain.Avatar &&
-                GameObject.Find(avatar.Path) is GameObject gameObject &&
-                gameObject.GetComponent<Animator>() is Animator animator)
-            {
-                _avatarField.value = animator;
-                // FIX: Is manual notification needed?
-                _thumbnailDrawer.SetAvatar(animator);
-            }
-        }
-
-        private Domain.Avatar GetAvatar()
-        {
-            if (_avatarField is ObjectField && _avatarField.value is Animator animator)
-            {
-                var fullPath = animator.gameObject.GetFullPath();
-                if (fullPath.StartsWith("/"))
-                {
-                    return new Domain.Avatar(fullPath);
-                }
-            }
-
-            return null;
-        }
-
         private void OnMenuUpdated(IMenu menu)
         {
-            SetAvatar(menu.Avatar);
-        }
-
-        private void OnAvatarChanged(ChangeEvent<UnityEngine.Object> changeEvent)
-        {
-            if (changeEvent.newValue is Animator animator)
-            {
-                _thumbnailDrawer.SetAvatar(animator);
-                var avatar = GetAvatar();
-                if (avatar is Domain.Avatar)
-                {
-                    _modifyMenuPropertiesUseCase.Handle("", avatar);
-                }
-            }
+            // NOP
         }
 
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)

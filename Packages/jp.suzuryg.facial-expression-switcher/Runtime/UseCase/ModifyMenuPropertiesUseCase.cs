@@ -8,7 +8,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         void Handle(
             string menuId,
-            Avatar avatar = null,
             string defaultSelection = null);
     }
 
@@ -53,7 +52,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
         public void Handle(
             string menuId,
-            Avatar avatar = null,
             string defaultSelection = null)
         {
             try
@@ -72,8 +70,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
                 var menu = _menuRepository.Load(menuId);
 
-                menu.Avatar = avatar ?? menu.Avatar;
-                
                 if (defaultSelection is string)
                 {
                     if (menu.CanSetDefaultSelectionTo(defaultSelection))

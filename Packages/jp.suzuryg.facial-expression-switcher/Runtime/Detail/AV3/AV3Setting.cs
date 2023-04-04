@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
     public class AV3Setting : MonoBehaviour
     {
+        [HideInInspector] public VRCAvatarDescriptor TargetAvatar;
+
         [HideInInspector] public bool WriteDefaults = false;
         [HideInInspector] public bool SmoothAnalogFist = true;
         [HideInInspector] public double TransitionDurationSeconds = 0.1;
