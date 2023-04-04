@@ -388,7 +388,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
 
             // Mouth morph cancel
-            using (new EditorGUI.DisabledScope(!mouthToBool(branch.MouthTrackingControl)))
+            if (mouthToBool(branch.MouthTrackingControl))
             {
                 var mouthMorphCancel = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.MouthMorphCancelerEnabled, string.Empty);
                 GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
@@ -397,11 +397,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, mouthMorphCancel, null, null));
                 }
             }
+            else
+            {
+                ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _mouthMorphCancelerText);
+            }
 
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
 
             // Is left trigger used
-            using (new EditorGUI.DisabledScope(!branch.CanLeftTriggerUsed))
+            if (branch.CanLeftTriggerUsed)
             {
                 var useLeftTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsLeftTriggerUsed, string.Empty);
                 GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useLeftTriggerText);
@@ -410,11 +414,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, useLeftTrigger, null));
                 }
             }
+            else
+            {
+                ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _useLeftTriggerText);
+            }
 
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
 
             // Is right trigger used
-            using (new EditorGUI.DisabledScope(!branch.CanRightTriggerUsed))
+            if (branch.CanRightTriggerUsed)
             {
                 var useRightTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsRightTriggerUsed, string.Empty);
                 GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useRightTriggerText);
@@ -422,6 +430,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, null, useRightTrigger));
                 }
+            }
+            else
+            {
+                ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _useRightTriggerText);
             }
 
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;

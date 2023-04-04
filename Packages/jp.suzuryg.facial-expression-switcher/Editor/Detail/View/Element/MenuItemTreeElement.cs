@@ -343,15 +343,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     }
 
                     // Blink
-                    using (new EditorGUI.DisabledScope(!_aV3Setting.ReplaceBlink))
-                    using (new EditorGUILayout.HorizontalScope())
+                    if (_aV3Setting.ReplaceBlink)
                     {
-                        var blink = EditorGUILayout.Toggle(string.Empty, mode.BlinkEnabled, GUILayout.Width(15));
-                        if (blink != mode.BlinkEnabled)
+                        using (new EditorGUILayout.HorizontalScope())
                         {
-                            _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, blink, null));
+                            var blink = EditorGUILayout.Toggle(string.Empty, mode.BlinkEnabled, GUILayout.Width(15));
+                            if (blink != mode.BlinkEnabled)
+                            {
+                                _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, blink, null));
+                            }
+                            GUILayout.Label(_blinkText);
                         }
-                        GUILayout.Label(_blinkText);
+                    }
+                    else
+                    {
+                        ViewUtility.LayoutDummyToggle(_blinkText);
                     }
 
                     // Mouth tracking
@@ -368,15 +374,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     }
 
                     // Mouth morph cancel
-                    using (new EditorGUI.DisabledScope(!mouthToBool(mode.MouthTrackingControl)))
-                    using (new EditorGUILayout.HorizontalScope())
+                    if (mouthToBool(mode.MouthTrackingControl))
                     {
-                        var mouthMorphCancel = EditorGUILayout.Toggle(string.Empty, mode.MouthMorphCancelerEnabled, GUILayout.Width(15));
-                        if (mouthMorphCancel != mode.MouthMorphCancelerEnabled)
+                        using (new EditorGUILayout.HorizontalScope())
                         {
-                            _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, null, mouthMorphCancel));
+                            var mouthMorphCancel = EditorGUILayout.Toggle(string.Empty, mode.MouthMorphCancelerEnabled, GUILayout.Width(15));
+                            if (mouthMorphCancel != mode.MouthMorphCancelerEnabled)
+                            {
+                                _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, null, mouthMorphCancel));
+                            }
+                            GUILayout.Label(_mouthMorphCancelerText);
                         }
-                        GUILayout.Label(_mouthMorphCancelerText);
+                    }
+                    else
+                    {
+                        ViewUtility.LayoutDummyToggle(_mouthMorphCancelerText);
                     }
                 }
 
