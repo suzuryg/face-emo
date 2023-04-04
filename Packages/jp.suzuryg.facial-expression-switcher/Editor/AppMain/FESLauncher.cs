@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;

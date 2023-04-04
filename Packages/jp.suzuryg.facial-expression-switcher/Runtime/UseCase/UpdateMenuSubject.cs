@@ -1,12 +1,8 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniRx;
 
-namespace Suzuryg.FacialExpressionSwitcher.Detail.Subject
+namespace Suzuryg.FacialExpressionSwitcher.UseCase
 {
     public class UpdateMenuSubject
     {

@@ -143,7 +143,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         }
 
         private void OnGenerateFxPresenterCompleted(
-            (GenerateFxResult generateFxResult, IMenu menu, string errorMessage) args)
+            (GenerateFxResult generateFxResult, string errorMessage) args)
         {
             if (args.generateFxResult == GenerateFxResult.Succeeded)
             {

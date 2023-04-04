@@ -41,11 +41,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     public class ChangeBranchOrderUseCase : IChangeBranchOrderUseCase
     {
         IMenuRepository _menuRepository;
+        UpdateMenuSubject _updateMenuSubject;
         IChangeBranchOrderPresenter _changeBranchOrderPresenter;
 
-        public ChangeBranchOrderUseCase(IMenuRepository menuRepository, IChangeBranchOrderPresenter changeBranchOrderPresenter)
+        public ChangeBranchOrderUseCase(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, IChangeBranchOrderPresenter changeBranchOrderPresenter)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _changeBranchOrderPresenter = changeBranchOrderPresenter;
         }
 
@@ -77,6 +79,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 
                 _menuRepository.Save(menuId, menu, "ChangeBranchOrder");
                 _changeBranchOrderPresenter.Complete(ChangeBranchOrderResult.Succeeded, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {

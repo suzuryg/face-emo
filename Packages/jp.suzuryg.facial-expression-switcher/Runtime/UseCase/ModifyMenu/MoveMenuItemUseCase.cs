@@ -44,11 +44,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     public class MoveMenuItemUseCase : IMoveMenuItemUseCase
     {
         IMenuRepository _menuRepository;
+        UpdateMenuSubject _updateMenuSubject;
         IMoveMenuItemPresenter _moveMenuItemPresenter;
 
-        public MoveMenuItemUseCase(IMenuRepository menuRepository, IMoveMenuItemPresenter moveMenuItemPresenter)
+        public MoveMenuItemUseCase(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, IMoveMenuItemPresenter moveMenuItemPresenter)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _moveMenuItemPresenter = moveMenuItemPresenter;
         }
 
@@ -90,6 +92,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                 menu.MoveMenuItem(sources, destination, index);
                 _menuRepository.Save(menuId, menu, "MoveMenuItem");
                 _moveMenuItemPresenter.Complete(MoveMenuItemResult.Succeeded, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {

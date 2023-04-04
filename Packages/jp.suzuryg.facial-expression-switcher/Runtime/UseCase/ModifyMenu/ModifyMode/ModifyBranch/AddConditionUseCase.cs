@@ -41,11 +41,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
     public class AddConditionUseCase : IAddConditionUseCase
     {
         IMenuRepository _menuRepository;
+        UpdateMenuSubject _updateMenuSubject;
         IAddConditionPresenter _addConditionPresenter;
 
-        public AddConditionUseCase(IMenuRepository menuRepository, IAddConditionPresenter addConditionPresenter)
+        public AddConditionUseCase(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, IAddConditionPresenter addConditionPresenter)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _addConditionPresenter = addConditionPresenter;
         }
 
@@ -77,6 +79,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 
                 _menuRepository.Save(menuId, menu, "AddCondition");
                 _addConditionPresenter.Complete(AddConditionResult.Succeeded, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {

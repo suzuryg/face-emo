@@ -1,5 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu;
+using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranch;

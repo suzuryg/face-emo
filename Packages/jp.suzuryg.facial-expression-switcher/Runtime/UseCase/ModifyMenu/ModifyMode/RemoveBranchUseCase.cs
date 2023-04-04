@@ -41,11 +41,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     public class RemoveBranchUseCase : IRemoveBranchUseCase
     {
         IMenuRepository _menuRepository;
+        UpdateMenuSubject _updateMenuSubject;
         IRemoveBranchPresenter _removeBranchPresenter;
 
-        public RemoveBranchUseCase(IMenuRepository menuRepository, IRemoveBranchPresenter removeBranchPresenter)
+        public RemoveBranchUseCase(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, IRemoveBranchPresenter removeBranchPresenter)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _removeBranchPresenter = removeBranchPresenter;
         }
 
@@ -77,6 +79,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 
                 _menuRepository.Save(menuId, menu, "RemoveBranch");
                 _removeBranchPresenter.Complete(RemoveBranchResult.Succeeded, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {

@@ -41,11 +41,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
     public class RemoveConditionUseCase : IRemoveConditionUseCase
     {
         IMenuRepository _menuRepository;
+        UpdateMenuSubject _updateMenuSubject;
         IRemoveConditionPresenter _removeConditionPresenter;
 
-        public RemoveConditionUseCase(IMenuRepository menuRepository, IRemoveConditionPresenter removeConditionPresenter)
+        public RemoveConditionUseCase(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, IRemoveConditionPresenter removeConditionPresenter)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _removeConditionPresenter = removeConditionPresenter;
         }
 
@@ -77,6 +79,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyB
 
                 _menuRepository.Save(menuId, menu, "RemoveCondition");
                 _removeConditionPresenter.Complete(RemoveConditionResult.Succeeded, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {

@@ -43,11 +43,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     public class ModifyGroupPropertiesUseCase : IModifyGroupPropertiesUseCase
     {
         IMenuRepository _menuRepository;
+        UpdateMenuSubject _updateMenuSubject;
         IModifyGroupPropertiesPresenter _modifyGroupPropertiesPresenter;
 
-        public ModifyGroupPropertiesUseCase(IMenuRepository menuRepository, IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter)
+        public ModifyGroupPropertiesUseCase(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _modifyGroupPropertiesPresenter = modifyGroupPropertiesPresenter;
         }
 
@@ -82,6 +84,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
                 _menuRepository.Save(menuId, menu, "ModifyGroupProperties");
                 _modifyGroupPropertiesPresenter.Complete(ModifyGroupPropertiesResult.Succeeded, groupId, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {

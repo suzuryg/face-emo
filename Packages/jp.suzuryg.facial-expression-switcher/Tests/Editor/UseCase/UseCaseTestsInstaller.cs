@@ -44,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<SetNewAnimationUseCase>().AsTransient();
             Container.Bind<SetExistingAnimationUseCase>().AsTransient();
 
+            Container.Bind<UpdateMenuSubject>().AsSingle();
             Container.Bind<ICreateMenuPresenter>().To<MockCreateMenuPresenter>().AsSingle();
             Container.Bind<IAddMenuItemPresenter>().To<MockAddMenuItemPresenter>().AsSingle();
             Container.Bind<IModifyModePropertiesPresenter>().To<MockModifyModePropertiesPresenter>().AsSingle();

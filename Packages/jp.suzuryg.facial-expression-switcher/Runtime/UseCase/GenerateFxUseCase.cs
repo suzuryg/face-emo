@@ -12,9 +12,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
     public interface IGenerateFxPresenter
     {
-        IObservable<(GenerateFxResult generateFxResult, IMenu menu, string errorMessage)> Observable { get; }
+        IObservable<(GenerateFxResult generateFxResult, string errorMessage)> Observable { get; }
 
-        void Complete(GenerateFxResult generateFxResult, in IMenu menu, string errorMessage = "");
+        void Complete(GenerateFxResult generateFxResult, string errorMessage = "");
     }
 
     public interface IFxGenerator
@@ -26,20 +26,19 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         Succeeded,
         MenuDoesNotExist,
-        InvalidArgument,
         ArgumentNull,
         Error,
     }
 
     public class GenerateFxPresenter : IGenerateFxPresenter
     {
-        public IObservable<(GenerateFxResult, IMenu, string)> Observable => _subject.AsObservable().Synchronize();
+        public IObservable<(GenerateFxResult, string)> Observable => _subject.AsObservable().Synchronize();
 
-        private Subject<(GenerateFxResult, IMenu, string)> _subject = new Subject<(GenerateFxResult, IMenu, string)>();
+        private Subject<(GenerateFxResult, string)> _subject = new Subject<(GenerateFxResult, string)>();
 
-        public void Complete(GenerateFxResult generateFxResult, in IMenu menu, string errorMessage = "")
+        public void Complete(GenerateFxResult generateFxResult, string errorMessage = "")
         {
-            _subject.OnNext((generateFxResult, menu, errorMessage));
+            _subject.OnNext((generateFxResult, errorMessage));
         }
     }
 
@@ -76,11 +75,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
                 _fxGenerator.Generate(menu);
 
-                _generateFxPresenter.Complete(GenerateFxResult.Succeeded, menu);
+                _generateFxPresenter.Complete(GenerateFxResult.Succeeded);
             }
             catch (Exception ex)
             {
-                _generateFxPresenter.Complete(GenerateFxResult.Error, null, ex.ToString());
+                _generateFxPresenter.Complete(GenerateFxResult.Error, ex.ToString());
             }
         }
     }

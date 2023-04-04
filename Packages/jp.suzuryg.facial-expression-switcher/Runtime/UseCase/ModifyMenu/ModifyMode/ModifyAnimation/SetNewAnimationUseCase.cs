@@ -42,12 +42,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
     {
         IMenuRepository _menuRepository;
         IAnimationEditor _animationEditor;
+        UpdateMenuSubject _updateMenuSubject;
         ISetNewAnimationPresenter _setNewAnimationPresenter;
 
-        public SetNewAnimationUseCase(IMenuRepository menuRepository, IAnimationEditor animationEditor, ISetNewAnimationPresenter setNewAnimationPresenter)
+        public SetNewAnimationUseCase(IMenuRepository menuRepository, IAnimationEditor animationEditor, UpdateMenuSubject updateMenuSubject, ISetNewAnimationPresenter setNewAnimationPresenter)
         {
             _menuRepository = menuRepository;
             _animationEditor = animationEditor;
+            _updateMenuSubject = updateMenuSubject;
             _setNewAnimationPresenter = setNewAnimationPresenter;
         }
 
@@ -80,6 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
 
                 _menuRepository.Save(menuId, menu, "SetNewAnimation");
                 _setNewAnimationPresenter.Complete(SetNewAnimationResult.Succeeded, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {

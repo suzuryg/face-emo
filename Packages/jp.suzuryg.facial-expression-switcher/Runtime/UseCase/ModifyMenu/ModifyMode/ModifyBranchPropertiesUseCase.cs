@@ -47,11 +47,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
     public class ModifyBranchPropertiesUseCase : IModifyBranchPropertiesUseCase
     {
         IMenuRepository _menuRepository;
+        UpdateMenuSubject _updateMenuSubject;
         IModifyBranchPropertiesPresenter _modifyBranchPropertiesPresenter;
 
-        public ModifyBranchPropertiesUseCase(IMenuRepository menuRepository, IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter)
+        public ModifyBranchPropertiesUseCase(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _modifyBranchPropertiesPresenter = modifyBranchPropertiesPresenter;
         }
 
@@ -89,6 +91,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 
                 _menuRepository.Save(menuId, menu, "ModifyBranchProperties");
                 _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.Succeeded, menu);
+                _updateMenuSubject.OnNext(menu);
             }
             catch (Exception ex)
             {
