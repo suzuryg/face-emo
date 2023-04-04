@@ -10,11 +10,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
     public class SerializableMenu : MonoBehaviour
     {
-        [HideInInspector] public double Version = 1.0;
-        [HideInInspector] public string DefaultSelection;
-        [HideInInspector] public List<string> MouthMorphBlendShapes = new List<string>();
-        [HideInInspector] public SerializableRegisteredMenuItemList Registered;
-        [HideInInspector] public SerializableUnregisteredMenuItemList Unregistered;
+        public double Version = 1.0;
+        public string DefaultSelection;
+        public List<string> MouthMorphBlendShapes = new List<string>();
+        public SerializableRegisteredMenuItemList Registered;
+        public SerializableUnregisteredMenuItemList Unregistered;
 
         public void Save(IMenu menu)
         {
