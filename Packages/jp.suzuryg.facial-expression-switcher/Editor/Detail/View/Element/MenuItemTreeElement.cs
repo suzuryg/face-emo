@@ -368,6 +368,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     }
 
                     // Mouth morph cancel
+                    using (new EditorGUI.DisabledScope(!mouthToBool(mode.MouthTrackingControl)))
                     using (new EditorGUILayout.HorizontalScope())
                     {
                         var mouthMorphCancel = EditorGUILayout.Toggle(string.Empty, mode.MouthMorphCancelerEnabled, GUILayout.Width(15));

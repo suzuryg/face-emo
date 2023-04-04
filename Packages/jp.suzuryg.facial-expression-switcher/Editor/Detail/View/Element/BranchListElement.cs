@@ -388,11 +388,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
 
             // Mouth morph cancel
-            var mouthMorphCancel = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.MouthMorphCancelerEnabled, string.Empty);
-            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
-            if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
+            using (new EditorGUI.DisabledScope(!mouthToBool(branch.MouthTrackingControl)))
             {
-                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, mouthMorphCancel, null, null));
+                var mouthMorphCancel = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.MouthMorphCancelerEnabled, string.Empty);
+                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
+                if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
+                {
+                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, mouthMorphCancel, null, null));
+                }
             }
 
             yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;

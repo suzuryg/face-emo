@@ -21,7 +21,7 @@ MonoBehaviour:
   MenuItemListView_EyeTracking: Enable Eye Tracking
   MenuItemListView_MouthTracking: Enable Lip Sync
   MenuItemListView_Blink: Enable Blink
-  MenuItemListView_MouthMorphCanceler: Enable Mouth Morph Canceler
+  MenuItemListView_MouthMorphCanceler: Mouth Morph Canceller
   MenuItemListView_Empty: This group is empty.
   BranchListView_Title: BranchView
   BranchListView_UseLeftTrigger: Use Left Trigger
