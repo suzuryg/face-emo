@@ -191,9 +191,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public void ChangeModeSelection(string modeId)
         {
-            _selectedModeId = modeId;
-            UpdateList();
-            ChangeBranchSelection(-1);
+            if (_selectedModeId != modeId)
+            {
+                _selectedModeId = modeId;
+                UpdateList();
+                ChangeBranchSelection(-1);
+            }
         }
 
         public void ChangeBranchSelection(int branchIndex)
@@ -223,6 +226,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
         }
 
+        public void SelectNewestBranch() => ChangeBranchSelection(_reorderableList.count - 1);
+
+        public int GetNumOfBranches() => _reorderableList.count;
+
         private void SetText(LocalizationTable localizationTable)
         {
             _eyeTrackingText = localizationTable.MenuItemListView_EyeTracking;
@@ -246,6 +253,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 branches = Menu.GetMode(_selectedModeId).Branches.ToList();
             }
 
+            _reorderableList.index = Math.Min(_reorderableList.index, branches.Count  - 1);
             _reorderableList.list = branches;
 
             _conditionDisposables.Dispose();

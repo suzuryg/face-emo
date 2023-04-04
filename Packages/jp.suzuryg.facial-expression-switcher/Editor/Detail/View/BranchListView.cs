@@ -32,6 +32,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IModifyConditionUseCase _modifyConditionUseCase;
         private IRemoveConditionUseCase _removeConditionUseCase;
 
+        private IAddBranchPresenter _addBranchPresenter;
+
         private IReadOnlyLocalizationSetting _localizationSetting;
         private UpdateMenuSubject _updateMenuSubject;
         private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
@@ -57,6 +59,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IModifyConditionUseCase modifyConditionUseCase,
             IRemoveConditionUseCase removeConditionUseCase,
 
+            IAddBranchPresenter addBranchPresenter,
+
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
@@ -74,6 +78,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _changeConditionOrderUseCase = changeConditionOrderUseCase;
             _modifyConditionUseCase = modifyConditionUseCase;
             _removeConditionUseCase = removeConditionUseCase;
+
+            // Presenters
+            _addBranchPresenter = addBranchPresenter;
 
             // Others
             _localizationSetting = localizationSetting;
@@ -110,6 +117,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Change branch selection event handler
             _changeBranchSelectionSubject.Observable.Synchronize().Subscribe(OnGestureTableViewSelectionChanged).AddTo(_disposables);
+
+            // Presenter event handlers
+            _addBranchPresenter.Observable.Synchronize().Subscribe(OnAddBranchPresenterCompleted).AddTo(_disposables);
         }
 
         public void Dispose() => _disposables.Dispose();
@@ -229,6 +239,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             BranchAnimationType branchAnimationType) args)
         {
             _setExistingAnimationUseCase.Handle("", new Domain.Animation(args.clipGUID), args.modeId, args.branchIndex, args.branchAnimationType);
+        }
+
+        private void OnAddBranchPresenterCompleted(
+            (AddBranchResult addBranchResult, IMenu menu, string errorMessage) args)
+        {
+            if (args.addBranchResult == AddBranchResult.Succeeded)
+            {
+                // Make the created branch selected in this view
+                OnMenuUpdated(args.menu);
+                _branchListElement?.SelectNewestBranch();
+
+                // Make the created branch selected in GestureTableView
+                _changeBranchSelectionSubject.OnNext(_branchListElement?.GetNumOfBranches() - 1 ?? -1);
+            }
         }
     }
 }

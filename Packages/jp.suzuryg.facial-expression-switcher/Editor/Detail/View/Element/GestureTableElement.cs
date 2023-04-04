@@ -108,9 +108,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public void ChangeModeSelection(string modeId)
         {
-            SelectedModeId = modeId;
-            _selectedBranchIndex = -1;
-            UpdateCellSelection();
+            if (SelectedModeId != modeId)
+            {
+                SelectedModeId = modeId;
+                _selectedBranchIndex = -1;
+                UpdateCellSelection();
+            }
         }
 
         public void ChangeBranchSelection(int branchIndex)
