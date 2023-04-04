@@ -130,6 +130,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject);
             Undo.RegisterCreatedObjectUndo(gameObject, $"Create {DomainConstants.SystemName} Object");
             Selection.activeObject = gameObject;
+
+            UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(gameObject.GetComponent<FESLauncherComponent>(), true);
         }
     }
 }

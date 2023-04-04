@@ -29,6 +29,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             {
                 serializableMenu = launcherObject.AddComponent<SerializableMenu>();
             }
+            serializableMenu.hideFlags = HideFlags.HideInInspector;
             Container.Bind<SerializableMenu>().FromInstance(serializableMenu).AsSingle();
 
             var hierarchyViewState = launcherObject.GetComponent<HierarchyViewState>();
@@ -36,6 +37,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             {
                 hierarchyViewState = launcherObject.AddComponent<HierarchyViewState>();
             }
+            hierarchyViewState.hideFlags = HideFlags.HideInInspector;
             Container.Bind<HierarchyViewState>().FromInstance(hierarchyViewState).AsSingle();
 
             var menuItemiListViewState = launcherObject.GetComponent<MenuItemListViewState>();
@@ -43,6 +45,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             {
                 menuItemiListViewState = launcherObject.AddComponent<MenuItemListViewState>();
             }
+            menuItemiListViewState.hideFlags = HideFlags.HideInInspector;
             Container.Bind<MenuItemListViewState>().FromInstance(menuItemiListViewState).AsSingle();
 
             var aV3Setting = launcherObject.GetComponent<AV3Setting>();
@@ -50,6 +53,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             {
                 aV3Setting = launcherObject.AddComponent<AV3Setting>();
             }
+            aV3Setting.hideFlags = HideFlags.HideInInspector;
             Container.Bind<AV3Setting>().FromInstance(aV3Setting).AsSingle();
 
             // Bind non-MonoBehaviour classes

@@ -57,3 +57,24 @@ MonoBehaviour:
   GestureTableView_RockNRoll: RockNRoll
   GestureTableView_HandGun: HandGun
   GestureTableView_ThumbsUp: ThumbsUp
+  InspectorView_AddConfig_EmoteLock: Emote Lock (1bit)
+  InspectorView_AddConfig_BlinkOff: Blink OFF (1bit)
+  InspectorView_AddConfig_DanceGimmick: Dance Gimmick (1bit)
+  InspectorView_AddConfig_ContactLock: Contact Emote Lock (1bit)
+  InspectorView_AddConfig_Override: Emote Override (1bit)
+  InspectorView_AddConfig_HandPriority: Hand Priority (4bit)
+  InspectorView_AddConfig_Controller: Controller Type (2bit)
+  ExMenu_Setting: Setting
+  ExMenu_EmoteLock: Emote Lock ON [NOT Saved]
+  ExMenu_BlinkOff: Blink OFF [NOT Saved]
+  ExMenu_DanceGimmick: Enable Dance Gimmick [NOT Saved]
+  ExMenu_ContactLock: Enable Contact Emote Lock
+  ExMenu_Override: Enable Emote Override
+  ExMenu_HandPriority: Hand Priority
+  ExMenu_HandPriority_PrimeLeft: Prime Left
+  ExMenu_HandPriority_PrimeRight: Prime Right
+  ExMenu_HandPriority_OnlyLeft: Only Left
+  ExMenu_HandPriority_OnlyRight: Only Right
+  ExMenu_Controller: Controller
+  ExMenu_Controller_Quest: Quest Controller
+  ExMenu_Controller_Index: Index Controller
