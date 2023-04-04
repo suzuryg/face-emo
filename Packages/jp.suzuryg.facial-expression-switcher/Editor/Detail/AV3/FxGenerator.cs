@@ -92,7 +92,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 GenerateDefaultFaceLayer(aac, avatarDescriptor, animatorController);
                 GenerateFaceEmotePlayerLayer(modes, menu, _aV3Setting, aac, animatorController, useOverLimitMode);
                 ModifyBlinkLayer(aac, avatarDescriptor, animatorController);
-                ModifyMouthMorphCancelerLayer(menu, aac, avatarDescriptor, animatorController);
+                ModifyMouthMorphCancelerLayer(_aV3Setting, aac, avatarDescriptor, animatorController);
                 if (_aV3Setting.SmoothAnalogFist)
                 {
                     ComboGestureIntegratorProxy.DoGenerate(animatorController, integratorContainer, _aV3Setting.WriteDefaults);
@@ -459,13 +459,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 1);
         }
 
-        private static void ModifyMouthMorphCancelerLayer(IMenu menu, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor, AnimatorController animatorController)
+        private static void ModifyMouthMorphCancelerLayer(AV3Setting aV3Setting, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor, AnimatorController animatorController)
         {
             var layerName = AV3Constants.LayerName_MouthMorphCanceler;
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 0);
 
-            var motion = GetMouthMorphCancelerAnimation(menu, aac, avatarDescriptor);
+            var motion = GetMouthMorphCancelerAnimation(aV3Setting, aac, avatarDescriptor);
             AV3Utility.SetMotion(animatorController, layerName, AV3Constants.StateName_MouthMorphCancelerEnabled, motion.Clip);
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 1);
@@ -894,7 +894,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
-        private static AacFlClip GetMouthMorphCancelerAnimation(IMenu menu, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
+        private static AacFlClip GetMouthMorphCancelerAnimation(AV3Setting aV3Setting, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
         {
             var clip = aac.NewClip();
 
@@ -904,7 +904,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 return clip;
             }
 
-            var mouthMorphBlendShapes = new HashSet<string>(menu.MouthMorphBlendShapes);
+            var mouthMorphBlendShapes = new HashSet<string>(aV3Setting.MouthMorphBlendShapes);
             var toBeExcluded = AV3Utility.GetBlendShapeNamesToBeExcluded(avatarDescriptor);
 
             // Get blendshape names and weights

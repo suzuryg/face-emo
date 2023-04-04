@@ -19,7 +19,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
         public void Save(IMenu menu)
         {
             DefaultSelection = menu.DefaultSelection;
-            MouthMorphBlendShapes = menu.MouthMorphBlendShapes.ToList();
 
             Registered = ScriptableObject.CreateInstance<SerializableRegisteredMenuItemList>();
             Registered.Save(menu.Registered);
@@ -36,11 +35,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             Unregistered?.Load(menu);
 
             menu.SetDefaultSelection(DefaultSelection);
-
-            foreach (var blendShape in MouthMorphBlendShapes)
-            {
-                menu.AddMouthMorphBlendShape(blendShape);
-            }
 
             return menu;
         }

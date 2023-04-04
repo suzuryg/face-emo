@@ -7,7 +7,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     public interface IMenu
     {
         string DefaultSelection { get; }
-        IReadOnlyList<string> MouthMorphBlendShapes { get; }
 
         IMenuItemList Registered { get; }
         IMenuItemList Unregistered { get; }
@@ -24,12 +23,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public static readonly string UnregisteredId = "UnRegistered";
 
         public string DefaultSelection { get; private set; }
-        public IReadOnlyList<string> MouthMorphBlendShapes => _mouthMorphBlendShapes;
 
         public IMenuItemList Registered => _registered;
         public IMenuItemList Unregistered => _unregistered;
 
-        private List<string> _mouthMorphBlendShapes = new List<string>();
         private RegisteredMenuItemList _registered = new RegisteredMenuItemList();
         private UnregisteredMenuItemList _unregistered = new UnregisteredMenuItemList();
         private Dictionary<string, Mode> _modes = new Dictionary<string, Mode>();
@@ -58,19 +55,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             mode.MouthTrackingControl = mouthTrackingControl ?? mode.MouthTrackingControl;
             mode.BlinkEnabled = blinkEnabled ?? mode.BlinkEnabled;
             mode.MouthMorphCancelerEnabled = mouthMorphCancelerEnabled ?? mode.MouthMorphCancelerEnabled;
-        }
-
-        public void AddMouthMorphBlendShape(string name)
-        {
-            if (!_mouthMorphBlendShapes.Contains(name))
-            {
-                _mouthMorphBlendShapes.Add(name);
-            }
-        }
-
-        public void RemoveMouthMorphBlendShape(string name)
-        {
-            _mouthMorphBlendShapes = _mouthMorphBlendShapes.Where(x => x != name).ToList();
         }
 
         public bool ContainsGroup(string id)

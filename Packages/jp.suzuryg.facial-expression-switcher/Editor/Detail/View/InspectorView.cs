@@ -1,22 +1,20 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.UIElements;
-using UnityEditor.UIElements;
-using UniRx;
 using UnityEditorInternal;
-using System.Linq;
-using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
-using UnityEditor.IMGUI.Controls;
-using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
+using UniRx;
+using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
@@ -28,16 +26,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private Subject<Unit> _onLaunchButtonClicked = new Subject<Unit>();
         private Subject<Locale> _onLocaleChanged = new Subject<Locale>();
 
-        private IMenuRepository _menuRepository; // TODO: Use use-case instead
         private ILocalizationSetting _localizationSetting;
         private SerializedObject _av3Setting;
-        private UpdateMenuSubject _updateMenuSubject;
-
-        private IMenu _menu;
 
         private bool _isMouthMorphBlendShapesOpened = false;
         private ReorderableList _mouthMorphBlendShapes;
-        private string[] _faceBlendShapes = new string[0];
 
         private bool _isMenuPropertiesSettingOpened = false;
 
@@ -56,18 +49,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public InspectorView(
-            IMenuRepository menuRepository,
             ILocalizationSetting localizationSetting,
-            AV3Setting av3Setting,
-            UpdateMenuSubject updateMenuSubject)
+            AV3Setting av3Setting)
         {
-            _menuRepository = menuRepository;
             _localizationSetting = localizationSetting;
             _av3Setting = new SerializedObject(av3Setting);
-            _updateMenuSubject = updateMenuSubject;
-
-            // Update menu event handler
-            _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -104,16 +90,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 SetText(_localizationSetting.Table);
             }
 
-            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened, _mouthMorphBlendShapesText);
-            if (_isMouthMorphBlendShapesOpened)
-            {
-                _mouthMorphBlendShapes.DoLayoutList();
-            }
-
             _isMenuPropertiesSettingOpened = EditorGUILayout.Foldout(_isMenuPropertiesSettingOpened, _menuPropertiesText);
             if (_isMenuPropertiesSettingOpened)
             {
                 MenuPropertiesGUI();
+            }
+
+            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened, _mouthMorphBlendShapesText);
+            if (_isMouthMorphBlendShapesOpened)
+            {
+                _mouthMorphBlendShapes.list = GetMouthMorphBlendShapes(); // Is it necessary to get every frame?
+                _mouthMorphBlendShapes.DoLayoutList();
             }
         }
 
@@ -147,32 +134,54 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
         }
 
-        private void OnMenuUpdated(IMenu menu)
+        private List<string> GetMouthMorphBlendShapes()
         {
-            _menu = menu;
-            _mouthMorphBlendShapes.list = _menu?.MouthMorphBlendShapes.ToList();
+            _av3Setting.Update();
+            var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
+
+            var list = new List<string>();
+            for (int i = 0; i < property.arraySize; i++)
+            {
+                list.Add(property.GetArrayElementAtIndex(i).stringValue);
+            }
+
+            return list;
         }
 
         private void AddMouthMorphBlendShape(ReorderableList reorderableList)
         {
+            var faceBlendShapes = new List<string>();
+            _av3Setting.Update();
+            if (_av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue is VRCAvatarDescriptor avatarDescriptor)
+            {
+                faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor).Select(x => x.name).ToList();
+            }
+
             UnityEditor.PopupWindow.Show(
                 new Rect(Event.current.mousePosition, Vector2.one),
-                new ListSelectPopupContent<string>(_faceBlendShapes, _addText, _cancelText,
+                new ListSelectPopupContent<string>(faceBlendShapes, _addText, _cancelText,
                 new Action<IReadOnlyList<string>>(blendShapes =>
                 {
-                    // TODO: Add use-case
-                    var menu = _menuRepository.Load(null);
-                    foreach (var blendShape in blendShapes)
+                    var existing = new HashSet<string>(GetMouthMorphBlendShapes());
+                    var toAdd = blendShapes.Distinct().Where(x => !existing.Contains(x)).ToList();
+
+                    _av3Setting.Update();
+
+                    var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
+                    var start = property.arraySize;
+                    property.arraySize += toAdd.Count;
+                    for (int i = 0; i < toAdd.Count; i++)
                     {
-                        menu.AddMouthMorphBlendShape(blendShape);
+                        property.GetArrayElementAtIndex(i + start).stringValue = toAdd[i];
                     }
-                    _menuRepository.Save(string.Empty, menu, "AddMouthMorphBlendShapes");
-                    _updateMenuSubject.OnNext(menu);
+
+                    _av3Setting.ApplyModifiedProperties();
                 })));
         }
 
         private void RemoveMouthMorphBlendShape(ReorderableList reorderableList)
         {
+            // Check for abnormal selections.
             if (_mouthMorphBlendShapes.index >= _mouthMorphBlendShapes.list.Count)
             {
                 return;
@@ -180,11 +189,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             var selected = _mouthMorphBlendShapes.list[_mouthMorphBlendShapes.index] as string;
 
-            // TODO: Add use-case
-            var menu = _menuRepository.Load(null);
-            menu.RemoveMouthMorphBlendShape(selected);
-            _menuRepository.Save(string.Empty, menu, "RemoveMouthMorphBlendShapes");
-            _updateMenuSubject.OnNext(menu);
+            _av3Setting.Update();
+
+            var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
+            for (int i = 0; i < property.arraySize; i++)
+            {
+                var element = property.GetArrayElementAtIndex(i);
+                if (element.stringValue == selected)
+                {
+                    // Remove all duplicate elements without breaking to be sure.
+                    property.DeleteArrayElementAtIndex(i);
+                }
+            }
+
+            _av3Setting.ApplyModifiedProperties();
         }
 
         private void MenuPropertiesGUI()

@@ -12,6 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
     public class AV3Setting : MonoBehaviour
     {
         [HideInInspector] public VRCAvatarDescriptor TargetAvatar;
+        [HideInInspector] public List<string> MouthMorphBlendShapes = new List<string>();
 
         [HideInInspector] public bool WriteDefaults = false;
         [HideInInspector] public bool SmoothAnalogFist = true;
