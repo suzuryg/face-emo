@@ -167,6 +167,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public void OnGUI(Rect rect)
         {
+            if (Menu is null || !Menu.ContainsMode(_selectedModeId))
+            {
+                return;
+            }
+
             float totalHeight = 0;
             for (int i = 0; i < _reorderableList.list.Count; i++)
             {

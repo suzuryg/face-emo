@@ -3,7 +3,6 @@ using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using System;
 using System.Collections;

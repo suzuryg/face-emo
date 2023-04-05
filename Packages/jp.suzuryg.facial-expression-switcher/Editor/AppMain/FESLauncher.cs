@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEditor;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using UniRx;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {

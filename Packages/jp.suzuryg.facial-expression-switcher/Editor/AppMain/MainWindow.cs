@@ -2,7 +2,6 @@
 using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using System.Linq;
 using UnityEngine;

@@ -35,7 +35,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             bool? BlinkEnabled,
             bool? MouthMorphCancelerEnabled)> OnModePropertiesModified => _onModePropertiesModified.AsObservable();
         public IObservable<(string groupId, string displayName)> OnGroupPropertiesModified => _onGroupPropertiesModified.AsObservable();
-        public IObservable<string> OnRootChanged => _onRootChanged.AsObservable();
+        public IObservable<string> OnEnteredIntoGroup => _onEnteredIntoGroup.AsObservable();
         public IObservable<(string modeId, string clipGUID)> OnAnimationChanged => _onAnimationChanged.AsObservable();
 
         private Subject<(
@@ -48,7 +48,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             bool? MouthMorphCancelerEnabled)> _onModePropertiesModified = new Subject<(string modeId, string displayName, bool? useAnimationNameAsDisplayName, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? BlinkEnabled, bool? MouthMorphCancelerEnabled)>();
 
         private Subject<(string groupId, string displayName)> _onGroupPropertiesModified = new Subject<(string groupId, string displayName)>();
-        private Subject<string> _onRootChanged = new Subject<string>();
+        private Subject<string> _onEnteredIntoGroup = new Subject<string>();
         private Subject<(string modeId, string clipGUID)> _onAnimationChanged = new Subject<(string modeId, string clipGUID)>();
 
         private ThumbnailDrawer _thumbnailDrawer;
@@ -120,7 +120,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             if (rootGroupId != _menuItemListViewState.RootGroupId && rootGroupId is string && Menu is IMenu &&
                 (rootGroupId == Domain.Menu.RegisteredId || rootGroupId == Domain.Menu.UnregisteredId || Menu.ContainsGroup(rootGroupId)))
             {
-                _onRootChanged.OnNext(rootGroupId);
                 _menuItemListViewState.RootGroupId = rootGroupId;
                 Reload();
                 SetSelection(new List<int>());
@@ -175,7 +174,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             var menuItemId = GetMenuItemId(id);
             if (Menu.ContainsGroup(menuItemId))
             {
-                ChangeRootGroup(menuItemId);
+                _onEnteredIntoGroup.OnNext(menuItemId);
             }
         }
 

@@ -6,9 +6,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 {
     public class RegisteredMenuItemList : MenuItemListBase
     {
-        public override bool IsFull => Order.Count >= DomainConstants.MenuItemNums;
+        // Setting menu uses one slot.
+        private static readonly int Capacity = DomainConstants.MenuItemNums - 1;
 
-        public override int FreeSpace => DomainConstants.MenuItemNums - Count;
+        public override bool IsFull => Order.Count >= Capacity;
+
+        public override int FreeSpace => Capacity - Count;
 
         public override MenuItemListBase Parent => null;
 

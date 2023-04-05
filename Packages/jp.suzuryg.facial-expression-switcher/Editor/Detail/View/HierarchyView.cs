@@ -3,7 +3,6 @@ using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using System;
 using System.Linq;
@@ -30,8 +29,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IReadOnlyLocalizationSetting _localizationSetting;
 
         private UpdateMenuSubject _updateMenuSubject;
-        private ChangeHierarchySelectionSubject _changeHierarchySelectionSubject;
-        private ChangeMenuItemListRootSubject _changeMenuItemListRootSubject;
+        private SelectionSynchronizer _selectionSynchronizer;
         private HierarchyViewState _hierarchyViewState;
 
         private Label _titleLabel;
@@ -54,8 +52,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
-            ChangeHierarchySelectionSubject changeHierarchySelectionSubject,
-            ChangeMenuItemListRootSubject changeMenuItemListRootSubject,
+            SelectionSynchronizer selectionSynchronizer,
             HierarchyViewState hierarchyViewState)
         {
             // Usecases
@@ -68,8 +65,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Others
             _localizationSetting = localizationSetting;
             _updateMenuSubject = updateMenuSubject;
-            _changeHierarchySelectionSubject = changeHierarchySelectionSubject;
-            _changeMenuItemListRootSubject = changeMenuItemListRootSubject;
+            _selectionSynchronizer = selectionSynchronizer;
             _hierarchyViewState = hierarchyViewState;
 
             // Localization table changed event handler
@@ -78,8 +74,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Update menu event handler
             _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
 
-            // Change menu item list root event handler
-            _changeMenuItemListRootSubject.Observable.Synchronize().Subscribe(OnMenuItemListRootChanged).AddTo(_disposables);
+            // Synchronize selection event handler
+            _selectionSynchronizer.OnSynchronizeSelection.Synchronize().Subscribe(OnSynchronizeSelection).AddTo(_disposables);
 
             // Initialize tree element
             InitializeTreeElement();
@@ -145,8 +141,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _hierarchyTreeElement.OnSelectionChanged.Synchronize().Subscribe(x => OnSelectionChanged(x.menu, x.menuItemIds)).AddTo(_treeElementDisposables);
             _hierarchyTreeElement.OnDropped.Synchronize().Subscribe(OnDropped).AddTo(_treeElementDisposables);
 
-            // Setup
+            // Update display
             _hierarchyTreeElement.Setup(menu);
+            UpdateDisplay();
         }
 
         private void SetText(LocalizationTable localizationTable)
@@ -154,63 +151,58 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _titleLabel.text = localizationTable.HierarchyView_Title;
         }
 
-        private void UpdateButtonState(IMenu menu, IReadOnlyList<string> selectedMenuItemIds)
+        private void UpdateDisplay()
         {
+            _addModeButton?.SetEnabled(false);
+            _addGroupButton?.SetEnabled(false);
+            _removeGroupButton?.SetEnabled(false);
+
+            var menu = _hierarchyTreeElement?.Menu;
+            var selectedMenuItemIds = _hierarchyTreeElement?.GetSelectedMenuItemIds();
+
             if (menu is null || selectedMenuItemIds is null || selectedMenuItemIds.Count != 1 || selectedMenuItemIds[0] is null)
             {
-                _addModeButton?.SetEnabled(false);
-                _addGroupButton?.SetEnabled(false);
-                _removeGroupButton?.SetEnabled(false);
+                return;
             }
-            else if (selectedMenuItemIds[0] == Domain.Menu.RegisteredId)
+
+            var id = selectedMenuItemIds[0];
+            var parentId = GetParentId(menu, id);
+
+            // Add button
+            if (parentId == Domain.Menu.RegisteredId)
             {
                 _addModeButton?.SetEnabled(!menu.Registered.IsFull);
                 _addGroupButton?.SetEnabled(!menu.Registered.IsFull);
-                _removeGroupButton?.SetEnabled(false);
             }
-            else if (selectedMenuItemIds[0] == Domain.Menu.UnregisteredId)
+            else if (parentId == Domain.Menu.UnregisteredId)
             {
                 _addModeButton?.SetEnabled(true);
                 _addGroupButton?.SetEnabled(true);
-                _removeGroupButton?.SetEnabled(false);
             }
-            else if (menu.ContainsMode(selectedMenuItemIds[0]))
+            else if (menu.ContainsGroup(parentId))
             {
-                _addModeButton?.SetEnabled(false);
-                _addGroupButton?.SetEnabled(false);
-                _removeGroupButton?.SetEnabled(true);
-            }
-            else if (menu.ContainsGroup(selectedMenuItemIds[0]))
-            {
-                var group = menu.GetGroup(selectedMenuItemIds[0]);
+                var group = menu.GetGroup(parentId);
                 _addModeButton?.SetEnabled(!group.IsFull);
                 _addGroupButton?.SetEnabled(!group.IsFull);
-                _removeGroupButton?.SetEnabled(true);
             }
-            else
+             
+            // Remove button
+            if (id == Domain.Menu.RegisteredId)
             {
-                _addModeButton?.SetEnabled(false);
-                _addGroupButton?.SetEnabled(false);
                 _removeGroupButton?.SetEnabled(false);
             }
-        }
-
-        private void UpdateTree(IMenu menu)
-        {
-            // Do not call this method before setting up the tree element because the selection will be null.
-            var selection = _hierarchyTreeElement.GetSelectedMenuItemIds();
-            var nearest = selection.Select(x => _hierarchyTreeElement.GetNearestMenuItemId(x)).ToList();
-
-            _hierarchyTreeElement.Setup(menu);
-
-            if (!_hierarchyTreeElement.SelectMenuItems(selection))
+            else if (id == Domain.Menu.UnregisteredId)
             {
-                _hierarchyTreeElement.SelectMenuItems(nearest);
+                _removeGroupButton?.SetEnabled(false);
             }
-
-            selection = _hierarchyTreeElement.GetSelectedMenuItemIds();
-            _changeHierarchySelectionSubject.OnNext(selection);
-            UpdateButtonState(menu, selection);
+            else if (menu.ContainsGroup(id))
+            {
+                _removeGroupButton?.SetEnabled(true);
+            }
+            else if (menu.ContainsMode(id))
+            {
+                _removeGroupButton?.SetEnabled(true);
+            }
         }
 
         private void OnMouseLeft(MouseLeaveEvent mouseLeaveEvent)
@@ -222,19 +214,30 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
         }
 
-        private void OnMenuUpdated(IMenu menu) => UpdateTree(menu);
-
-        private void OnMenuItemListRootChanged(string rootGroupId)
+        private void OnMenuUpdated(IMenu menu)
         {
-            if (rootGroupId is string && !_hierarchyTreeElement.GetSelectedMenuItemIds().Contains(rootGroupId))
+            _hierarchyTreeElement?.Setup(menu);
+            UpdateDisplay();
+        }
+
+        private void OnSelectionChanged(IMenu menu, IReadOnlyList<string> selectedMenuItemIds)
+        {
+            if (selectedMenuItemIds.Count == 1)
             {
-                _hierarchyTreeElement.RevealMenuItem(rootGroupId);
-                _hierarchyTreeElement.SelectMenuItems(new[] { rootGroupId });
-                UpdateTree(_hierarchyTreeElement.Menu);
+                _selectionSynchronizer.ChangeHierarchyViewSelection(selectedMenuItemIds[0]);
+            }
+            else
+            {
+                UpdateDisplay();
             }
         }
 
-        private void OnSelectionChanged(IMenu menu, IReadOnlyList<string> selectedMenuItemIds) => UpdateTree(menu);
+        private void OnSynchronizeSelection(ViewSelection viewSelection)
+        {
+            _hierarchyTreeElement?.SelectMenuItems(new[] { viewSelection.HierarchyView });
+
+            UpdateDisplay();
+        }
 
         private void OnDropped((IReadOnlyList<string> source, string destination, int? index) args)
         {
@@ -250,7 +253,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             var ids = _hierarchyTreeElement.GetSelectedMenuItemIds();
             if (ids is IReadOnlyList<string> && ids.Count == 1)
             {
-                _addMenuItemUseCase.Handle("", ids[0], addMenuItemType);
+                var parentId = GetParentId(_hierarchyTreeElement.Menu, ids[0]);
+                _addMenuItemUseCase.Handle("", parentId, addMenuItemType);
             }
         }
 
@@ -260,6 +264,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (ids is IReadOnlyList<string> && ids.Count == 1)
             {
                 _removeMenuItemUseCase.Handle("", ids[0]);
+            }
+        }
+
+        private static string GetParentId(IMenu menu, string menuItemId)
+        {
+            if (menuItemId == Domain.Menu.RegisteredId || menuItemId == Domain.Menu.UnregisteredId || menu.ContainsGroup(menuItemId))
+            {
+                return menuItemId;
+            }
+            else if (menu.ContainsMode(menuItemId))
+            {
+                var mode = menu.GetMode(menuItemId);
+                return mode.Parent.GetId();
+            }
+            else
+            {
+                return null;
             }
         }
     }

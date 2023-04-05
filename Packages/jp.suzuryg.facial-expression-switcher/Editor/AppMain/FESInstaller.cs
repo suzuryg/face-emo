@@ -9,7 +9,6 @@ using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using UnityEngine;
 using UnityEditor;
@@ -48,6 +47,14 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             menuItemiListViewState.hideFlags = HideFlags.HideInInspector;
             Container.Bind<MenuItemListViewState>().FromInstance(menuItemiListViewState).AsSingle();
 
+            var viewSelection = launcherObject.GetComponent<ViewSelection>();
+            if (viewSelection is null)
+            {
+                viewSelection = launcherObject.AddComponent<ViewSelection>();
+            }
+            viewSelection.hideFlags = HideFlags.HideInInspector;
+            Container.Bind<ViewSelection>().FromInstance(viewSelection).AsSingle();
+
             var aV3Setting = launcherObject.GetComponent<AV3Setting>();
             if (aV3Setting is null)
             {
@@ -61,10 +68,6 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
 
             Container.Bind<UpdateMenuSubject>().AsSingle();
-            Container.Bind<ChangeHierarchySelectionSubject>().AsSingle();
-            Container.Bind<ChangeMenuItemListRootSubject>().AsSingle();
-            Container.Bind<ChangeMenuItemListSelectionSubject>().AsSingle();
-            Container.Bind<ChangeBranchSelectionSubject>().AsSingle();
 
             Container.Bind<ThumbnailDrawer>().AsSingle();
 
@@ -107,6 +110,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IRemoveConditionPresenter>().To<RemoveConditionPresenter>().AsSingle();
             Container.Bind<ISetNewAnimationPresenter>().To<SetNewAnimationPresenter>().AsSingle();
             Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
+
+            Container.Bind<SelectionSynchronizer>().AsSingle();
 
             Container.Bind<MainView>().AsTransient();
             Container.Bind<HierarchyView>().AsTransient();

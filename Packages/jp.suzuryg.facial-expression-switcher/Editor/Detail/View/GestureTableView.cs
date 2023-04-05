@@ -2,7 +2,6 @@
 using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using System;
 using System.Collections;
@@ -14,6 +13,7 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UniRx;
 using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode;
+using System.Linq;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
@@ -23,8 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private IReadOnlyLocalizationSetting _localizationSetting;
         private UpdateMenuSubject _updateMenuSubject;
-        private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
-        private ChangeBranchSelectionSubject _changeBranchSelectionSubject;
+        private SelectionSynchronizer _selectionSynchronizer;
         private ThumbnailDrawer _thumbnailDrawer;
 
         private GestureTableElement _gestureTableElement;
@@ -44,8 +43,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IAddBranchUseCase addBranchUseCase,
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
-            ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
-            ChangeBranchSelectionSubject changeBranchSelectionSubject,
+            SelectionSynchronizer selectionSynchronizer,
             ThumbnailDrawer thumbnailDrawer)
         {
             // Usecases
@@ -54,14 +52,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Others
             _localizationSetting = localizationSetting;
             _updateMenuSubject = updateMenuSubject;
-            _changeMenuItemListSelectionSubject = changeMenuItemListSelectionSubject;
-            _changeBranchSelectionSubject = changeBranchSelectionSubject;
+            _selectionSynchronizer = selectionSynchronizer;
             _thumbnailDrawer = thumbnailDrawer;
 
             // Gesture table element
             _gestureTableElement = new GestureTableElement(_localizationSetting, _thumbnailDrawer).AddTo(_disposables);
-            _gestureTableElement.OnBranchSelected.Synchronize().Subscribe(OnGestureTableViewSelectionChanged).AddTo(_disposables);
-            _gestureTableElement.CanAddBranch.Synchronize().Subscribe(OnCanAddBranchChanged).AddTo(_disposables);
+            _gestureTableElement.OnSelectionChanged.Synchronize().Subscribe(OnSelectionChanged).AddTo(_disposables);
+            _gestureTableElement.OnBranchIndexExceeded.Synchronize().Subscribe(_ => OnBranchIndexExceeded()).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -69,11 +66,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Update menu event handler
             _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
 
-            // Change menu item list event handler
-            _changeMenuItemListSelectionSubject.Observable.Synchronize().Subscribe(OnMenuItemListSelectionChanged).AddTo(_disposables);
-
-            // Change branch selection event handler
-            _changeBranchSelectionSubject.Observable.Synchronize().Subscribe(OnBranchListViewSelectionChanged).AddTo(_disposables);
+            // Synchronize selection event handler
+            _selectionSynchronizer.OnSynchronizeSelection.Synchronize().Subscribe(OnSynchronizeSelection).AddTo(_disposables);
         }
 
         public void Dispose()
@@ -121,7 +115,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Initialize styles
             _canNotAddButtonColor = _addBranchButton.style.color;
             _canNotAddButtonBackgroundColor = _addBranchButton.style.backgroundColor;
-            OnCanAddBranchChanged(_gestureTableElement.CanAddBranch.Value);
 
             // Add event handlers
             _thumbnailSizeSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
@@ -138,36 +131,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnMenuUpdated(IMenu menu)
         {
             _gestureTableElement.Setup(menu);
+            UpdateDisplay();
         }
 
-        private void OnMenuItemListSelectionChanged(IReadOnlyList<string> selectedMenuItemIds)
+        private void UpdateDisplay()
         {
-            if (selectedMenuItemIds.Count == 1)
-            {
-                _gestureTableElement.ChangeModeSelection(selectedMenuItemIds[0]);
-                _gestureTableContainer?.MarkDirtyRepaint();
-            }
-        }
+            var target = GetTarget();
+            var canAddBranch = target.canAddBranch;
 
-        private void OnBranchListViewSelectionChanged(int branchIndex)
-        {
-            _gestureTableElement.ChangeBranchSelection(branchIndex);
-            _gestureTableContainer?.MarkDirtyRepaint();
-        }
-
-        private void OnGestureTableViewSelectionChanged(int branchIndex)
-        {
-            _changeBranchSelectionSubject.OnNext(branchIndex);
-        }
-
-        private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
-        {
-            EditorPrefs.SetInt(DetailConstants.KeyGestureThumbnailSize, changeEvent.newValue);
-            _thumbnailDrawer.UpdateAll();
-        }
-
-        private void OnCanAddBranchChanged(bool canAddBranch)
-        {
             _addBranchButton?.SetEnabled(canAddBranch);
 
             if (_addBranchButton is Button)
@@ -183,16 +154,86 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                     _addBranchButton.style.backgroundColor = _canNotAddButtonBackgroundColor;
                 }
             }
+
+
+            _gestureTableContainer?.MarkDirtyRepaint();
+        }
+
+        private void OnSelectionChanged((HandGesture left, HandGesture right)? args)
+        {
+            if (!(args is null))
+            {
+                _selectionSynchronizer.ChangeGestureTableViewSelection(args.Value.left, args.Value.right);
+            }
+        }
+
+        private void OnBranchIndexExceeded()
+        {
+            var menu = _gestureTableElement.Menu;
+            if (menu is null || !menu.ContainsMode(_gestureTableElement.SelectedModeId))
+            {
+                return;
+            }
+
+            var mode = menu.GetMode(_gestureTableElement.SelectedModeId);
+            var lastBranchIndex = mode.Branches.Count - 1;
+            _selectionSynchronizer.ChangeBranchListViewSelection(lastBranchIndex);
+        }
+
+        private void OnSynchronizeSelection(ViewSelection viewSelection)
+        {
+            _gestureTableElement?.ChangeSelection(viewSelection.MenuItemListView, viewSelection.BranchListView, viewSelection.GestureTableView);
+            UpdateDisplay();
+        }
+
+        private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
+        {
+            EditorPrefs.SetInt(DetailConstants.KeyGestureThumbnailSize, changeEvent.newValue);
+            _thumbnailDrawer.UpdateAll();
         }
 
         private void OnAddBranchButtonClicked()
         {
+            var target = GetTarget();
+
             var conditions = new[]
             {
-                new Condition(Hand.Left, _gestureTableElement.TargetLeftHand, ComparisonOperator.Equals),
-                new Condition(Hand.Right, _gestureTableElement.TargetRightHand, ComparisonOperator.Equals),
+                new Condition(Hand.Left, target.left, ComparisonOperator.Equals),
+                new Condition(Hand.Right, target.right, ComparisonOperator.Equals),
             };
             _addBranchUseCase.Handle("", _gestureTableElement.SelectedModeId, conditions);
+        }
+
+        private (bool canAddBranch, HandGesture left, HandGesture right) GetTarget()
+        {
+            var canNot = (false, HandGesture.Neutral, HandGesture.Neutral);
+
+            if (_gestureTableElement.SelectedCell is null)
+            {
+                return canNot;
+            }
+            (var left, var right) = _gestureTableElement.SelectedCell.Value;
+
+            var menu = _gestureTableElement.Menu;
+            if (menu is null)
+            {
+                return canNot;
+            }
+
+            if (!menu.ContainsMode(_gestureTableElement.SelectedModeId))
+            {
+                return canNot;
+            }
+
+            var mode = menu.GetMode(_gestureTableElement.SelectedModeId);
+            if (mode.GetGestureCell(left, right) is IBranch)
+            {
+                return canNot;
+            }
+            else
+            {
+                return (true, left, right);
+            }
         }
     }
 }

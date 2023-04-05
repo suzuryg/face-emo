@@ -6,7 +6,6 @@ using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using System;
 using System.Linq;
@@ -33,9 +32,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IReadOnlyLocalizationSetting _localizationSetting;
 
         private UpdateMenuSubject _updateMenuSubject;
-        private ChangeHierarchySelectionSubject _changeHierarchySelectionSubject;
-        private ChangeMenuItemListRootSubject _changeMenuItemListRootSubject;
-        private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
+        private SelectionSynchronizer _selectionSynchronizer;
         private ThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
         private MenuItemListViewState _menuItemListViewState;
@@ -63,9 +60,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
-            ChangeHierarchySelectionSubject changeHierarchySelectionSubject,
-            ChangeMenuItemListRootSubject changeMenuItemListRootSubject,
-            ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
+            SelectionSynchronizer selectionSynchronizer,
             ThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
             MenuItemListViewState menuItemListViewState)
@@ -81,16 +76,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Others
             _localizationSetting = localizationSetting;
             _updateMenuSubject = updateMenuSubject;
-            _changeHierarchySelectionSubject = changeHierarchySelectionSubject;
-            _changeMenuItemListRootSubject = changeMenuItemListRootSubject;
-            _changeMenuItemListSelectionSubject = changeMenuItemListSelectionSubject;
+            _selectionSynchronizer = selectionSynchronizer;
             _thumbnailDrawer = thumbnailDrawer;
             _aV3Setting = aV3Setting;
             _menuItemListViewState = menuItemListViewState;
 
             // Address bar element
             _addressBarElement = new AddressBarElement(_localizationSetting).AddTo(_disposables);
-            _addressBarElement.OnAddressClicked.Synchronize().Subscribe(OnAddressClicked).AddTo(_disposables);
+            _addressBarElement.OnAddressClicked.Synchronize().Subscribe(OnEnteredIntoGroup).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -98,8 +91,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Update menu event handler
             _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
 
-            // Change hierarchy selection event handler
-            _changeHierarchySelectionSubject.Observable.Synchronize().Subscribe(OnHierarchySelectionChanged).AddTo(_disposables);
+            // Synchronize selection event handler
+            _selectionSynchronizer.OnSynchronizeSelection.Synchronize().Subscribe(OnSynchronizeSelection).AddTo(_disposables);
 
             // Initialize tree element
             InitializeTreeElement();
@@ -167,11 +160,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _menuItemTreeElement.OnGroupPropertiesModified.Synchronize().Subscribe(OnGroupPropertiesModified).AddTo(_treeElementDisposables);
             _menuItemTreeElement.OnSelectionChanged.Synchronize().Subscribe(x => OnSelectionChanged(x.menu, x.menuItemIds)).AddTo(_treeElementDisposables);
             _menuItemTreeElement.OnDropped.Synchronize().Subscribe(OnDropped).AddTo(_treeElementDisposables);
-            _menuItemTreeElement.OnRootChanged.Synchronize().Subscribe(OnRootChanged).AddTo(_treeElementDisposables);
+            _menuItemTreeElement.OnEnteredIntoGroup.Synchronize().Subscribe(OnEnteredIntoGroup).AddTo(_treeElementDisposables);
             _menuItemTreeElement.OnAnimationChanged.Synchronize().Subscribe(OnAnimationChanged).AddTo(_treeElementDisposables);
 
-            // Setup
+            // Update display
             _menuItemTreeElement.Setup(menu);
+            UpdateDisplay();
         }
 
         private void SetText(LocalizationTable localizationTable)
@@ -179,33 +173,39 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _titleLabel.text = localizationTable.MenuItemListView_Title;
         }
 
-        private void UpdateButtonState(IMenu menu, IReadOnlyList<string> selectedMenuItemIds)
+        private void UpdateDisplay()
         {
+            _addModeButton?.SetEnabled(false);
+            _addGroupButton?.SetEnabled(false);
+            _removeButton?.SetEnabled(false);
+
+            var menu = _menuItemTreeElement?.Menu;
+            var selectedMenuItemIds = _menuItemTreeElement?.GetSelectedMenuItemIds();
+
             if (menu is null)
             {
-                _addModeButton?.SetEnabled(false);
-                _addGroupButton?.SetEnabled(false);
-                _removeButton?.SetEnabled(false);
                 return;
             }
 
+            _addressBarElement?.SetPath(menu, _menuItemListViewState.RootGroupId);
+
             // Add button
-            if (_menuItemListViewState.RootGroupId is null)
+            if (_menuItemListViewState?.RootGroupId is null)
             {
                 _addModeButton?.SetEnabled(false);
                 _addGroupButton?.SetEnabled(false);
             }
-            else if (_menuItemListViewState.RootGroupId == Domain.Menu.RegisteredId && !menu.Registered.IsFull)
+            else if (_menuItemListViewState?.RootGroupId == Domain.Menu.RegisteredId && !menu.Registered.IsFull)
             {
                 _addModeButton?.SetEnabled(true);
                 _addGroupButton?.SetEnabled(true);
             }
-            else if (_menuItemListViewState.RootGroupId == Domain.Menu.UnregisteredId)
+            else if (_menuItemListViewState?.RootGroupId == Domain.Menu.UnregisteredId)
             {
                 _addModeButton?.SetEnabled(true);
                 _addGroupButton?.SetEnabled(true);
             }
-            else if (menu.ContainsGroup(_menuItemListViewState.RootGroupId) && !menu.GetGroup(_menuItemListViewState.RootGroupId).IsFull)
+            else if (menu.ContainsGroup(_menuItemListViewState?.RootGroupId) && !menu.GetGroup(_menuItemListViewState?.RootGroupId).IsFull)
             {
                 _addModeButton?.SetEnabled(true);
                 _addGroupButton?.SetEnabled(true);
@@ -235,45 +235,54 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
         }
 
-        private void UpdateTree(IMenu menu)
-        {
-            // Do not call this method before setting up the tree element because the selection will be null.
-            var selection = _menuItemTreeElement.GetSelectedMenuItemIds();
-            var nearest = selection.Select(x => _menuItemTreeElement.GetNearestMenuItemId(x)).ToList();
-
-            _menuItemTreeElement.Setup(menu);
-
-            if (!_menuItemTreeElement.SelectMenuItems(selection))
-            {
-                _menuItemTreeElement.SelectMenuItems(nearest);
-            }
-
-            _addressBarElement.SetPath(menu, _menuItemListViewState.RootGroupId);
-
-            UpdateButtonState(menu, _menuItemTreeElement.GetSelectedMenuItemIds());
-        }
-
         private void OnMenuUpdated(IMenu menu)
         {
-            UpdateTree(menu);
-
-            // Send event
-            _changeMenuItemListSelectionSubject.OnNext(_menuItemTreeElement.GetSelectedMenuItemIds());
+            _menuItemTreeElement?.Setup(menu);
+            UpdateDisplay();
         }
 
-        private void OnHierarchySelectionChanged(IReadOnlyList<string> selectedMenuItemIds)
+        private void OnSelectionChanged(IMenu menu, IReadOnlyList<string> selectedMenuItemIds)
         {
             if (selectedMenuItemIds.Count == 1)
             {
-                _menuItemTreeElement.ChangeRootGroup(selectedMenuItemIds[0]);
-                UpdateTree(_menuItemTreeElement.Menu);
+                _selectionSynchronizer.ChangeMenuItemListViewSelection(selectedMenuItemIds[0]);
+            }
+            else
+            {
+                UpdateDisplay();
             }
         }
 
-        private void OnAddressClicked(string rootGroupId)
+        private void OnEnteredIntoGroup(string groupId)
         {
-            _menuItemTreeElement.ChangeRootGroup(rootGroupId);
-            UpdateTree(_menuItemTreeElement.Menu);
+            _selectionSynchronizer.ChangeHierarchyViewSelection(groupId);
+        }
+
+        private void OnSynchronizeSelection(ViewSelection viewSelection)
+        {
+            if (_menuItemTreeElement?.Menu is IMenu menu)
+            {
+                string rootGroupId = null;
+                if (viewSelection.HierarchyView == Domain.Menu.RegisteredId ||
+                    viewSelection.HierarchyView == Domain.Menu.UnregisteredId ||
+                    menu.ContainsGroup(viewSelection.HierarchyView))
+                {
+                    rootGroupId = viewSelection.HierarchyView;
+                }
+                else if (menu.ContainsGroup(viewSelection.MenuItemListView))
+                {
+                    rootGroupId = menu.GetGroup(viewSelection.MenuItemListView).Parent.GetId();
+                }
+                else if (menu.ContainsMode(viewSelection.MenuItemListView))
+                {
+                    rootGroupId = menu.GetMode(viewSelection.MenuItemListView).Parent.GetId();
+                }
+
+                _menuItemTreeElement.ChangeRootGroup(rootGroupId);
+            }
+
+            _menuItemTreeElement?.SelectMenuItems(new[] { viewSelection.MenuItemListView });
+            UpdateDisplay();
         }
 
         private void OnMouseLeft(MouseLeaveEvent mouseLeaveEvent)
@@ -309,22 +318,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _modifyGroupPropertiesUseCase.Handle("", args.groupId, args.displayName);
         }
 
-        private void OnRootChanged(string rootGroupId)
-        {
-            _changeMenuItemListRootSubject.OnNext(rootGroupId);
-            _addressBarElement.SetPath(_menuItemTreeElement.Menu, rootGroupId);
-            _thumbnailDrawer.ResetPriority();
-        }
-
         private void OnAnimationChanged((string modeId, string clipGUID) args)
         {
             _setExistingAnimationUseCase.Handle("", new Domain.Animation(args.clipGUID), args.modeId);
-        }
-
-        private void OnSelectionChanged(IMenu menu, IReadOnlyList<string> selectedMenuItemIds)
-        {
-            _changeMenuItemListSelectionSubject.OnNext(selectedMenuItemIds);
-            UpdateTree(menu);
         }
 
         private void OnDropped((IReadOnlyList<string> source, string destination, int? index) args)

@@ -6,7 +6,6 @@ using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyBranc
 using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
-using Suzuryg.FacialExpressionSwitcher.Detail.Subject;
 using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using System;
 using System.IO;
@@ -36,8 +35,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private IReadOnlyLocalizationSetting _localizationSetting;
         private UpdateMenuSubject _updateMenuSubject;
-        private ChangeMenuItemListSelectionSubject _changeMenuItemListSelectionSubject;
-        private ChangeBranchSelectionSubject _changeBranchSelectionSubject;
+        private SelectionSynchronizer _selectionSynchronizer;
         private AV3Setting _aV3Setting;
         private ThumbnailDrawer _thumbnailDrawer;
 
@@ -63,8 +61,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
-            ChangeMenuItemListSelectionSubject changeMenuItemListSelectionSubject,
-            ChangeBranchSelectionSubject changeBranchSelectionSubject,
+            SelectionSynchronizer selectionSynchronizer,
             AV3Setting aV3Setting,
             ThumbnailDrawer thumbnailDrawer)
         {
@@ -85,8 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Others
             _localizationSetting = localizationSetting;
             _updateMenuSubject = updateMenuSubject;
-            _changeMenuItemListSelectionSubject = changeMenuItemListSelectionSubject;
-            _changeBranchSelectionSubject = changeBranchSelectionSubject;
+            _selectionSynchronizer = selectionSynchronizer;
             _aV3Setting = aV3Setting;
             _thumbnailDrawer = thumbnailDrawer;
 
@@ -112,11 +108,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Update menu event handler
             _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
 
-            // Change menu item list event handler
-            _changeMenuItemListSelectionSubject.Observable.Synchronize().Subscribe(OnMenuItemListSelectionChanged).AddTo(_disposables);
-
-            // Change branch selection event handler
-            _changeBranchSelectionSubject.Observable.Synchronize().Subscribe(OnGestureTableViewSelectionChanged).AddTo(_disposables);
+            // Synchronize selection event handler
+            _selectionSynchronizer.OnSynchronizeSelection.Synchronize().Subscribe(OnSynchronizeSelection).AddTo(_disposables);
 
             // Presenter event handlers
             _addBranchPresenter.Observable.Synchronize().Subscribe(OnAddBranchPresenterCompleted).AddTo(_disposables);
@@ -167,17 +160,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _branchListContainer.MarkDirtyRepaint();
         }
 
-        private void OnMenuItemListSelectionChanged(IReadOnlyList<string> selectedMenuItemIds)
+        private void OnBranchListViewSelectionChanged(int branchIndex)
         {
-            if (selectedMenuItemIds.Count == 1)
-            {
-                _branchListElement.ChangeModeSelection(selectedMenuItemIds[0]);
-            }
+            _selectionSynchronizer.ChangeBranchListViewSelection(branchIndex);
         }
 
-        private void OnAddBranchButtonClicked(string modeId)
+        private void OnSynchronizeSelection(ViewSelection viewSelection)
         {
-            _addBranchUseCase.Handle("", modeId);
+            _branchListElement?.ChangeModeSelection(viewSelection.MenuItemListView);
+            _branchListElement?.ChangeBranchSelection(viewSelection.BranchListView);
+            _branchListContainer?.MarkDirtyRepaint();
+        }
+
+        private void OnBranchOrderChanged((string modeId, int from, int to) args)
+        {
+            _changeBranchOrderUseCase.Handle("", args.modeId, args.from, args.to);
         }
 
         private void OnModifyBranchPropertiesButtonClicked((string modeId, int branchIndex,
@@ -191,20 +188,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _modifyBranchPropertiesUseCase.Handle("", args.modeId, args.branchIndex, args.eyeTrackingControl, args.mouthTrackingControl, args.blinkEnabled, args.mouthMorphCancelerEnabled, args.isLeftTriggerUsed, args.isRightTriggerUsed);
         }
 
-        private void OnBranchOrderChanged((string modeId, int from, int to) args)
+        private void OnAddBranchButtonClicked(string modeId)
         {
-            _changeBranchOrderUseCase.Handle("", args.modeId, args.from, args.to);
-        }
-
-        private void OnBranchListViewSelectionChanged(int branchIndex)
-        {
-            _changeBranchSelectionSubject.OnNext(branchIndex);
-        }
-
-        private void OnGestureTableViewSelectionChanged(int branchIndex)
-        {
-            _branchListElement.ChangeBranchSelection(branchIndex);
-            _branchListContainer?.MarkDirtyRepaint();
+            _addBranchUseCase.Handle("", modeId);
         }
 
         private void OnRemoveBranchButtonClicked((string modeId, int branchIndex) args)
@@ -251,7 +237,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 _branchListElement?.SelectNewestBranch();
 
                 // Make the created branch selected in GestureTableView
-                _changeBranchSelectionSubject.OnNext(_branchListElement?.GetNumOfBranches() - 1 ?? -1);
+                _selectionSynchronizer.ChangeBranchListViewSelection(_branchListElement?.GetNumOfBranches() - 1 ?? -1);
             }
         }
     }

@@ -29,19 +29,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly Color SelectedElementTextColor = Color.black;
         private static readonly Color SelectedElementBackgroudColor = Color.yellow;
 
-        public string SelectedModeId { get; private set; }
-        public HandGesture TargetLeftHand { get; private set; }
-        public HandGesture TargetRightHand { get; private set; }
-        public ReactiveProperty<bool> CanAddBranch { get; } = new ReactiveProperty<bool>(false);
-        public IObservable<int> OnBranchSelected => _onBranchSelected.AsObservable();
+        public IObservable<(HandGesture left, HandGesture right)?> OnSelectionChanged => _onSelectionChanged.AsObservable();
+        public IObservable<Unit> OnBranchIndexExceeded => _onBranchIndexExceeded.AsObservable();
 
-        private Subject<int> _onBranchSelected = new Subject<int>();
+        public IMenu Menu { get; private set; }
+        public string SelectedModeId  { get; private set; }
+        public int SelectedBranchIndex  { get; private set; }
+        public (HandGesture left, HandGesture right)? SelectedCell { get; private set; }
+
+        private Subject<(HandGesture left, HandGesture right)?> _onSelectionChanged = new Subject<(HandGesture left, HandGesture right)?>();
+        private Subject<Unit> _onBranchIndexExceeded = new Subject<Unit>();
 
         private ThumbnailDrawer _thumbnailDrawer;
 
-        private int _selectedBranchIndex = -1;
-
-        private HashSet<(int row, int col)> _selectedCells = new HashSet<(int row, int col)>();
         private Vector2 _scrollPosition = Vector2.zero;
         private Texture2D _elementBorderTexture;
         private Texture2D _selectedElementTexture;
@@ -94,37 +94,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
         }
 
-        public IMenu Menu { get; private set; }
-
         public void Dispose()
         {
             _disposables.Dispose();
-        }
-
-        public void Setup(IMenu menu)
-        {
-            Menu = menu;
-            UpdateCellSelection();
-        }
-
-        public void ChangeModeSelection(string modeId)
-        {
-            if (SelectedModeId != modeId)
-            {
-                SelectedModeId = modeId;
-                _selectedBranchIndex = -1;
-                UpdateCellSelection();
-            }
-        }
-
-        public void ChangeBranchSelection(int branchIndex)
-        {
-            // If no branches are selected in BranchLiewView, do not update selection.
-            if (branchIndex >= 0)
-            {
-                _selectedBranchIndex = branchIndex;
-                UpdateCellSelection();
-            }
         }
 
         public void OnGUI(Rect rect)
@@ -153,39 +125,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _thumbsUpText = localizationTable.GestureTableView_ThumbsUp;
         }
 
-        private void UpdateCellSelection()
+        public void Setup(IMenu menu)
         {
-            // When selection is updated by other views, update cell selection.
-            _selectedCells.Clear();
-            CanAddBranch.Value = false;
+            Menu = menu;
+        }
 
-            if (Menu is null || !Menu.ContainsMode(SelectedModeId))
-            {
-                return;
-            }
-
-            var mode = Menu.GetMode(SelectedModeId);
-
-            if (_selectedBranchIndex < 0 || mode.Branches.Count() <= _selectedBranchIndex)
-            {
-                return;
-            }
-            var selectedBranch = mode.Branches[_selectedBranchIndex];
-
-            var gestureList = Mode.GestureList;
-            for (int row = 0; row < gestureList.Count; row++)
-            {
-                for (int col = 0; col < gestureList.Count; col++)
-                {
-                    var leftHand = gestureList[row];
-                    var rightHand = gestureList[col];
-
-                    if (ReferenceEquals(mode.GetGestureCell(leftHand, rightHand), selectedBranch))
-                    {
-                        _selectedCells.Add((row, col));
-                    }
-                }
-            }
+        public void ChangeSelection(string modeId, int branchIndex, (HandGesture left, HandGesture right)? cell)
+        {
+            SelectedModeId = modeId;
+            SelectedBranchIndex = branchIndex;
+            SelectedCell = cell;
         }
 
         private float GetThumbnailSize()
@@ -221,6 +170,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             var mode = Menu.GetMode(SelectedModeId);
+            IBranch selectedBranch = null;
+            if (SelectedBranchIndex < 0)
+            {
+                // NOP
+            }
+            else if (mode.Branches.Count <= SelectedBranchIndex)
+            {
+                _onBranchIndexExceeded.OnNext(Unit.Default);
+            }
+            else
+            {
+                selectedBranch = mode.Branches[SelectedBranchIndex];
+            }
 
             var gestureList = Mode.GestureList;
             for (int row = 0; row < gestureList.Count; row++)
@@ -250,7 +212,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         OnElementClicked(row, col);
                     }
 
-                    if (_selectedCells.Contains((row, col)))
+                    var isHighlighted = false;
+                    if (selectedBranch is IBranch)
+                    {
+                        if (ReferenceEquals(selectedBranch, mode.GetGestureCell(leftHand, rightHand)))
+                        {
+                            isHighlighted = true;
+                        }
+                    }
+                    else if (!(SelectedCell is null))
+                    {
+                        if (leftHand == SelectedCell.Value.left && rightHand == SelectedCell.Value.right)
+                        {
+                            isHighlighted = true;
+                        }
+                    }
+
+                    if (isHighlighted)
                     {
                         GUI.DrawTexture(elementRect, _selectedElementTexture, ScaleMode.StretchToFill);
                         _gestureLabelStyle.normal.textColor = SelectedElementTextColor;
@@ -290,40 +268,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void OnElementClicked(int row, int col)
         {
-            _selectedCells.Clear();
-            _selectedCells.Add((row, col));
-
-            if (Menu is null || !Menu.ContainsMode(SelectedModeId))
-            {
-                return;
-            }
-
-            var mode = Menu.GetMode(SelectedModeId);
-
             var gestureList = Mode.GestureList;
+
             var leftHand = gestureList[row];
             var rightHand = gestureList[col];
-            var selectedBranch = mode.GetGestureCell(leftHand, rightHand);
+            SelectedCell = (leftHand, rightHand);
 
-            if (selectedBranch is IBranch)
-            {
-                for (int branchIndex = 0; branchIndex < mode.Branches.Count(); branchIndex++)
-                {
-                    if (ReferenceEquals(mode.Branches[branchIndex], selectedBranch))
-                    {
-                        _onBranchSelected.OnNext(branchIndex);
-                        CanAddBranch.Value = false;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                _onBranchSelected.OnNext(-1);
-                TargetLeftHand = leftHand;
-                TargetRightHand = rightHand;
-                CanAddBranch.Value = true;
-            }
+            _onSelectionChanged.OnNext((leftHand, rightHand));
         }
 
         private string GetGestureText(HandGesture handGesture)
