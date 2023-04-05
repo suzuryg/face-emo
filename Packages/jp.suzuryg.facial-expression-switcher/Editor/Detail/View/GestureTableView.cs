@@ -33,6 +33,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private SliderInt _thumbnailSizeSlider;
         private Button _addBranchButton;
 
+        private StyleColor _canAddButtonColor = Color.black;
+        private StyleColor _canAddButtonBackgroundColor = Color.yellow;
+        private StyleColor _canNotAddButtonColor;
+        private StyleColor _canNotAddButtonBackgroundColor;
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public GestureTableView(
@@ -56,7 +61,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Gesture table element
             _gestureTableElement = new GestureTableElement(_localizationSetting, _thumbnailDrawer).AddTo(_disposables);
             _gestureTableElement.OnBranchSelected.Synchronize().Subscribe(OnGestureTableViewSelectionChanged).AddTo(_disposables);
-            _gestureTableElement.CanAddBranch.Synchronize().Subscribe(canAddBranch => _addBranchButton?.SetEnabled(canAddBranch)).AddTo(_disposables);
+            _gestureTableElement.CanAddBranch.Synchronize().Subscribe(OnCanAddBranchChanged).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -112,7 +117,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailSizeSlider.lowValue = DetailConstants.MinGestureThumbnailSize;
             _thumbnailSizeSlider.highValue = DetailConstants.MaxGestureThumbnailSize;
             _thumbnailSizeSlider.value = EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailSize) : DetailConstants.MinGestureThumbnailSize;
-            _addBranchButton.SetEnabled(_gestureTableElement.CanAddBranch.Value);
+
+            // Initialize styles
+            _canNotAddButtonColor = _addBranchButton.style.color;
+            _canNotAddButtonBackgroundColor = _addBranchButton.style.backgroundColor;
+            OnCanAddBranchChanged(_gestureTableElement.CanAddBranch.Value);
 
             // Add event handlers
             _thumbnailSizeSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
@@ -155,6 +164,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             EditorPrefs.SetInt(DetailConstants.KeyGestureThumbnailSize, changeEvent.newValue);
             _thumbnailDrawer.UpdateAll();
+        }
+
+        private void OnCanAddBranchChanged(bool canAddBranch)
+        {
+            _addBranchButton?.SetEnabled(canAddBranch);
+
+            if (_addBranchButton is Button)
+            {
+                if (canAddBranch)
+                {
+                    _addBranchButton.style.color = _canAddButtonColor;
+                    _addBranchButton.style.backgroundColor = _canAddButtonBackgroundColor;
+                }
+                else
+                {
+                    _addBranchButton.style.color = _canNotAddButtonColor;
+                    _addBranchButton.style.backgroundColor = _canNotAddButtonBackgroundColor;
+                }
+            }
         }
 
         private void OnAddBranchButtonClicked()

@@ -26,7 +26,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly int ElementBorderThickness = 2;
         private static readonly int MinLabelWidth = 110;
         private static readonly Color ElementBorderColor = Color.gray;
-        private static readonly Color SelectedElementColor = Color.yellow;
+        private static readonly Color SelectedElementTextColor = Color.black;
+        private static readonly Color SelectedElementBackgroudColor = Color.yellow;
 
         public string SelectedModeId { get; private set; }
         public HandGesture TargetLeftHand { get; private set; }
@@ -85,7 +86,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _elementBorderTexture.Apply();
 
             _selectedElementTexture = new Texture2D(1, 1);
-            _selectedElementTexture.SetPixel(0, 0, SelectedElementColor);
+            _selectedElementTexture.SetPixel(0, 0, SelectedElementBackgroudColor);
             _selectedElementTexture.Apply();
 
             // Set text
@@ -169,7 +170,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 return;
             }
-
             var selectedBranch = mode.Branches[_selectedBranchIndex];
 
             var gestureList = Mode.GestureList;
@@ -229,15 +229,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     var leftHand = gestureList[row];
                     var rightHand = gestureList[col];
-                    Texture2D thumbnail;
+                    Texture2D thumbnail = null;
                     var branch = mode.GetGestureCell(leftHand, rightHand);
                     if (branch is IBranch)
                     {
                         thumbnail = _thumbnailDrawer.GetThumbnail(branch.BaseAnimation).gesture;
-                    }
-                    else
-                    {
-                        thumbnail = _thumbnailDrawer.GetThumbnail(mode.Animation).gesture;
                     }
 
                     var thumbnailSize = GetThumbnailSize();
@@ -257,7 +253,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     if (_selectedCells.Contains((row, col)))
                     {
                         GUI.DrawTexture(elementRect, _selectedElementTexture, ScaleMode.StretchToFill);
-                        _gestureLabelStyle.normal.textColor = Color.black;
+                        _gestureLabelStyle.normal.textColor = SelectedElementTextColor;
                     }
                     else
                     {
@@ -279,12 +275,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         EditorGUIUtility.singleLineHeight),
                         GetGestureText(leftHand) + " ▶ " + GetGestureText(rightHand), _gestureLabelStyle);
                     // Thumbnail
-                    GUI.DrawTexture(new Rect(
-                        elementRect.x + ElementPadding + (contentWidth - thumbnailSize) / 2,
-                        elementRect.y + ElementPadding + EditorGUIUtility.singleLineHeight,
-                        thumbnailSize,
-                        thumbnailSize),
-                        thumbnail);
+                    if (thumbnail is Texture2D)
+                    {
+                        GUI.DrawTexture(new Rect(
+                            elementRect.x + ElementPadding + (contentWidth - thumbnailSize) / 2,
+                            elementRect.y + ElementPadding + EditorGUIUtility.singleLineHeight,
+                            thumbnailSize,
+                            thumbnailSize),
+                            thumbnail);
+                    }
                 }
             }
         }
