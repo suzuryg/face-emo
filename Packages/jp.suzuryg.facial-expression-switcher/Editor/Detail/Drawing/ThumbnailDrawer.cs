@@ -86,6 +86,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         // TODO: Use IEnumerable
         private void Update(IReadOnlyList<string> guids)
         {
+            // When updating thumbnails in Play mode, the following error occurs in VRC.Dynamics.PhysBoneManager.
+            // "Buffer already contains chain of id:XXXX"
+            if (EditorApplication.isPlaying)
+            {
+                return;
+            }
+
             var avatarAnimator = _aV3Setting?.TargetAvatar?.GetComponent<Animator>();
             if (avatarAnimator is null)
             {

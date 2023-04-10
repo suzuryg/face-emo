@@ -1,10 +1,4 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
@@ -26,6 +20,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 
         public void Save(string destination, Menu menu, string comment)
         {
+            if (UnityEditor.EditorApplication.isPlaying)
+            {
+                UnityEditor.EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Changes in play mode are not saved.", "OK");
+            }
+
             UnityEditor.Undo.RegisterCompleteObjectUndo(_serializableMenu, comment);
             _serializableMenu.Save(menu);
         }

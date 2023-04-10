@@ -23,23 +23,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnPlayModeChanged(PlayModeStateChange playModeStateChange)
         {
-            // UI is enabled only in EditMode.
-            switch (playModeStateChange)
+            if (playModeStateChange == PlayModeStateChange.EnteredEditMode)
             {
-                case PlayModeStateChange.EnteredEditMode:
-                    rootVisualElement.Clear();
-                    // TODO: Clear visual element
-                    Close();
-                    break;
-                case PlayModeStateChange.ExitingEditMode:
-                    rootVisualElement.Clear();
-                    break;
-                case PlayModeStateChange.EnteredPlayMode:
-                    rootVisualElement.Clear();
-                    break;
-                case PlayModeStateChange.ExitingPlayMode:
-                    rootVisualElement.Clear();
-                    break;
+                rootVisualElement.Clear();
+                Close();
             }
         }
     }

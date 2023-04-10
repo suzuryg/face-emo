@@ -48,12 +48,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         {
             try
             {
-                if (EditorApplication.isPlaying)
-                {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Please launch in EditorMode.", "OK");
-                    return;
-                }
-                else if (!UnpackPrefab())
+                if (!UnpackPrefab())
                 {
                     return;
                 }
