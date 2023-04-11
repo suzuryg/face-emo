@@ -18,6 +18,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         private MainView _mainView;
         private Undo.UndoRedoCallback _undoRedoCallback;
         private FESInstaller _installer;
+        private ISubWindowManager _subWindowManager;
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public MainWindow()
@@ -51,8 +52,12 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             if (_launcherObjectPath is string)
             {
                 _installer = FESInstaller.GetInstaller(_launcherObjectPath);
+
                 _mainView = _installer.Container.Resolve<MainView>().AddTo(_disposables);
                 _mainView.Initialize(rootVisualElement);
+
+                _subWindowManager = _installer.Container.Resolve<ISubWindowManager>().AddTo(_disposables);
+                _subWindowManager.Initialize(titleContent.text, _installer);
 
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();
                 var updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
@@ -71,62 +76,15 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         private void Clean()
         {
+            _subWindowManager?.CloseAllSubWinodows();
+
             _disposables?.Dispose();
             _disposables = new CompositeDisposable();
-
-            CloseChildWindows();
 
             if (_undoRedoCallback is Undo.UndoRedoCallback)
             {
                 Undo.undoRedoPerformed -= _undoRedoCallback;
             }
-        }
-
-        private void OpenChildWindows()
-        {
-            GetChildWindow<GestureTableWindow>(visualElement => 
-            {
-                if (_installer is FESInstaller)
-                {
-                    var gestureTableView = _installer.Container.Resolve<GestureTableView>().AddTo(_disposables);
-                    gestureTableView.Initialize(visualElement);
-
-                    var menuRepository = _installer.Container.Resolve<IMenuRepository>();
-                    var updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
-                    updateMenuSubject.OnNext(menuRepository.Load(null));
-                }
-            });
-        }
-
-        private void CloseChildWindows()
-        {
-            GetChildWindow<GestureTableWindow>(null).Close();
-        }
-
-        private T GetChildWindow<T>(Action<VisualElement> initializeAction) where T : EditorWindow
-        {
-            var windowTitle = titleContent.text;
-            var existingWindows = Resources.FindObjectsOfTypeAll<T>().Where(x => x.titleContent.text == windowTitle);
-            if (existingWindows.Any())
-            {
-                return existingWindows.First();
-            }
-            else
-            {
-                var window = CreateInstance<T>();
-                window.titleContent = new GUIContent(windowTitle);
-                window.Show();
-                if (initializeAction is Action<VisualElement>)
-                {
-                    initializeAction(window.rootVisualElement);
-                }
-                return window;
-            }
-        }
-
-        private void Update()
-        {
-            OpenChildWindows();
         }
 
         private void OnEnable()

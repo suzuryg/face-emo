@@ -20,9 +20,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private IGenerateFxPresenter _generateFxPresenter;
 
+        private ISubWindowProvider _subWindowProvider;
         private ILocalizationSetting _localizationSetting;
         private ThumbnailDrawer _thumbnailDrawer;
 
+        private Button _openGestureTableWindowButton;
         private Button _updateThumbnailButton;
         private SliderInt _thumbnailSizeSlider;
         private Button _generateButton;
@@ -32,6 +34,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         public SettingView(
             IGenerateFxUseCase generateFxUseCase,
             IGenerateFxPresenter generateFxPresenter,
+            ISubWindowProvider subWindowProvider,
             ILocalizationSetting localizationSetting,
             ThumbnailDrawer thumbnailDrawer)
         {
@@ -42,6 +45,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _generateFxPresenter = generateFxPresenter;
 
             // Others
+            _subWindowProvider = subWindowProvider;
             _localizationSetting = localizationSetting;
             _thumbnailDrawer = thumbnailDrawer;
 
@@ -69,10 +73,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             uxml.CloneTree(root);
 
             // Query Elements
+            _openGestureTableWindowButton = root.Q<Button>("OpenGestureTableWindowButton");
             _updateThumbnailButton = root.Q<Button>("UpdateThumbnailButton");
             _thumbnailSizeSlider = root.Q<SliderInt>("ThumbnailSizeSlider");
             _generateButton = root.Q<Button>("GenerateButton");
-            NullChecker.Check(_updateThumbnailButton, _thumbnailSizeSlider, _generateButton);
+            NullChecker.Check(_openGestureTableWindowButton, _updateThumbnailButton, _thumbnailSizeSlider, _generateButton);
 
             // Initialize fields
             _thumbnailSizeSlider.lowValue = DetailConstants.MinMainThumbnailSize;
@@ -81,6 +86,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Add event handlers
             _thumbnailSizeSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+            Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnOpenGestureTableWindowButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnUpdateThumbnailButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _generateButton.clicked += x, x => _generateButton.clicked -= x)
@@ -92,6 +99,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _openGestureTableWindowButton.text = "Open Gesuture Table Window";
             _updateThumbnailButton.text = localizationTable.MainView_UpdateThumbnails;
             _generateButton.text = "Generate";
         }
@@ -100,6 +108,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             EditorPrefs.SetInt(DetailConstants.KeyMainThumbnailSize, changeEvent.newValue);
             _thumbnailDrawer.UpdateAll();
+        }
+
+        private void OnOpenGestureTableWindowButtonClicked()
+        {
+            _subWindowProvider.Open<GestureTableWindow>();
         }
 
         private void OnUpdateThumbnailButtonClicked()

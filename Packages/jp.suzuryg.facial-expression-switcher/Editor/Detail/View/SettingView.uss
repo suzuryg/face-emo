@@ -1,4 +1,9 @@
-﻿#UpdateThumbnailButton
+﻿#OpenGestureTableWindowButton
+{
+    width: 300px;
+}
+
+#UpdateThumbnailButton
 {
     width: 300px;
 }

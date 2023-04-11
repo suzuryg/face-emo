@@ -64,14 +64,9 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<AV3Setting>().FromInstance(aV3Setting).AsSingle();
 
             // Bind non-MonoBehaviour classes
-            Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
-            Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
+            Container.BindInterfacesTo<SubWindowManager>().AsSingle();
 
             Container.Bind<UpdateMenuSubject>().AsSingle();
-
-            Container.Bind<ThumbnailDrawer>().AsSingle();
-
-            Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
 
             Container.Bind<ICreateMenuUseCase>().To<CreateMenuUseCase>().AsTransient();
             Container.Bind<IModifyMenuPropertiesUseCase>().To<ModifyMenuPropertiesUseCase>().AsTransient();
@@ -112,6 +107,10 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
 
             Container.Bind<SelectionSynchronizer>().AsSingle();
+            Container.Bind<ThumbnailDrawer>().AsSingle();
+            Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
+            Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
+            Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
 
             Container.Bind<MainView>().AsTransient();
             Container.Bind<HierarchyView>().AsTransient();

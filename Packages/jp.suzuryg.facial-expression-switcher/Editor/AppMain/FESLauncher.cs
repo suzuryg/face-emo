@@ -66,8 +66,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 }
 
                 var mainWindow = CreateInstance<MainWindow>();
-                mainWindow.Initialize(rootObject.GetFullPath());
                 mainWindow.titleContent = new GUIContent(windowTitle);
+                mainWindow.Initialize(rootObject.GetFullPath());
                 mainWindow.Show();
             }
             catch (Exception ex)
