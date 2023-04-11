@@ -288,5 +288,36 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 combinePath += '/' + dir;
             }
         }
+
+        public static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList)
+        {
+            var ret = new List<ModeEx>();
+            FlattenMenuItemListSub(menuItemList, ret, string.Empty);
+
+            var branchCount = 0;
+            foreach (var mode in ret)
+            {
+                mode.DefaultEmoteIndex = branchCount;
+                branchCount += mode.Mode.Branches.Count + 1;
+            }
+            return ret;
+        }
+
+        private static void FlattenMenuItemListSub(IMenuItemList menuItemList, List<ModeEx> flattened, string pathToParent)
+        {
+            foreach (var id in menuItemList.Order)
+            {
+                if (menuItemList.GetType(id) == MenuItemType.Mode)
+                {
+                    var mode = menuItemList.GetMode(id);
+                    flattened.Add(new ModeEx() { PathToMode = pathToParent + mode.DisplayName, Mode = mode });
+                }
+                else
+                {
+                    var group = menuItemList.GetGroup(id);
+                    FlattenMenuItemListSub(group, flattened, pathToParent + group.DisplayName + "/");
+                }
+            }
+        }
     }
 }

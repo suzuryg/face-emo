@@ -37,13 +37,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             _aV3Setting = aV3Setting;
         }
 
-        private class ModeEx
-        {
-            public string PathToMode { get; set; }
-            public int DefaultEmoteIndex { get; set; }
-            public IMode Mode { get; set; }
-        }
-
         public void Generate(IMenu menu) => Generate(menu, false);
 
         public void Generate(IMenu menu, bool forceOverLimitMode = false)
@@ -87,7 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     throw new FacialExpressionSwitcherException("AvatarDescriptor was not found.");
                 }
                 var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, WriteDefaultsValue));
-                var modes = FlattenMenuItemList(menu.Registered);
+                var modes = AV3Utility.FlattenMenuItemList(menu.Registered);
                 var emoteCount = GetEmoteCount(modes);
                 var useOverLimitMode = forceOverLimitMode || emoteCount > AV3Constants.MaxEmoteNum;
                 GenerateFaceEmoteSetControlLayer(modes, aac, animatorController, useOverLimitMode);
@@ -944,37 +937,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 AssetKey = "FES",
                 DefaultsProvider = new FesAacDefaultsProvider(writeDefaults),
             };
-        }
-
-        private static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList)
-        {
-            var ret = new List<ModeEx>();
-            FlattenMenuItemListSub(menuItemList, ret, string.Empty);
-
-            var branchCount = 0;
-            foreach (var mode in ret)
-            {
-                mode.DefaultEmoteIndex = branchCount;
-                branchCount += mode.Mode.Branches.Count + 1;
-            }
-            return ret;
-        }
-
-        private static void FlattenMenuItemListSub(IMenuItemList menuItemList, List<ModeEx> flattened, string pathToParent)
-        {
-            foreach (var id in menuItemList.Order)
-            {
-                if (menuItemList.GetType(id) == MenuItemType.Mode)
-                {
-                    var mode = menuItemList.GetMode(id);
-                    flattened.Add(new ModeEx() { PathToMode = pathToParent + mode.DisplayName, Mode = mode });
-                }
-                else
-                {
-                    var group = menuItemList.GetGroup(id);
-                    FlattenMenuItemListSub(group, flattened, pathToParent + group.DisplayName + "/");
-                }
-            }
         }
 
         private static int GetEmoteCount(IReadOnlyList<ModeEx> modes)

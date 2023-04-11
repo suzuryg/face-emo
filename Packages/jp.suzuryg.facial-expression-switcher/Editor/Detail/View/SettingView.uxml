@@ -9,9 +9,18 @@
 						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
 >
 	<engine:VisualElement name="RootGrid">
-		<engine:Button name="OpenGestureTableWindowButton"/>
-		<engine:Button name="UpdateThumbnailButton"/>
-		<engine:SliderInt name="ThumbnailSizeSlider"/>
-		<engine:Button name="GenerateButton"/>
+		<engine:VisualElement name="LeftCol" class="GridItem">
+			<engine:Button name="UpdateThumbnailButton"/>
+			<engine:SliderInt name="ThumbnailSizeSlider"/>
+		</engine:VisualElement>
+
+		<engine:VisualElement name="CenterCol" class="GridItem">
+			<engine:Button name="OpenGestureTableWindowButton"/>
+			<engine:IMGUIContainer name="DefaultSelectionComboBox"/>
+		</engine:VisualElement>
+
+		<engine:VisualElement name="RightCol" class="GridItem">
+			<engine:Button name="GenerateButton"/>
+		</engine:VisualElement>
 	</engine:VisualElement>
 </engine:UXML>
