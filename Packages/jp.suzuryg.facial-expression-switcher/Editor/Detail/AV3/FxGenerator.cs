@@ -26,6 +26,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
     public class FxGenerator : IFxGenerator
     {
+        private static readonly bool WriteDefaultsValue = false;
+
         private IReadOnlyLocalizationSetting _localizationSetting;
         private AV3Setting _aV3Setting;
 
@@ -84,7 +86,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 {
                     throw new FacialExpressionSwitcherException("AvatarDescriptor was not found.");
                 }
-                var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, _aV3Setting.WriteDefaults));
+                var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, WriteDefaultsValue));
                 var modes = FlattenMenuItemList(menu.Registered);
                 var emoteCount = GetEmoteCount(modes);
                 var useOverLimitMode = forceOverLimitMode || emoteCount > AV3Constants.MaxEmoteNum;
@@ -95,7 +97,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 ModifyMouthMorphCancelerLayer(_aV3Setting, aac, avatarDescriptor, animatorController);
                 if (_aV3Setting.SmoothAnalogFist)
                 {
-                    ComboGestureIntegratorProxy.DoGenerate(animatorController, integratorContainer, _aV3Setting.WriteDefaults);
+                    ComboGestureIntegratorProxy.DoGenerate(animatorController, integratorContainer, WriteDefaultsValue);
                 }
 
                 // Generate MA Object
