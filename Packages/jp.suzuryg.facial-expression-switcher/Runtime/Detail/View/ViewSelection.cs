@@ -5,9 +5,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public class ViewSelection : MonoBehaviour
     {
-        public string HierarchyView { get; set; }
-        public string MenuItemListView { get; set; }
-        public int BranchListView { get; set; }
-        public (HandGesture left, HandGesture right)? GestureTableView { get; set; }
+        public string HierarchyView;
+        public string MenuItemListView;
+        public int BranchListView;
+        // ValueTuple is not serialized, but the GestureTable selection does not need to be saved.
+        public (HandGesture left, HandGesture right)? GestureTableView;
     }
 }

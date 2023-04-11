@@ -94,6 +94,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         private void OnDisable()
         {
+            _installer?.SaveUIStates();
             Clean();
         }
 

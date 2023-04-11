@@ -122,6 +122,15 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<UseCaseErrorHandler>().AsTransient();
         }
 
+        public void SaveUIStates()
+        {
+            // If the Unity editor exits without saving the scene, the UI state changes are discarded (so that the scene is not saved on its own).
+            // If TreeViewState can be changed with SerializedObject, it may not be necessary to set the Dirty flag.
+            EditorUtility.SetDirty(Container.Resolve<HierarchyViewState>());
+            EditorUtility.SetDirty(Container.Resolve<MenuItemListViewState>());
+            EditorUtility.SetDirty(Container.Resolve<ViewSelection>());
+        }
+
         public static FESInstaller GetInstaller(string rootObjectPath)
         {
             if (!rootObjectPath.StartsWith("/"))
