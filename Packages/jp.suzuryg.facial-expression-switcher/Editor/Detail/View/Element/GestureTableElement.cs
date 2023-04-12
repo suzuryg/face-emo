@@ -146,19 +146,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             SelectedCell = cell;
         }
 
-        private float GetThumbnailSize()
+        private float GetThumbnailWidth()
         {
-            return EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailSize) : DetailConstants.MinGestureThumbnailSize;
+            return EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailWidth) : DetailConstants.DefaultGestureThumbnailWidth;
+        }
+
+        private float GetThumbnailHeight()
+        {
+            return EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailHeight) : DetailConstants.DefaultGestureThumbnailHeight;
         }
 
         private float GetElementWidth()
         {
-            return ElementPadding + Math.Max(GetThumbnailSize(), MinLabelWidth) + ElementPadding;
+            return ElementPadding + Math.Max(GetThumbnailWidth(), MinLabelWidth) + ElementPadding;
         }
 
         private float GetElementHeight()
         {
-            return ElementPadding + EditorGUIUtility.singleLineHeight + GetThumbnailSize() + ElementPadding;
+            return ElementPadding + EditorGUIUtility.singleLineHeight + GetThumbnailHeight() + ElementPadding;
         }
 
         private float GetTableWidth()
@@ -207,8 +212,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         thumbnail = _thumbnailDrawer.GetThumbnail(branch.BaseAnimation);
                     }
 
-                    var thumbnailSize = GetThumbnailSize();
-                    var contentWidth = Math.Max(thumbnailSize, MinLabelWidth);
+                    var thumbnailWidth = GetThumbnailWidth();
+                    var thumbnailHeight = GetThumbnailHeight();
+                    var contentWidth = Math.Max(thumbnailWidth, MinLabelWidth);
 
                     var elementRect = new Rect(
                         Padding + rect.x + col * GetElementWidth(),
@@ -265,10 +271,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     if (thumbnail is Texture2D)
                     {
                         GUI.DrawTexture(new Rect(
-                            elementRect.x + ElementPadding + (contentWidth - thumbnailSize) / 2,
+                            elementRect.x + ElementPadding + (contentWidth - thumbnailWidth) / 2,
                             elementRect.y + ElementPadding + EditorGUIUtility.singleLineHeight,
-                            thumbnailSize,
-                            thumbnailSize),
+                            thumbnailWidth,
+                            thumbnailHeight),
                             thumbnail);
                     }
                 }

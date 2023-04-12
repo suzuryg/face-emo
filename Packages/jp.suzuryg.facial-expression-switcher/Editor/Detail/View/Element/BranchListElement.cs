@@ -478,8 +478,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             yCurrent = yBegin;
 
             // Base animation
-            var thumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
-            AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailSize, thumbnailSize + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
+            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+            AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
                 newGUID => { return; },
                 newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Base)); },
                 newGUID => { return; },
@@ -491,7 +492,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Left trigger animation
             if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
             {
-                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailSize, thumbnailSize + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
+                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
                     newGUID => { return; },
                     newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Left)); },
                     newGUID => { return; },
@@ -504,7 +505,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Right trigger animation
             if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
             {
-                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailSize, thumbnailSize + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
+                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
                     newGUID => { return; },
                     newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Right)); },
                     newGUID => { return; },
@@ -517,7 +518,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Both triggers animations
             if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
             {
-                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailSize, thumbnailSize + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
+                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
                     newGUID => { return; },
                     newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Both)); },
                     newGUID => { return; },

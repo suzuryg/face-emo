@@ -21,10 +21,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Thumbnail
             LoadTexture();
 
-            var thumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
-            Rect thumbnailRect = new Rect(rect.x, rect.y, thumbnailSize, thumbnailSize);
+            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+
+            Rect thumbnailRect = new Rect(rect.x, rect.y, thumbnailWidth, thumbnailHeight);
             float xCurrent = rect.x;
-            float yCurrent = rect.y + thumbnailSize;
+            float yCurrent = rect.y + thumbnailHeight;
 
             var animationTexture = thumbnailDrawer.GetThumbnail(animation);
             if (animationTexture is Texture2D)
@@ -36,7 +38,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             var path = AssetDatabase.GUIDToAssetPath(animation?.GUID);
 
             var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
-            var newClip = EditorGUI.ObjectField(new Rect(xCurrent, yCurrent, thumbnailSize, EditorGUIUtility.singleLineHeight), clip, typeof(AnimationClip), false);
+            var newClip = EditorGUI.ObjectField(new Rect(xCurrent, yCurrent, thumbnailWidth, EditorGUIUtility.singleLineHeight), clip, typeof(AnimationClip), false);
             if (!ReferenceEquals(clip, newClip))
             {
                 var newPath = AssetDatabase.GetAssetPath(newClip);
@@ -94,14 +96,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public static float GetWidth()
         {
-            var thumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
-            return thumbnailSize;
+            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+            return thumbnailWidth;
         }
 
         public static float GetHeight()
         {
-            var thumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
-            return thumbnailSize + EditorGUIUtility.singleLineHeight;
+            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+            return thumbnailHeight + EditorGUIUtility.singleLineHeight;
         }
 
         private static string GetAnimationGUID()

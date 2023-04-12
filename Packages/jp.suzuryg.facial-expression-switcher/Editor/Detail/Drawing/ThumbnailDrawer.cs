@@ -12,15 +12,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 {
     public class MainThumbnailDrawer : ThumbnailDrawerBase
     {
-        public override string ThumbnailSizePrefKey => DetailConstants.KeyMainThumbnailSize;
-        public override int MinThumbnailSize => DetailConstants.MinMainThumbnailSize;
+        public override string WidthKey => DetailConstants.KeyMainThumbnailWidth;
+        public override string HeightKey => DetailConstants.KeyMainThumbnailHeight;
+        public override int DefaultWidth => DetailConstants.DefaultMainThumbnailWidth;
+        public override int DefaultHeight => DetailConstants.DefaultMainThumbnailHeight;
         public MainThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
     }
 
     public class GestureTableThumbnailDrawer : ThumbnailDrawerBase
     {
-        public override string ThumbnailSizePrefKey => DetailConstants.KeyGestureThumbnailSize;
-        public override int MinThumbnailSize => DetailConstants.MinGestureThumbnailSize;
+        public override string WidthKey => DetailConstants.KeyGestureThumbnailWidth;
+        public override string HeightKey => DetailConstants.KeyGestureThumbnailHeight;
+        public override int DefaultWidth => DetailConstants.DefaultGestureThumbnailWidth;
+        public override int DefaultHeight => DetailConstants.DefaultGestureThumbnailHeight;
         public GestureTableThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
     }
 
@@ -30,8 +34,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         private static readonly string EmptyClipKey = "EmptyClipKey";
 
         // Properties
-        public abstract string ThumbnailSizePrefKey { get; }
-        public abstract int MinThumbnailSize { get; }
+        public abstract string WidthKey { get; }
+        public abstract string HeightKey { get; }
+        public abstract int DefaultWidth { get; }
+        public abstract int DefaultHeight { get; }
 
         // Dependencies
         private AV3Setting _aV3Setting;
@@ -186,8 +192,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 animatorRoot.transform.position = positionCache;
                 animatorRoot.transform.rotation = rotationCache;
 
-                var thumbnailSize = EditorPrefs.HasKey(ThumbnailSizePrefKey) ? EditorPrefs.GetInt(ThumbnailSizePrefKey) : MinThumbnailSize;
-                var texture = GetRenderedTexture(thumbnailSize, camera);
+                var width = EditorPrefs.HasKey(WidthKey) ? EditorPrefs.GetInt(WidthKey) : DefaultWidth;
+                var height = EditorPrefs.HasKey(HeightKey) ? EditorPrefs.GetInt(HeightKey) : DefaultHeight;
+                var texture = GetRenderedTexture(width, height, camera);
 
                 return texture;
             }
@@ -199,9 +206,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
         }
 
-        private static Texture2D GetRenderedTexture(int textureSize, Camera camera)
+        private static Texture2D GetRenderedTexture(int width, int height, Camera camera)
         {
-            var texture = new Texture2D(textureSize, textureSize, TextureFormat.RGB24, mipChain: false);
+            var texture = new Texture2D(width, height, TextureFormat.RGB24, mipChain: false);
 
             var renderTexture = RenderTexture.GetTemporary(texture.width, texture.height,
                 format: RenderTextureFormat.ARGB32, readWrite: RenderTextureReadWrite.sRGB, depthBuffer: 24, antiAliasing: 8);

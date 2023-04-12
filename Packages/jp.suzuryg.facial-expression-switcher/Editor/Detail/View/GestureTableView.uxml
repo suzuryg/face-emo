@@ -10,9 +10,19 @@
 >
 	<engine:VisualElement name="RootGrid">
 		<engine:IMGUIContainer name="GestureTableContainer"/>
+
 		<engine:VisualElement name="BottomRow" class="GridItem">
-			<engine:SliderInt name="ThumbnailSizeSlider"/>
-			<engine:Button name="AddBranchButton"/>
+
+			<engine:VisualElement name="LeftCol" class="BottomRowItem">
+				<engine:Button name="UpdateThumbnailButton"/>
+				<engine:SliderInt name="ThumbnailWidthSlider"/>
+				<engine:SliderInt name="ThumbnailHeightSlider"/>
+			</engine:VisualElement>
+
+			<engine:VisualElement name="RightCol" class="BottomRowItem">
+				<engine:Button name="AddBranchButton"/>
+			</engine:VisualElement>
+
 		</engine:VisualElement>
 	</engine:VisualElement>
 </engine:UXML>

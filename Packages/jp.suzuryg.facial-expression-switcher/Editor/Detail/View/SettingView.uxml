@@ -11,7 +11,8 @@
 	<engine:VisualElement name="RootGrid">
 		<engine:VisualElement name="LeftCol" class="GridItem">
 			<engine:Button name="UpdateThumbnailButton"/>
-			<engine:SliderInt name="ThumbnailSizeSlider"/>
+			<engine:SliderInt name="ThumbnailWidthSlider"/>
+			<engine:SliderInt name="ThumbnailHeightSlider"/>
 		</engine:VisualElement>
 
 		<engine:VisualElement name="CenterCol" class="GridItem">

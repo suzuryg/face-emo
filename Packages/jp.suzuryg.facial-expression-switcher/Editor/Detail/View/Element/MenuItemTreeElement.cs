@@ -56,7 +56,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private MenuItemListViewState _menuItemListViewState;
 
         private bool _isLayoutInitialized = false;
-        private float _previousThumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
+        private float _previousThumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+        private float _previousThumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
         private Texture2D _selectedBackgroundTexture;
 
         private string _useAnimationNameText;
@@ -159,10 +160,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             // To update row height.
-            var thumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
-            if (thumbnailSize != _previousThumbnailSize)
+            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+            if (thumbnailWidth != _previousThumbnailWidth || thumbnailHeight != _previousThumbnailHeight)
             {
-                _previousThumbnailSize = thumbnailSize;
+                _previousThumbnailWidth = thumbnailWidth;
+                _previousThumbnailHeight = thumbnailHeight;
                 Reload();
             }
         }
@@ -403,8 +406,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 GUILayout.Space(10);
 
                 // Animation
-                var thumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
-                var animationRect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle(), GUILayout.Width(thumbnailSize), GUILayout.Height(thumbnailSize + EditorGUIUtility.singleLineHeight));
+                var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+                var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+                var animationRect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle(), GUILayout.Width(thumbnailWidth), GUILayout.Height(thumbnailHeight + EditorGUIUtility.singleLineHeight));
                 AnimationElement.Draw(animationRect, mode.Animation, _thumbnailDrawer,
                     newGUID => { return; },
                     newGUID => _onAnimationChanged.OnNext((menuItemId, newGUID)),

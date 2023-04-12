@@ -30,7 +30,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private Button _openGestureTableWindowButton;
         private Button _updateThumbnailButton;
-        private SliderInt _thumbnailSizeSlider;
+        private SliderInt _thumbnailWidthSlider;
+        private SliderInt _thumbnailHeightSlider;
         private Button _generateButton;
         private IMGUIContainer _defaultSelectionComboBoxArea;
 
@@ -75,7 +76,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         public void Dispose()
         {
             _disposables.Dispose();
-            _thumbnailSizeSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
+            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailWidthChanged);
+            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailHeightChanged);
         }
 
         public void Initialize(VisualElement root)
@@ -91,18 +93,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Query Elements
             _openGestureTableWindowButton = root.Q<Button>("OpenGestureTableWindowButton");
             _updateThumbnailButton = root.Q<Button>("UpdateThumbnailButton");
-            _thumbnailSizeSlider = root.Q<SliderInt>("ThumbnailSizeSlider");
+            _thumbnailWidthSlider = root.Q<SliderInt>("ThumbnailWidthSlider");
+            _thumbnailHeightSlider = root.Q<SliderInt>("ThumbnailHeightSlider");
             _generateButton = root.Q<Button>("GenerateButton");
             _defaultSelectionComboBoxArea = root.Q<IMGUIContainer>("DefaultSelectionComboBox");
-            NullChecker.Check(_openGestureTableWindowButton, _updateThumbnailButton, _thumbnailSizeSlider, _generateButton, _defaultSelectionComboBoxArea);
+            NullChecker.Check(_openGestureTableWindowButton, _updateThumbnailButton, _thumbnailWidthSlider, _thumbnailHeightSlider, _generateButton, _defaultSelectionComboBoxArea);
 
             // Initialize fields
-            _thumbnailSizeSlider.lowValue = DetailConstants.MinMainThumbnailSize;
-            _thumbnailSizeSlider.highValue = DetailConstants.MaxMainThumbnailSize;
-            _thumbnailSizeSlider.value = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
+            _thumbnailWidthSlider.lowValue = DetailConstants.MinMainThumbnailWidth;
+            _thumbnailWidthSlider.highValue = DetailConstants.MaxMainThumbnailWidth;
+            _thumbnailWidthSlider.value = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+
+            _thumbnailHeightSlider.lowValue = DetailConstants.MinMainThumbnailHeight;
+            _thumbnailHeightSlider.highValue = DetailConstants.MaxMainThumbnailHeight;
+            _thumbnailHeightSlider.value = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
 
             // Add event handlers
-            _thumbnailSizeSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+            _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailWidthChanged);
+            _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailHeightChanged);
             Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnOpenGestureTableWindowButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
@@ -139,20 +147,26 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
         }   
 
-        private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
+        private void OnThumbnailWidthChanged(ChangeEvent<int> changeEvent)
         {
-            EditorPrefs.SetInt(DetailConstants.KeyMainThumbnailSize, changeEvent.newValue);
+            EditorPrefs.SetInt(DetailConstants.KeyMainThumbnailWidth, changeEvent.newValue);
+            _thumbnailDrawer.ClearCache();
+        }
+
+        private void OnThumbnailHeightChanged(ChangeEvent<int> changeEvent)
+        {
+            EditorPrefs.SetInt(DetailConstants.KeyMainThumbnailHeight, changeEvent.newValue);
+            _thumbnailDrawer.ClearCache();
+        }
+
+        private void OnUpdateThumbnailButtonClicked()
+        {
             _thumbnailDrawer.ClearCache();
         }
 
         private void OnOpenGestureTableWindowButtonClicked()
         {
             _subWindowProvider.Open<GestureTableWindow>();
-        }
-
-        private void OnUpdateThumbnailButtonClicked()
-        {
-            _thumbnailDrawer.ClearCache();
         }
 
         private void OnGenerateButtonClicked()
