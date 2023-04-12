@@ -24,7 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IReadOnlyLocalizationSetting _localizationSetting;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
-        private ThumbnailDrawer _thumbnailDrawer;
+        private GestureTableThumbnailDrawer _thumbnailDrawer;
 
         private GestureTableElement _gestureTableElement;
 
@@ -44,7 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
-            ThumbnailDrawer thumbnailDrawer)
+            GestureTableThumbnailDrawer thumbnailDrawer)
         {
             // Usecases
             _addBranchUseCase = addBranchUseCase;
@@ -189,7 +189,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
         {
             EditorPrefs.SetInt(DetailConstants.KeyGestureThumbnailSize, changeEvent.newValue);
-            _thumbnailDrawer.UpdateAll();
+            _thumbnailDrawer.ClearCache();
         }
 
         private void OnAddBranchButtonClicked()

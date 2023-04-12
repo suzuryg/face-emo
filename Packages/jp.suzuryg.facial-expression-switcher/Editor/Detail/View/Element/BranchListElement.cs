@@ -79,7 +79,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(string modeId, int branchIndex, int conditionIndex)> _onRemoveConditionButtonClicked = new Subject<(string modeId, int branchIndex, int conditionIndex)>();
         private Subject<int> _onBranchSelectionChanged = new Subject<int>();
 
-        private ThumbnailDrawer _thumbnailDrawer;
+        private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
         private IReadOnlyLocalizationSetting _localizationSetting;
 
@@ -111,7 +111,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         public BranchListElement(
             IReadOnlyLocalizationSetting localizationSetting,
             AV3Setting aV3Setting,
-            ThumbnailDrawer thumbnailDrawer)
+            MainThumbnailDrawer thumbnailDrawer)
         {
             // Dependencies
             _localizationSetting = localizationSetting;
@@ -167,6 +167,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public void OnGUI(Rect rect)
         {
+            // Update thumbnails
+            var animations = GetAnimations();
+            foreach (var animation in animations)
+            {
+                _thumbnailDrawer.GetThumbnail(animation);
+            }
+            _thumbnailDrawer.Update();
+
+            // Draw list
             if (Menu is null || !Menu.ContainsMode(_selectedModeId))
             {
                 return;
@@ -552,6 +561,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private void OnElementSelectionChanged(ReorderableList reorderableList)
         {
             _onBranchSelectionChanged.OnNext(_reorderableList.index);
+        }
+
+        private List<Domain.Animation> GetAnimations()
+        {
+            List<Domain.Animation> animations = new List<Domain.Animation>();
+
+            if (Menu is null || !Menu.ContainsMode(_selectedModeId))
+            {
+                return animations;
+            }
+
+            var mode = Menu.GetMode(_selectedModeId);
+            foreach (var branch in mode.Branches)
+            {
+                animations.Add(branch.BaseAnimation);
+                animations.Add(branch.LeftHandAnimation);
+                animations.Add(branch.RightHandAnimation);
+                animations.Add(branch.BothHandsAnimation);
+            }   
+
+            return animations;
         }
     }
 }

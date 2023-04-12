@@ -37,7 +37,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
         private AV3Setting _aV3Setting;
-        private ThumbnailDrawer _thumbnailDrawer;
+        private MainThumbnailDrawer _thumbnailDrawer;
 
         private Label _titleLabel;
         private IMGUIContainer _branchListContainer;
@@ -63,7 +63,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
             AV3Setting aV3Setting,
-            ThumbnailDrawer thumbnailDrawer)
+            MainThumbnailDrawer thumbnailDrawer)
         {
             // Usecases
             _setExistingAnimationUseCase = setExistingAnimationUseCase;

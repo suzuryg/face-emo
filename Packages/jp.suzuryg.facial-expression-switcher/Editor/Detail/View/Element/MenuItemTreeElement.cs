@@ -51,7 +51,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<string> _onEnteredIntoGroup = new Subject<string>();
         private Subject<(string modeId, string clipGUID)> _onAnimationChanged = new Subject<(string modeId, string clipGUID)>();
 
-        private ThumbnailDrawer _thumbnailDrawer;
+        private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
         private MenuItemListViewState _menuItemListViewState;
 
@@ -73,7 +73,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public MenuItemTreeElement(
             IReadOnlyLocalizationSetting localizationSetting,
-            ThumbnailDrawer thumbnailDrawer,
+            MainThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
             MenuItemListViewState menuItemListViewState) : base(localizationSetting, menuItemListViewState.TreeViewState)
         {
@@ -128,6 +128,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public override void OnGUI(Rect rect)
         {
+            // Update thumbnails
+            var animations = GetAnimations();
+            foreach (var animation in animations)
+            {
+                _thumbnailDrawer.GetThumbnail(animation);
+            }
+            _thumbnailDrawer.Update();
+
+            // Draw rows
             var rows = GetRows();
             if (rows is null || rows.Count == 0)
             {
@@ -431,6 +440,46 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 rect.y + TopMargin,
                 Math.Max(rect.width - LeftMargin - RightMargin, 0),
                 Math.Max(rect.height - TopMargin - BottomMargin, 0));
+        }
+
+        private IMenuItemList GetRootMenuItemList()
+        {
+            var id = _menuItemListViewState.RootGroupId;
+
+            if (id == Domain.Menu.RegisteredId)
+            {
+                return Menu.Registered;
+            }
+            else if (id == Domain.Menu.UnregisteredId)
+            {
+                return Menu.Unregistered;
+            }
+            else if (Menu.ContainsGroup(id))
+            {
+                return Menu.GetGroup(id);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private List<Domain.Animation> GetAnimations()
+        {
+            List<Domain.Animation> animations = new List<Domain.Animation>();
+
+            var parent = GetRootMenuItemList();
+            if (parent is null) { return animations; }
+
+            foreach (var id in parent.Order)
+            {
+                if (Menu.ContainsMode(id))
+                {
+                    animations.Add(Menu.GetMode(id).Animation);
+                }
+            }
+
+            return animations;
         }
     }
 }

@@ -107,7 +107,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
 
             Container.Bind<SelectionSynchronizer>().AsSingle();
-            Container.Bind<ThumbnailDrawer>().AsSingle();
+            Container.Bind<MainThumbnailDrawer>().AsSingle();
+            Container.Bind<GestureTableThumbnailDrawer>().AsSingle();
             Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
             Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
             Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();

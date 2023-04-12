@@ -33,7 +33,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
-        private ThumbnailDrawer _thumbnailDrawer;
+        private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
         private MenuItemListViewState _menuItemListViewState;
 
@@ -61,7 +61,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
-            ThumbnailDrawer thumbnailDrawer,
+            MainThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
             MenuItemListViewState menuItemListViewState)
         {

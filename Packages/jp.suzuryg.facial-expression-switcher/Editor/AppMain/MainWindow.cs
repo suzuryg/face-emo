@@ -15,10 +15,12 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
     public class MainWindow : EditorWindow
     {
         [SerializeField] private string _launcherObjectPath;
+
         private MainView _mainView;
         private Undo.UndoRedoCallback _undoRedoCallback;
         private FESInstaller _installer;
         private ISubWindowManager _subWindowManager;
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public MainWindow()

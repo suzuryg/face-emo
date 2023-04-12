@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,41 +7,56 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
-using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 {
-    public class ThumbnailDrawer
+    public class MainThumbnailDrawer : ThumbnailDrawerBase
     {
+        public override string ThumbnailSizePrefKey => DetailConstants.KeyMainThumbnailSize;
+        public override int MinThumbnailSize => DetailConstants.MinMainThumbnailSize;
+        public MainThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
+    }
+
+    public class GestureTableThumbnailDrawer : ThumbnailDrawerBase
+    {
+        public override string ThumbnailSizePrefKey => DetailConstants.KeyGestureThumbnailSize;
+        public override int MinThumbnailSize => DetailConstants.MinGestureThumbnailSize;
+        public GestureTableThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
+    }
+
+    public abstract class ThumbnailDrawerBase
+    {
+        // Constants
         private static readonly string EmptyClipKey = "EmptyClipKey";
 
+        // Properties
+        public abstract string ThumbnailSizePrefKey { get; }
+        public abstract int MinThumbnailSize { get; }
+
+        // Dependencies
         private AV3Setting _aV3Setting;
 
-        private Dictionary<string, (Texture2D main, Texture2D gesture)> _cache = new Dictionary<string, (Texture2D main, Texture2D gesture)>();
-        private HashSet<string> _prioritized = new HashSet<string>();
-
+        // Other fields
+        private HashSet<string> _requests = new HashSet<string>();
+        private Dictionary<string, Texture2D> _cache = new Dictionary<string, Texture2D>();
         private Texture2D _errorIcon;
+        private object _lockRequests = new object();
 
-        public ThumbnailDrawer(AV3Setting aV3Setting)
+        public ThumbnailDrawerBase(AV3Setting aV3Setting)
         {
             // Dependencies
             _aV3Setting = aV3Setting;
 
             // Others
-            _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz48.png");
+            _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz300.png");
         }
 
-        public (Texture2D main, Texture2D gesture) GetThumbnail(Domain.Animation animation)
+        public Texture2D GetThumbnail(Domain.Animation animation)
         {
             var guid = animation?.GUID;
             if (string.IsNullOrEmpty(guid))
             {
                 guid = EmptyClipKey;
-            }
-
-            if (!_cache.ContainsKey(guid))
-            {
-                Update(new[] { guid });
             }
 
             if (_cache.ContainsKey(guid))
@@ -49,42 +65,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
             else
             {
-                return (_errorIcon, _errorIcon);
+                lock (_lockRequests)
+                {
+                    _requests.Add(guid);
+                }
+                return _errorIcon;
             }
         }
 
-        public void Prioritize(Domain.Animation animation)
+        public void ClearCache()
         {
-            var guid = animation?.GUID;
-            if (string.IsNullOrEmpty(guid))
-            {
-                guid = EmptyClipKey;
-            }
-            _prioritized.Add(guid);
+            _cache.Clear();
         }
 
-        public void ResetPriority()
-        {
-            _prioritized.Clear();
-        }
-        
-        public void RemoveCache(Domain.Animation animation)
-        {
-            if (animation is Domain.Animation && animation.GUID is string && _cache.ContainsKey(animation.GUID))
-            {
-                _cache.Remove(animation.GUID);
-            }
-        }
-
-        public void UpdateAll()
-        {
-            var latter = _cache.Keys.Where(x => !_prioritized.Contains(x));
-            var guids = _prioritized.Concat(latter).ToList();
-            Update(guids);
-        }
-
-        // TODO: Use IEnumerable
-        private void Update(IReadOnlyList<string> guids)
+        public void Update()
         {
             // When updating thumbnails in Play mode, the following error occurs in VRC.Dynamics.PhysBoneManager.
             // "Buffer already contains chain of id:XXXX"
@@ -93,23 +87,29 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 return;
             }
 
+            // Get Animator
             var avatarAnimator = _aV3Setting?.TargetAvatar?.GetComponent<Animator>();
             if (avatarAnimator is null)
             {
                 return;
             }
 
+            // Prepare objects
             var wasActive = avatarAnimator.gameObject.activeSelf;
             GameObject clonedAvatar = null;
             GameObject cameraRoot = new GameObject();
             try
             {
+                // Clone avatar
                 clonedAvatar = UnityEngine.Object.Instantiate(avatarAnimator.gameObject);
                 clonedAvatar.SetActive(true);
                 avatarAnimator.gameObject.SetActive(false);
 
-                var camera = GetCamera(cameraRoot);
+                // Clone camera
+                var camera = cameraRoot.AddComponent<Camera>();
+                camera.CopyFrom(SceneView.lastActiveSceneView.camera);
 
+                // Adjust the camera position to the avatar's head
                 var animator = clonedAvatar.GetComponent<Animator>();
                 if (animator is Animator)
                 {
@@ -123,15 +123,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                     }
                 }
 
-                // TODO: Use foreach
-                for (int i = 0; i< guids.Count; i++)
+                // Generate thumbnails
+                List<string> requests;
+                lock (_lockRequests)
                 {
-                    var guid = guids[i];
+                    requests = new List<string>(_requests);
+                    _requests.Clear();
+                }
+                foreach (var guid in requests)
+                {
+                    _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera);
 
-                    var texture = Render(guid, clonedAvatar, camera);
-                    _cache[guid] = texture;
-
-                    // Workaround for updating muscles
+                    // Reset animator status
                     clonedAvatar.SetActive(false);
                     clonedAvatar.SetActive(true);
                 }
@@ -150,28 +153,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
         }
 
-        // From CGE
-        private Camera GetCamera(GameObject cameraRoot)
+        private Texture2D RenderAnimatedAvatar(string clipGUID, GameObject animatorRoot, Camera camera)
         {
-            var camera = cameraRoot.AddComponent<Camera>();
-
-            var sceneCamera = SceneView.lastActiveSceneView.camera;
-            camera.transform.position = sceneCamera.transform.position;
-            camera.transform.rotation = sceneCamera.transform.rotation;
-
-            var whRatio = (1f * sceneCamera.pixelWidth / sceneCamera.pixelHeight);
-            camera.fieldOfView = whRatio < 1 ? sceneCamera.fieldOfView * whRatio : sceneCamera.fieldOfView;
-            camera.orthographic = sceneCamera.orthographic;
-            camera.nearClipPlane = sceneCamera.nearClipPlane;
-            camera.farClipPlane = sceneCamera.farClipPlane;
-            camera.orthographicSize = sceneCamera.orthographicSize;
-
-            return camera;
-        }
-
-        // From CGE
-        private (Texture2D main, Texture2D gesture) Render(string clipGUID, GameObject clonedAvatar, Camera camera)
-        {
+            // Get animation clip
             AnimationClip clip;
             if (clipGUID == EmptyClipKey)
             {
@@ -182,59 +166,65 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(clipGUID));
             }
 
+            // If animation clip is not found, return error icon
             if (clip is null)
             {
-                return (_errorIcon, _errorIcon);
+                return _errorIcon;
             }
 
-            var initPos = clonedAvatar.transform.position;
-            var initRot = clonedAvatar.transform.rotation;
-
+            // Sample animation clip and render
+            var positionCache = animatorRoot.transform.position;
+            var rotationCache = animatorRoot.transform.rotation;
             try
             {
                 AnimationMode.StartAnimationMode();
                 AnimationMode.BeginSampling();
-                AnimationMode.SampleAnimationClip(clonedAvatar, clip, clip.length);
+                AnimationMode.SampleAnimationClip(animatorRoot, clip, clip.length);
                 AnimationMode.EndSampling();
 
-                // Workaround for moving origin
-                clonedAvatar.transform.position = initPos;
-                clonedAvatar.transform.rotation = initRot;
+                // When sampling, the object relocates to the origin, so it must be restored to its initial position
+                animatorRoot.transform.position = positionCache;
+                animatorRoot.transform.rotation = rotationCache;
 
-                var mainSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
-                var gestureSize = EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailSize) : DetailConstants.MinGestureThumbnailSize;
+                var thumbnailSize = EditorPrefs.HasKey(ThumbnailSizePrefKey) ? EditorPrefs.GetInt(ThumbnailSizePrefKey) : MinThumbnailSize;
+                var texture = GetRenderedTexture(thumbnailSize, camera);
 
-                var mainTexture = GetTexture(mainSize, camera);
-                var gestureTexture = GetTexture(gestureSize, camera);
-
-                return (mainTexture, gestureTexture);
+                return texture;
             }
             finally
             {
                 AnimationMode.StopAnimationMode();
-                clonedAvatar.transform.position = initPos;
-                clonedAvatar.transform.rotation = initRot;
+                animatorRoot.transform.position = positionCache;
+                animatorRoot.transform.rotation = rotationCache;
             }
         }
 
-        private static Texture2D GetTexture(int size, Camera camera)
+        private static Texture2D GetRenderedTexture(int textureSize, Camera camera)
         {
-            var texture = new Texture2D(size, size, TextureFormat.RGB24, true);
-            var renderTexture = RenderTexture.GetTemporary(texture.width, texture.height, 24);
-            renderTexture.wrapMode = TextureWrapMode.Clamp;
+            var texture = new Texture2D(textureSize, textureSize, TextureFormat.RGB24, mipChain: false);
 
-            RenderCamera(renderTexture, camera);
-            RenderTextureTo(renderTexture, texture);
-            RenderTexture.ReleaseTemporary(renderTexture);
+            var renderTexture = RenderTexture.GetTemporary(texture.width, texture.height,
+                format: RenderTextureFormat.ARGB32, readWrite: RenderTextureReadWrite.sRGB, depthBuffer: 24, antiAliasing: 8);
+            try
+            {
+                renderTexture.wrapMode = TextureWrapMode.Clamp;
+                renderTexture.filterMode = FilterMode.Bilinear;
+
+                RenderCamera(renderTexture, camera);
+                CopyRenderTexture(renderTexture, texture);
+            }
+            finally
+            {
+                RenderTexture.ReleaseTemporary(renderTexture);
+            }
 
             return texture;
         }
 
-        // From CGE
         private static void RenderCamera(RenderTexture renderTexture, Camera camera)
         {
-            var originalRenderTexture = camera.targetTexture;
-            var originalAspect = camera.aspect;
+            var targetTextureCache = camera.targetTexture;
+            var aspectCache = camera.aspect;
             try
             {
                 camera.targetTexture = renderTexture;
@@ -243,18 +233,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
             finally
             {
-                camera.targetTexture = originalRenderTexture;
-                camera.aspect = originalAspect;
+                camera.targetTexture = targetTextureCache;
+                camera.aspect = aspectCache;
             }
         }
 
-        // From CGE
-        private static void RenderTextureTo(RenderTexture renderTexture, Texture2D texture2D)
+        private static void CopyRenderTexture(RenderTexture source, Texture2D destination)
         {
-            RenderTexture.active = renderTexture;
-            texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-            texture2D.Apply();
-            RenderTexture.active = null;
+            var activeRenderTextureCache = RenderTexture.active;
+            try
+            {
+                RenderTexture.active = source;
+                destination.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0, recalculateMipMaps: false);
+                destination.Apply();
+            }
+            finally
+            {
+                RenderTexture.active = activeRenderTextureCache;
+            }
         }
     }
 }

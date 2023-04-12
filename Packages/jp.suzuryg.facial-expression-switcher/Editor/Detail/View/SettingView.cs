@@ -26,7 +26,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private ISubWindowProvider _subWindowProvider;
         private ILocalizationSetting _localizationSetting;
         private UpdateMenuSubject _updateMenuSubject;
-        private ThumbnailDrawer _thumbnailDrawer;
+        private MainThumbnailDrawer _thumbnailDrawer;
 
         private Button _openGestureTableWindowButton;
         private Button _updateThumbnailButton;
@@ -47,7 +47,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             ISubWindowProvider subWindowProvider,
             ILocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
-            ThumbnailDrawer thumbnailDrawer)
+            MainThumbnailDrawer thumbnailDrawer)
         {
             // Usecases
             _modifyMenuPropertiesUseCase = modifyMenuPropertiesUseCase;
@@ -142,7 +142,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
         {
             EditorPrefs.SetInt(DetailConstants.KeyMainThumbnailSize, changeEvent.newValue);
-            _thumbnailDrawer.UpdateAll();
+            _thumbnailDrawer.ClearCache();
         }
 
         private void OnOpenGestureTableWindowButtonClicked()
@@ -152,7 +152,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnUpdateThumbnailButtonClicked()
         {
-            _thumbnailDrawer.UpdateAll();
+            _thumbnailDrawer.ClearCache();
         }
 
         private void OnGenerateButtonClicked()

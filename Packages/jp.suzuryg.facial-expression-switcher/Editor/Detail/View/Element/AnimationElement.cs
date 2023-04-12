@@ -12,7 +12,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
     public class AnimationElement
     {
         // TODO: Specify up-left point, not a rect.
-        public static void Draw(Rect rect, Domain.Animation animation, ThumbnailDrawer thumbnailDrawer,
+        public static void Draw(Rect rect, Domain.Animation animation, MainThumbnailDrawer thumbnailDrawer,
             Action<string> createNewAnimationAction, // The argument is new animation's GUID.
             Action<string> setExistingAnimationAction, // The argument is new animation's GUID.
             Action<string> copyAnimationAction, // The argument is new animation's GUID.
@@ -20,14 +20,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         {
             // Thumbnail
             LoadTexture();
-            thumbnailDrawer.Prioritize(animation);
 
             var thumbnailSize = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailSize) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailSize) : DetailConstants.MinMainThumbnailSize;
             Rect thumbnailRect = new Rect(rect.x, rect.y, thumbnailSize, thumbnailSize);
             float xCurrent = rect.x;
             float yCurrent = rect.y + thumbnailSize;
 
-            var animationTexture = thumbnailDrawer.GetThumbnail(animation).main;
+            var animationTexture = thumbnailDrawer.GetThumbnail(animation);
             if (animationTexture is Texture2D)
             {
                 GUI.DrawTexture(thumbnailRect, animationTexture);

@@ -40,7 +40,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(HandGesture left, HandGesture right)?> _onSelectionChanged = new Subject<(HandGesture left, HandGesture right)?>();
         private Subject<Unit> _onBranchIndexExceeded = new Subject<Unit>();
 
-        private ThumbnailDrawer _thumbnailDrawer;
+        private GestureTableThumbnailDrawer _thumbnailDrawer;
 
         private Vector2 _scrollPosition = Vector2.zero;
         private Texture2D _elementBorderTexture;
@@ -62,7 +62,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public GestureTableElement(
             IReadOnlyLocalizationSetting localizationSetting,
-            ThumbnailDrawer thumbnailDrawer)
+            GestureTableThumbnailDrawer thumbnailDrawer)
         {
             // Dependencies
             _thumbnailDrawer = thumbnailDrawer;
@@ -101,6 +101,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public void OnGUI(Rect rect)
         {
+            // Update thumbnails
+            var animations = GetAnimations();
+            foreach (var animation in animations)
+            {
+                _thumbnailDrawer.GetThumbnail(animation);
+            }
+            _thumbnailDrawer.Update();
+
+            // Draw table
             var viewRect = new Rect(
                 rect.x, rect.y,
                 Padding + GetTableWidth() + Padding + ScrollRightMargin,
@@ -195,7 +204,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     var branch = mode.GetGestureCell(leftHand, rightHand);
                     if (branch is IBranch)
                     {
-                        thumbnail = _thumbnailDrawer.GetThumbnail(branch.BaseAnimation).gesture;
+                        thumbnail = _thumbnailDrawer.GetThumbnail(branch.BaseAnimation);
                     }
 
                     var thumbnailSize = GetThumbnailSize();
@@ -300,6 +309,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 default:
                     throw new FacialExpressionSwitcherException("Unknown hand gesture.");
             }
+        }
+
+        private List<Domain.Animation> GetAnimations()
+        {
+            List<Domain.Animation> animations = new List<Domain.Animation>();
+
+            if (Menu is null || !Menu.ContainsMode(SelectedModeId))
+            {
+                return animations;
+            }
+
+            var mode = Menu.GetMode(SelectedModeId);
+            foreach (var branch in mode.Branches)
+            {
+                animations.Add(branch.BaseAnimation);
+                animations.Add(branch.LeftHandAnimation);
+                animations.Add(branch.RightHandAnimation);
+                animations.Add(branch.BothHandsAnimation);
+            }   
+
+            return animations;
         }
     }
 }
