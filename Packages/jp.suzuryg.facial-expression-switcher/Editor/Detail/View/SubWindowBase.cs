@@ -6,11 +6,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
     {
         public SubWindowBase()
         {
-            EditorApplication.playModeStateChanged += OnPlayModeChanged;
             wantsMouseMove = true;
         }
 
-        ~SubWindowBase()
+        private void OnEnable()
+        {
+            EditorApplication.playModeStateChanged += OnPlayModeChanged;
+        }
+
+        private void OnDisable()
         {
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
         }

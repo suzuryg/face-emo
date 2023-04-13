@@ -25,13 +25,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         public MainWindow()
         {
-            EditorApplication.playModeStateChanged += OnPlayModeChanged;
             wantsMouseMove = true;
-        }
-
-        ~MainWindow()
-        {
-            EditorApplication.playModeStateChanged -= OnPlayModeChanged;
         }
 
         public void Initialize(string launcherObjectPath)
@@ -91,11 +85,15 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         private void OnEnable()
         {
+            EditorApplication.playModeStateChanged += OnPlayModeChanged;
+
             Build();
         }
 
         private void OnDisable()
         {
+            EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+
             _installer?.SaveUIStates();
             Clean();
         }
