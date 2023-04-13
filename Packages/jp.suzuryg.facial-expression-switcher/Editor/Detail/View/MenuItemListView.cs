@@ -44,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IMGUIContainer _addressBarContainer;
         private IMGUIContainer _treeViewContainer;
 
+        private AnimationElement _animationElement;
         private AddressBarElement _addressBarElement;
         private MenuItemTreeElement _menuItemTreeElement;
 
@@ -63,7 +64,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             SelectionSynchronizer selectionSynchronizer,
             MainThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
-            MenuItemListViewState menuItemListViewState)
+            MenuItemListViewState menuItemListViewState,
+            AnimationElement animationElement)
         {
             // Usecases
             _addMenuItemUseCase = addMenuItemUseCase;
@@ -80,6 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailDrawer = thumbnailDrawer;
             _aV3Setting = aV3Setting;
             _menuItemListViewState = menuItemListViewState;
+            _animationElement = animationElement;
 
             // Address bar element
             _addressBarElement = new AddressBarElement(_localizationSetting).AddTo(_disposables);
@@ -96,6 +99,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Initialize tree element
             InitializeTreeElement();
+
         }
 
         public void Dispose()
@@ -153,7 +157,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 _menuItemListViewState.TreeViewState = new TreeViewState();
             }
-            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _thumbnailDrawer, _aV3Setting, _menuItemListViewState).AddTo(_treeElementDisposables);
+            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _animationElement, _thumbnailDrawer, _aV3Setting, _menuItemListViewState).AddTo(_treeElementDisposables);
 
             // Tree element event handlers
             _menuItemTreeElement.OnModePropertiesModified.Synchronize().Subscribe(OnModePropertiesModified).AddTo(_treeElementDisposables);

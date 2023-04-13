@@ -10,6 +10,7 @@ using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using UnityEngine;
 using UnityEditor;
 using Zenject;
@@ -110,8 +111,10 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<MainThumbnailDrawer>().AsSingle();
             Container.Bind<GestureTableThumbnailDrawer>().AsSingle();
             Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
-            Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
             Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
+            Container.Bind<AnimationElement>().AsSingle();
+
+            Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
 
             Container.Bind<MainView>().AsTransient();
             Container.Bind<HierarchyView>().AsTransient();

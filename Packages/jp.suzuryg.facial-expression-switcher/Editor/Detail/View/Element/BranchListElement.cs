@@ -15,6 +15,7 @@ using UnityEditor.UIElements;
 using UnityEditor.IMGUI.Controls;
 using UnityEditorInternal;
 using UniRx;
+using Hai.VisualExpressionsEditor.Scripts.Editor;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 {
@@ -79,6 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(string modeId, int branchIndex, int conditionIndex)> _onRemoveConditionButtonClicked = new Subject<(string modeId, int branchIndex, int conditionIndex)>();
         private Subject<int> _onBranchSelectionChanged = new Subject<int>();
 
+        private AnimationElement _animationElement;
         private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
         private IReadOnlyLocalizationSetting _localizationSetting;
@@ -111,10 +113,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         public BranchListElement(
             IReadOnlyLocalizationSetting localizationSetting,
             AV3Setting aV3Setting,
+            AnimationElement animationElement,
             MainThumbnailDrawer thumbnailDrawer)
         {
             // Dependencies
             _localizationSetting = localizationSetting;
+            _animationElement = animationElement;
             _thumbnailDrawer = thumbnailDrawer;
             _aV3Setting = aV3Setting;
 
@@ -480,11 +484,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Base animation
             var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
             var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
-            AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
-                newGUID => { return; },
-                newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Base)); },
-                newGUID => { return; },
-                () => { return; });
+            _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
+                guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Base)); }, mode.DisplayName);
 
             xCurrent = xBegin;
             yCurrent += AnimationElement.GetHeight() + VerticalMargin;
@@ -492,11 +493,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Left trigger animation
             if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
             {
-                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
-                    newGUID => { return; },
-                    newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Left)); },
-                    newGUID => { return; },
-                    () => { return; });
+                _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
+                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Left)); }, mode.DisplayName);
                 GUI.Label(new Rect(xCurrent, yCurrent + AnimationElement.GetHeight(), AnimationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _leftTriggerAnimationText, _centerStyle);
             }
 
@@ -505,11 +503,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Right trigger animation
             if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
             {
-                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
-                    newGUID => { return; },
-                    newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Right)); },
-                    newGUID => { return; },
-                    () => { return; });
+                _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
+                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Right)); }, mode.DisplayName);
                 GUI.Label(new Rect(xCurrent, yCurrent + AnimationElement.GetHeight(), AnimationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _rightTriggerAnimationText, _centerStyle);
             }
 
@@ -518,11 +513,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Both triggers animations
             if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
             {
-                AnimationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
-                    newGUID => { return; },
-                    newGUID => { _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Both)); },
-                    newGUID => { return; },
-                    () => { return; });
+                _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
+                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Both)); }, mode.DisplayName);
                 GUI.Label(new Rect(xCurrent, yCurrent + AnimationElement.GetHeight(), AnimationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
             }
         }

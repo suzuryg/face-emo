@@ -57,6 +57,9 @@ MonoBehaviour:
   GestureTableView_RockNRoll: RockNRoll
   GestureTableView_HandGun: HandGun
   GestureTableView_ThumbsUp: ThumbsUp
+  AnimationElement_Message_GuidWasNotFound: The selected animation clip does not
+    exist in this project.
+  InspectorView_TargetAvatar: Target Avatar
   InspectorView_AddConfig_EmoteLock: Emote Lock (1bit)
   InspectorView_AddConfig_BlinkOff: Blink OFF (1bit)
   InspectorView_AddConfig_DanceGimmick: Dance Gimmick (1bit)

@@ -42,6 +42,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private Label _titleLabel;
         private IMGUIContainer _branchListContainer;
 
+        private AnimationElement _animationElement;
         private BranchListElement _branchListElement;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -63,7 +64,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
             AV3Setting aV3Setting,
-            MainThumbnailDrawer thumbnailDrawer)
+            MainThumbnailDrawer thumbnailDrawer,
+            AnimationElement animationElement)
         {
             // Usecases
             _setExistingAnimationUseCase = setExistingAnimationUseCase;
@@ -85,9 +87,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _selectionSynchronizer = selectionSynchronizer;
             _aV3Setting = aV3Setting;
             _thumbnailDrawer = thumbnailDrawer;
+            _animationElement = animationElement;
 
             // Branch list element
-            _branchListElement = new BranchListElement(_localizationSetting, _aV3Setting, _thumbnailDrawer).AddTo(_disposables);
+            _branchListElement = new BranchListElement(_localizationSetting, _aV3Setting, _animationElement, _thumbnailDrawer).AddTo(_disposables);
 
             _branchListElement.OnAnimationChanged.Synchronize().Subscribe(OnAnimationChanged).AddTo(_disposables);
 

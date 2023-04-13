@@ -1,22 +1,53 @@
-﻿using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
+﻿using Hai.VisualExpressionsEditor.Scripts.Editor;
+using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
+using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
+using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 {
-    public class AnimationElement
+    public class AnimationElement : IDisposable
     {
+        private AV3Setting _aV3Setting;
+        private LocalizationTable _localizationTable;
+
+        private string _lastOpenedOrSavedAnimationPath;
+
+        private CompositeDisposable _disposables = new CompositeDisposable();
+
+        public AnimationElement(
+            IReadOnlyLocalizationSetting localizationSetting,
+            AV3Setting aV3Setting)
+        {
+            _aV3Setting = aV3Setting;
+            _localizationTable = localizationSetting.Table;
+
+            localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
+        }
+
+        public void Dispose()
+        {
+            _disposables?.Dispose();
+        }
+
+        private void SetText(LocalizationTable localizationTable)
+        {
+            _localizationTable = localizationTable;
+        }
+
         // TODO: Specify up-left point, not a rect.
-        public static void Draw(Rect rect, Domain.Animation animation, MainThumbnailDrawer thumbnailDrawer,
-            Action<string> createNewAnimationAction, // The argument is new animation's GUID.
-            Action<string> setExistingAnimationAction, // The argument is new animation's GUID.
-            Action<string> copyAnimationAction, // The argument is new animation's GUID.
-            Action editAnimationAction)
+        public void Draw(Rect rect, Domain.Animation animation, MainThumbnailDrawer thumbnailDrawer,
+            Action<string> setAnimationClipAction, // The argument is new animation's GUID.
+            string modeDisplayName)
         {
             // Thumbnail
             LoadTexture();
@@ -43,7 +74,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 var newPath = AssetDatabase.GetAssetPath(newClip);
                 var newGUID = AssetDatabase.AssetPathToGUID(newPath);
-                setExistingAnimationAction(newGUID);
+                setAnimationClipAction(newGUID);
             }
 
             if (thumbnailRect.Contains(Event.current.mousePosition))
@@ -62,34 +93,54 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 // Create
                 if (GUI.Button(createRect, CreateIcon))
                 {
-                    if (GetAnimationGUID() is string guid)
+                    var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, modeDisplayName);
+                    if (!string.IsNullOrEmpty(guid))
                     {
-                        createNewAnimationAction(guid);
+                        setAnimationClipAction(guid);
                     }
                 }
 
                 // Open
                 if (GUI.Button(openRect, OpenIcon))
                 {
-                    if (GetAnimationGUID() is string guid)
+                    var guid = GetAnimationGuidWithDialog(DialogMode.Open, path, modeDisplayName);
+                    if (!string.IsNullOrEmpty(guid))
                     {
-                        setExistingAnimationAction(guid);
+                        setAnimationClipAction(guid);
                     }
                 }
 
                 // Copy
-                if (GUI.Button(copyRect, CopyIcon))
+                using (new EditorGUI.DisabledScope(!(clip is AnimationClip)))
                 {
-                    if (GetAnimationGUID() is string guid)
+                    if (GUI.Button(copyRect, CopyIcon))
                     {
-                        copyAnimationAction(guid);
+                        var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, modeDisplayName);
+                        if (!string.IsNullOrEmpty(guid))
+                        {
+                            setAnimationClipAction(guid);
+                        }
                     }
                 }
 
                 // Edit
-                if (GUI.Button(editRect, EditIcon))
+                using (new EditorGUI.DisabledScope(!(clip is AnimationClip)))
                 {
-                    editAnimationAction();
+                    if (GUI.Button(editRect, EditIcon))
+                    {
+                        var vee =  EditorWindow.GetWindow<VisualExpressionsEditorWindow>(utility: false, title: null, focus: true);
+
+                        var animator = AV3Utility.GetAnimator(_aV3Setting);
+                        if (animator is Animator && !ReferenceEquals(animator, vee.animator))
+                        {
+                            vee.ChangeAnimator(animator);
+                        }
+
+                        if (clip is AnimationClip && !ReferenceEquals(clip, vee.clip))
+                        {
+                            vee.ChangeClip(clip);
+                        }
+                    }
                 }
             }
         }
@@ -106,19 +157,124 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             return thumbnailHeight + EditorGUIUtility.singleLineHeight;
         }
 
-        private static string GetAnimationGUID()
+        private string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath, string modeDisplayName)
         {
-            var selectedPath = EditorUtility.OpenFilePanel(null, null, "anim");
-            if (selectedPath is string && selectedPath.Length > 0)
+            // Open dialog and get the path of the AnimationClip
+            var defaultDir = GetDefaultDir(existingAnimationPath);
+            var selectedPath = string.Empty;
+            if (dialogMode == DialogMode.Open)
             {
-                var unityPath = PathConverter.ToUnityPath(selectedPath);
+                selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: defaultDir, filters: new[] { "AnimationClip" , "anim" });
+            }
+            else if (dialogMode == DialogMode.Create)
+            {
+                var baseAnimationName = modeDisplayName.Replace(" ", "_");
+                selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: GetNewAnimationName(defaultDir, baseAnimationName), extension: "anim", message: null, path: defaultDir);
+            }
+            else if (dialogMode == DialogMode.Copy)
+            {
+                var baseAnimationName = System.IO.Path.GetFileName(existingAnimationPath).Replace(".anim", string.Empty);
+                selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: GetNewAnimationName(defaultDir, baseAnimationName), extension: "anim", message: null, path: defaultDir);
+            }
+
+            // Retrieve and return the GUID of the AnimationClip from the path
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                // OpenFilePanel path is in OS format, so convert it to Unity format
+                var unityPath = selectedPath;
+                if (dialogMode == DialogMode.Open)
+                {
+                    unityPath = PathConverter.ToUnityPath(selectedPath);
+                }
+
+                // Create AnimationClip
+                if (dialogMode == DialogMode.Create)
+                {
+                    var clip = new AnimationClip();
+                    AssetDatabase.CreateAsset(clip, unityPath);
+                }
+                else if (dialogMode == DialogMode.Copy)
+                {
+                    AssetDatabase.CopyAsset(existingAnimationPath, unityPath);
+                }
+
+                // Retrieve GUID
                 var guid = AssetDatabase.AssetPathToGUID(unityPath);
-                return guid;
+                if (!string.IsNullOrEmpty(guid))
+                {
+                    _lastOpenedOrSavedAnimationPath = unityPath;
+                    return guid;
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.AnimationElement_Message_GuidWasNotFound, "OK");
+                    return null;
+                }
             }
             else
             {
                 return null;
             }
+        }
+
+        private enum DialogMode
+        {
+            Open,
+            Create,
+            Copy,
+        }
+
+        private string GetDefaultDir(string existingAnimationPath)
+        {
+            // Use existing animation path
+            var path = existingAnimationPath;
+            while (!string.IsNullOrEmpty(path))
+            {
+                path = System.IO.Path.GetDirectoryName(path);
+                if (AssetDatabase.IsValidFolder(path))
+                {
+                    return path;
+                }
+            }
+
+            // Use last opened or saved animation path
+            path = _lastOpenedOrSavedAnimationPath;
+            while (!string.IsNullOrEmpty(path))
+            {
+                path = System.IO.Path.GetDirectoryName(path);
+                if (AssetDatabase.IsValidFolder(path))
+                {
+                    return path;
+                }
+            }
+
+            return "Assets";
+        }
+
+        private string GetNewAnimationName(string defaultDir, string baseAnimationName)
+        {
+            // Define a regex pattern to match the ending _(number)
+            string pattern = @"_\d+$";
+            Regex regex = new Regex(pattern);
+
+            // Replace the matched pattern with an empty string
+            baseAnimationName = regex.Replace(baseAnimationName, "");
+
+            // Decide animation name
+            var animationName = $"{baseAnimationName}.anim";
+            for (int i = 0; i < int.MaxValue; i++)
+            {
+                if (AssetDatabase.LoadAssetAtPath<AnimationClip>($"{defaultDir}/{animationName}") is AnimationClip)
+                {
+                    animationName = $"{baseAnimationName}_{i}.anim";
+                }
+                else
+                {
+                    return animationName;
+                }
+            }
+
+            return $"{baseAnimationName}.anim";
         }
 
         private static Texture2D BlackTranslucent = null;

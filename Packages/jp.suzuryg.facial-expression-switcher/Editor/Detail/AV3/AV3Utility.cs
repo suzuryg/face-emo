@@ -289,6 +289,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
+        public static Animator GetAnimator(AV3Setting aV3Setting)
+        {
+            // Error occurs when returning from Play mode to Edit mode if Null conditional operator is used to determine Null
+            if (aV3Setting == null || aV3Setting.TargetAvatar == null)
+            {
+                return null;
+            }
+            return aV3Setting.TargetAvatar.GetComponent<Animator>();
+        }
+
         public static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList)
         {
             var ret = new List<ModeEx>();

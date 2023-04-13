@@ -56,6 +56,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string GestureTableView_HandGun = "HandGun";
         public string GestureTableView_ThumbsUp = "ThumbsUp";
 
+        public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
+
         public string InspectorView_TargetAvatar = "Target Avatar";
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
         public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";

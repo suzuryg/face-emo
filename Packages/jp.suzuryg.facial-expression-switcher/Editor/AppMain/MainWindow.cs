@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using System.Linq;
@@ -9,6 +10,8 @@ using UnityEditor;
 using UniRx;
 using System;
 using UnityEngine.UIElements;
+using Hai.VisualExpressionsEditor.Scripts.Editor;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
@@ -55,6 +58,10 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 _subWindowManager = _installer.Container.Resolve<ISubWindowManager>().AddTo(_disposables);
                 _subWindowManager.Initialize(titleContent.text, _installer);
 
+                _installer.Container.Resolve<AnimationElement>().AddTo(_disposables);
+                _installer.Container.Resolve<MainThumbnailDrawer>().AddTo(_disposables);
+                _installer.Container.Resolve<GestureTableThumbnailDrawer>().AddTo(_disposables);
+
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();
                 var updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
                 updateMenuSubject.OnNext(menuRepository.Load(null));
@@ -93,6 +100,11 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         private void OnDisable()
         {
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+
+            if (HasOpenInstances<VisualExpressionsEditorWindow>())
+            {
+                GetWindow<VisualExpressionsEditorWindow>(utility: false, title: null, focus: false).Close();
+            }
 
             _installer?.SaveUIStates();
             Clean();

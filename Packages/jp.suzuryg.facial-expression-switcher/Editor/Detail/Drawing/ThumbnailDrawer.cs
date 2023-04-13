@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
+using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 {
@@ -28,7 +29,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         public GestureTableThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
     }
 
-    public abstract class ThumbnailDrawerBase
+    public abstract class ThumbnailDrawerBase : IDisposable
     {
         // Constants
         private static readonly string EmptyClipKey = "EmptyClipKey";
@@ -48,6 +49,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         private Texture2D _errorIcon;
         private object _lockRequests = new object();
 
+        private CompositeDisposable _disposables = new CompositeDisposable();
+
         public ThumbnailDrawerBase(AV3Setting aV3Setting)
         {
             // Dependencies
@@ -55,6 +58,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 
             // Others
             _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz300.png");
+
+            // Update thumbnails when animation is updated
+            // (Called after updating animation in VEE and saving with Ctrl-S)
+            AssetUpdateDetector.OnAnimationClipUpdated.Synchronize().ObserveOnMainThread().Subscribe(guids =>
+            {
+                foreach (var guid in guids)
+                {
+                    if (_cache.ContainsKey(guid))
+                    {
+                        lock (_lockRequests)
+                        {
+                            _requests.Add(guid);
+                        }
+                    }
+                }
+            }).AddTo(_disposables);
+        }
+
+        public void Dispose()
+        {
+            _disposables?.Dispose();
         }
 
         public Texture2D GetThumbnail(Domain.Animation animation)
@@ -94,12 +118,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
 
             // Get Animator
-            // Error occurs when returning from Play mode to Edit mode if Null conditional operator is used to determine Null
-            if (_aV3Setting == null || _aV3Setting.TargetAvatar == null)
-            {
-                return;
-            }
-            var avatarAnimator = _aV3Setting.TargetAvatar.GetComponent<Animator>();
+            var avatarAnimator = AV3Utility.GetAnimator(_aV3Setting);
             if (avatarAnimator == null)
             {
                 return;

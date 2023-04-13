@@ -60,7 +60,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 {
                     if (window.titleContent.text == windowTitle)
                     {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, $"This menu's window is opening.", "OK");
+                        window.Show();
                         return;
                     }
                 }
