@@ -90,6 +90,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 isEntered = Monitor.TryEnter(_lockSelection);
                 if (isEntered)
                 {
+                    var previousMenuItemId = _viewSelection.MenuItemListView;
                     _viewSelection.MenuItemListView = menuItemId;
 
                     var menu = _menuRepository.Load(string.Empty);
@@ -105,7 +106,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                     else if (menu.ContainsMode(menuItemId))
                     {
                         // If the selection of MenuItemListView is changed, initialize the selection of other views.
-                        if (_viewSelection.MenuItemListView != menuItemId)
+                        if (previousMenuItemId != menuItemId)
                         {
                             _viewSelection.BranchListView = 0;
                             _viewSelection.GestureTableView = null;
