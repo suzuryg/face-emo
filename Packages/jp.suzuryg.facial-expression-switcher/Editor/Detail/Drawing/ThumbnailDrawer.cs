@@ -94,8 +94,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
 
             // Get Animator
-            var avatarAnimator = _aV3Setting?.TargetAvatar?.GetComponent<Animator>();
-            if (avatarAnimator is null)
+            // Error occurs when returning from Play mode to Edit mode if Null conditional operator is used to determine Null
+            if (_aV3Setting == null || _aV3Setting.TargetAvatar == null)
+            {
+                return;
+            }
+            var avatarAnimator = _aV3Setting.TargetAvatar.GetComponent<Animator>();
+            if (avatarAnimator == null)
             {
                 return;
             }
