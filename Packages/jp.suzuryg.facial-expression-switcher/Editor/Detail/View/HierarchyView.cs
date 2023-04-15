@@ -28,6 +28,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private IReadOnlyLocalizationSetting _localizationSetting;
 
+        private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
         private HierarchyViewState _hierarchyViewState;
@@ -51,6 +52,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IMoveMenuItemUseCase moveMenuItemUseCase,
 
             IReadOnlyLocalizationSetting localizationSetting,
+            ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
             HierarchyViewState hierarchyViewState)
@@ -64,6 +66,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Others
             _localizationSetting = localizationSetting;
+            _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
             _hierarchyViewState = hierarchyViewState;
@@ -133,7 +136,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 _hierarchyViewState.TreeViewState = new TreeViewState();
             }
-            _hierarchyTreeElement = new HierarchyTreeElement(_localizationSetting, _hierarchyViewState.TreeViewState).AddTo(_treeElementDisposables);
+            _hierarchyTreeElement = new HierarchyTreeElement(_localizationSetting, _modeNameProvider, _hierarchyViewState.TreeViewState).AddTo(_treeElementDisposables);
 
             // Tree element event handlers
             _hierarchyTreeElement.OnModeRenamed.Synchronize().Subscribe(x => _modifyModePropertiesUseCase.Handle("", x.menuItemId, x.displayName)).AddTo(_treeElementDisposables);
@@ -254,7 +257,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (ids is IReadOnlyList<string> && ids.Count == 1)
             {
                 var parentId = GetParentId(_hierarchyTreeElement.Menu, ids[0]);
-                _addMenuItemUseCase.Handle("", parentId, addMenuItemType);
+
+                if (addMenuItemType == AddMenuItemType.Group)
+                {
+                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType);
+                }
+                else
+                {
+                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType, _localizationTable.ModeNameProvider_NoExpression);
+                }
             }
         }
 

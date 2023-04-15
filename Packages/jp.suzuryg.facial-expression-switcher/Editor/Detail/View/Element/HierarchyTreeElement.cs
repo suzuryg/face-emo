@@ -12,6 +12,7 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UnityEditor.IMGUI.Controls;
 using UniRx;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 {
@@ -25,6 +26,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(string menuItemId, string displayName)> _onModeRenamed = new Subject<(string menuItemId, string displayName)>();
         private Subject<(string menuItemId, string displayName)> _onGroupRenamed = new Subject<(string menuItemId, string displayName)>();
 
+        private ModeNameProvider _modeNameProvider;
+
         private string _registeredText;
         private string _unregisteredText;
 
@@ -33,8 +36,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Texture2D _closeFolderIcon;
         private Texture2D _selectedBackgroundTexture;
 
-        public HierarchyTreeElement(IReadOnlyLocalizationSetting localizationSetting, TreeViewState treeViewState) : base(localizationSetting, treeViewState)
+        public HierarchyTreeElement(IReadOnlyLocalizationSetting localizationSetting, ModeNameProvider modeNameProvider, TreeViewState treeViewState) : base(localizationSetting, treeViewState)
         {
+            // Dependencies
+            _modeNameProvider = modeNameProvider;
+
             // Set icon
             _fileIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/description_FILL0_wght400_GRAD200_opsz20.png");
             _openFolderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz20.png");
@@ -106,7 +112,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (menuItemList.GetType(menuItemId) == MenuItemType.Mode)
                 {
                     var mode = menuItemList.GetMode(menuItemId);
-                    var modeTree = new TreeViewItem { id = GetElementId(menuItemId), displayName = mode.DisplayName };
+                    var modeTree = new TreeViewItem { id = GetElementId(menuItemId), displayName = _modeNameProvider.Provide(mode) };
                     item.AddChild(modeTree);
                     rows.Add(modeTree);
                     modeTree.icon = _fileIcon;
@@ -151,14 +157,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         protected override void RenameEnded(RenameEndedArgs args)
         {
-            if (args.acceptedRename && Menu is IMenu)
+            if (args.acceptedRename && args.originalName != args.newName && Menu is IMenu)
             {
                 var menuItemId = GetMenuItemId(args.itemID);
                 if (menuItemId is string)
                 {
                     if (Menu.ContainsMode(menuItemId))
                     {
-                        _onModeRenamed.OnNext((menuItemId, args.newName));
+                        var mode = Menu.GetMode(menuItemId);
+                        if (mode.UseAnimationNameAsDisplayName)
+                        {
+                            EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.HierarchyView_Message_CanNotRename, "OK");
+                        }
+                        else
+                        {
+                            _onModeRenamed.OnNext((menuItemId, args.newName));
+                        }
                     }
                     else if (Menu.ContainsGroup(menuItemId))
                     {

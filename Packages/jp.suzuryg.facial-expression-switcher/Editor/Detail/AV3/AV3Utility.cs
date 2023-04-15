@@ -299,10 +299,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return aV3Setting.TargetAvatar.GetComponent<Animator>();
         }
 
-        public static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList)
+        public static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList, ModeNameProvider modeNameProvider)
         {
             var ret = new List<ModeEx>();
-            FlattenMenuItemListSub(menuItemList, ret, string.Empty);
+            FlattenMenuItemListSub(menuItemList, ret, string.Empty, modeNameProvider);
 
             var branchCount = 0;
             foreach (var mode in ret)
@@ -313,19 +313,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return ret;
         }
 
-        private static void FlattenMenuItemListSub(IMenuItemList menuItemList, List<ModeEx> flattened, string pathToParent)
+        private static void FlattenMenuItemListSub(IMenuItemList menuItemList, List<ModeEx> flattened, string pathToParent, ModeNameProvider modeNameProvider)
         {
             foreach (var id in menuItemList.Order)
             {
                 if (menuItemList.GetType(id) == MenuItemType.Mode)
                 {
                     var mode = menuItemList.GetMode(id);
-                    flattened.Add(new ModeEx() { PathToMode = pathToParent + mode.DisplayName, Mode = mode });
+                    flattened.Add(new ModeEx() { PathToMode = pathToParent + modeNameProvider.Provide(mode), Mode = mode });
                 }
                 else
                 {
                     var group = menuItemList.GetGroup(id);
-                    FlattenMenuItemListSub(group, flattened, pathToParent + group.DisplayName + "/");
+                    FlattenMenuItemListSub(group, flattened, pathToParent + group.DisplayName + "/", modeNameProvider);
                 }
             }
         }

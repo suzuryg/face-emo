@@ -7,6 +7,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
     public interface IAddMenuItemUseCase
     {
         void Handle(string menuId, string menuItemListId, AddMenuItemType type);
+        void Handle(string menuId, string menuItemListId, AddMenuItemType type, string displayName);
     }
 
     public interface IAddMenuItemPresenter
@@ -56,7 +57,9 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             _addMenuItemPresenter = addMenuItemPresenter;
         }
 
-        public void Handle(string menuId, string menuItemListId, AddMenuItemType type)
+        public void Handle(string menuId, string menuItemListId, AddMenuItemType type) => Handle(menuId, menuItemListId, type, null);
+
+        public void Handle(string menuId, string menuItemListId, AddMenuItemType type, string displayName)
         {
             try
             {
@@ -80,6 +83,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                     if (menu.CanAddModeTo(menuItemListId))
                     {
                         addedItemId = menu.AddMode(menuItemListId);
+
+                        if (!string.IsNullOrEmpty(displayName))
+                        {
+                            menu.ModifyModeProperties(id: addedItemId, displayName: displayName);
+                        }
                     }
                     else
                     {
@@ -92,6 +100,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                     if (menu.CanAddGroupTo(menuItemListId))
                     {
                         addedItemId = menu.AddGroup(menuItemListId);
+
+                        if (!string.IsNullOrEmpty(displayName))
+                        {
+                            menu.ModifyGroupProperties(id: addedItemId, displayName: displayName);
+                        }
                     }
                     else
                     {

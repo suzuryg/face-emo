@@ -16,6 +16,8 @@ MonoBehaviour:
   HierarchyView_Title: HierarchyView
   HierarchyView_RegisteredMenuItemList: ItemsToRegister
   HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
+  HierarchyView_Message_CanNotRename: The "Use animation name as mode name" setting
+    is enabled. Disable the setting if you want to change the mode name.
   MenuItemListView_Title: MenuItemListView
   MenuItemListView_UseAnimationNameAsDisplayName: Use Animation Name As  Mode Name
   MenuItemListView_EyeTracking: Enable Eye Tracking
@@ -59,6 +61,7 @@ MonoBehaviour:
   GestureTableView_ThumbsUp: ThumbsUp
   AnimationElement_Message_GuidWasNotFound: The selected animation clip does not
     exist in this project.
+  ModeNameProvider_NoExpression: NoExpression
   InspectorView_TargetAvatar: Target Avatar
   InspectorView_AddConfig_EmoteLock: Emote Lock (1bit)
   InspectorView_AddConfig_BlinkOff: Blink OFF (1bit)

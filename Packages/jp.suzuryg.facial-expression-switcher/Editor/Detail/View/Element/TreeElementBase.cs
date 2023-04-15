@@ -29,6 +29,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         protected Subject<(IMenu menu, IReadOnlyList<string> menuItemIds)> _onSelectionChanged = new Subject<(IMenu menu, IReadOnlyList<string> menuItemIds)>();
 
         protected Dictionary<string, int> _menuItemIdToElementId = new Dictionary<string, int>();
+        protected LocalizationTable _localizationTable;
 
         private TreeViewState _treeViewState;
 
@@ -143,6 +144,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         protected virtual void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
             Reload();
         }
 

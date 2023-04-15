@@ -29,11 +29,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         private static readonly bool WriteDefaultsValue = false;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
+        private ModeNameProvider _modeNameProvider;
         private AV3Setting _aV3Setting;
 
-        public FxGenerator(IReadOnlyLocalizationSetting localizationSetting, AV3Setting aV3Setting)
+        public FxGenerator(IReadOnlyLocalizationSetting localizationSetting, ModeNameProvider modeNameProvider, AV3Setting aV3Setting)
         {
             _localizationSetting = localizationSetting;
+            _modeNameProvider = modeNameProvider;
             _aV3Setting = aV3Setting;
         }
 
@@ -80,7 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     throw new FacialExpressionSwitcherException("AvatarDescriptor was not found.");
                 }
                 var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, WriteDefaultsValue));
-                var modes = AV3Utility.FlattenMenuItemList(menu.Registered);
+                var modes = AV3Utility.FlattenMenuItemList(menu.Registered, _modeNameProvider);
                 var emoteCount = GetEmoteCount(modes);
                 var useOverLimitMode = forceOverLimitMode || emoteCount > AV3Constants.MaxEmoteNum;
                 GenerateFaceEmoteSetControlLayer(modes, aac, animatorController, useOverLimitMode);
@@ -494,7 +496,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return container;
         }
 
-        private static void GenerateSubMenuRecursive(VRCExpressionsMenu parent, IMenuItemList menuItemList, Dictionary<string, int> idToModeIndex, VRCExpressionsMenu container)
+        private void GenerateSubMenuRecursive(VRCExpressionsMenu parent, IMenuItemList menuItemList, Dictionary<string, int> idToModeIndex, VRCExpressionsMenu container)
         {
             foreach (var id in menuItemList.Order)
             {
@@ -502,7 +504,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 if (type == MenuItemType.Mode)
                 {
                     var mode = menuItemList.GetMode(id);
-                    parent.controls.Add(CreateIntToggleControl(mode.DisplayName, AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id]));
+                    parent.controls.Add(CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id]));
                 }
                 else
                 {

@@ -51,6 +51,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<string> _onEnteredIntoGroup = new Subject<string>();
         private Subject<(string modeId, string clipGUID)> _onAnimationChanged = new Subject<(string modeId, string clipGUID)>();
 
+        private ModeNameProvider _modeNameProvider;
         private AnimationElement _animationElement;
         private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
@@ -75,6 +76,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public MenuItemTreeElement(
             IReadOnlyLocalizationSetting localizationSetting,
+            ModeNameProvider modeNameProvider,
             AnimationElement animationElement,
             MainThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
@@ -91,6 +93,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             // Others
+            _modeNameProvider = modeNameProvider;
             _animationElement = animationElement;
             _aV3Setting = aV3Setting;
 
@@ -229,14 +232,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (type == MenuItemType.Group)
                 {
                     var group = menuItemList.GetGroup(menuItemId);
-                    var groupTree = new TreeViewItem { id = GetElementId(menuItemId), displayName = group.DisplayName, depth = -1 };
+                    var groupTree = new TreeViewItem { id = GetElementId(menuItemId), depth = -1 };
                     item.AddChild(groupTree);
                     rows.Add(groupTree);
                 }
                 else if (type == MenuItemType.Mode)
                 {
                     var mode = menuItemList.GetMode(menuItemId);
-                    var modeTree = new TreeViewItem { id = GetElementId(menuItemId), displayName = mode.DisplayName, depth = -1 };
+                    var modeTree = new TreeViewItem { id = GetElementId(menuItemId), depth = -1 };
                     item.AddChild(modeTree);
                     rows.Add(modeTree);
                 }
@@ -323,13 +326,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 using (new EditorGUILayout.VerticalScope())
                 {
                     // Display name
-                    var displayName = EditorGUILayout.DelayedTextField(mode.DisplayName);
-                    if (displayName != mode.DisplayName)
+                    if (mode.UseAnimationNameAsDisplayName)
                     {
-                        _onModePropertiesModified.OnNext((menuItemId, displayName, null, null, null, null, null));
+                        EditorGUILayout.LabelField(_modeNameProvider.Provide(mode));
                     }
-
-                    GUILayout.Space(10);
+                    else
+                    {
+                        var displayName = EditorGUILayout.DelayedTextField(mode.DisplayName);
+                        if (displayName != mode.DisplayName)
+                        {
+                            _onModePropertiesModified.OnNext((menuItemId, displayName, null, null, null, null, null));
+                        }
+                    }
 
                     // Use animation name
                     using (new EditorGUILayout.HorizontalScope())
@@ -414,7 +422,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
                 var animationRect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle(), GUILayout.Width(thumbnailWidth), GUILayout.Height(thumbnailHeight + EditorGUIUtility.singleLineHeight));
                 _animationElement.Draw(animationRect, mode.Animation, _thumbnailDrawer,
-                    guid => _onAnimationChanged.OnNext((menuItemId, guid)), mode.DisplayName);
+                    guid => _onAnimationChanged.OnNext((menuItemId, guid)), _modeNameProvider.Provide(mode));
             }
         }
 

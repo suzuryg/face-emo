@@ -71,7 +71,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             var layerNames = new[] { AV3Constants.LayerName_FaceEmoteControl, };
 
             var localizationSetting = new LocalizationSetting();
-            var fxGenerator = new FxGenerator(localizationSetting, new AV3Setting());
+            var modeNameProvider = new ModeNameProvider(localizationSetting);
+            var fxGenerator = new FxGenerator(localizationSetting, modeNameProvider, new AV3Setting());
             fxGenerator.Generate(_menu);
 
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(DestinationPath);

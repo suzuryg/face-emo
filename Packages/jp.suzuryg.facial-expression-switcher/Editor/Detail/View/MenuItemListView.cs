@@ -30,6 +30,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private ISetExistingAnimationUseCase _setExistingAnimationUseCase;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
+        private LocalizationTable _localizationTable;
 
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
@@ -44,6 +45,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IMGUIContainer _addressBarContainer;
         private IMGUIContainer _treeViewContainer;
 
+        private ModeNameProvider _modeNameProvider;
         private AnimationElement _animationElement;
         private AddressBarElement _addressBarElement;
         private MenuItemTreeElement _menuItemTreeElement;
@@ -65,6 +67,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             MainThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
             MenuItemListViewState menuItemListViewState,
+            ModeNameProvider modeNameProvider,
             AnimationElement animationElement)
         {
             // Usecases
@@ -82,6 +85,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailDrawer = thumbnailDrawer;
             _aV3Setting = aV3Setting;
             _menuItemListViewState = menuItemListViewState;
+            _modeNameProvider = modeNameProvider;
             _animationElement = animationElement;
 
             // Address bar element
@@ -157,7 +161,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 _menuItemListViewState.TreeViewState = new TreeViewState();
             }
-            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _animationElement, _thumbnailDrawer, _aV3Setting, _menuItemListViewState).AddTo(_treeElementDisposables);
+            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _modeNameProvider, _animationElement, _thumbnailDrawer, _aV3Setting, _menuItemListViewState).AddTo(_treeElementDisposables);
 
             // Tree element event handlers
             _menuItemTreeElement.OnModePropertiesModified.Synchronize().Subscribe(OnModePropertiesModified).AddTo(_treeElementDisposables);
@@ -174,6 +178,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
             _titleLabel.text = localizationTable.MenuItemListView_Title;
         }
 
@@ -345,7 +350,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             if (_menuItemListViewState.RootGroupId is string)
             {
-                _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType);
+                if (addMenuItemType == AddMenuItemType.Group)
+                {
+                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType);
+                }
+                else
+                {
+                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType, _localizationTable.ModeNameProvider_NoExpression);
+                }
             }
         }
 

@@ -25,6 +25,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private ISubWindowProvider _subWindowProvider;
         private ILocalizationSetting _localizationSetting;
+        private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private MainThumbnailDrawer _thumbnailDrawer;
 
@@ -47,6 +48,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IGenerateFxPresenter generateFxPresenter,
             ISubWindowProvider subWindowProvider,
             ILocalizationSetting localizationSetting,
+            ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             MainThumbnailDrawer thumbnailDrawer)
         {
@@ -60,6 +62,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Others
             _subWindowProvider = subWindowProvider;
             _localizationSetting = localizationSetting;
+            _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _thumbnailDrawer = thumbnailDrawer;
 
@@ -133,7 +136,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnMenuUpdated(IMenu menu)
         {
-            _flattendModes = AV3Utility.FlattenMenuItemList(menu.Registered);
+            _flattendModes = AV3Utility.FlattenMenuItemList(menu.Registered, _modeNameProvider);
             _modePaths = _flattendModes.Select(x => x.PathToMode).ToArray();
 
             _defaultSelection = 0;

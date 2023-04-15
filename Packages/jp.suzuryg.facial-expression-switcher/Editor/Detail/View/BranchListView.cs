@@ -34,6 +34,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IAddBranchPresenter _addBranchPresenter;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
+        private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
         private AV3Setting _aV3Setting;
@@ -61,6 +62,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IAddBranchPresenter addBranchPresenter,
 
             IReadOnlyLocalizationSetting localizationSetting,
+            ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
             AV3Setting aV3Setting,
@@ -83,6 +85,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Others
             _localizationSetting = localizationSetting;
+            _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
             _aV3Setting = aV3Setting;
@@ -90,7 +93,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _animationElement = animationElement;
 
             // Branch list element
-            _branchListElement = new BranchListElement(_localizationSetting, _aV3Setting, _animationElement, _thumbnailDrawer).AddTo(_disposables);
+            _branchListElement = new BranchListElement(_localizationSetting, _aV3Setting, _modeNameProvider, _animationElement, _thumbnailDrawer).AddTo(_disposables);
 
             _branchListElement.OnAnimationChanged.Synchronize().Subscribe(OnAnimationChanged).AddTo(_disposables);
 

@@ -1,9 +1,11 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
+using Suzuryg.FacialExpressionSwitcher.Detail;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
@@ -11,7 +13,6 @@ using UniRx;
 using System;
 using UnityEngine.UIElements;
 using Hai.VisualExpressionsEditor.Scripts.Editor;
-using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
@@ -58,14 +59,18 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 _subWindowManager = _installer.Container.Resolve<ISubWindowManager>().AddTo(_disposables);
                 _subWindowManager.Initialize(titleContent.text, _installer);
 
+                // Disposables
+                _installer.Container.Resolve<ModeNameProvider>().AddTo(_disposables);
                 _installer.Container.Resolve<AnimationElement>().AddTo(_disposables);
                 _installer.Container.Resolve<MainThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<GestureTableThumbnailDrawer>().AddTo(_disposables);
 
+                // Initialize menu display
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();
                 var updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
                 updateMenuSubject.OnNext(menuRepository.Load(null));
 
+                // Register undo/redo callback
                 _undoRedoCallback = () =>
                 {
                     if (menuRepository is MenuRepository && updateMenuSubject is UpdateMenuSubject)

@@ -10,6 +10,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string HierarchyView_Title = "HierarchyView";
         public string HierarchyView_RegisteredMenuItemList = "ItemsToRegister";
         public string HierarchyView_UnregisteredMenuItemList = "ItemsNotToRegister";
+        public string HierarchyView_Message_CanNotRename = "The 'Use animation name as mode name' setting is enabled. Disable the setting if you want to change the mode name.";
 
         public string MenuItemListView_Title = "MenuItemView";
         public string MenuItemListView_UseAnimationNameAsDisplayName = "Use Animation Name As Mode Name";
@@ -57,6 +58,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string GestureTableView_ThumbsUp = "ThumbsUp";
 
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
+
+        public string ModeNameProvider_NoExpression = "NoExpression";
 
         public string InspectorView_TargetAvatar = "Target Avatar";
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
