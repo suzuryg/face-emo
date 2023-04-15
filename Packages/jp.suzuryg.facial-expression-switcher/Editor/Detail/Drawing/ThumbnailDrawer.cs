@@ -108,8 +108,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             _cache.Clear();
         }
 
+        // private static Unity.Profiling.ProfilerMarker _customMarker = new Unity.Profiling.ProfilerMarker($"{nameof(ThumbnailDrawerBase)}.{nameof(Update)}");
+
         public void Update()
         {
+            // using (_customMarker.Auto()){
+
+            // If there is no request for thumbnail generation, it is not executed (does not trigger a GameObject Instantiate).
+            lock (_lockRequests)
+            {
+                if (!_requests.Any())
+                {
+                    return;
+                }
+            }
+
             // When updating thumbnails in Play mode, the following error occurs in VRC.Dynamics.PhysBoneManager.
             // "Buffer already contains chain of id:XXXX"
             if (EditorApplication.isPlaying)
@@ -181,6 +194,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                     UnityEngine.Object.DestroyImmediate(clonedAvatar);
                 }
             }
+
+            // } end of using (_customMarker.Auto())
         }
 
         private Texture2D RenderAnimatedAvatar(string clipGUID, GameObject animatorRoot, Camera camera)
