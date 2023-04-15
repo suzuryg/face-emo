@@ -90,8 +90,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 var copyRect = new Rect(thumbnailRect.x + margin, thumbnailRect.y + thumbnailRect.height / 2 + margin, width, height);
                 var editRect = new Rect(thumbnailRect.x + thumbnailRect.width / 2 + margin, thumbnailRect.y + thumbnailRect.height / 2 + margin, width, height);
 
+                const float iconMarginRate = 0.1f;
+                var iconMargin = Math.Min(width * iconMarginRate, height * iconMarginRate);
+                var clipExits = clip is AnimationClip;
+
                 // Create
-                if (GUI.Button(createRect, CreateIcon))
+                if (GUI.Button(createRect, string.Empty))
                 {
                     var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
@@ -99,9 +103,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         setAnimationClipAction(guid);
                     }
                 }
+                GUI.DrawTexture(new Rect(createRect.x + iconMargin, createRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), CreateIcon, ScaleMode.ScaleToFit, alphaBlend: true);
 
                 // Open
-                if (GUI.Button(openRect, OpenIcon))
+                if (GUI.Button(openRect, string.Empty))
                 {
                     var guid = GetAnimationGuidWithDialog(DialogMode.Open, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
@@ -109,11 +114,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         setAnimationClipAction(guid);
                     }
                 }
+                GUI.DrawTexture(new Rect(openRect.x + iconMargin, openRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), OpenIcon, ScaleMode.ScaleToFit, alphaBlend: true);
 
                 // Copy
-                using (new EditorGUI.DisabledScope(!(clip is AnimationClip)))
+                using (new EditorGUI.DisabledScope(!clipExits))
                 {
-                    if (GUI.Button(copyRect, CopyIcon))
+                    if (GUI.Button(copyRect, string.Empty))
                     {
                         var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, modeDisplayName);
                         if (!string.IsNullOrEmpty(guid))
@@ -122,11 +128,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         }
                     }
                 }
+                GUI.DrawTexture(new Rect(copyRect.x + iconMargin, copyRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), CopyIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                if (!clipExits)
+                {
+                    GUI.DrawTexture(copyRect, BlackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
+                }
 
                 // Edit
-                using (new EditorGUI.DisabledScope(!(clip is AnimationClip)))
+                using (new EditorGUI.DisabledScope(!clipExits))
                 {
-                    if (GUI.Button(editRect, EditIcon))
+                    if (GUI.Button(editRect, string.Empty))
                     {
                         var vee =  EditorWindow.GetWindow<VisualExpressionsEditorWindow>(utility: false, title: null, focus: true);
 
@@ -141,6 +152,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                             vee.ChangeClip(clip);
                         }
                     }
+                }
+                GUI.DrawTexture(new Rect(editRect.x + iconMargin, editRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), EditIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                if (!clipExits)
+                {
+                    GUI.DrawTexture(editRect, BlackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
                 }
             }
         }
@@ -295,22 +311,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
             if (CreateIcon is null)
             {
-                CreateIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/note_add_FILL0_wght400_GRAD200_opsz48.png");
+                CreateIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/note_add_FILL0_wght400_GRAD200_opsz150.png");
             }
 
             if (OpenIcon is null)
             {
-                OpenIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz48.png");
+                OpenIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz150.png");
             }
 
             if (CopyIcon is null)
             {
-                CopyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/content_copy_FILL0_wght400_GRAD200_opsz48.png");
+                CopyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/content_copy_FILL0_wght400_GRAD200_opsz150.png");
             }
 
             if (EditIcon is null)
             {
-                EditIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/edit_FILL0_wght400_GRAD200_opsz48.png");
+                EditIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/edit_FILL0_wght400_GRAD200_opsz150.png");
             }
         }
     }
