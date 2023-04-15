@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400add5ab2f7cbf448558d4a8505230b, type: 3}
   m_Name: en_US
   m_EditorClassIdentifier: 
+  Common_Delete: Delete
+  Common_Cancel: Cancel
+  Common_Message_DeleteGroup: Are you sure you want to delete the following group?
+  Common_Message_DeleteMode: Are you sure you want to delete the following mode?
+  Common_Message_DeleteBranch: Are you sure you want to delete the currently selected
+    branch?
   MainView_UpdateThumbnails: Update Thumbnails
   HierarchyView_Title: HierarchyView
   HierarchyView_RegisteredMenuItemList: ItemsToRegister

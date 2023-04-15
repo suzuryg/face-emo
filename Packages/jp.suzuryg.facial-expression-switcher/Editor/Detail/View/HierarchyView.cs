@@ -27,6 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IMoveMenuItemUseCase _moveMenuItemUseCase;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
+        private LocalizationTable _localizationTable;
 
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
@@ -151,6 +152,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
             _titleLabel.text = localizationTable.HierarchyView_Title;
         }
 
@@ -274,7 +276,35 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             var ids = _hierarchyTreeElement.GetSelectedMenuItemIds();
             if (ids is IReadOnlyList<string> && ids.Count == 1)
             {
-                _removeMenuItemUseCase.Handle("", ids[0]);
+                var id = ids[0];
+                var menu = _hierarchyTreeElement.Menu;
+
+                if (menu.ContainsGroup(id))
+                {
+                    var groupDeleteConfirmation = EditorPrefs.HasKey(DetailConstants.KeyGroupDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyGroupDeleteConfirmation) : DetailConstants.DefaultGroupDeleteConfirmation;
+                    if (groupDeleteConfirmation)
+                    {
+                        var groupName = menu.GetGroup(id).DisplayName;
+                        var ok = EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                            _localizationTable.Common_Message_DeleteGroup + "\n\n" + groupName,
+                            _localizationTable.Common_Delete, _localizationTable.Common_Cancel);
+                        if (!ok) { return; }
+                    }
+                }
+                else if (menu.ContainsMode(id))
+                {
+                    var modeDeleteConfirmation = EditorPrefs.HasKey(DetailConstants.KeyModeDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyModeDeleteConfirmation) : DetailConstants.DefaultModeDeleteConfirmation;
+                    if (modeDeleteConfirmation)
+                    {
+                        var modeName = _modeNameProvider.Provide(menu.GetMode(id));
+                        var ok = EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                            _localizationTable.Common_Message_DeleteMode + "\n\n" + modeName,
+                            _localizationTable.Common_Delete, _localizationTable.Common_Cancel);
+                        if (!ok) { return; }
+                    }
+                }
+
+                _removeMenuItemUseCase.Handle("", id);
             }
         }
 

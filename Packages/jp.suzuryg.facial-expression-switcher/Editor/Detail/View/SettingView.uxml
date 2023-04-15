@@ -23,5 +23,11 @@
 		<engine:VisualElement name="RightCol" class="GridItem">
 			<engine:Button name="GenerateButton"/>
 		</engine:VisualElement>
+
+		<engine:VisualElement name="DeleteConfirmationCol" class="GridItem">
+			<engine:Toggle name="GroupDeleteConfirmation"/>
+			<engine:Toggle name="ModeDeleteConfirmation"/>
+			<engine:Toggle name="BranchDeleteConfirmation"/>
+		</engine:VisualElement>
 	</engine:VisualElement>
 </engine:UXML>

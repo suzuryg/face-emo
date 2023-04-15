@@ -366,7 +366,35 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             var ids = _menuItemTreeElement.GetSelectedMenuItemIds();
             if (ids is IReadOnlyList<string> && ids.Count == 1)
             {
-                _removeMenuItemUseCase.Handle("", ids[0]);
+                var id = ids[0];
+                var menu = _menuItemTreeElement.Menu;
+
+                if (menu.ContainsGroup(id))
+                {
+                    var groupDeleteConfirmation = EditorPrefs.HasKey(DetailConstants.KeyGroupDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyGroupDeleteConfirmation) : DetailConstants.DefaultGroupDeleteConfirmation;
+                    if (groupDeleteConfirmation)
+                    {
+                        var groupName = menu.GetGroup(id).DisplayName;
+                        var ok = EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                            _localizationTable.Common_Message_DeleteGroup + "\n\n" + groupName,
+                            _localizationTable.Common_Delete, _localizationTable.Common_Cancel);
+                        if (!ok) { return; }
+                    }
+                }
+                else if (menu.ContainsMode(id))
+                {
+                    var modeDeleteConfirmation = EditorPrefs.HasKey(DetailConstants.KeyModeDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyModeDeleteConfirmation) : DetailConstants.DefaultModeDeleteConfirmation;
+                    if (modeDeleteConfirmation)
+                    {
+                        var modeName = _modeNameProvider.Provide(menu.GetMode(id));
+                        var ok = EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                            _localizationTable.Common_Message_DeleteMode + "\n\n" + modeName,
+                            _localizationTable.Common_Delete, _localizationTable.Common_Cancel);
+                        if (!ok) { return; }
+                    }
+                }
+
+                _removeMenuItemUseCase.Handle("", id);
             }
         }
     }

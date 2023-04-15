@@ -5,6 +5,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 {
     public class LocalizationTable : ScriptableObject
     {
+        public string Common_Delete = "Delete";
+        public string Common_Cancel = "Cancel";
+        public string Common_Message_DeleteGroup = "Are you sure you want to delete the following group?";
+        public string Common_Message_DeleteMode = "Are you sure you want to delete the following mode?";
+        public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected branch?";
+
         public string MainView_UpdateThumbnails = "Update Thumbnails";
 
         public string HierarchyView_Title = "HierarchyView";
@@ -56,6 +62,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string GestureTableView_RockNRoll = "RockNRoll";
         public string GestureTableView_HandGun = "HandGun";
         public string GestureTableView_ThumbsUp = "ThumbsUp";
+
+        public string SettingView_GroupDeleteConfirmation = "Confirm When Deleting Group";
+        public string SettingView_ModeDeleteConfirmation = "Confirm When Deleting Mode";
+        public string SettingView_BranchDeleteConfirmation = "Confirm When Deleting Branch";
 
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
 

@@ -34,6 +34,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IAddBranchPresenter _addBranchPresenter;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
+        private LocalizationTable _localizationTable;
+
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
@@ -157,6 +159,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
             _titleLabel.text = localizationTable.BranchListView_Title;
         }
 
@@ -201,6 +204,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnRemoveBranchButtonClicked((string modeId, int branchIndex) args)
         {
+            var branchDeleteConfirmation = EditorPrefs.HasKey(DetailConstants.KeyBranchDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyBranchDeleteConfirmation) : DetailConstants.DefaultBranchDeleteConfirmation;
+            if (branchDeleteConfirmation)
+            {
+                var ok = EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                    _localizationTable.Common_Message_DeleteBranch,
+                    _localizationTable.Common_Delete, _localizationTable.Common_Cancel);
+                if (!ok) { return; }
+            }
+
             _removeBranchUseCase.Handle("", args.modeId, args.branchIndex);
         }
 

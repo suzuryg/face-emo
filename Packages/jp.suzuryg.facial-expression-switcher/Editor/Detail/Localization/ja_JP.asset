@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400add5ab2f7cbf448558d4a8505230b, type: 3}
   m_Name: ja_JP
   m_EditorClassIdentifier: 
+  Common_Delete: "\u524A\u9664"
+  Common_Cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB"
+  Common_Message_DeleteGroup: "\u4E0B\u8A18\u306E\u30B0\u30EB\u30FC\u30D7\u3092\u524A\u9664\u3057\u307E\u3059\u304B\uFF1F"
+  Common_Message_DeleteMode: "\u4E0B\u8A18\u306E\u30E2\u30FC\u30C9\u3092\u524A\u9664\u3057\u307E\u3059\u304B\uFF1F"
+  Common_Message_DeleteBranch: "\u9078\u629E\u4E2D\u306E\u5206\u5C90\u3092\u524A\u9664\u3057\u307E\u3059\u304B\uFF1F"
   MainView_UpdateThumbnails: "\u30B5\u30E0\u30CD\u30A4\u30EB\u3092\u66F4\u65B0"
   HierarchyView_Title: "\u968E\u5C64\u30D3\u30E5\u30FC"
   HierarchyView_RegisteredMenuItemList: "\u767B\u9332\u3059\u308B\u9805\u76EE"
@@ -58,6 +63,9 @@ MonoBehaviour:
   GestureTableView_RockNRoll: Rock
   GestureTableView_HandGun: Gun
   GestureTableView_ThumbsUp: Thumbs
+  SettingView_GroupDeleteConfirmation: "\u30B0\u30EB\u30FC\u30D7\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
+  SettingView_ModeDeleteConfirmation: "\u30E2\u30FC\u30C9\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
+  SettingView_BranchDeleteConfirmation: "\u5206\u5C90\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
   AnimationElement_Message_GuidWasNotFound: "\u9078\u629E\u3055\u308C\u305F\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u30AF\u30EA\u30C3\u30D7\u304C\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u5185\u306B\u5B58\u5728\u3057\u307E\u305B\u3093\u3002"
   ModeNameProvider_NoExpression: "\u8868\u60C5\u306A\u3057"
   InspectorView_TargetAvatar: "\u5BFE\u8C61\u30A2\u30D0\u30BF\u30FC"

@@ -23,8 +23,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private IGenerateFxPresenter _generateFxPresenter;
 
-        private ISubWindowProvider _subWindowProvider;
         private ILocalizationSetting _localizationSetting;
+        private LocalizationTable _localizationTable;
+
+        private ISubWindowProvider _subWindowProvider;
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private MainThumbnailDrawer _thumbnailDrawer;
@@ -35,6 +37,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private SliderInt _thumbnailHeightSlider;
         private Button _generateButton;
         private IMGUIContainer _defaultSelectionComboBoxArea;
+        private Toggle _groupDeleteConfirmation;
+        private Toggle _modeDeleteConfirmation;
+        private Toggle _branchDeleteConfirmation;
 
         private List<ModeEx> _flattendModes = new List<ModeEx>();
         private string[] _modePaths = new string[0];
@@ -79,8 +84,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         public void Dispose()
         {
             _disposables.Dispose();
+
             _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailWidthChanged);
             _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailHeightChanged);
+
+            _groupDeleteConfirmation.UnregisterValueChangedCallback(OnGroupDeleteConfirmationChanged);
+            _modeDeleteConfirmation.UnregisterValueChangedCallback(OnModeDeleteConfirmationChanged);
+            _branchDeleteConfirmation.UnregisterValueChangedCallback(OnBranchDeleteConfirmationChanged);
         }
 
         public void Initialize(VisualElement root)
@@ -100,7 +110,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailHeightSlider = root.Q<SliderInt>("ThumbnailHeightSlider");
             _generateButton = root.Q<Button>("GenerateButton");
             _defaultSelectionComboBoxArea = root.Q<IMGUIContainer>("DefaultSelectionComboBox");
-            NullChecker.Check(_openGestureTableWindowButton, _updateThumbnailButton, _thumbnailWidthSlider, _thumbnailHeightSlider, _generateButton, _defaultSelectionComboBoxArea);
+            _groupDeleteConfirmation = root.Q<Toggle>("GroupDeleteConfirmation");
+            _modeDeleteConfirmation = root.Q<Toggle>("ModeDeleteConfirmation");
+            _branchDeleteConfirmation = root.Q<Toggle>("BranchDeleteConfirmation");
+            NullChecker.Check(_openGestureTableWindowButton, _updateThumbnailButton, _thumbnailWidthSlider, _thumbnailHeightSlider, _generateButton, _defaultSelectionComboBoxArea,
+                _groupDeleteConfirmation, _modeDeleteConfirmation, _branchDeleteConfirmation);
 
             // Initialize fields
             _thumbnailWidthSlider.lowValue = DetailConstants.MinMainThumbnailWidth;
@@ -111,9 +125,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailHeightSlider.highValue = DetailConstants.MaxMainThumbnailHeight;
             _thumbnailHeightSlider.value = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
 
+            _groupDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyGroupDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyGroupDeleteConfirmation) : DetailConstants.DefaultGroupDeleteConfirmation;
+            _modeDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyModeDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyModeDeleteConfirmation) : DetailConstants.DefaultModeDeleteConfirmation;
+            _branchDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyBranchDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyBranchDeleteConfirmation) : DetailConstants.DefaultBranchDeleteConfirmation;
+
             // Add event handlers
             _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailWidthChanged);
             _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailHeightChanged);
+
+            _groupDeleteConfirmation.RegisterValueChangedCallback(OnGroupDeleteConfirmationChanged);
+            _modeDeleteConfirmation.RegisterValueChangedCallback(OnModeDeleteConfirmationChanged);
+            _branchDeleteConfirmation.RegisterValueChangedCallback(OnBranchDeleteConfirmationChanged);
+
             Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnOpenGestureTableWindowButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
@@ -129,9 +152,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
+
             _openGestureTableWindowButton.text = "Open Gesuture Table Window";
             _updateThumbnailButton.text = localizationTable.MainView_UpdateThumbnails;
             _generateButton.text = "Generate";
+
+            _groupDeleteConfirmation.text = _localizationTable.SettingView_GroupDeleteConfirmation;
+            _modeDeleteConfirmation.text = _localizationTable.SettingView_ModeDeleteConfirmation;
+            _branchDeleteConfirmation.text = _localizationTable.SettingView_BranchDeleteConfirmation;
         }
 
         private void OnMenuUpdated(IMenu menu)
@@ -161,6 +190,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorPrefs.SetInt(DetailConstants.KeyMainThumbnailHeight, changeEvent.newValue);
             _thumbnailDrawer.ClearCache();
         }
+
+        private void OnGroupDeleteConfirmationChanged(ChangeEvent<bool> changeEvent) => EditorPrefs.SetBool(DetailConstants.KeyGroupDeleteConfirmation, changeEvent.newValue);
+
+        private void OnModeDeleteConfirmationChanged(ChangeEvent<bool> changeEvent) => EditorPrefs.SetBool(DetailConstants.KeyModeDeleteConfirmation, changeEvent.newValue);
+
+        private void OnBranchDeleteConfirmationChanged(ChangeEvent<bool> changeEvent) => EditorPrefs.SetBool(DetailConstants.KeyBranchDeleteConfirmation, changeEvent.newValue);
 
         private void OnUpdateThumbnailButtonClicked()
         {
