@@ -804,16 +804,33 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         {
             var clip = aac.NewClip();
 
+            // Generate fesh mesh blendshape animation
             var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
-            if (faceMesh is null)
+            if (faceMesh is SkinnedMeshRenderer)
             {
-                return clip;
+                foreach (var blendshape in AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, _aV3Setting.ReplaceBlink))
+                {
+                    clip = clip.BlendShape(faceMesh, blendshape.name, blendshape.weight);
+                }
             }
 
-            // Generate clip
-            foreach (var blendshape in AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, _aV3Setting.ReplaceBlink))
+            // Generate additional expresstion objects animation
+            foreach (var gameObject in _aV3Setting.AdditionalToggleObjects)
             {
-                clip = clip.BlendShape(faceMesh, blendshape.name, blendshape.weight);
+                if (gameObject is GameObject)
+                {
+                    clip = clip.Toggling(new[] { gameObject }, gameObject.activeSelf);
+                }
+            }
+
+            foreach (var gameObject in _aV3Setting.AdditionalTransformObjects)
+            {
+                if (gameObject is GameObject)
+                {
+                    clip = clip.Positioning(new[] { gameObject }, gameObject.transform.localPosition);
+                    clip = clip.Rotationing(new[] { gameObject }, gameObject.transform.localEulerAngles);
+                    clip = clip.Scaling(new[] { gameObject }, gameObject.transform.localScale);
+                }
             }
 
             return clip;

@@ -30,6 +30,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private bool _isMouthMorphBlendShapesOpened = false;
         private ReorderableList _mouthMorphBlendShapes;
+        private ReorderableList _additionalToggleObjects;
+        private ReorderableList _additionalTransformObjects;
 
         private bool _isMenuPropertiesSettingOpened = false;
 
@@ -63,6 +65,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _mouthMorphBlendShapes.onRemoveCallback = RemoveMouthMorphBlendShape;
             _mouthMorphBlendShapes.draggable = false;
             _mouthMorphBlendShapes.headerHeight = 0;
+
+            // Additional expression objects
+            _additionalToggleObjects = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalToggleObjects)));
+            _additionalToggleObjects.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                var element = _additionalToggleObjects.serializedProperty.GetArrayElementAtIndex(index);
+                EditorGUI.PropertyField(rect, element, GUIContent.none);
+            };
+
+            _additionalTransformObjects = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalTransformObjects)));
+            _additionalTransformObjects.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                var element = _additionalTransformObjects.serializedProperty.GetArrayElementAtIndex(index);
+                EditorGUI.PropertyField(rect, element, GUIContent.none);
+            };
 
             // Set text
             SetText(_localizationSetting.Table);
@@ -234,6 +251,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPriority)),    _localizationTable.InspectorView_AddConfig_HandPriority);
                 TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);
+
+                EditorGUILayout.Space();
+
+                _additionalToggleObjects.drawHeaderCallback = (Rect rect) =>
+                {
+                    EditorGUI.LabelField(rect, _localizationTable.InspectorView_AddtionalToggleObjects);
+                };
+                _additionalToggleObjects.DoLayoutList();
+
+                _additionalTransformObjects.drawHeaderCallback = (Rect rect) =>
+                {
+                    EditorGUI.LabelField(rect, _localizationTable.InspectorView_AddtionalTransformObjects);
+                };
+                _additionalTransformObjects.DoLayoutList();
             }
             _av3Setting.ApplyModifiedProperties();
         }

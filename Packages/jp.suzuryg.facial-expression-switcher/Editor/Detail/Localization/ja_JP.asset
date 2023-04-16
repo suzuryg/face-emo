@@ -69,6 +69,10 @@ MonoBehaviour:
   AnimationElement_Message_GuidWasNotFound: "\u9078\u629E\u3055\u308C\u305F\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u30AF\u30EA\u30C3\u30D7\u304C\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u5185\u306B\u5B58\u5728\u3057\u307E\u305B\u3093\u3002"
   ModeNameProvider_NoExpression: "\u8868\u60C5\u306A\u3057"
   InspectorView_TargetAvatar: "\u5BFE\u8C61\u30A2\u30D0\u30BF\u30FC"
+  InspectorView_AddtionalToggleObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
+    (Toggle)"
+  InspectorView_AddtionalTransformObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
+    (Transform)"
   InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u56FA\u5B9A (1bit)"
   InspectorView_AddConfig_BlinkOff: "\u307E\u3070\u305F\u304DOFF (1bit)"
   InspectorView_AddConfig_DanceGimmick: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF

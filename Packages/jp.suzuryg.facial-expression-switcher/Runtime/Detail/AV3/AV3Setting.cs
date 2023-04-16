@@ -13,6 +13,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
     {
         public VRCAvatarDescriptor TargetAvatar;
         public List<string> MouthMorphBlendShapes = new List<string>();
+        public List<GameObject> AdditionalToggleObjects = new List<GameObject>();
+        public List<GameObject> AdditionalTransformObjects = new List<GameObject>();
 
         public bool SmoothAnalogFist = true;
         public double TransitionDurationSeconds = 0.1;
