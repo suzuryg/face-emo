@@ -60,7 +60,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                 addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
                 Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
             }
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 3; i++)
             {
                 addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
                 Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
@@ -95,7 +95,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             addMenuItemUseCase.Handle(menuId, groupId, AddMenuItemType.Mode);
             Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.InvalidMenuItemListId));
 
-            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetType(loadMenu().Registered.Order[0]), Is.EqualTo(MenuItemType.Group));
             Assert.That(loadMenu().Registered.GetType(loadMenu().Registered.Order[1]), Is.EqualTo(MenuItemType.Group));
             Assert.That(loadMenu().Registered.GetType(loadMenu().Registered.Order[2]), Is.EqualTo(MenuItemType.Group));
@@ -103,7 +103,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetType(loadMenu().Registered.Order[4]), Is.EqualTo(MenuItemType.Mode));
             Assert.That(loadMenu().Registered.GetType(loadMenu().Registered.Order[5]), Is.EqualTo(MenuItemType.Mode));
             Assert.That(loadMenu().Registered.GetType(loadMenu().Registered.Order[6]), Is.EqualTo(MenuItemType.Mode));
-            Assert.That(loadMenu().Registered.GetType(loadMenu().Registered.Order[7]), Is.EqualTo(MenuItemType.Mode));
             Assert.That(loadMenu().Registered.GetGroup(loadMenu().Registered.Order[0]).DisplayName, Is.EqualTo("NewGroup"));
             Assert.That(loadMenu().Registered.GetGroup(loadMenu().Registered.Order[1]).DisplayName, Is.EqualTo("NewGroup"));
             Assert.That(loadMenu().Registered.GetGroup(loadMenu().Registered.Order[2]).DisplayName, Is.EqualTo("NewGroup"));
@@ -111,7 +110,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).DisplayName, Is.EqualTo("NewMode"));
             Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).DisplayName, Is.EqualTo("NewMode"));
             Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).DisplayName, Is.EqualTo("NewMode"));
-            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[7]).DisplayName, Is.EqualTo("NewMode"));
 
             Assert.That(loadMenu().Unregistered.Order.Count, Is.EqualTo(9));
             Assert.That(loadMenu().Unregistered.GetType(loadMenu().Unregistered.Order[0]), Is.EqualTo(MenuItemType.Group));

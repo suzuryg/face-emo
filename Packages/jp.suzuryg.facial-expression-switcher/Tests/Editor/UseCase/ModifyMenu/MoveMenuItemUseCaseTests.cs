@@ -76,7 +76,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
             addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
             addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
-            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
             var g0 = loadMenu().Registered.Order[0];
             var m0 = loadMenu().Registered.Order[1];
             var m1 = loadMenu().Registered.Order[2];
@@ -84,7 +83,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             var m3 = loadMenu().Registered.Order[4];
             var m4 = loadMenu().Registered.Order[5];
             var m5 = loadMenu().Registered.Order[6];
-            var m6 = loadMenu().Registered.Order[7];
 
             addMenuItemUseCase.Handle(menuId, g0, AddMenuItemType.Group);
             addMenuItemUseCase.Handle(menuId, g0, AddMenuItemType.Mode);
@@ -119,7 +117,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             modifyModePropertiesUseCase.Handle(menuId, m3, displayName:  "m3");
             modifyModePropertiesUseCase.Handle(menuId, m4, displayName:  "m4");
             modifyModePropertiesUseCase.Handle(menuId, m5, displayName:  "m5");
-            modifyModePropertiesUseCase.Handle(menuId, m6, displayName:  "m6");
+
             modifyModePropertiesUseCase.Handle(menuId, m7, displayName:  "m7");
             modifyModePropertiesUseCase.Handle(menuId, m8, displayName:  "m8");
             modifyModePropertiesUseCase.Handle(menuId, m9, displayName:  "m9");
@@ -131,7 +129,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             modifyModePropertiesUseCase.Handle(menuId, m15, displayName: "m15");
             modifyModePropertiesUseCase.Handle(menuId, m16, displayName: "m16");
 
-            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m1"));
@@ -139,7 +137,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m3"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m4"));
             Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m5"));
-            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Registered.GetGroupAt(0).Order.Count, Is.EqualTo(8));
             Assert.That(loadMenu().Registered.GetGroupAt(0).GetGroupAt(0).DisplayName, Is.EqualTo("g1"));
@@ -191,7 +188,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             // swap
             moveMenuItemUseCase.Handle(menuId, m1, Menu.RegisteredId, 5);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
@@ -199,11 +196,10 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m1"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m4"));
             Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m5"));
-            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             moveMenuItemUseCase.Handle(menuId, m1, Menu.RegisteredId, 2);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m1"));
@@ -211,11 +207,10 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m3"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m4"));
             Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m5"));
-            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             moveMenuItemUseCase.Handle(menuId, m0, Menu.RegisteredId, 7);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m1"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
@@ -223,7 +218,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m4"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m5"));
             Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m0"));
-            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             moveMenuItemUseCase.Handle(menuId, m8, g0, 6);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
@@ -247,14 +241,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, m4, g1, 100);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(6));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m1"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
             Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m3"));
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m5"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
-            Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Registered.GetGroupAt(0).Count, Is.EqualTo(8));
             Assert.That(loadMenu().Registered.GetGroupAt(0).GetGroupAt(0).DisplayName, Is.EqualTo("g1"));
@@ -278,14 +271,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, m16, g1, -100);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(6));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m1"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
             Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m3"));
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m5"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
-            Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Registered.GetGroupAt(0).Count, Is.EqualTo(8));
             Assert.That(loadMenu().Registered.GetGroupAt(0).GetGroupAt(0).DisplayName, Is.EqualTo("g1"));
@@ -309,7 +301,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, g1, Menu.RegisteredId, 6);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m1"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
@@ -317,7 +309,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m5"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetGroupAt(6).DisplayName, Is.EqualTo("g1"));
-            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Registered.GetGroupAt(0).Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).DisplayName, Is.EqualTo("m7"));
@@ -340,7 +331,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, m10, Menu.UnregisteredId);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
             Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m1"));
             Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
@@ -348,7 +339,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m5"));
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetGroupAt(6).DisplayName, Is.EqualTo("g1"));
-            Assert.That(loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Registered.GetGroupAt(0).Count, Is.EqualTo(6));
             Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).DisplayName, Is.EqualTo("m7"));
@@ -371,14 +361,13 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, g0, Menu.UnregisteredId);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(6));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m3"));
             Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetGroupAt(5).DisplayName, Is.EqualTo("g1"));
-            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(2).Count, Is.EqualTo(6));
             Assert.That(loadMenu().Unregistered.GetGroupAt(2).GetModeAt(0).DisplayName, Is.EqualTo("m7"));
@@ -402,15 +391,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, m15, Menu.RegisteredId);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m3"));
             Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
             Assert.That(loadMenu().Registered.GetGroupAt(5).DisplayName, Is.EqualTo("g1"));
-            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
-            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m15"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m15"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(6));
             Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m7"));
@@ -436,15 +424,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { m2, m3, m0 }, Menu.RegisteredId, 6);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That(loadMenu().Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g1"));
             Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m3"));
             Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
-            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
-            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m15"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m15"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(6));
             Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m7"));
@@ -466,15 +453,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { m7, m11, m12 }, g1, 2);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That(loadMenu().Registered.GetGroupAt(2).DisplayName, Is.EqualTo("g1"));
             Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m3"));
             Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m0"));
-            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m6"));
-            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m15"));
+            Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m15"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(1).Count, Is.EqualTo(3));
             Assert.That(loadMenu().Unregistered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
@@ -496,12 +482,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { g1, m0, m15 }, Menu.UnregisteredId, 1);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(4));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m3"));
-            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(4).Count, Is.EqualTo(3));
             Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
@@ -526,12 +511,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { m7, m11, m4 }, g1, 1);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(5));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(4));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m3"));
-            Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(4).Count, Is.EqualTo(3));
             Assert.That(loadMenu().Unregistered.GetGroupAt(4).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
@@ -556,7 +540,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { m8, m7, m0 }, Menu.RegisteredId, 2);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
@@ -564,7 +548,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
             Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
-            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(2));
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
@@ -586,7 +569,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { m16, m11, m4 }, g0);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
@@ -594,7 +577,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
             Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
-            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(5));
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m9"));
@@ -616,7 +598,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { m9, m13, m16 }, g1, int.MaxValue);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
@@ -624,7 +606,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
             Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
-            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(2));
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m11"));
@@ -646,7 +627,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             moveMenuItemUseCase.Handle(menuId, new List<string>() { m16, m14, m12 }, g0, -1);
             Assert.That(mockMoveMenuItemPresenter.Result, Is.EqualTo(MoveMenuItemResult.Succeeded));
 
-            Assert.That(loadMenu().Registered.Count, Is.EqualTo(8));
+            Assert.That(loadMenu().Registered.Count, Is.EqualTo(7));
             Assert.That( loadMenu().Registered.GetModeAt(0).DisplayName, Is.EqualTo("m1"));
             Assert.That( loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m5"));
             Assert.That( loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m8"));
@@ -654,7 +635,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That( loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m0"));
             Assert.That( loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
             Assert.That( loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
-            Assert.That( loadMenu().Registered.GetModeAt(7).DisplayName, Is.EqualTo("m6"));
 
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).Count, Is.EqualTo(5));
             Assert.That(loadMenu().Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("m16"));
