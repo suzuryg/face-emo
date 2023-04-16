@@ -154,11 +154,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return faceMesh;
         }
 
-        public static HashSet<string> GetBlendShapeNamesToBeExcluded(VRCAvatarDescriptor avatarDescriptor)
+        public static HashSet<string> GetBlendShapeNamesToBeExcluded(VRCAvatarDescriptor avatarDescriptor, bool replaceBlink)
         {
-            var eyeLids = GetEyeLidsBlendShapes(avatarDescriptor);
-            HashSet<string> toBeExcluded = new HashSet<string>(eyeLids);
+            HashSet<string> toBeExcluded = new HashSet<string>();
 
+            // Exclude shape key for blinking when using AvatarDescriptor's blink feature
+            if (!replaceBlink)
+            {
+                toBeExcluded = new HashSet<string>(GetEyeLidsBlendShapes(avatarDescriptor));
+            }
+
+            // Exclude shape key for lip-sync
             if (avatarDescriptor.VisemeBlendShapes is string[])
             {
                 foreach (var name in avatarDescriptor.VisemeBlendShapes)
@@ -199,10 +205,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
-        public static List<(string name, float weight)> GetFaceMeshBlendShapes(VRCAvatarDescriptor avatarDescriptor)
+        public static List<(string name, float weight)> GetFaceMeshBlendShapes(VRCAvatarDescriptor avatarDescriptor, bool replaceBlink)
         {
             var faceMesh = GetFaceMesh(avatarDescriptor);
-            var toBeExcluded = GetBlendShapeNamesToBeExcluded(avatarDescriptor);
+            var toBeExcluded = GetBlendShapeNamesToBeExcluded(avatarDescriptor, replaceBlink);
 
             // Get blendshape names and weights
             var blendShapes = new List<(string name, float weight)>();
@@ -222,47 +228,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return blendShapes;
         }
 
-
-        public static List<(string name, float weight)> GetBlendShapesInRange(string start, string end, VRCAvatarDescriptor avatarDescriptor)
-        {
-            var faceMesh = GetFaceMesh(avatarDescriptor);
-            var toBeExcluded = GetBlendShapeNamesToBeExcluded(avatarDescriptor);
-
-            // Get blendshape names and weights
-            var blendShapes = new List<(string name, float weight)>();
-            bool startExists = false;
-            bool endExists = false;
-            if (faceMesh.sharedMesh is Mesh)
-            {
-                for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
-                {
-                    var name = faceMesh.sharedMesh.GetBlendShapeName(i);
-
-                    if (name == start)
-                    {
-                        startExists = true;
-                    }
-
-                    if (startExists && !IsExcluded(name, toBeExcluded))
-                    {
-                        var weight = faceMesh.GetBlendShapeWeight(i);
-                        blendShapes.Add((name, weight));
-                    }
-
-                    if (name == end)
-                    {
-                        endExists = true;
-                        break;
-                    }
-                }
-            }
-            if (!endExists)
-            {
-                blendShapes.Clear();
-            }
-
-            return blendShapes;
-        }
 
         // https://hacchi-man.hatenablog.com/entry/2020/08/23/220000
         public static void CreateFolderRecursively(string path)

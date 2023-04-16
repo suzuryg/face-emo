@@ -196,7 +196,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...", 1);
         }
 
-        private static void GenerateDefaultFaceLayer(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor, AnimatorController animatorController)
+        private void GenerateDefaultFaceLayer(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor, AnimatorController animatorController)
         {
             var layerName = AV3Constants.LayerName_DefaultFace;
 
@@ -442,7 +442,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 1);
         }
 
-        private static void ModifyMouthMorphCancelerLayer(AV3Setting aV3Setting, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor, AnimatorController animatorController)
+        private void ModifyMouthMorphCancelerLayer(AV3Setting aV3Setting, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor, AnimatorController animatorController)
         {
             var layerName = AV3Constants.LayerName_MouthMorphCanceler;
 
@@ -800,7 +800,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
-        private static AacFlClip GetDefaultFaceAnimation(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
+        private AacFlClip GetDefaultFaceAnimation(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
         {
             var clip = aac.NewClip();
 
@@ -810,25 +810,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 return clip;
             }
 
-            var toBeExcluded = AV3Utility.GetBlendShapeNamesToBeExcluded(avatarDescriptor);
-
-            // Get blendshape names and weights
-            var blendShapes = new List<(string name, float weight)>();
-            if (faceMesh.sharedMesh is Mesh)
-            {
-                for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
-                {
-                    var name = faceMesh.sharedMesh.GetBlendShapeName(i);
-                    if (!AV3Utility.IsExcluded(name, toBeExcluded))
-                    {
-                        var weight = faceMesh.GetBlendShapeWeight(i);
-                        blendShapes.Add((name, weight));
-                    }
-                }
-            }
-
             // Generate clip
-            foreach (var blendshape in blendShapes)
+            foreach (var blendshape in AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, _aV3Setting.ReplaceBlink))
             {
                 clip = clip.BlendShape(faceMesh, blendshape.name, blendshape.weight);
             }
@@ -877,7 +860,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
-        private static AacFlClip GetMouthMorphCancelerAnimation(AV3Setting aV3Setting, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
+        private AacFlClip GetMouthMorphCancelerAnimation(AV3Setting aV3Setting, AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
         {
             var clip = aac.NewClip();
 
@@ -887,28 +870,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 return clip;
             }
 
-            var mouthMorphBlendShapes = new HashSet<string>(aV3Setting.MouthMorphBlendShapes);
-            var toBeExcluded = AV3Utility.GetBlendShapeNamesToBeExcluded(avatarDescriptor);
-
-            // Get blendshape names and weights
-            var blendShapes = new List<(string name, float weight)>();
-            if (faceMesh.sharedMesh is Mesh)
-            {
-                for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
-                {
-                    var name = faceMesh.sharedMesh.GetBlendShapeName(i);
-                    if (mouthMorphBlendShapes.Contains(name) && !AV3Utility.IsExcluded(name, toBeExcluded))
-                    {
-                        var weight = faceMesh.GetBlendShapeWeight(i);
-                        blendShapes.Add((name, weight));
-                    }
-                }
-            }
-
             // Generate clip
-            foreach (var blendshape in blendShapes)
+            var mouthMorphBlendShapes = new HashSet<string>(aV3Setting.MouthMorphBlendShapes);
+            foreach (var blendshape in AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, _aV3Setting.ReplaceBlink))
             {
-                clip = clip.BlendShape(faceMesh, blendshape.name, blendshape.weight);
+                if (mouthMorphBlendShapes.Contains(blendshape.name))
+                {
+                    clip = clip.BlendShape(faceMesh, blendshape.name, blendshape.weight);
+                }
             }
 
             return clip;

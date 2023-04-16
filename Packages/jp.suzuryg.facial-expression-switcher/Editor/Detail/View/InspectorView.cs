@@ -153,7 +153,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _av3Setting.Update();
             if (_av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue is VRCAvatarDescriptor avatarDescriptor)
             {
-                faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor).Select(x => x.name).ToList();
+                var replaceBlink = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).boolValue;
+                faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, replaceBlink).Select(x => x.name).ToList();
             }
 
             UnityEditor.PopupWindow.Show(
