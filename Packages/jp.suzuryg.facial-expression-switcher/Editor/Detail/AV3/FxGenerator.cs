@@ -232,6 +232,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             layer.StateMachine.WithEntryPosition(0, 0).WithAnyStatePosition(2, -2).WithExitPosition(2, 0);
 
             // Create face emote playing states
+            var emptyClip = aac.NewClip();
+            var emptyName = "Empty";
             for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
             {
                 var mode = modes[modeIndex];
@@ -256,15 +258,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     if (branchIndex < 0)
                     {
                         var animation = AV3Utility.GetAnimationClipWithName(mode.Mode.Animation);
-                        if (animation.clip is AnimationClip)
-                        {
-                            emoteState = stateMachine.NewState(animation.name, 1, emoteIndex)
-                                .WithAnimation(animation.clip);
-                        }
-                        else
-                        {
-                            emoteState = stateMachine.NewState("Empty", 1, emoteIndex);
-                        }
+                        emoteState = stateMachine.NewState(animation.name ?? emptyName, 1, emoteIndex)
+                            .WithAnimation(animation.clip ?? emptyClip.Clip);
 
                         emoteState
                             .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), mode.Mode.BlinkEnabled)
@@ -292,11 +287,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                             blendTree.useAutomaticThresholds = false;
                             blendTree.blendParameter = leftWeight;
                             blendTree.blendParameterY = rightWeight;
-                            blendTree.AddChild(baseAnimation.clip, new Vector2(0, 0));
-                            blendTree.AddChild(leftAnimation.clip, new Vector2(1, 0));
-                            blendTree.AddChild(rightAnimation.clip, new Vector2(0, 1));
-                            blendTree.AddChild(bothAnimation.clip, new Vector2(1, 1));
-                            motion = (blendTree, $"{baseAnimation.name}_{leftAnimation.name}_{rightAnimation.name}_{bothAnimation.name}");
+                            blendTree.AddChild(baseAnimation.clip ?? emptyClip.Clip, new Vector2(0, 0));
+                            blendTree.AddChild(leftAnimation.clip ?? emptyClip.Clip, new Vector2(1, 0));
+                            blendTree.AddChild(rightAnimation.clip ?? emptyClip.Clip, new Vector2(0, 1));
+                            blendTree.AddChild(bothAnimation.clip ?? emptyClip.Clip, new Vector2(1, 1));
+                            motion = (blendTree, $"{baseAnimation.name ?? emptyName}_{leftAnimation.name ?? emptyName}_{rightAnimation.name ?? emptyName}_{bothAnimation.name ?? emptyName}");
                         }
                         // Left trigger used
                         else if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
@@ -305,9 +300,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                             blendTree.blendType = BlendTreeType.Simple1D;
                             blendTree.useAutomaticThresholds = false;
                             blendTree.blendParameter = leftWeight;
-                            blendTree.AddChild(baseAnimation.clip, 0);
-                            blendTree.AddChild(leftAnimation.clip, 1);
-                            motion = (blendTree, $"{baseAnimation.name}_{leftAnimation.name}");
+                            blendTree.AddChild(baseAnimation.clip ?? emptyClip.Clip, 0);
+                            blendTree.AddChild(leftAnimation.clip ?? emptyClip.Clip, 1);
+                            motion = (blendTree, $"{baseAnimation.name ?? emptyName}_{leftAnimation.name ?? emptyName}");
                         }
                         // Right trigger used
                         else if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
@@ -316,27 +311,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                             blendTree.blendType = BlendTreeType.Simple1D;
                             blendTree.useAutomaticThresholds = false;
                             blendTree.blendParameter = rightWeight;
-                            blendTree.AddChild(baseAnimation.clip, 0);
-                            blendTree.AddChild(rightAnimation.clip, 1);
-                            motion = (blendTree, $"{baseAnimation.name}_{rightAnimation.name}");
+                            blendTree.AddChild(baseAnimation.clip ?? emptyClip.Clip, 0);
+                            blendTree.AddChild(rightAnimation.clip ?? emptyClip.Clip, 1);
+                            motion = (blendTree, $"{baseAnimation.name ?? emptyName}_{rightAnimation.name ?? emptyName}");
                         }
                         // No triggers used
                         else
                         {
-                            motion = (baseAnimation.clip, baseAnimation.name);
+                            motion = (baseAnimation.clip ?? emptyClip.Clip, baseAnimation.name ?? emptyName);
                         }
 
-                        if (motion.motion is Motion)
-                        {
-                            emoteState = stateMachine.NewState(motion.name, 1, emoteIndex)
-                                .WithAnimation(motion.motion);
-                        }
-                        else
-                        {
-                            emoteState = stateMachine.NewState("Empty", 1, emoteIndex);
-                        }
-
-                        emoteState
+                        emoteState = stateMachine.NewState(motion.name, 1, emoteIndex)
+                            .WithAnimation(motion.motion)
                             .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), branch.BlinkEnabled)
                             .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE), branch.MouthMorphCancelerEnabled && branch.MouthTrackingControl == MouthTrackingControl.Tracking)
                             .TrackingSets(TrackingElement.Eyes, AV3Utility.ConvertEyeTrackingType(branch.EyeTrackingControl))
