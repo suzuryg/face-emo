@@ -100,6 +100,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
                     {
+                        OpenInVeeIfWindowOpened(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
                         setAnimationClipAction(guid);
                     }
                 }
@@ -111,6 +112,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     var guid = GetAnimationGuidWithDialog(DialogMode.Open, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
                     {
+                        OpenInVeeIfWindowOpened(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
                         setAnimationClipAction(guid);
                     }
                 }
@@ -124,6 +126,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, modeDisplayName);
                         if (!string.IsNullOrEmpty(guid))
                         {
+                            OpenInVeeIfWindowOpened(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
                             setAnimationClipAction(guid);
                         }
                     }
@@ -139,18 +142,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     if (GUI.Button(editRect, string.Empty))
                     {
-                        var vee =  EditorWindow.GetWindow<VisualExpressionsEditorWindow>(utility: false, title: null, focus: true);
-
-                        var animator = AV3Utility.GetAnimator(_aV3Setting);
-                        if (animator is Animator && !ReferenceEquals(animator, vee.animator))
-                        {
-                            vee.ChangeAnimator(animator);
-                        }
-
-                        if (clip is AnimationClip && !ReferenceEquals(clip, vee.clip))
-                        {
-                            vee.ChangeClip(clip);
-                        }
+                        OpenInVee(clip);
                     }
                 }
                 GUI.DrawTexture(new Rect(editRect.x + iconMargin, editRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), EditIcon, ScaleMode.ScaleToFit, alphaBlend: true);
@@ -291,6 +283,30 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             return $"{baseAnimationName}.anim";
+        }
+
+        private void OpenInVee(AnimationClip clip)
+        {
+            var vee =  EditorWindow.GetWindow<VisualExpressionsEditorWindow>(utility: false, title: null, focus: true);
+
+            var animator = AV3Utility.GetAnimator(_aV3Setting);
+            if (animator is Animator && !ReferenceEquals(animator, vee.animator))
+            {
+                vee.ChangeAnimator(animator);
+            }
+
+            if (clip is AnimationClip && !ReferenceEquals(clip, vee.clip))
+            {
+                vee.ChangeClip(clip);
+            }
+        }
+
+        private void OpenInVeeIfWindowOpened(AnimationClip clip)
+        {
+            if (EditorWindow.HasOpenInstances<VisualExpressionsEditorWindow>())
+            {
+                OpenInVee(clip);
+            }
         }
 
         private static Texture2D BlackTranslucent = null;
