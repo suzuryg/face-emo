@@ -18,9 +18,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
     public class AnimationElement : IDisposable
     {
         private AV3Setting _aV3Setting;
+        private SerializedObject _aV3Object;
         private LocalizationTable _localizationTable;
-
-        private string _lastOpenedOrSavedAnimationPath;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -30,6 +29,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         {
             _aV3Setting = aV3Setting;
             _localizationTable = localizationSetting.Table;
+
+            _aV3Object = new SerializedObject(_aV3Setting);
 
             localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
         }
@@ -210,7 +211,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 var guid = AssetDatabase.AssetPathToGUID(unityPath);
                 if (!string.IsNullOrEmpty(guid))
                 {
-                    _lastOpenedOrSavedAnimationPath = unityPath;
+                    _aV3Object.Update();
+                    _aV3Object.FindProperty(nameof(AV3Setting.LastOpendOrSavedAnimationPath)).stringValue = unityPath;
+                    _aV3Object.ApplyModifiedProperties();
+
                     return guid;
                 }
                 else
@@ -246,7 +250,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             // Use last opened or saved animation path
-            path = _lastOpenedOrSavedAnimationPath;
+            _aV3Object.Update();
+            path = _aV3Object.FindProperty(nameof(AV3Setting.LastOpendOrSavedAnimationPath)).stringValue;
             while (!string.IsNullOrEmpty(path))
             {
                 path = System.IO.Path.GetDirectoryName(path);

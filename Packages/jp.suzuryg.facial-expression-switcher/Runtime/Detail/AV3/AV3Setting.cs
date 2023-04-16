@@ -27,5 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public bool AddConfig_Override = true;
         public bool AddConfig_HandPriority = true;
         public bool AddConfig_Controller = true;
+
+        public string LastOpendOrSavedAnimationPath;
     }
 }
