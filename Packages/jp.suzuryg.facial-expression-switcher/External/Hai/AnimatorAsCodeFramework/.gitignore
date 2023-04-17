@@ -1,4 +1,4 @@
+*.cs
+*.meta
 LICENSE
-LICENSE.meta
-Editor
-Editor.meta
+!*.asmdef.meta
