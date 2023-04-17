@@ -29,5 +29,13 @@
 			<engine:Toggle name="ModeDeleteConfirmation"/>
 			<engine:Toggle name="BranchDeleteConfirmation"/>
 		</engine:VisualElement>
+
+		<engine:Slider name="OrthoSizeSlider" direction="Vertical"/>
+		<engine:Slider name="CameraPosYSlider" direction="Vertical"/>
+		<engine:Slider name="CameraAngleVSlider" direction="Vertical"/>
+		<engine:VisualElement name="CameraCol" class="GridItem">
+			<engine:Slider name="CameraPosXSlider" direction="Horizontal"/>
+			<engine:Slider name="CameraAngleHSlider" direction="Horizontal"/>
+		</engine:VisualElement>
 	</engine:VisualElement>
 </engine:UXML>

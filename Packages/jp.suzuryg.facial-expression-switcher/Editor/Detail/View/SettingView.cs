@@ -41,6 +41,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private Toggle _groupDeleteConfirmation;
         private Toggle _modeDeleteConfirmation;
         private Toggle _branchDeleteConfirmation;
+        private Slider _cameraPosXSlider;
+        private Slider _cameraPosYSlider;
+        private Slider _cameraAngleHSlider;
+        private Slider _cameraAngleVSlider;
+        private Slider _orthoSizeSlider;
 
         private List<ModeEx> _flattendModes = new List<ModeEx>();
         private string[] _modePaths = new string[0];
@@ -86,8 +91,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public void Dispose()
         {
-            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
-            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
+            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraPosXSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraPosYSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraAngleVSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraAngleHSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _orthoSizeSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
 
             _groupDeleteConfirmation.UnregisterValueChangedCallback(OnGroupDeleteConfirmationChanged);
             _modeDeleteConfirmation.UnregisterValueChangedCallback(OnModeDeleteConfirmationChanged);
@@ -116,8 +126,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _groupDeleteConfirmation = root.Q<Toggle>("GroupDeleteConfirmation");
             _modeDeleteConfirmation = root.Q<Toggle>("ModeDeleteConfirmation");
             _branchDeleteConfirmation = root.Q<Toggle>("BranchDeleteConfirmation");
+            _cameraPosXSlider = root.Q<Slider>("CameraPosXSlider");
+            _cameraPosYSlider = root.Q<Slider>("CameraPosYSlider");
+            _cameraAngleHSlider = root.Q<Slider>("CameraAngleHSlider");
+            _cameraAngleVSlider = root.Q<Slider>("CameraAngleVSlider");
+            _orthoSizeSlider = root.Q<Slider>("OrthoSizeSlider");
             NullChecker.Check(_openGestureTableWindowButton, _updateThumbnailButton, _thumbnailWidthSlider, _thumbnailHeightSlider, _generateButton, _defaultSelectionComboBoxArea,
-                _groupDeleteConfirmation, _modeDeleteConfirmation, _branchDeleteConfirmation);
+                _groupDeleteConfirmation, _modeDeleteConfirmation, _branchDeleteConfirmation,
+                _cameraPosXSlider, _cameraPosYSlider, _cameraAngleHSlider, _cameraAngleVSlider, _orthoSizeSlider);
 
             // Initialize fields
             _thumbnailSetting.Update();
@@ -134,13 +150,48 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailHeightSlider.highValue = ThumbnailSetting.Main_MaxHeight;
             _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Height)).intValue;
 
+            _cameraPosXSlider.bindingPath = nameof(ThumbnailSetting.Main_CameraPosX);
+            _cameraPosXSlider.BindProperty(_thumbnailSetting);
+            _cameraPosXSlider.lowValue = 0;
+            _cameraPosXSlider.highValue = 1;
+            _cameraPosXSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraPosX)).floatValue;
+
+            _cameraPosYSlider.bindingPath = nameof(ThumbnailSetting.Main_CameraPosY);
+            _cameraPosYSlider.BindProperty(_thumbnailSetting);
+            _cameraPosYSlider.lowValue = 0;
+            _cameraPosYSlider.highValue = 1;
+            _cameraPosYSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraPosY)).floatValue;
+
+            _cameraAngleHSlider.bindingPath = nameof(ThumbnailSetting.Main_CameraAngleH);
+            _cameraAngleHSlider.BindProperty(_thumbnailSetting);
+            _cameraAngleHSlider.lowValue = ThumbnailSetting.MaxCameraAngleH * -1;
+            _cameraAngleHSlider.highValue = ThumbnailSetting.MaxCameraAngleH;
+            _cameraAngleHSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraAngleH)).floatValue;
+
+            _cameraAngleVSlider.bindingPath = nameof(ThumbnailSetting.Main_CameraAngleV);
+            _cameraAngleVSlider.BindProperty(_thumbnailSetting);
+            _cameraAngleVSlider.lowValue = ThumbnailSetting.MaxCameraAngleV * -1;
+            _cameraAngleVSlider.highValue = ThumbnailSetting.MaxCameraAngleV;
+            _cameraAngleVSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraAngleV)).floatValue;
+
+            _orthoSizeSlider.bindingPath = nameof(ThumbnailSetting.Main_OrthoSize);
+            _orthoSizeSlider.BindProperty(_thumbnailSetting);
+            _orthoSizeSlider.lowValue = ThumbnailSetting.MinOrthoSize;
+            _orthoSizeSlider.highValue = ThumbnailSetting.MaxOrthoSize;
+            _orthoSizeSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_OrthoSize)).floatValue;
+
             _groupDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyGroupDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyGroupDeleteConfirmation) : DetailConstants.DefaultGroupDeleteConfirmation;
             _modeDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyModeDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyModeDeleteConfirmation) : DetailConstants.DefaultModeDeleteConfirmation;
             _branchDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyBranchDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyBranchDeleteConfirmation) : DetailConstants.DefaultBranchDeleteConfirmation;
 
             // Add event handlers
-            _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
-            _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+            _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraPosXSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraPosYSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraAngleVSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            _cameraAngleHSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            _orthoSizeSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
 
             _groupDeleteConfirmation.RegisterValueChangedCallback(OnGroupDeleteConfirmationChanged);
             _modeDeleteConfirmation.RegisterValueChangedCallback(OnModeDeleteConfirmationChanged);
@@ -194,7 +245,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnBranchDeleteConfirmationChanged(ChangeEvent<bool> changeEvent) => EditorPrefs.SetBool(DetailConstants.KeyBranchDeleteConfirmation, changeEvent.newValue);
 
-        private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
+        private void OnThumbnailSettingChanged<T>(ChangeEvent<T> changeEvent)
         {
             // TODO: Reduce unnecessary redrawing
             _thumbnailDrawer.ClearCache();

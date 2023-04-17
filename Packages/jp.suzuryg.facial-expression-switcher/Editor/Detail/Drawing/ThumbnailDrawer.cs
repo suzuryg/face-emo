@@ -15,6 +15,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         protected override int Width => _thumbnailSetting.Main_Width;
         protected override int Height => _thumbnailSetting.Main_Height;
+        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
+        protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
+        protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
+        protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
         public MainThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
@@ -22,6 +27,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         protected override int Width => _thumbnailSetting.GestureTable_Width;
         protected override int Height => _thumbnailSetting.GestureTable_Height;
+        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
+        protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
+        protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
+        protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
         public GestureTableThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
@@ -29,6 +39,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         protected override int Width => ThumbnailSetting.ExMenu_Width;
         protected override int Height => ThumbnailSetting.ExMenu_Width;
+        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
+        protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
+        protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
+        protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
         public ExMenuThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
@@ -40,6 +55,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         // Properties
         protected abstract int Width { get; }
         protected abstract int Height { get; }
+        protected abstract float OrthoSize { get; }
+        protected abstract float CameraPosX { get; }
+        protected abstract float CameraPosY { get; }
+        protected abstract float CameraAngleX { get; }
+        protected abstract float CameraAngleY { get; }
 
         // Dependencies
         private AV3Setting _aV3Setting;
@@ -148,26 +168,46 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             {
                 // Clone avatar
                 clonedAvatar = UnityEngine.Object.Instantiate(avatarAnimator.gameObject);
+                clonedAvatar.transform.position = Vector3.zero;
+                clonedAvatar.transform.rotation = Quaternion.identity;
                 clonedAvatar.SetActive(true);
                 avatarAnimator.gameObject.SetActive(false);
 
-                // Clone camera
-                var camera = cameraRoot.AddComponent<Camera>();
-                camera.CopyFrom(SceneView.lastActiveSceneView.camera);
-
                 // Adjust the camera position to the avatar's head
+                var camera = cameraRoot.AddComponent<Camera>();
                 var animator = clonedAvatar.GetComponent<Animator>();
+                float x = 0;
+                float y = 0;
                 if (animator is Animator)
                 {
                     if (animator.isHuman)
                     {
                         camera.transform.parent = animator.GetBoneTransform(HumanBodyBones.Head);
+
+                        var leftShoulder = animator.GetBoneTransform(HumanBodyBones.LeftShoulder);
+                        x = Mathf.Lerp(
+                            -ThumbnailSetting.CameraPosXCoef * leftShoulder.position.x,
+                            ThumbnailSetting.CameraPosXCoef * leftShoulder.position.x,
+                            CameraPosX);
+
+                        var distance = Math.Abs(animator.GetBoneTransform(HumanBodyBones.Neck).position.y - _aV3Setting.TargetAvatar.ViewPosition.y);
+                        y = Mathf.Lerp(distance, -distance, CameraPosY);
                     }
                     else
                     {
                         camera.transform.parent = animator.transform;
+
+                        x = Mathf.Lerp(-1, 1, CameraPosX);
+                        y = Mathf.Lerp(-1, 1, CameraPosY);
                     }
                 }
+
+                camera.orthographic = true;
+                camera.orthographicSize = OrthoSize;
+                camera.transform.position = new Vector3(x, _aV3Setting.TargetAvatar.ViewPosition.y + y, 1);
+                cameraRoot.transform.rotation = Quaternion.Euler(0, 180, 0);
+                camera.transform.RotateAround(_aV3Setting.TargetAvatar.ViewPosition, Vector3.right, CameraAngleX);
+                camera.transform.RotateAround(clonedAvatar.transform.position, Vector3.down, CameraAngleY);
 
                 // Generate thumbnails
                 List<string> requests;

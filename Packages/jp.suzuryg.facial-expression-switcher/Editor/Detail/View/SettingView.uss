@@ -4,7 +4,7 @@
     border-color: black;
     border-width: 1px;
     padding: 5px;
-    width: 1000px;
+    width: 1500px;
 }
 
 #RootGrid
