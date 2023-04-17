@@ -29,6 +29,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         public GestureTableThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
     }
 
+    public class ExMenuThumbnailDrawer : ThumbnailDrawerBase
+    {
+        public override string WidthKey => DetailConstants.KeyExMenuThumbnailWidth;
+        public override string HeightKey => DetailConstants.KeyExMenuThumbnailHeight;
+        public override int DefaultWidth => DetailConstants.DefaultExMenuThumbnailWidth;
+        public override int DefaultHeight => DetailConstants.DefaultExMenuThumbnailHeight;
+        public ExMenuThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
+    }
+
     public abstract class ThumbnailDrawerBase : IDisposable
     {
         // Constants

@@ -35,6 +35,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         public static readonly int MinGestureThumbnailHeight = 70;
         public static readonly int MaxGestureThumbnailHeight = 250;
 
+        public static readonly string KeyExMenuThumbnailWidth = $"{DomainConstants.SystemName}_ExMenuThumbnailWidth";
+        public static readonly string KeyExMenuThumbnailHeight = $"{DomainConstants.SystemName}_ExMenuThumbnailHeight";
+        public static readonly int DefaultExMenuThumbnailWidth = 256;
+        public static readonly int DefaultExMenuThumbnailHeight = 256;
+
         public static readonly string KeyGroupDeleteConfirmation = $"{DomainConstants.SystemName}_GroupDeleteConfirmation";
         public static readonly string KeyModeDeleteConfirmation = $"{DomainConstants.SystemName}_ModeDeleteConfirmation";
         public static readonly string KeyBranchDeleteConfirmation = $"{DomainConstants.SystemName}_BranchDeleteConfirmation";

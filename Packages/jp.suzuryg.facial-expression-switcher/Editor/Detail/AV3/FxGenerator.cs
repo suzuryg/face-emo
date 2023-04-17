@@ -21,6 +21,7 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using ExParam = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.Parameter;
 using ExType = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.ValueType;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
@@ -30,12 +31,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private IReadOnlyLocalizationSetting _localizationSetting;
         private ModeNameProvider _modeNameProvider;
+        private ExMenuThumbnailDrawer _exMenuThumbnailDrawer;
         private AV3Setting _aV3Setting;
 
-        public FxGenerator(IReadOnlyLocalizationSetting localizationSetting, ModeNameProvider modeNameProvider, AV3Setting aV3Setting)
+        public FxGenerator(IReadOnlyLocalizationSetting localizationSetting, ModeNameProvider modeNameProvider, ExMenuThumbnailDrawer exMenuThumbnailDrawer, AV3Setting aV3Setting)
         {
             _localizationSetting = localizationSetting;
             _modeNameProvider = modeNameProvider;
+            _exMenuThumbnailDrawer = exMenuThumbnailDrawer;
             _aV3Setting = aV3Setting;
         }
 
@@ -471,6 +474,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var rootMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             rootMenu.name = AV3Constants.RootMenuName;
 
+            // Re-generate thumbnails
+            if (_aV3Setting.GenerateModeThumbnails)
+            {
+                _exMenuThumbnailDrawer.ClearCache();
+                foreach (var mode in modes)
+                {
+                    _exMenuThumbnailDrawer.GetThumbnail(mode.Mode.Animation);
+                }
+                _exMenuThumbnailDrawer.Update();
+            }
+
             GenerateSubMenuRecursive(rootMenu, menu.Registered, idToModeIndex, container);
             GenerateSettingMenu(rootMenu, container);
 
@@ -490,7 +504,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 if (type == MenuItemType.Mode)
                 {
                     var mode = menuItemList.GetMode(id);
-                    parent.controls.Add(CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id]));
+                    var control = CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id]);
+
+                    if (_aV3Setting.GenerateModeThumbnails)
+                    {
+                        var thumbnail = _exMenuThumbnailDrawer.GetThumbnail(mode.Animation);
+                        if (!AssetDatabase.IsMainAsset(thumbnail) && !AssetDatabase.IsSubAsset(thumbnail)) // Do not save icons that have already been generated and error icons
+                        {
+                            AssetDatabase.AddObjectToAsset(thumbnail, container);
+                            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(container));
+                        }
+                        control.icon = thumbnail;
+                    }
+
+                    parent.controls.Add(control);
                 }
                 else
                 {

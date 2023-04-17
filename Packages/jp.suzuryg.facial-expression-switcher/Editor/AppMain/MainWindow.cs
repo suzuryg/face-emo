@@ -64,6 +64,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 _installer.Container.Resolve<AnimationElement>().AddTo(_disposables);
                 _installer.Container.Resolve<MainThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<GestureTableThumbnailDrawer>().AddTo(_disposables);
+                _installer.Container.Resolve<ExMenuThumbnailDrawer>().AddTo(_disposables);
 
                 // Initialize menu display
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();

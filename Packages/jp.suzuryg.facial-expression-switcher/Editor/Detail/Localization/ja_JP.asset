@@ -73,6 +73,7 @@ MonoBehaviour:
     (Toggle)"
   InspectorView_AddtionalTransformObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
     (Transform)"
+  InspectorView_GenerateModeThumbnails: "\u8868\u60C5\u30E2\u30FC\u30C9\u306E\u30B5\u30E0\u30CD\u30A4\u30EB\u3092\u751F\u6210\u3059\u308B"
   InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u56FA\u5B9A (1bit)"
   InspectorView_AddConfig_BlinkOff: "\u307E\u3070\u305F\u304DOFF (1bit)"
   InspectorView_AddConfig_DanceGimmick: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF

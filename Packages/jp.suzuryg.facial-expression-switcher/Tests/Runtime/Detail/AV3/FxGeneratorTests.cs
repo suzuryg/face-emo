@@ -72,8 +72,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
 
             var localizationSetting = new LocalizationSetting();
             var modeNameProvider = new ModeNameProvider(localizationSetting);
-            var fxGenerator = new FxGenerator(localizationSetting, modeNameProvider, new AV3Setting());
-            fxGenerator.Generate(_menu);
+            //var fxGenerator = new FxGenerator(localizationSetting, modeNameProvider, new AV3Setting());
+            //fxGenerator.Generate(_menu);
 
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(DestinationPath);
             _animator.runtimeAnimatorController = controller;

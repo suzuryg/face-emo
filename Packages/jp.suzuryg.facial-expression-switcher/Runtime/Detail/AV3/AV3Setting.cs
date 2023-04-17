@@ -18,6 +18,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         public bool SmoothAnalogFist = true;
         public double TransitionDurationSeconds = 0.1;
+        public bool GenerateModeThumbnails = true;
         public bool ReplaceBlink = true;
         public bool DisableTrackingControls = true;
         public bool DoNotTransitionWhenSpeaking = false;
