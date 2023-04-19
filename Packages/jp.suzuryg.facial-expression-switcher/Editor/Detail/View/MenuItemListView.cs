@@ -36,6 +36,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private SelectionSynchronizer _selectionSynchronizer;
         private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
+        private ThumbnailSetting _thumbnailSetting;
         private MenuItemListViewState _menuItemListViewState;
 
         private Label _titleLabel;
@@ -66,6 +67,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             SelectionSynchronizer selectionSynchronizer,
             MainThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
+            ThumbnailSetting thumbnailSetting,
             MenuItemListViewState menuItemListViewState,
             ModeNameProvider modeNameProvider,
             AnimationElement animationElement)
@@ -84,6 +86,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _selectionSynchronizer = selectionSynchronizer;
             _thumbnailDrawer = thumbnailDrawer;
             _aV3Setting = aV3Setting;
+            _thumbnailSetting = thumbnailSetting;
             _menuItemListViewState = menuItemListViewState;
             _modeNameProvider = modeNameProvider;
             _animationElement = animationElement;
@@ -161,7 +164,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 _menuItemListViewState.TreeViewState = new TreeViewState();
             }
-            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _modeNameProvider, _animationElement, _thumbnailDrawer, _aV3Setting, _menuItemListViewState).AddTo(_treeElementDisposables);
+            _menuItemTreeElement = new MenuItemTreeElement(_localizationSetting, _modeNameProvider, _animationElement, _thumbnailDrawer,
+                _aV3Setting, _thumbnailSetting, _menuItemListViewState).AddTo(_treeElementDisposables);
 
             // Tree element event handlers
             _menuItemTreeElement.OnModePropertiesModified.Synchronize().Subscribe(OnModePropertiesModified).AddTo(_treeElementDisposables);

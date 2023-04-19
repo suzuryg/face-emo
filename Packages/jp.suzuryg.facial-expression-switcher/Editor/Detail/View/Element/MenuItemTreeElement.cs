@@ -55,11 +55,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private AnimationElement _animationElement;
         private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
+        private ThumbnailSetting _thumbnailSetting;
         private MenuItemListViewState _menuItemListViewState;
 
         private bool _isLayoutInitialized = false;
-        private float _previousThumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
-        private float _previousThumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+        private float _previousThumbnailWidth;
+        private float _previousThumbnailHeight;
         private Texture2D _selectedBackgroundTexture;
 
         private string _useAnimationNameText;
@@ -80,6 +81,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             AnimationElement animationElement,
             MainThumbnailDrawer thumbnailDrawer,
             AV3Setting aV3Setting,
+            ThumbnailSetting thumbnailSetting,
             MenuItemListViewState menuItemListViewState) : base(localizationSetting, menuItemListViewState.TreeViewState)
         {
             // Drawer
@@ -96,6 +98,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _modeNameProvider = modeNameProvider;
             _animationElement = animationElement;
             _aV3Setting = aV3Setting;
+            _thumbnailSetting = thumbnailSetting;
+            _previousThumbnailWidth = _thumbnailSetting.Main_Width;
+            _previousThumbnailHeight = _thumbnailSetting.Main_Height;
 
             // Set icon
             _folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_FILL0_wght400_GRAD200_opsz48.png");
@@ -166,8 +171,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             // To update row height.
-            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
-            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+            var thumbnailWidth = _thumbnailSetting.Main_Width;
+            var thumbnailHeight = _thumbnailSetting.Main_Height;
             if (thumbnailWidth != _previousThumbnailWidth || thumbnailHeight != _previousThumbnailHeight)
             {
                 _previousThumbnailWidth = thumbnailWidth;
@@ -300,7 +305,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             var menuItemId = GetMenuItemId(item.id);
             if (Menu.ContainsMode(menuItemId))
             {
-                return Math.Max(GetMinHeight(), AnimationElement.GetHeight()) + TopMargin + BottomMargin + Padding * 2;
+                return Math.Max(GetMinHeight(), _animationElement.GetHeight()) + TopMargin + BottomMargin + Padding * 2;
             }
             else if (Menu.ContainsGroup(menuItemId))
             {
@@ -418,8 +423,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 GUILayout.Space(10);
 
                 // Animation
-                var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
-                var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+                var thumbnailWidth = _thumbnailSetting.Main_Width;
+                var thumbnailHeight = _thumbnailSetting.Main_Height;
                 var animationRect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle(), GUILayout.Width(thumbnailWidth), GUILayout.Height(thumbnailHeight + EditorGUIUtility.singleLineHeight));
                 _animationElement.Draw(animationRect, mode.Animation, _thumbnailDrawer,
                     guid => _onAnimationChanged.OnNext((menuItemId, guid)), _modeNameProvider.Provide(mode));

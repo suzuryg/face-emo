@@ -13,29 +13,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 {
     public class MainThumbnailDrawer : ThumbnailDrawerBase
     {
-        public override string WidthKey => DetailConstants.KeyMainThumbnailWidth;
-        public override string HeightKey => DetailConstants.KeyMainThumbnailHeight;
-        public override int DefaultWidth => DetailConstants.DefaultMainThumbnailWidth;
-        public override int DefaultHeight => DetailConstants.DefaultMainThumbnailHeight;
-        public MainThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
+        protected override int Width => _thumbnailSetting.Main_Width;
+        protected override int Height => _thumbnailSetting.Main_Height;
+        public MainThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
     public class GestureTableThumbnailDrawer : ThumbnailDrawerBase
     {
-        public override string WidthKey => DetailConstants.KeyGestureThumbnailWidth;
-        public override string HeightKey => DetailConstants.KeyGestureThumbnailHeight;
-        public override int DefaultWidth => DetailConstants.DefaultGestureThumbnailWidth;
-        public override int DefaultHeight => DetailConstants.DefaultGestureThumbnailHeight;
-        public GestureTableThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
+        protected override int Width => _thumbnailSetting.GestureTable_Width;
+        protected override int Height => _thumbnailSetting.GestureTable_Height;
+        public GestureTableThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
     public class ExMenuThumbnailDrawer : ThumbnailDrawerBase
     {
-        public override string WidthKey => DetailConstants.KeyExMenuThumbnailWidth;
-        public override string HeightKey => DetailConstants.KeyExMenuThumbnailHeight;
-        public override int DefaultWidth => DetailConstants.DefaultExMenuThumbnailWidth;
-        public override int DefaultHeight => DetailConstants.DefaultExMenuThumbnailHeight;
-        public ExMenuThumbnailDrawer(AV3Setting aV3Setting) : base(aV3Setting) { }
+        protected override int Width => ThumbnailSetting.ExMenu_Width;
+        protected override int Height => ThumbnailSetting.ExMenu_Width;
+        public ExMenuThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
     public abstract class ThumbnailDrawerBase : IDisposable
@@ -44,13 +38,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         private static readonly string EmptyClipKey = "EmptyClipKey";
 
         // Properties
-        public abstract string WidthKey { get; }
-        public abstract string HeightKey { get; }
-        public abstract int DefaultWidth { get; }
-        public abstract int DefaultHeight { get; }
+        protected abstract int Width { get; }
+        protected abstract int Height { get; }
 
         // Dependencies
         private AV3Setting _aV3Setting;
+        protected ThumbnailSetting _thumbnailSetting;
 
         // Other fields
         private HashSet<string> _requests = new HashSet<string>();
@@ -60,10 +53,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
-        public ThumbnailDrawerBase(AV3Setting aV3Setting)
+        public ThumbnailDrawerBase(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting)
         {
             // Dependencies
             _aV3Setting = aV3Setting;
+            _thumbnailSetting = thumbnailSetting;
 
             // Others
             _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz300.png");
@@ -240,9 +234,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 animatorRoot.transform.position = positionCache;
                 animatorRoot.transform.rotation = rotationCache;
 
-                var width = EditorPrefs.HasKey(WidthKey) ? EditorPrefs.GetInt(WidthKey) : DefaultWidth;
-                var height = EditorPrefs.HasKey(HeightKey) ? EditorPrefs.GetInt(HeightKey) : DefaultHeight;
-                var texture = GetRenderedTexture(width, height, camera);
+                var texture = GetRenderedTexture(Width, Height, camera);
 
                 return texture;
             }

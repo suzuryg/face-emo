@@ -25,6 +25,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
         private GestureTableThumbnailDrawer _thumbnailDrawer;
+        private SerializedObject _thumbnailSetting;
 
         private GestureTableElement _gestureTableElement;
 
@@ -46,7 +47,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
-            GestureTableThumbnailDrawer thumbnailDrawer)
+            GestureTableThumbnailDrawer thumbnailDrawer,
+            GestureTableElement gestureTableElement,
+            ThumbnailSetting thumbnailSetting)
         {
             // Usecases
             _addBranchUseCase = addBranchUseCase;
@@ -56,9 +59,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
             _thumbnailDrawer = thumbnailDrawer;
+            _gestureTableElement = gestureTableElement;
+            _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
             // Gesture table element
-            _gestureTableElement = new GestureTableElement(_localizationSetting, _thumbnailDrawer).AddTo(_disposables);
+            _gestureTableElement.AddTo(_disposables);
             _gestureTableElement.OnSelectionChanged.Synchronize().Subscribe(OnSelectionChanged).AddTo(_disposables);
             _gestureTableElement.OnBranchIndexExceeded.Synchronize().Subscribe(_ => OnBranchIndexExceeded()).AddTo(_disposables);
 
@@ -74,9 +79,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public void Dispose()
         {
+            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
+            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
             _disposables.Dispose();
-            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailWidthChanged);
-            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailHeightChanged);
         }
 
         public void Initialize(VisualElement root)
@@ -113,21 +118,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 }).AddTo(_disposables);
 
             // Initialize fields
-            _thumbnailWidthSlider.lowValue = DetailConstants.MinGestureThumbnailWidth;
-            _thumbnailWidthSlider.highValue = DetailConstants.MaxGestureThumbnailWidth;
-            _thumbnailWidthSlider.value = EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailWidth) : DetailConstants.DefaultGestureThumbnailWidth;
+            _thumbnailSetting.Update();
 
-            _thumbnailHeightSlider.lowValue = DetailConstants.MinGestureThumbnailHeight;
-            _thumbnailHeightSlider.highValue = DetailConstants.MaxGestureThumbnailHeight;
-            _thumbnailHeightSlider.value = EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailHeight) : DetailConstants.DefaultGestureThumbnailHeight;
+            _thumbnailWidthSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Width);
+            _thumbnailWidthSlider.BindProperty(_thumbnailSetting);
+            _thumbnailWidthSlider.lowValue = ThumbnailSetting.GestureTable_MinWidth;
+            _thumbnailWidthSlider.highValue = ThumbnailSetting.GestureTable_MaxWidth;
+            _thumbnailWidthSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Width)).intValue;
+
+            _thumbnailHeightSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Height);
+            _thumbnailHeightSlider.BindProperty(_thumbnailSetting);
+            _thumbnailHeightSlider.lowValue = ThumbnailSetting.GestureTable_MinHeight;
+            _thumbnailHeightSlider.highValue = ThumbnailSetting.GestureTable_MaxHeight;
+            _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Height)).intValue;
 
             // Initialize styles
             _canNotAddButtonColor = _addBranchButton.style.color;
             _canNotAddButtonBackgroundColor = _addBranchButton.style.backgroundColor;
 
             // Add event handlers
-            _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailWidthChanged);
-            _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailHeightChanged);
+            _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+            _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnUpdateThumbnailButtonClicked()).AddTo(_disposables);
 
@@ -199,15 +210,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             UpdateDisplay();
         }
 
-        private void OnThumbnailWidthChanged(ChangeEvent<int> changeEvent)
+        private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
         {
-            EditorPrefs.SetInt(DetailConstants.KeyGestureThumbnailWidth, changeEvent.newValue);
-            _thumbnailDrawer.ClearCache();
-        }
-
-        private void OnThumbnailHeightChanged(ChangeEvent<int> changeEvent)
-        {
-            EditorPrefs.SetInt(DetailConstants.KeyGestureThumbnailHeight, changeEvent.newValue);
+            // TODO: Reduce unnecessary redrawing
             _thumbnailDrawer.ClearCache();
         }
 

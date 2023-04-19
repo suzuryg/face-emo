@@ -18,6 +18,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
     public class AnimationElement : IDisposable
     {
         private AV3Setting _aV3Setting;
+        private ThumbnailSetting _thumbnailSetting;
         private SerializedObject _aV3Object;
         private LocalizationTable _localizationTable;
 
@@ -25,14 +26,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public AnimationElement(
             IReadOnlyLocalizationSetting localizationSetting,
-            AV3Setting aV3Setting)
+            AV3Setting aV3Setting,
+            ThumbnailSetting thumbnailSetting)
         {
             _aV3Setting = aV3Setting;
+            _thumbnailSetting = thumbnailSetting;
             _localizationTable = localizationSetting.Table;
 
             _aV3Object = new SerializedObject(_aV3Setting);
 
             localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
+
         }
 
         public void Dispose()
@@ -53,8 +57,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Thumbnail
             LoadTexture();
 
-            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
-            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+            var thumbnailWidth = _thumbnailSetting.Main_Width;
+            var thumbnailHeight = _thumbnailSetting.Main_Height;
 
             Rect thumbnailRect = new Rect(rect.x, rect.y, thumbnailWidth, thumbnailHeight);
             float xCurrent = rect.x;
@@ -154,15 +158,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
         }
 
-        public static float GetWidth()
+        public float GetWidth()
         {
-            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
+            var thumbnailWidth = _thumbnailSetting.Main_Width;
             return thumbnailWidth;
         }
 
-        public static float GetHeight()
+        public float GetHeight()
         {
-            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+            var thumbnailHeight = _thumbnailSetting.Main_Height;
             return thumbnailHeight + EditorGUIUtility.singleLineHeight;
         }
 

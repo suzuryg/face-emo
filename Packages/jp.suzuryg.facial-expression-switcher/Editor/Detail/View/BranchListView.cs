@@ -69,6 +69,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             SelectionSynchronizer selectionSynchronizer,
             AV3Setting aV3Setting,
             MainThumbnailDrawer thumbnailDrawer,
+            BranchListElement branchListElement,
             AnimationElement animationElement)
         {
             // Usecases
@@ -92,11 +93,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _selectionSynchronizer = selectionSynchronizer;
             _aV3Setting = aV3Setting;
             _thumbnailDrawer = thumbnailDrawer;
+            _branchListElement = branchListElement;
             _animationElement = animationElement;
 
             // Branch list element
-            _branchListElement = new BranchListElement(_localizationSetting, _aV3Setting, _modeNameProvider, _animationElement, _thumbnailDrawer).AddTo(_disposables);
-
+            _branchListElement.AddTo(_disposables);
             _branchListElement.OnAnimationChanged.Synchronize().Subscribe(OnAnimationChanged).AddTo(_disposables);
 
             _branchListElement.OnAddBranchButtonClicked.Synchronize().Subscribe(OnAddBranchButtonClicked).AddTo(_disposables);

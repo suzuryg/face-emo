@@ -84,6 +84,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private AnimationElement _animationElement;
         private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
+        private ThumbnailSetting _thumbnailSetting;
         private IReadOnlyLocalizationSetting _localizationSetting;
 
         private ReorderableList _reorderableList;
@@ -114,6 +115,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         public BranchListElement(
             IReadOnlyLocalizationSetting localizationSetting,
             AV3Setting aV3Setting,
+            ThumbnailSetting thumbnailSetting,
             ModeNameProvider modeNameProvider,
             AnimationElement animationElement,
             MainThumbnailDrawer thumbnailDrawer)
@@ -124,6 +126,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _animationElement = animationElement;
             _thumbnailDrawer = thumbnailDrawer;
             _aV3Setting = aV3Setting;
+            _thumbnailSetting = thumbnailSetting;
 
             // Reorderable List
             _reorderableList = new ReorderableList(new List<IBranch>(), typeof(IBranch));
@@ -292,17 +295,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
         }
 
-        private static float GetUpperContentWidth()
+        private float GetUpperContentWidth()
         {
-            return ConditionListElement.GetWidth() + PropertiesWidth + AnimationElement.GetWidth();
+            return ConditionListElement.GetWidth() + PropertiesWidth + _animationElement.GetWidth();
         }
 
-        private static float GetLowerContentWidth()
+        private float GetLowerContentWidth()
         {
-            return AnimationElement.GetWidth() * 3;
+            return _animationElement.GetWidth() * 3;
         }
 
-        private static float GetUpperHorizontalMargin()
+        private float GetUpperHorizontalMargin()
         {
             var upper = GetUpperContentWidth();
             var lower = GetLowerContentWidth();
@@ -311,7 +314,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             return margin;
         }
 
-        private static float GetLowerHorizontalMargin()
+        private float GetLowerHorizontalMargin()
         {
             var upper = GetUpperContentWidth();
             var lower = GetLowerContentWidth();
@@ -340,7 +343,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             var branch = mode.Branches[index];
-            var animationHeight = AnimationElement.GetHeight();
+            var animationHeight = _animationElement.GetHeight();
 
             var height = Padding + Math.Max(MinHeight, Math.Max(ConditionListElement.GetMinHeight(), animationHeight)) + Padding;
 
@@ -382,7 +385,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             centerStyle.alignment = TextAnchor.MiddleCenter;
 
             // Conditions
-            var conditionHeight = Math.Max(ConditionListElement.GetMinHeight(), AnimationElement.GetHeight());
+            var conditionHeight = Math.Max(ConditionListElement.GetMinHeight(), _animationElement.GetHeight());
             condition.OnGUI(new Rect(xCurrent, yCurrent, ConditionListElement.GetWidth(), conditionHeight));
 
             xCurrent += ConditionListElement.GetWidth() + upperHorizontalMargin;
@@ -485,40 +488,40 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             yCurrent = yBegin;
 
             // Base animation
-            var thumbnailWidth = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailWidth) : DetailConstants.DefaultMainThumbnailWidth;
-            var thumbnailHeight = EditorPrefs.HasKey(DetailConstants.KeyMainThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyMainThumbnailHeight) : DetailConstants.DefaultMainThumbnailHeight;
+            var thumbnailWidth = _thumbnailSetting.Main_Width;
+            var thumbnailHeight = _thumbnailSetting.Main_Height;
             _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
                 guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Base)); }, _modeNameProvider.Provide(mode));
 
             xCurrent = xBegin;
-            yCurrent += AnimationElement.GetHeight() + VerticalMargin;
+            yCurrent += _animationElement.GetHeight() + VerticalMargin;
 
             // Left trigger animation
             if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
             {
                 _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
                     guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Left)); }, _modeNameProvider.Provide(mode));
-                GUI.Label(new Rect(xCurrent, yCurrent + AnimationElement.GetHeight(), AnimationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _leftTriggerAnimationText, _centerStyle);
+                GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _leftTriggerAnimationText, _centerStyle);
             }
 
-            xCurrent += AnimationElement.GetWidth() + lowerHorizontalMargin;
+            xCurrent += _animationElement.GetWidth() + lowerHorizontalMargin;
 
             // Right trigger animation
             if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
             {
                 _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
                     guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Right)); }, _modeNameProvider.Provide(mode));
-                GUI.Label(new Rect(xCurrent, yCurrent + AnimationElement.GetHeight(), AnimationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _rightTriggerAnimationText, _centerStyle);
+                GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _rightTriggerAnimationText, _centerStyle);
             }
 
-            xCurrent += AnimationElement.GetWidth() + lowerHorizontalMargin;
+            xCurrent += _animationElement.GetWidth() + lowerHorizontalMargin;
 
             // Both triggers animations
             if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
             {
                 _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
                     guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Both)); }, _modeNameProvider.Provide(mode));
-                GUI.Label(new Rect(xCurrent, yCurrent + AnimationElement.GetHeight(), AnimationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
+                GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
             }
         }
 

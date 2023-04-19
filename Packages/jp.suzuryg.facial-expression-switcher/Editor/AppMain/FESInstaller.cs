@@ -64,6 +64,14 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             aV3Setting.hideFlags = HideFlags.HideInInspector;
             Container.Bind<AV3Setting>().FromInstance(aV3Setting).AsSingle();
 
+            var thumbnailSetting = launcherObject.GetComponent<ThumbnailSetting>();
+            if (thumbnailSetting is null)
+            {
+                thumbnailSetting = launcherObject.AddComponent<ThumbnailSetting>();
+            }
+            thumbnailSetting.hideFlags = HideFlags.HideInInspector;
+            Container.Bind<ThumbnailSetting>().FromInstance(thumbnailSetting).AsSingle();
+
             // Bind non-MonoBehaviour classes
             Container.BindInterfacesTo<SubWindowManager>().AsSingle();
 
@@ -115,6 +123,9 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
             Container.Bind<ModeNameProvider>().AsSingle();
             Container.Bind<AnimationElement>().AsSingle();
+
+            Container.Bind<BranchListElement>().AsTransient();
+            Container.Bind<GestureTableElement>().AsTransient();
 
             Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
 

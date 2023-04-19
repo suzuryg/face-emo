@@ -41,6 +41,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<Unit> _onBranchIndexExceeded = new Subject<Unit>();
 
         private GestureTableThumbnailDrawer _thumbnailDrawer;
+        private ThumbnailSetting _thumbnailSetting;
 
         private Vector2 _scrollPosition = Vector2.zero;
         private Texture2D _elementBorderTexture;
@@ -62,10 +63,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public GestureTableElement(
             IReadOnlyLocalizationSetting localizationSetting,
-            GestureTableThumbnailDrawer thumbnailDrawer)
+            GestureTableThumbnailDrawer thumbnailDrawer,
+            ThumbnailSetting thumbnailSetting)
         {
             // Dependencies
             _thumbnailDrawer = thumbnailDrawer;
+            _thumbnailSetting = thumbnailSetting;
 
             // Styles
             try
@@ -148,12 +151,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private float GetThumbnailWidth()
         {
-            return EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailWidth) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailWidth) : DetailConstants.DefaultGestureThumbnailWidth;
+            return _thumbnailSetting.GestureTable_Width;
         }
 
         private float GetThumbnailHeight()
         {
-            return EditorPrefs.HasKey(DetailConstants.KeyGestureThumbnailHeight) ? EditorPrefs.GetInt(DetailConstants.KeyGestureThumbnailHeight) : DetailConstants.DefaultGestureThumbnailHeight;
+            return _thumbnailSetting.GestureTable_Height;
         }
 
         private float GetElementWidth()
