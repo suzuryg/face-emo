@@ -33,13 +33,24 @@ symlinks:
     include-meta-file: true
 
   - src: ..\combo-gesture-expressions-av3\Assets\Hai\ComboGesture\Scripts\Editor\Internal
-    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Hai\ComboGestureIntegrator
+    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Hai\ComboGestureIntegrator\Internal
     target:
-      - CgeAac
       - CgeAssetContainer.cs
       - CgeLayerForAnalogFistSmoothing.cs
       - CgeLayerForWeightCorrection.cs
-    include-meta-file: true
+    include-meta-file: false
+
+  - src: ..\combo-gesture-expressions-av3\Assets\Hai\ComboGesture\Scripts\Editor\Internal\CgeAac
+    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Hai\ComboGestureIntegrator\Internal
+    target:
+      - CgeAac.cs
+      - CgeAacAnimatorNode.cs
+      - CgeAacDefaultsProvider.cs
+      - CgeAacFlAnimations.cs
+      - CgeAacFlConditions.cs
+      - CgeAacFlStates.cs
+      - CgeAac_LICENSE
+    include-meta-file: false
 
   - src: ..\Extenject\UnityProject\Assets\Plugins
     dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Mathijs-Bakker
