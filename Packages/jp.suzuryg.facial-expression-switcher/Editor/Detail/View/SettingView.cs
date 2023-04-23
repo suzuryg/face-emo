@@ -258,7 +258,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnOpenGestureTableWindowButtonClicked()
         {
-            _subWindowProvider.Open<GestureTableWindow>();
+            _subWindowProvider.Provide<GestureTableWindow>()?.Focus();
         }
 
         private void OnGenerateButtonClicked()

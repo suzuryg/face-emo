@@ -1,12 +1,14 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.UseCase;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor;
 using System;
 using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-using Suzuryg.FacialExpressionSwitcher.UseCase;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
@@ -28,17 +30,34 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             _installer = installer;
         }
 
-        public void Open<T>() where T : EditorWindow
+        public T Provide<T>() where T : EditorWindow
         {
-            Action<VisualElement> initializeAction = (visualElement) =>
+            Action<EditorWindow> initializeAction = (window) =>
             {
                 if (_installer is FESInstaller)
                 {
-                    // Get ViewModel
                     if (typeof(T) == typeof(GestureTableWindow))
                     {
                         var gestureTableView = _installer.Container.Resolve<GestureTableView>().AddTo(_disposables);
-                        gestureTableView.Initialize(visualElement);
+                        gestureTableView.Initialize(window.rootVisualElement);
+                    }
+                    else if (typeof(T) == typeof(ExpressionEditorWindow))
+                    {
+                        if (window is ExpressionEditorWindow expressionEditorWindow)
+                        {
+                            expressionEditorWindow.SetProvider(this);
+                        }
+
+                        var expressionEditorView = _installer.Container.Resolve<ExpressionEditorView>().AddTo(_disposables);
+                        expressionEditorView.Initialize(window.rootVisualElement);
+                    }
+                    else if (typeof(T) == typeof(ExpressionPreviewWindow))
+                    {
+                        if (window is ExpressionPreviewWindow expressionPreviewWindow)
+                        {
+                            var expressionEditor = _installer.Container.Resolve<ExpressionEditor>();
+                            expressionPreviewWindow.Initialize(expressionEditor);
+                        }
                     }
                     else
                     {
@@ -52,31 +71,36 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 }
             };
 
-            // Get window
-            GetWindow<T>(initializeAction);
+            return GetWindow<T>(initializeAction);
+        }
+
+        public T ProvideIfOpenedAlready<T>() where T : EditorWindow
+        {
+            var existingWindows = Resources.FindObjectsOfTypeAll<T>().Where(x => x.titleContent.text == _windowTitle);
+            if (existingWindows.Any()) { return existingWindows.First(); }
+            else { return null; }
         }
 
         public void CloseAllSubWinodows()
         {
             GetWindow<GestureTableWindow>(null)?.Close();
+            GetWindow<ExpressionEditorWindow>(null)?.Close();
+            GetWindow<ExpressionPreviewWindow>(null)?.Close();
         }
 
-        private T GetWindow<T>(Action<VisualElement> initializeAction) where T : EditorWindow
+        private T GetWindow<T>(Action<EditorWindow> initializeAction) where T : EditorWindow
         {
-            var existingWindows = Resources.FindObjectsOfTypeAll<T>().Where(x => x.titleContent.text == _windowTitle);
-            if (existingWindows.Any())
-            {
-                return existingWindows.First();
-            }
+            var existingWindow = ProvideIfOpenedAlready<T>();
+            if (existingWindow is T) { return existingWindow; }
             else
             {
                 var window = ScriptableObject.CreateInstance<T>();
                 window.titleContent = new GUIContent(_windowTitle);
                 window.Show();
 
-                if (initializeAction is Action<VisualElement>)
+                if (initializeAction is Action<EditorWindow>)
                 {
-                    initializeAction(window.rootVisualElement);
+                    initializeAction(window);
                 }
 
                 return window;

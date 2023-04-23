@@ -14,6 +14,7 @@ using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
 using UnityEngine;
 using UnityEditor;
 using Zenject;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
@@ -72,6 +73,14 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             thumbnailSetting.hideFlags = HideFlags.HideInInspector;
             Container.Bind<ThumbnailSetting>().FromInstance(thumbnailSetting).AsSingle();
 
+            var expressionEditorSetting = launcherObject.GetComponent<ExpressionEditorSetting>();
+            if (expressionEditorSetting is null)
+            {
+                expressionEditorSetting = launcherObject.AddComponent<ExpressionEditorSetting>();
+            }
+            expressionEditorSetting.hideFlags = HideFlags.HideInInspector;
+            Container.Bind<ExpressionEditorSetting>().FromInstance(expressionEditorSetting).AsSingle();
+
             // Bind non-MonoBehaviour classes
             Container.BindInterfacesTo<SubWindowManager>().AsSingle();
 
@@ -123,6 +132,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
             Container.Bind<ModeNameProvider>().AsSingle();
             Container.Bind<AnimationElement>().AsSingle();
+            Container.Bind<ExpressionEditor>().AsSingle();
 
             Container.Bind<BranchListElement>().AsTransient();
             Container.Bind<GestureTableElement>().AsTransient();
@@ -136,6 +146,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<SettingView>().AsTransient();
             Container.Bind<GestureTableView>().AsTransient();
             Container.Bind<InspectorView>().AsTransient();
+            Container.Bind<ExpressionEditorView>().AsTransient();
             Container.Bind<UseCaseErrorHandler>().AsTransient();
         }
 

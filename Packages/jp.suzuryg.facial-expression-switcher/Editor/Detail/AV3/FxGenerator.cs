@@ -835,9 +835,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
             if (faceMesh is SkinnedMeshRenderer)
             {
-                foreach (var blendshape in AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, _aV3Setting.ReplaceBlink))
+                var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
+                var excludeLipSync = true;
+                var blendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, excludeBlink, excludeLipSync);
+                foreach (var name in blendShapes.Keys)
                 {
-                    clip = clip.BlendShape(faceMesh, blendshape.name, blendshape.weight);
+                    var weight = blendShapes[name];
+                    clip = clip.BlendShape(faceMesh, name, weight);
                 }
             }
 
@@ -916,11 +920,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Generate clip
             var mouthMorphBlendShapes = new HashSet<string>(aV3Setting.MouthMorphBlendShapes);
-            foreach (var blendshape in AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, _aV3Setting.ReplaceBlink))
+            var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
+            var excludeLipSync = true;
+            var blendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, excludeBlink, excludeLipSync);
+            foreach (var name in blendShapes.Keys)
             {
-                if (mouthMorphBlendShapes.Contains(blendshape.name))
+                var weight = blendShapes[name];
+                if (mouthMorphBlendShapes.Contains(name))
                 {
-                    clip = clip.BlendShape(faceMesh, blendshape.name, blendshape.weight);
+                    clip = clip.BlendShape(faceMesh, name, weight);
                 }
             }
 

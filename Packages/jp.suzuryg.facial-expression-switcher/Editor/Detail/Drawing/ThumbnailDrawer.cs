@@ -1,5 +1,4 @@
-﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
+﻿using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz300.png");
 
             // Update thumbnails when animation is updated
-            // (Called after updating animation in VEE and saving with Ctrl-S)
+            // (Called after updating animation and saving with Ctrl-S)
             AssetUpdateDetector.OnAnimationClipUpdated.Synchronize().ObserveOnMainThread().Subscribe(guids =>
             {
                 foreach (var guid in guids)
@@ -123,6 +122,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                     _requests.Add(guid);
                 }
                 return _errorIcon;
+            }
+        }
+
+        public void RequestUpdate(AnimationClip animationClip)
+        {
+            var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(animationClip));
+            if (!string.IsNullOrEmpty(guid))
+            {
+                lock (_lockRequests)
+                {
+                    _requests.Add(guid);
+                }
             }
         }
 
@@ -274,7 +285,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 animatorRoot.transform.position = positionCache;
                 animatorRoot.transform.rotation = rotationCache;
 
-                var texture = GetRenderedTexture(Width, Height, camera);
+                var texture = DrawingUtility.GetRenderedTexture(Width, Height, camera);
 
                 return texture;
             }
@@ -283,60 +294,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 AnimationMode.StopAnimationMode();
                 animatorRoot.transform.position = positionCache;
                 animatorRoot.transform.rotation = rotationCache;
-            }
-        }
-
-        private static Texture2D GetRenderedTexture(int width, int height, Camera camera)
-        {
-            var texture = new Texture2D(width, height, TextureFormat.RGB24, mipChain: false);
-
-            var renderTexture = RenderTexture.GetTemporary(texture.width, texture.height,
-                format: RenderTextureFormat.ARGB32, readWrite: RenderTextureReadWrite.sRGB, depthBuffer: 24, antiAliasing: 8);
-            try
-            {
-                renderTexture.wrapMode = TextureWrapMode.Clamp;
-                renderTexture.filterMode = FilterMode.Bilinear;
-
-                RenderCamera(renderTexture, camera);
-                CopyRenderTexture(renderTexture, texture);
-            }
-            finally
-            {
-                RenderTexture.ReleaseTemporary(renderTexture);
-            }
-
-            return texture;
-        }
-
-        private static void RenderCamera(RenderTexture renderTexture, Camera camera)
-        {
-            var targetTextureCache = camera.targetTexture;
-            var aspectCache = camera.aspect;
-            try
-            {
-                camera.targetTexture = renderTexture;
-                camera.aspect = (float) renderTexture.width / renderTexture.height;
-                camera.Render();
-            }
-            finally
-            {
-                camera.targetTexture = targetTextureCache;
-                camera.aspect = aspectCache;
-            }
-        }
-
-        private static void CopyRenderTexture(RenderTexture source, Texture2D destination)
-        {
-            var activeRenderTextureCache = RenderTexture.active;
-            try
-            {
-                RenderTexture.active = source;
-                destination.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0, recalculateMipMaps: false);
-                destination.Apply();
-            }
-            finally
-            {
-                RenderTexture.active = activeRenderTextureCache;
             }
         }
     }

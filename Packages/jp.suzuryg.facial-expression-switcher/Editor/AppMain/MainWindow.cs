@@ -13,6 +13,7 @@ using UniRx;
 using System;
 using UnityEngine.UIElements;
 using Hai.VisualExpressionsEditor.Scripts.Editor;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
@@ -65,6 +66,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 _installer.Container.Resolve<MainThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<GestureTableThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<ExMenuThumbnailDrawer>().AddTo(_disposables);
+                _installer.Container.Resolve<ExpressionEditor>().AddTo(_disposables);
 
                 // Initialize menu display
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();
@@ -106,12 +108,6 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         private void OnDisable()
         {
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
-
-            if (HasOpenInstances<VisualExpressionsEditorWindow>())
-            {
-                GetWindow<VisualExpressionsEditorWindow>(utility: false, title: null, focus: false).Close();
-            }
-
             _installer?.SaveUIStates();
             Clean();
         }

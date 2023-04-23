@@ -154,24 +154,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return faceMesh;
         }
 
-        public static HashSet<string> GetBlendShapeNamesToBeExcluded(VRCAvatarDescriptor avatarDescriptor, bool replaceBlink)
+        public static HashSet<string> GetBlendShapeNamesToBeExcluded(VRCAvatarDescriptor avatarDescriptor, bool excludeBlink, bool excludeLipSync)
         {
             HashSet<string> toBeExcluded = new HashSet<string>();
 
             // Exclude shape key for blinking when using AvatarDescriptor's blink feature
-            if (!replaceBlink)
+            if (excludeBlink)
             {
                 toBeExcluded = new HashSet<string>(GetEyeLidsBlendShapes(avatarDescriptor));
             }
 
             // Exclude shape key for lip-sync
-            if (avatarDescriptor.VisemeBlendShapes is string[])
+            if (excludeLipSync && avatarDescriptor.VisemeBlendShapes is string[])
             {
                 foreach (var name in avatarDescriptor.VisemeBlendShapes)
                 {
                     toBeExcluded.Add(name);
                 }
             }
+
             return toBeExcluded;
         }
 
@@ -193,34 +194,26 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return ret;
         }
 
-        public static bool IsExcluded(string name, HashSet<string> toBeExcluded)
-        {
-            if (toBeExcluded.Contains(name) || name.StartsWith("vrc."))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static List<(string name, float weight)> GetFaceMeshBlendShapes(VRCAvatarDescriptor avatarDescriptor, bool replaceBlink)
+        public static Dictionary<string, float> GetFaceMeshBlendShapes(VRCAvatarDescriptor avatarDescriptor, bool excludeBlink, bool excludeLipSync)
         {
             var faceMesh = GetFaceMesh(avatarDescriptor);
-            var toBeExcluded = GetBlendShapeNamesToBeExcluded(avatarDescriptor, replaceBlink);
+            var toBeExcluded = GetBlendShapeNamesToBeExcluded(avatarDescriptor, excludeBlink, excludeLipSync);
 
             // Get blendshape names and weights
-            var blendShapes = new List<(string name, float weight)>();
+            var blendShapes = new Dictionary<string, float>();
             if (faceMesh.sharedMesh is Mesh)
             {
                 for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
                 {
                     var name = faceMesh.sharedMesh.GetBlendShapeName(i);
-                    if (!IsExcluded(name, toBeExcluded))
+
+                    var excluded = toBeExcluded.Contains(name);
+                    if (excludeLipSync && name.StartsWith("vrc.")) { excluded = true; }
+
+                    if (!excluded)
                     {
                         var weight = faceMesh.GetBlendShapeWeight(i);
-                        blendShapes.Add((name, weight));
+                        blendShapes[name] = weight;
                     }
                 }
             }

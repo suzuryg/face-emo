@@ -22,6 +22,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IAddBranchUseCase _addBranchUseCase;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
+        private ISubWindowProvider _subWindowProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
         private GestureTableThumbnailDrawer _thumbnailDrawer;
@@ -45,6 +46,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         public GestureTableView(
             IAddBranchUseCase addBranchUseCase,
             IReadOnlyLocalizationSetting localizationSetting,
+            ISubWindowProvider subWindowProvider,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
             GestureTableThumbnailDrawer thumbnailDrawer,
@@ -56,6 +58,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Others
             _localizationSetting = localizationSetting;
+            _subWindowProvider = subWindowProvider;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
             _thumbnailDrawer = thumbnailDrawer;
@@ -208,6 +211,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _gestureTableElement?.ChangeSelection(viewSelection.MenuItemListView, viewSelection.BranchListView, viewSelection.GestureTableView);
             UpdateDisplay();
+            _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>()?.Focus();
         }
 
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)

@@ -1,9 +1,12 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
+using UnityEngine.UIElements;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public interface ISubWindowProvider
     {
-        void Open<T>() where T : EditorWindow;
+        T Provide<T>() where T : EditorWindow;
+        T ProvideIfOpenedAlready<T>() where T : EditorWindow;
     }
 }
