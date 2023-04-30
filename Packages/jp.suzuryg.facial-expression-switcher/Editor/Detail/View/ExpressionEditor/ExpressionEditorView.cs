@@ -27,6 +27,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         private IMGUIContainer _rootContainer;
 
         private Dictionary<string, bool> _faceBlendShapeFoldoutStates = new Dictionary<string, bool>();
+        private bool _toggleFoldoutState = false;
+        private bool _transformFoldoutState = false;
 
         private Vector2 _leftScrollPosition = Vector2.zero;
         private Vector2 _rightScrollPosition = Vector2.zero;
@@ -120,9 +122,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         {
             _expressionEditorSetting.Update();
 
-            // Calculate blend shape name width
-            var labelWidth = _expressionEditor.FaceBlendShapes.Select(blendShape => GUI.skin.label.CalcSize(new GUIContent(blendShape.Key)).x).DefaultIfEmpty().Max();
-            var buttonWidth = _expressionEditor.FaceBlendShapes.Select(blendShape => GUI.skin.button.CalcSize(new GUIContent(blendShape.Key)).x).DefaultIfEmpty().Max();
+            // Calculate property name width
+            var propertyNames = _expressionEditor.FaceBlendShapes.Select(blendShape => blendShape.Key)
+                .Concat(_expressionEditor.AdditionalToggles.Select(toggle => toggle.Value.gameObject?.name))
+                .Concat(_expressionEditor.AdditionalTransforms.Select(transform => transform.Value?.GameObject?.name));
+            var labelWidth = propertyNames.Select(x => GUI.skin.label.CalcSize(new GUIContent(x)).x).DefaultIfEmpty().Max();
+            var buttonWidth = propertyNames.Select(x => GUI.skin.button.CalcSize(new GUIContent(x)).x).DefaultIfEmpty().Max();
             var maxBlendShapeNameWidth = Math.Max(labelWidth, buttonWidth);
 
             // When contentRect is obtained from IMGUIContainer,
@@ -156,6 +161,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                     using (var scope = new EditorGUILayout.ScrollViewScope(_leftScrollPosition))
                     {
                         Field_AnimatedBlendShapes();
+                        Field_AnimatedToggles();
+                        Field_AnimatedTransforms();
                         _leftScrollPosition = scope.scrollPosition;
                     }
                 }
@@ -169,6 +176,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                     using (var scope = new EditorGUILayout.ScrollViewScope(_rightScrollPosition))
                     {
                         Field_FaceBlendShapes();
+                        Field_Toggles();
+                        Field_Transforms();
                         _rightScrollPosition = scope.scrollPosition;
                     }
                 }
@@ -194,7 +203,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 if (check.changed)
                 {
                     _expressionEditorSetting.ApplyModifiedProperties();
-                    _expressionEditor.FetchBlendShapeValues();
+                    _expressionEditor.FetchProperties();
                 }
             }
         }
@@ -209,7 +218,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 if (check.changed)
                 {
                     _expressionEditorSetting.ApplyModifiedProperties();
-                    _expressionEditor.FetchBlendShapeValues();
+                    _expressionEditor.FetchProperties();
                 }
             }
         }
@@ -268,11 +277,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             // Set buffer
             foreach (var blendShape in changed)
             {
-                _expressionEditor.SetBuffer(blendShape.Key, blendShape.Value);
+                _expressionEditor.SetBlendShapeBuffer(blendShape.Key, blendShape.Value);
             }
             foreach (var key in removed)
             {
-                _expressionEditor.RemoveBuffer(key);
+                _expressionEditor.RemoveBlendShapeBuffer(key);
             }
 
             // Check buffer
@@ -280,6 +289,165 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             {
                 _expressionEditor.CheckBuffer();
             }
+        }
+
+        private void Field_AnimatedToggles()
+        {
+            var changed = new Dictionary<int, bool>();
+            var removed = new List<int>();
+
+            var labelWidth = _expressionEditor.AnimatedAdditionalTogglesBuffer
+                .Select(toggle => GUI.skin.label.CalcSize(new GUIContent(toggle.Value.gameObject?.name)).x)
+                .DefaultIfEmpty()
+                .Max();
+            labelWidth += 10;
+
+            EditorGUILayout.Space();
+
+            // Draw controls
+            foreach (var toggle in _expressionEditor.AnimatedAdditionalTogglesBuffer)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    // Label
+                    GUIContent labelContent = new GUIContent(toggle.Value.gameObject?.name);
+                    Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
+                    GUI.Label(labelRect, labelContent);
+
+                    // Toggle
+                    var isActive = GUILayout.Toggle(toggle.Value.isActive, string.Empty);
+                    if (isActive != toggle.Value.isActive)
+                    {
+                        changed[toggle.Key] = isActive;
+                    }
+
+                    GUILayout.FlexibleSpace();
+
+                    // Remove button
+                    if (GUILayout.Button("x", _removeButtonStyle, GUILayout.Width(20)))
+                    {
+                        removed.Add(toggle.Key);
+                    }
+                }
+            }
+
+            // Set buffer
+            foreach (var toggle in changed)
+            {
+                _expressionEditor.SetToggleBuffer(toggle.Key, toggle.Value);
+            }
+            foreach (var key in removed)
+            {
+                _expressionEditor.RemoveToggleBuffer(key);
+            }
+
+            // Check buffer
+            if (changed.Any() || removed.Any())
+            {
+                _expressionEditor.CheckBuffer();
+            }
+        }
+
+        private void Field_AnimatedTransforms()
+        {
+            var fieldInputPerformed = false;
+            var changed = new Dictionary<int, TransformProxy>();
+            var removed = new List<int>();
+
+            var labelWidth = GUI.skin.label.CalcSize(new GUIContent("ScaleX")).x;
+            labelWidth += 10;
+
+            // If no space is inserted here, the horizontal line of the topmost Slider will disappear.
+            EditorGUILayout.Space();
+
+            // Draw controls
+            foreach (var transform in _expressionEditor.AnimatedAdditionalTransformsBuffer)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    GUILayout.Label(transform.Value?.GameObject?.name);
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("x", _removeButtonStyle, GUILayout.Width(20)))
+                    {
+                        removed.Add(transform.Key);
+                    }
+                }
+
+                var copied = transform.Value.Copy();
+
+                // Position
+                fieldInputPerformed |= TransformSlider(labelWidth, "PosX", transform.Value.PositionX, -0.2f, 0.2f, 0.0001f,
+                    value => { copied.PositionX = value; changed[transform.Key] = copied; });
+                fieldInputPerformed |= TransformSlider(labelWidth, "PosY", transform.Value.PositionY, -0.2f, 0.2f, 0.0001f,
+                    value => { copied.PositionY = value; changed[transform.Key] = copied; });
+                fieldInputPerformed |= TransformSlider(labelWidth, "PosZ", transform.Value.PositionZ, -0.2f, 0.2f, 0.0001f,
+                    value => { copied.PositionZ = value; changed[transform.Key] = copied; });
+
+                // Rotation
+                fieldInputPerformed |= TransformSlider(labelWidth, "RotX", transform.Value.RotationX, -180, 180, 0.0001f,
+                    value => { copied.RotationX = value; changed[transform.Key] = copied; });
+                fieldInputPerformed |= TransformSlider(labelWidth, "RotY", transform.Value.RotationY, -180, 180, 0.0001f,
+                    value => { copied.RotationY = value; changed[transform.Key] = copied; });
+                fieldInputPerformed |= TransformSlider(labelWidth, "RotZ", transform.Value.RotationZ, -180, 180, 0.0001f,
+                    value => { copied.RotationZ = value; changed[transform.Key] = copied; });
+
+                // Scale
+                fieldInputPerformed |= TransformSlider(labelWidth, "ScaleX", transform.Value.ScaleX, 0, 2, 0.0001f,
+                    value => { copied.ScaleX = value; changed[transform.Key] = copied; });
+                fieldInputPerformed |= TransformSlider(labelWidth, "ScaleY", transform.Value.ScaleY, 0, 2, 0.0001f,
+                    value => { copied.ScaleY = value; changed[transform.Key] = copied; });
+                fieldInputPerformed |= TransformSlider(labelWidth, "ScaleZ", transform.Value.ScaleZ, 0, 2, 0.0001f,
+                    value => { copied.ScaleZ = value; changed[transform.Key] = copied; });
+            }
+
+            // Set buffer
+            foreach (var transform in changed)
+            {
+                _expressionEditor.SetTransformBuffer(transform.Key, transform.Value);
+            }
+            foreach (var key in removed)
+            {
+                _expressionEditor.RemoveTransformBuffer(key);
+            }
+
+            // Check buffer
+            if (fieldInputPerformed || removed.Any())
+            {
+                _expressionEditor.CheckBuffer();
+            }
+        }
+
+        private static bool TransformSlider(float labelWidth, string labelText, float value, float minValue, float maxValue, float increment, Action<float> changed)
+        {
+            value = Mathf.Round(value / increment) * increment;
+            var fieldInputPerformed = false;
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                // Label
+                GUIContent labelContent = new GUIContent(labelText);
+                Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
+                GUI.Label(labelRect, labelContent);
+
+                // Slider
+                Rect sliderRect = GUILayoutUtility.GetRect(labelRect.x, labelRect.y, GUILayout.ExpandWidth(true), GUILayout.MinWidth(100));
+                var sliderValue = GUI.HorizontalSlider(sliderRect, value, minValue, maxValue);
+                sliderValue = Mathf.Round(sliderValue / increment) * increment;
+                if (!Mathf.Approximately(sliderValue, value))
+                {
+                    changed(sliderValue);
+                }
+
+                // DelayedFloatField
+                var fieldValue = EditorGUILayout.DelayedFloatField(value, GUILayout.Width(60));
+                if (!Mathf.Approximately(fieldValue, value))
+                {
+                    changed(fieldValue);
+                    fieldInputPerformed = true;
+                }
+            }
+
+            return fieldInputPerformed;
         }
 
         private void Field_FaceBlendShapes()
@@ -345,7 +513,90 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             // Set buffer
             foreach (var key in added)
             {
-                _expressionEditor.SetBuffer(key, 100);
+                _expressionEditor.SetBlendShapeBuffer(key, 100);
+            }
+
+            // Check buffer
+            if (added.Any())
+            {
+                _expressionEditor.CheckBuffer();
+            }
+        }
+
+        private void Field_Toggles()
+        {
+            // Draw buttons
+            var added = new List<int>();
+            _toggleFoldoutState = EditorGUILayout.Foldout(_toggleFoldoutState, "Toggles");
+            if (_toggleFoldoutState)
+            {
+                foreach (var toggle in _expressionEditor.AdditionalToggles)
+                {
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Space(IndentWidth);
+
+                        if (_expressionEditor.AnimatedAdditionalTogglesBuffer.ContainsKey(toggle.Key))
+                        {
+                            GUILayout.Label(toggle.Value.gameObject?.name);
+                        }
+                        else
+                        {
+                            if (GUILayout.Button(toggle.Value.gameObject?.name, _addPropertyButtonStyle))
+                            {
+                                added.Add(toggle.Key);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Set buffer
+            foreach (var key in added)
+            {
+                _expressionEditor.SetToggleBuffer(key, _expressionEditor.AdditionalToggles[key].isActive);
+            }
+
+            // Check buffer
+            if (added.Any())
+            {
+                _expressionEditor.CheckBuffer();
+            }
+        }
+
+        private void Field_Transforms()
+        {
+            // Draw buttons
+            var added = new List<int>();
+            _transformFoldoutState = EditorGUILayout.Foldout(_transformFoldoutState, "Transforms");
+            if (_transformFoldoutState)
+            {
+                foreach (var transform in _expressionEditor.AdditionalTransforms)
+                {
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Space(IndentWidth);
+
+                        if (_expressionEditor.AnimatedAdditionalTransformsBuffer.ContainsKey(transform.Key))
+                        {
+                            GUILayout.Label(transform.Value.GameObject?.name);
+                        }
+                        else
+                        {
+                            if (GUILayout.Button(transform.Value.GameObject?.name, _addPropertyButtonStyle))
+                            {
+                                added.Add(transform.Key);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Set buffer
+            foreach (var key in added)
+            {
+                var transform = TransformProxy.FromGameObject(_expressionEditor.AdditionalTransforms[key]?.GameObject);
+                _expressionEditor.SetTransformBuffer(key, transform);
             }
 
             // Check buffer

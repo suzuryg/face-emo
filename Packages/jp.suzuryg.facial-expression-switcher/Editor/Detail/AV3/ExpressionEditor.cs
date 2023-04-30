@@ -20,6 +20,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public AnimationClip Clip { get; private set; }
         public IReadOnlyDictionary<string, float> FaceBlendShapes => _faceBlendShapes;
         public IReadOnlyDictionary<string, float> AnimatedBlendShapesBuffer => _animatedBlendShapesBuffer;
+        public IReadOnlyDictionary<int, (GameObject gameObject, bool isActive)> AdditionalToggles => _additionalToggles;
+        public IReadOnlyDictionary<int, (GameObject gameObject, bool isActive)> AnimatedAdditionalTogglesBuffer => _animatedAdditionalTogglesBuffer;
+        public IReadOnlyDictionary<int, TransformProxy> AdditionalTransforms => _additionalTransforms;
+        public IReadOnlyDictionary<int, TransformProxy> AnimatedAdditionalTransformsBuffer => _animatedAdditionalTransformsBuffer;
 
         private ISubWindowProvider _subWindowProvider;
         private MainThumbnailDrawer _mainThumbnailDrawer;
@@ -32,6 +36,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         private Dictionary<string, float> _faceBlendShapes = new Dictionary<string, float>();
         private Dictionary<string, float> _animatedBlendShapes = new Dictionary<string, float>();
         private Dictionary<string, float> _animatedBlendShapesBuffer = new Dictionary<string, float>();
+        private Dictionary<int, (GameObject gameObject, bool isActive)> _additionalToggles = new Dictionary<int, (GameObject gameObject, bool isActive)>();
+        private Dictionary<int, (GameObject gameObject, bool isActive)> _animatedAdditionalToggles = new Dictionary<int, (GameObject gameObject, bool isActive)>();
+        private Dictionary<int, (GameObject gameObject, bool isActive)> _animatedAdditionalTogglesBuffer = new Dictionary<int, (GameObject gameObject, bool isActive)>();
+        private Dictionary<int, TransformProxy> _additionalTransforms = new Dictionary<int, TransformProxy>();
+        private Dictionary<int, TransformProxy> _animatedAdditionalTransforms = new Dictionary<int, TransformProxy>();
+        private Dictionary<int, TransformProxy> _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -68,7 +78,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             _subWindowProvider.Provide<ExpressionEditorWindow>()?.Focus();
             _subWindowProvider.Provide<ExpressionPreviewWindow>()?.Focus();
 
-            FetchBlendShapeValues();
+            FetchProperties();
             InitializePreviewClip();
             StartSampling(); // Because preview window is focused.
         }
@@ -89,6 +99,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             if (_previewAvatar is GameObject) { UnityEngine.Object.DestroyImmediate(_previewAvatar); }
             _previewAvatar = UnityEngine.Object.Instantiate(avatarRoot);
+            _previewAvatar.hideFlags = HideFlags.HideAndDontSave;
 
             AnimationMode.StartAnimationMode();
             AnimationMode.BeginSampling();
@@ -151,16 +162,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
-        public void FetchBlendShapeValues()
+        public void FetchProperties()
         {
             _faceBlendShapes.Clear();
             _animatedBlendShapes.Clear();
             _animatedBlendShapesBuffer.Clear();
 
+            _additionalTransforms.Clear();
+            _animatedAdditionalTransforms.Clear();
+            _animatedAdditionalTransformsBuffer.Clear();
+
+            _additionalToggles.Clear();
+            _animatedAdditionalToggles.Clear();
+            _animatedAdditionalTogglesBuffer.Clear();
+
             // Get face blendshapes
             _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(_aV3Setting?.TargetAvatar, excludeBlink: false, excludeLipSync: true);
-
-            // Get animated blendshapes
             var animatedBlendShapes = GetBlendShapeValues(Clip, _faceBlendShapes.Keys);
             foreach (var blendShape in animatedBlendShapes)
             {
@@ -170,11 +187,37 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 }
             }
 
+            // Get additional toggles
+            foreach (var gameObject in _aV3Setting?.AdditionalToggleObjects)
+            {
+                if (gameObject is GameObject)
+                {
+                    var id = gameObject.GetInstanceID();
+                    _additionalToggles[id] = (gameObject, gameObject.activeSelf);
+
+                    var animatedValue = GetToggleValue(Clip, gameObject);
+                    if (animatedValue.HasValue) { _animatedAdditionalToggles[id] = (gameObject, animatedValue.Value); }
+                }
+            }
+
+            // Get additional transforms
+            foreach (var gameObject in _aV3Setting?.AdditionalTransformObjects)
+            {
+                if (gameObject is GameObject)
+                {
+                    var id = gameObject.GetInstanceID();
+                    _additionalTransforms[id] = TransformProxy.FromGameObject(gameObject);
+                    if (GetTransformValue(Clip, gameObject) is TransformProxy transform) { _animatedAdditionalTransforms[id] = transform; }
+                }
+            }
+
             // Initialize buffer
             _animatedBlendShapesBuffer = new Dictionary<string, float>(_animatedBlendShapes);
+            _animatedAdditionalTogglesBuffer = new Dictionary<int, (GameObject gameObject, bool isActive)>(_animatedAdditionalToggles);
+            _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>(_animatedAdditionalTransforms);
         }
 
-        public void SetBuffer(string blendShapeName, float newValue)
+        public void SetBlendShapeBuffer(string blendShapeName, float newValue)
         {
             // Set buffer
             _animatedBlendShapesBuffer[blendShapeName] = newValue;
@@ -184,7 +227,30 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             RenderPreviewClip();
         }
 
-        public void RemoveBuffer(string blendShapeName)
+        public void SetToggleBuffer(int objectId, bool isActive) 
+        {
+            var gameObject = GetMatchedToggleObject(objectId);
+            if (gameObject is null) { return; }
+
+            // Set buffer
+            _animatedAdditionalTogglesBuffer[objectId] = (gameObject, isActive);
+
+            // Update preview clip
+            SetToggleValue(_previewClip, gameObject, isActive);
+            RenderPreviewClip();
+        }
+
+        public void SetTransformBuffer(int objectId, TransformProxy transform)
+        {
+            // Set buffer
+            _animatedAdditionalTransformsBuffer[objectId] = transform;
+
+            // Update preview clip
+            SetTransformValue(_previewClip, transform);
+            RenderPreviewClip();
+        }
+
+        public void RemoveBlendShapeBuffer(string blendShapeName)
         {
             // Remove buffer
             _animatedBlendShapesBuffer.Remove(blendShapeName);
@@ -194,10 +260,33 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             RenderPreviewClip();
         }
 
+        public void RemoveToggleBuffer(int objectId)
+        {
+            // Remove buffer
+            var gameObject = _animatedAdditionalTogglesBuffer[objectId].gameObject;
+            _animatedAdditionalTogglesBuffer.Remove(objectId);
+
+            // Update preview clip
+            RemoveToggleValue(_previewClip, gameObject);
+            RenderPreviewClip();
+        }
+
+        public void RemoveTransformBuffer(int objectId)
+        {
+            // Remove buffer
+            var transform = _animatedAdditionalTransformsBuffer[objectId];
+            _animatedAdditionalTransformsBuffer.Remove(objectId);
+
+            // Update preview clip
+            RemoveTransformValue(_previewClip, transform?.GameObject);
+            RenderPreviewClip();
+        }
+
         public void CheckBuffer()
         {
             // Check for updates
-            var updated = new List<string>();
+            // BlendShape
+            var updatedBlendShapes = new List<string>();
             foreach (var blendShape in _animatedBlendShapesBuffer)
             {
                 if (_animatedBlendShapes.ContainsKey(blendShape.Key))
@@ -205,40 +294,122 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     // If the value is changed, assume it updated.
                     if (!Mathf.Approximately(blendShape.Value, _animatedBlendShapes[blendShape.Key]))
                     {
-                        updated.Add(blendShape.Key);
+                        updatedBlendShapes.Add(blendShape.Key);
                     }
                 }
                 else
                 {
                     // If the key is added, assume it updated.
-                    updated.Add(blendShape.Key);
+                    updatedBlendShapes.Add(blendShape.Key);
+                }
+            }
+            // Toggle
+            var updatedToggles = new List<int>();
+            foreach (var toggle in _animatedAdditionalTogglesBuffer)
+            {
+                if (_animatedAdditionalToggles.ContainsKey(toggle.Key))
+                {
+                    // If the value is changed, assume it updated.
+                    if (_animatedAdditionalToggles[toggle.Key] != toggle.Value)
+                    {
+                        updatedToggles.Add(toggle.Key);
+                    }
+                }
+                else
+                {
+                    // If the key is added, assume it updated.
+                    updatedToggles.Add(toggle.Key);
+                }
+            }
+            // Transform
+            var updatedTransforms = new List<int>();
+            foreach (var transform in _animatedAdditionalTransformsBuffer)
+            {
+                if (_animatedAdditionalTransforms.ContainsKey(transform.Key))
+                {
+                    // If the value is changed, assume it updated.
+                    if (TransformProxy.IsUpdated(_animatedAdditionalTransforms[transform.Key], transform.Value))
+                    {
+                        updatedTransforms.Add(transform.Key);
+                    }
+                }
+                else
+                {
+                    // If the key is added, assume it updated.
+                    updatedTransforms.Add(transform.Key);
                 }
             }
 
             // Check for removes
-            var removed = new List<string>();
+            // BlendShape
+            var removedBlendShapes = new List<string>();
             foreach (var key in _animatedBlendShapes.Keys)
             {
-                if (!_animatedBlendShapesBuffer.ContainsKey(key)) { removed.Add(key); }
+                if (!_animatedBlendShapesBuffer.ContainsKey(key)) { removedBlendShapes.Add(key); }
+            }
+            // Toggle
+            var removedToggles = new List<int>();
+            foreach (var key in _animatedAdditionalToggles.Keys)
+            {
+                if (!_animatedAdditionalTogglesBuffer.ContainsKey(key)) { removedToggles.Add(key); }
+            }
+            // Transform
+            var removedTransforms = new List<int>();
+            foreach (var key in _animatedAdditionalTransforms.Keys)
+            {
+                if (!_animatedAdditionalTransformsBuffer.ContainsKey(key)) { removedTransforms.Add(key); }
             }
 
             // Update clip
-            foreach (var key in updated)
+            // BlendShape
+            foreach (var key in updatedBlendShapes)
             {
                 var value = _animatedBlendShapesBuffer[key];
                 _animatedBlendShapes[key] = value;
                 Undo.RecordObject(Clip, $"Set {key} to {value}");
                 SetBlendShapeValue(Clip, key, value);
             }
-            foreach (var key in removed)
+            foreach (var key in removedBlendShapes)
             {
                 _animatedBlendShapes.Remove(key);
                 Undo.RecordObject(Clip, $"Remove {key}");
                 RemoveBlendShapeValue(Clip, key);
             }
+            // Toggle
+            foreach (var key in updatedToggles)
+            {
+                var value = _animatedAdditionalTogglesBuffer[key];
+                var text = value.isActive ? "enabled" : "disabled";
+
+                _animatedAdditionalToggles[key] = value;
+                Undo.RecordObject(Clip, $"Set {value.gameObject} to {text}");
+                SetToggleValue(Clip, value.gameObject, value.isActive);
+            }
+            foreach (var key in removedToggles)
+            {
+                var value = _animatedAdditionalToggles[key];
+                _animatedAdditionalToggles.Remove(key);
+                Undo.RecordObject(Clip, $"Remove Toggle of {value.gameObject.name}");
+                RemoveToggleValue(Clip, value.gameObject);
+            }
+            // Transform
+            foreach (var key in updatedTransforms)
+            {
+                var value = _animatedAdditionalTransformsBuffer[key];
+                _animatedAdditionalTransforms[key] = value;
+                Undo.RecordObject(Clip, $"Update Transform of {value?.GameObject?.name}");
+                SetTransformValue(Clip, value);
+            }
+            foreach (var key in removedTransforms)
+            {
+                var gameObject = _animatedAdditionalTransforms[key]?.GameObject;
+                _animatedAdditionalTransforms.Remove(key);
+                Undo.RecordObject(Clip, $"Remove Transform of {gameObject?.name}");
+                RemoveTransformValue(Clip, gameObject);
+            }
 
             // Repaint
-            if (updated.Any() || removed.Any())
+            if (updatedBlendShapes.Any() || removedBlendShapes.Any() || updatedToggles.Any() || removedToggles.Any() || updatedTransforms.Any() || removedTransforms.Any())
             {
                 _mainThumbnailDrawer.RequestUpdate(Clip);
                 _gestureTableThumbnailDrawer.RequestUpdate(Clip);
@@ -248,6 +419,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Initialize buffer
             _animatedBlendShapesBuffer = new Dictionary<string, float>(_animatedBlendShapes);
+            _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>(_animatedAdditionalTransforms);
         }
 
         private void RenderPreviewClip()
@@ -272,7 +444,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private void OnUndoRedoPerformed()
         {
-            FetchBlendShapeValues();
+            FetchProperties();
             InitializePreviewClip();
 
             _subWindowProvider.ProvideIfOpenedAlready<ExpressionEditorWindow>()?.Repaint();
@@ -301,11 +473,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             foreach (var binding in bindings)
             {
                 var curve = AnimationUtility.GetEditorCurve(animationClip, binding.Value);
-                if (curve is AnimationCurve && curve.keys.Length > 0)
-                {
-                    var value = curve.keys[0].value;
-                    blendShapes[binding.Key] = value;
-                }
+                if (curve is AnimationCurve && curve.keys.Length > 0) { blendShapes[binding.Key] = curve.keys[0].value; }
             }
             return blendShapes;
         }
@@ -313,17 +481,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         private void SetBlendShapeValue(AnimationClip animationClip, string blendShapeName, float newValue)
         {
             var binding = GetBlendShapeBindings(new[] { blendShapeName }).FirstOrDefault();
-            var curve = AnimationUtility.GetEditorCurve(animationClip, binding.Value);
-            if (curve is AnimationCurve && curve.keys.Length > 0)
-            {
-                // Modify
-                curve.keys = curve.keys.Select(keyframe => { keyframe.value = newValue; return keyframe; }).ToArray();
-            }
-            else
-            {
-                // Add
-                curve = new AnimationCurve(new Keyframe(time: 0, value: newValue));
-            }
+            var curve = new AnimationCurve(new Keyframe(time: 0, value: newValue));
             AnimationUtility.SetEditorCurve(animationClip, binding.Value, curve);
         }
 
@@ -331,6 +489,150 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         {
             var binding = GetBlendShapeBindings(new[] { blendShapeName }).FirstOrDefault();
             AnimationUtility.SetEditorCurve(animationClip, binding.Value, null);
+        }
+
+        private bool? GetToggleValue(AnimationClip animationClip, GameObject gameObject)
+        {
+            var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
+            var transformPath = AnimationUtility.CalculateTransformPath(gameObject?.transform, animator?.transform);
+
+            var curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_IsActive", type = typeof(GameObject) });
+            if (curve is AnimationCurve && curve.keys.Length > 0)
+            {
+                var value = curve.keys[0].value;
+                if (value > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private GameObject GetMatchedToggleObject(int objectId)
+        {
+            GameObject targetObject = null;
+            foreach (var gameObject in _aV3Setting?.AdditionalToggleObjects)
+            {
+                if (gameObject?.GetInstanceID() == objectId)
+                {
+                    targetObject = gameObject;
+                    break;
+                }
+            }
+            return targetObject;
+        }
+
+        private void SetToggleValue(AnimationClip animationClip, GameObject gameObject, bool isActive)
+        {
+            var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
+            var transformPath = AnimationUtility.CalculateTransformPath(gameObject?.transform, animator?.transform);
+            var curve = new AnimationCurve(new Keyframe(time: 0, value: isActive ? 1 : 0));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_IsActive", type = typeof(GameObject) }, curve);
+        }
+
+        private void RemoveToggleValue(AnimationClip animationClip, GameObject gameObject)
+        {
+            var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
+            var transformPath = AnimationUtility.CalculateTransformPath(gameObject?.transform, animator?.transform);
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_IsActive", type = typeof(GameObject) }, null);
+        }
+
+        private TransformProxy GetTransformValue(AnimationClip animationClip, GameObject gameObject)
+        {
+            var propertyExists = false;
+            var transform = TransformProxy.FromGameObject(gameObject);
+
+            var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
+            var transformPath = AnimationUtility.CalculateTransformPath(gameObject?.transform, animator?.transform);
+
+            AnimationCurve curve;
+
+            // Get local position
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.x", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.PositionX = curve.keys[0].value; propertyExists = true; }
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.y", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.PositionY = curve.keys[0].value; propertyExists = true; }
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.z", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.PositionZ = curve.keys[0].value; propertyExists = true; }
+
+            // Get local rotation
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.x", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.RotationX = curve.keys[0].value; propertyExists = true; }
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.y", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.RotationY = curve.keys[0].value; propertyExists = true; }
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.z", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.RotationZ = curve.keys[0].value; propertyExists = true; }
+
+            // Get local scale
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.x", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.ScaleX = curve.keys[0].value; propertyExists = true; }
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.y", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.ScaleY = curve.keys[0].value; propertyExists = true; }
+            curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.z", type = typeof(Transform) });
+            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.ScaleZ = curve.keys[0].value; propertyExists = true; }
+
+            if (propertyExists) { return transform; }
+            else { return null; }
+        }
+
+        private void SetTransformValue(AnimationClip animationClip, TransformProxy transform)
+        {
+            var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
+            var transformPath = AnimationUtility.CalculateTransformPath(transform?.GameObject?.transform, animator?.transform);
+
+            AnimationCurve curve;
+
+            // Set local position
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.PositionX));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.x", type = typeof(Transform) }, curve);
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.PositionY));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.y", type = typeof(Transform) }, curve);
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.PositionZ));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.z", type = typeof(Transform) }, curve);
+
+            // Set local rotation
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.RotationX));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.x", type = typeof(Transform) }, curve);
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.RotationY));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.y", type = typeof(Transform) }, curve);
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.RotationZ));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.z", type = typeof(Transform) }, curve);
+
+            // Set local scale
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.ScaleX));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.x", type = typeof(Transform) }, curve);
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.ScaleY));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.y", type = typeof(Transform) }, curve);
+            curve = new AnimationCurve(new Keyframe(time: 0, value: transform.ScaleZ));
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.z", type = typeof(Transform) }, curve);
+        }
+
+        private void RemoveTransformValue(AnimationClip animationClip, GameObject gameObject)
+        {
+            var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
+            var transformPath = AnimationUtility.CalculateTransformPath(gameObject?.transform, animator?.transform);
+
+            // Remove local position
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.x", type = typeof(Transform) }, null);
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.y", type = typeof(Transform) }, null);
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.z", type = typeof(Transform) }, null);
+
+            // Remove local rotation
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.x", type = typeof(Transform) }, null);
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.y", type = typeof(Transform) }, null);
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.z", type = typeof(Transform) }, null);
+
+            // Remove local scale
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.x", type = typeof(Transform) }, null);
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.y", type = typeof(Transform) }, null);
+            AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.z", type = typeof(Transform) }, null);
         }
     }
 }
