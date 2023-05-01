@@ -21,7 +21,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
     public class BranchListElement : IDisposable
     {
         private static readonly int ScrollBottomMargin = 10;
-        private static readonly int ScrollRightMargin = 5;
+        // private static readonly int ScrollRightMargin = 5; // Not in use at this time
         private static readonly int Padding = 10;
         private static readonly int VerticalMargin = 5;
         private static readonly int MinHorizontalMargin = 5;

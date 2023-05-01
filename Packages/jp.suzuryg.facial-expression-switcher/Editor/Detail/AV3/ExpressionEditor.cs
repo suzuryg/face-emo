@@ -413,15 +413,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Repaint
             if (updatedBlendShapes.Any() || removedBlendShapes.Any() || updatedToggles.Any() || removedToggles.Any() || updatedTransforms.Any() || removedTransforms.Any())
             {
-                _mainThumbnailDrawer.RequestUpdate(Clip);
-                _gestureTableThumbnailDrawer.RequestUpdate(Clip);
-                _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>()?.Repaint();
-                _onClipUpdated.OnNext(Unit.Default);
+                RepaintOtherWindows();
             }
 
             // Initialize buffer
             _animatedBlendShapesBuffer = new Dictionary<string, float>(_animatedBlendShapes);
             _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>(_animatedAdditionalTransforms);
+        }
+
+        private void RepaintOtherWindows()
+        {
+            _mainThumbnailDrawer.RequestUpdate(Clip);
+            _gestureTableThumbnailDrawer.RequestUpdate(Clip);
+            _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>()?.Repaint();
+            _onClipUpdated.OnNext(Unit.Default);
         }
 
         private void RenderPreviewClip()
@@ -446,11 +451,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private void OnUndoRedoPerformed()
         {
-            FetchProperties();
-            InitializePreviewClip();
+            // Update ExpressionEditorWindow
+            var expressionEditorWindow = _subWindowProvider.ProvideIfOpenedAlready<ExpressionEditorWindow>();
+            if (expressionEditorWindow is ExpressionEditorWindow)
+            {
+                FetchProperties();
+                InitializePreviewClip();
+                expressionEditorWindow.Repaint();
+            }
 
-            _subWindowProvider.ProvideIfOpenedAlready<ExpressionEditorWindow>()?.Repaint();
+            // Update ExpressionPreviewWindow
             _subWindowProvider.ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.Repaint();
+
+            // Update other windows
+            RepaintOtherWindows();
         }
 
         private Dictionary<string, EditorCurveBinding> GetBlendShapeBindings(IEnumerable<string> blendShapeNames)
