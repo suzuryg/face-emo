@@ -2,7 +2,7 @@
 {
     public enum ComparisonOperator
     {
-        Equals,
-        NotEqual,
+        Equals = 0,
+        NotEqual = 1,
     }
 }

@@ -10,9 +10,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
     public enum MergedMenuItemType
     {
-        Mode,
-        Group,
-        Existing,
+        Mode = 0,
+        Group = 1,
+        Existing = 2,
     }
 
     public class MergedMenuItemList

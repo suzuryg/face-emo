@@ -27,8 +27,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
     public enum MenuItemType
     {
-        Mode,
-        Group,
+        Mode = 0,
+        Group = 1,
     }
 
     public abstract class MenuItemListBase : IMenuItemList

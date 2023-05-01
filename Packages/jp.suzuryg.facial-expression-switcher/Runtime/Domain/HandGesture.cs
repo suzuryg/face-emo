@@ -2,13 +2,13 @@
 {
     public enum HandGesture
     {
-        Neutral,
-        Fist,
-        HandOpen,
-        Fingerpoint,
-        Victory,
-        RockNRoll,
-        HandGun,
-        ThumbsUp,
+        Neutral = 0,
+        Fist = 1,
+        HandOpen = 2,
+        Fingerpoint = 3,
+        Victory = 4,
+        RockNRoll = 5,
+        HandGun = 6,
+        ThumbsUp = 7,
     }
 }

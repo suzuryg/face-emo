@@ -2,7 +2,7 @@
 {
     public enum MouthTrackingControl
     {
-        Tracking,
-        Animation,
+        Tracking = 0,
+        Animation = 1,
     }
 }
