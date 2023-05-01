@@ -7,6 +7,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
     {
         public string Common_Delete = "Delete";
         public string Common_Cancel = "Cancel";
+        public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
+        public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following group?";
         public string Common_Message_DeleteMode = "Are you sure you want to delete the following mode?";
         public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected branch?";
@@ -72,9 +74,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ModeNameProvider_NoExpression = "NoExpression";
 
         public string InspectorView_TargetAvatar = "Target Avatar";
-        public string InspectorView_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
-        public string InspectorView_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
-
         public string InspectorView_GenerateModeThumbnails = "Generate Expression Mode Thumbnails";
 
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
@@ -84,6 +83,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AddConfig_Override = "Emote Override (1bit)";
         public string InspectorView_AddConfig_HandPriority = "Hand Priority (4bit)";
         public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
+
+        public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only Differ From Default Value";
+        public string ExpressionEditorView_Delimiter = "Delimiter";
+        public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
 
         public string ExMenu_Setting = "Setting";
         public string ExMenu_EmoteLock = "Emote Lock ON [NOT Saved]";

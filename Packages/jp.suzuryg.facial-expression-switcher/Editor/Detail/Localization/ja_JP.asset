@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Common_Delete: "\u524A\u9664"
   Common_Cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB"
+  Common_AddtionalToggleObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
+    (Toggle)"
+  Common_AddtionalTransformObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8 
+    (Transform)"
   Common_Message_DeleteGroup: "\u4E0B\u8A18\u306E\u30B0\u30EB\u30FC\u30D7\u3092\u524A\u9664\u3057\u307E\u3059\u304B\uFF1F"
   Common_Message_DeleteMode: "\u4E0B\u8A18\u306E\u30E2\u30FC\u30C9\u3092\u524A\u9664\u3057\u307E\u3059\u304B\uFF1F"
   Common_Message_DeleteBranch: "\u9078\u629E\u4E2D\u306E\u5206\u5C90\u3092\u524A\u9664\u3057\u307E\u3059\u304B\uFF1F"
@@ -69,10 +73,6 @@ MonoBehaviour:
   AnimationElement_Message_GuidWasNotFound: "\u9078\u629E\u3055\u308C\u305F\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u30AF\u30EA\u30C3\u30D7\u304C\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u5185\u306B\u5B58\u5728\u3057\u307E\u305B\u3093\u3002"
   ModeNameProvider_NoExpression: "\u8868\u60C5\u306A\u3057"
   InspectorView_TargetAvatar: "\u5BFE\u8C61\u30A2\u30D0\u30BF\u30FC"
-  InspectorView_AddtionalToggleObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
-    (Toggle)"
-  InspectorView_AddtionalTransformObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
-    (Transform)"
   InspectorView_GenerateModeThumbnails: "\u8868\u60C5\u30E2\u30FC\u30C9\u306E\u30B5\u30E0\u30CD\u30A4\u30EB\u3092\u751F\u6210\u3059\u308B"
   InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u56FA\u5B9A (1bit)"
   InspectorView_AddConfig_BlinkOff: "\u307E\u3070\u305F\u304DOFF (1bit)"
@@ -83,6 +83,9 @@ MonoBehaviour:
   InspectorView_AddConfig_HandPriority: "\u5DE6\u53F3\u512A\u5148\u8A2D\u5B9A (4bit)"
   InspectorView_AddConfig_Controller: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u5207\u308A\u66FF\u3048
     (2bit)"
+  ExpressionEditorView_ShowOnlyDifferFromDefaultValue: "\u30C7\u30D5\u30A9\u30EB\u30C8\u8868\u60C5\u3068\u7570\u306A\u308B\u5024\u306E\u30B7\u30A7\u30A4\u30D7\u30AD\u30FC\u306E\u307F\u8868\u793A"
+  ExpressionEditorView_Delimiter: "\u30B7\u30A7\u30A4\u30D7\u30AD\u30FC\u306E\u533A\u5207\u308A\u6587\u5B57"
+  ExpressionEditorView_UncategorizedBlendShapes: "\u672A\u5206\u985E\u306E\u30B7\u30A7\u30A4\u30D7\u30AD\u30FC"
   ExMenu_Setting: "\u8A2D\u5B9A"
   ExMenu_EmoteLock: "\u8868\u60C5\u56FA\u5B9AON [NOT Saved]"
   ExMenu_BlinkOff: "\u307E\u3070\u305F\u304DOFF [NOT Saved]"

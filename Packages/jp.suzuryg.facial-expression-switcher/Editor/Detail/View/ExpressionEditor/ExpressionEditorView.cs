@@ -125,7 +125,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             // Calculate property name width
             var propertyNames = _expressionEditor.FaceBlendShapes.Select(blendShape => blendShape.Key)
                 .Concat(_expressionEditor.AdditionalToggles.Select(toggle => toggle.Value.gameObject?.name))
-                .Concat(_expressionEditor.AdditionalTransforms.Select(transform => transform.Value?.GameObject?.name));
+                .Concat(_expressionEditor.AdditionalTransforms.Select(transform => transform.Value?.GameObject?.name))
+                .Concat(new[] {
+                    _localizationTable.ExpressionEditorView_UncategorizedBlendShapes,
+                    _localizationTable.Common_AddtionalToggleObjects,
+                    _localizationTable.Common_AddtionalTransformObjects});
             var labelWidth = propertyNames.Select(x => GUI.skin.label.CalcSize(new GUIContent(x)).x).DefaultIfEmpty().Max();
             var buttonWidth = propertyNames.Select(x => GUI.skin.button.CalcSize(new GUIContent(x)).x).DefaultIfEmpty().Max();
             var maxBlendShapeNameWidth = Math.Max(labelWidth, buttonWidth);
@@ -195,16 +199,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
         private void Field_ShowOnlyDifferFromDefaultValue()
         {
-            using (var check = new EditorGUI.ChangeCheckScope())
+            using (new EditorGUILayout.HorizontalScope())
             {
-                EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ShowOnlyDifferFromDefaultValue)),
-                    new GUIContent("Show Only Differ From Default Value"));
-
-                if (check.changed)
+                using (var check = new EditorGUI.ChangeCheckScope())
                 {
-                    _expressionEditorSetting.ApplyModifiedProperties();
-                    _expressionEditor.FetchProperties();
+                    EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ShowOnlyDifferFromDefaultValue)),
+                        new GUIContent(string.Empty), GUILayout.Width(15));
+
+                    if (check.changed)
+                    {
+                        _expressionEditorSetting.ApplyModifiedProperties();
+                        _expressionEditor.FetchProperties();
+                    }
                 }
+                GUILayout.Label(_localizationTable.ExpressionEditorView_ShowOnlyDifferFromDefaultValue);
             }
         }
 
@@ -213,7 +221,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             using (var check = new EditorGUI.ChangeCheckScope())
             {
                 EditorGUILayout.DelayedTextField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)),
-                    new GUIContent("Delimiter"));
+                    new GUIContent(_localizationTable.ExpressionEditorView_Delimiter));
 
                 if (check.changed)
                 {
@@ -452,12 +460,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
         private void Field_FaceBlendShapes()
         {
-            const string text_uncategorized = "Uncategorized BlendShapes";
-
             // Categorize
             var delimiter = _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)).stringValue;
             var categorized = new Dictionary<string, List<string>>();
-            var categoryName = text_uncategorized;
+            var categoryName = _localizationTable.ExpressionEditorView_UncategorizedBlendShapes;
             categorized[categoryName] = new List<string>();
             foreach (var key in _expressionEditor.FaceBlendShapes.Keys)
             {
@@ -527,7 +533,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         {
             // Draw buttons
             var added = new List<int>();
-            _toggleFoldoutState = EditorGUILayout.Foldout(_toggleFoldoutState, "Toggles");
+            _toggleFoldoutState = EditorGUILayout.Foldout(_toggleFoldoutState, _localizationTable.Common_AddtionalToggleObjects);
             if (_toggleFoldoutState)
             {
                 foreach (var toggle in _expressionEditor.AdditionalToggles)
@@ -568,7 +574,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         {
             // Draw buttons
             var added = new List<int>();
-            _transformFoldoutState = EditorGUILayout.Foldout(_transformFoldoutState, "Transforms");
+            _transformFoldoutState = EditorGUILayout.Foldout(_transformFoldoutState, _localizationTable.Common_AddtionalTransformObjects);
             if (_transformFoldoutState)
             {
                 foreach (var transform in _expressionEditor.AdditionalTransforms)

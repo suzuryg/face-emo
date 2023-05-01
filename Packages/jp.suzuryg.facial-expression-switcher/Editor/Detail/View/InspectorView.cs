@@ -259,13 +259,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
                 _additionalToggleObjects.drawHeaderCallback = (Rect rect) =>
                 {
-                    EditorGUI.LabelField(rect, _localizationTable.InspectorView_AddtionalToggleObjects);
+                    EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalToggleObjects);
                 };
                 _additionalToggleObjects.DoLayoutList();
 
                 _additionalTransformObjects.drawHeaderCallback = (Rect rect) =>
                 {
-                    EditorGUI.LabelField(rect, _localizationTable.InspectorView_AddtionalTransformObjects);
+                    EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalTransformObjects);
                 };
                 _additionalTransformObjects.DoLayoutList();
             }
