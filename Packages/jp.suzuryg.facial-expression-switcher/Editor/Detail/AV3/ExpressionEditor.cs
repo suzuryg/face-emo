@@ -24,6 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public IReadOnlyDictionary<int, (GameObject gameObject, bool isActive)> AnimatedAdditionalTogglesBuffer => _animatedAdditionalTogglesBuffer;
         public IReadOnlyDictionary<int, TransformProxy> AdditionalTransforms => _additionalTransforms;
         public IReadOnlyDictionary<int, TransformProxy> AnimatedAdditionalTransformsBuffer => _animatedAdditionalTransformsBuffer;
+        public IObservable<Unit> OnClipUpdated => _onClipUpdated.AsObservable();
 
         private ISubWindowProvider _subWindowProvider;
         private MainThumbnailDrawer _mainThumbnailDrawer;
@@ -42,6 +43,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         private Dictionary<int, TransformProxy> _additionalTransforms = new Dictionary<int, TransformProxy>();
         private Dictionary<int, TransformProxy> _animatedAdditionalTransforms = new Dictionary<int, TransformProxy>();
         private Dictionary<int, TransformProxy> _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>();
+        private Subject<Unit> _onClipUpdated = new Subject<Unit>();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -413,8 +415,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             {
                 _mainThumbnailDrawer.RequestUpdate(Clip);
                 _gestureTableThumbnailDrawer.RequestUpdate(Clip);
-                // TODO: Repaint MainWindow
                 _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>()?.Repaint();
+                _onClipUpdated.OnNext(Unit.Default);
             }
 
             // Initialize buffer
