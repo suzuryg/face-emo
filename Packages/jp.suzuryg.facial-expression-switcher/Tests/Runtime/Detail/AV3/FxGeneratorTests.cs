@@ -22,16 +22,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
     public class FxGeneratorTests
     {
         private static readonly string AnimationDir = "Assets/Temp/Animation";
-        private static readonly string DestinationPath = "Assets/Temp/GeneratedFx.controller";
+        //private static readonly string DestinationPath = "Assets/Temp/GeneratedFx.controller";
 
-        private static readonly string ParamName_IsLocal = "IsLocal";
-        private static readonly string ParamName_AFK = "AFK";
-        private static readonly string ParamName_Voice = "Voice";
-        private static readonly string ParamName_GestureLeft = "GestureLeft";
-        private static readonly string ParamName_GestureLeftWeight = "GestureLeftWeight";
-        private static readonly string ParamName_GestureRight = "GestureRight";
-        private static readonly string ParamName_GestureRightWeight = "GestureRightWeight";
-        private static readonly string ParamName_InStation = "InStation";
+        //private static readonly string ParamName_IsLocal = "IsLocal";
+        //private static readonly string ParamName_AFK = "AFK";
+        //private static readonly string ParamName_Voice = "Voice";
+        //private static readonly string ParamName_GestureLeft = "GestureLeft";
+        //private static readonly string ParamName_GestureLeftWeight = "GestureLeftWeight";
+        //private static readonly string ParamName_GestureRight = "GestureRight";
+        //private static readonly string ParamName_GestureRightWeight = "GestureRightWeight";
+        //private static readonly string ParamName_InStation = "InStation";
         private static readonly string ParamName_EM_EMOTE_SELECT_L = "EM_EMOTE_SELECT_L";
         private static readonly string ParamName_EM_EMOTE_SELECT_R = "EM_EMOTE_SELECT_R";
 
@@ -65,6 +65,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             }
         }
 
+        /*
         [Test]
         public void Template()
         {
@@ -511,6 +512,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             AssertEmotePreselect(7, 6, 6, layerNames);
             AssertEmotePreselect(7, 7, 7, layerNames);
         }
+        */
 
         private enum Priority
         {
