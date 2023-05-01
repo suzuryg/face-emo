@@ -56,10 +56,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         protected override void OnGUI()
         {
+            // When the animation changes are saved with Ctrl-S, the AnimationMode is stopped.
+            // Therefore, the following process is performed to resume sampling.
+            if (ReferenceEquals(focusedWindow, this) && !AnimationMode.InAnimationMode())
+            {
+                _expressionEditor?.StartSampling();
+            }
+
+            // If in AnimationMode, draw SceneView.
             if (AnimationMode.InAnimationMode())
             {
                 base.OnGUI();
             }
+            // If not in AnimationMode, draw the cache.
             else
             {
                 if (_renderCache != null)

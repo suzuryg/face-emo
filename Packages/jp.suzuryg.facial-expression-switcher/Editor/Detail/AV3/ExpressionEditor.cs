@@ -87,7 +87,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         public void OpenIfOpenedAlready(AnimationClip animationClip)
         {
-            if (_subWindowProvider.ProvideIfOpenedAlready<ExpressionEditorWindow>() is ExpressionEditorWindow &&
+            if (_subWindowProvider.ProvideIfOpenedAlready<ExpressionEditorWindow>() is ExpressionEditorWindow ||
                 _subWindowProvider.ProvideIfOpenedAlready<ExpressionPreviewWindow>() is ExpressionPreviewWindow)
             {
                 Open(animationClip);
