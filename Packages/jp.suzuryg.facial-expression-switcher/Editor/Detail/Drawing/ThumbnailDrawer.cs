@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
 using UniRx;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 {
@@ -69,6 +71,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         private Dictionary<string, Texture2D> _cache = new Dictionary<string, Texture2D>();
         private Texture2D _errorIcon;
         private object _lockRequests = new object();
+        private Scene _previewScene;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -96,10 +99,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                     }
                 }
             }).AddTo(_disposables);
+
+            // Initialize
+            InitializePreviewScene();
         }
 
         public void Dispose()
         {
+            EditorSceneManager.ClosePreviewScene(_previewScene);
             _disposables?.Dispose();
         }
 
@@ -157,13 +164,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 }
             }
 
-            // When updating thumbnails in Play mode, the following error occurs in VRC.Dynamics.PhysBoneManager.
-            // "Buffer already contains chain of id:XXXX"
-            if (EditorApplication.isPlaying)
-            {
-                return;
-            }
-
             // Get Animator
             var avatarAnimator = AV3Utility.GetAnimator(_aV3Setting);
             if (avatarAnimator == null)
@@ -172,20 +172,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
 
             // Prepare objects
-            var wasActive = avatarAnimator.gameObject.activeSelf;
             GameObject clonedAvatar = null;
             GameObject cameraRoot = new GameObject();
             try
             {
                 // Clone avatar
                 clonedAvatar = UnityEngine.Object.Instantiate(avatarAnimator.gameObject);
+                SceneManager.MoveGameObjectToScene(clonedAvatar, _previewScene);
                 clonedAvatar.transform.position = Vector3.zero;
                 clonedAvatar.transform.rotation = Quaternion.identity;
                 clonedAvatar.SetActive(true);
-                avatarAnimator.gameObject.SetActive(false);
+
+                // Get camera
+                var camera = cameraRoot.AddComponent<Camera>();
+                camera.scene = _previewScene;
+                SceneManager.MoveGameObjectToScene(cameraRoot, _previewScene);
 
                 // Adjust the camera position to the avatar's head
-                var camera = cameraRoot.AddComponent<Camera>();
                 var animator = clonedAvatar.GetComponent<Animator>();
                 float x = 0;
                 float y = 0;
@@ -238,7 +241,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
             finally
             {
-                avatarAnimator.gameObject.SetActive(wasActive);
                 if (cameraRoot is GameObject)
                 {
                     UnityEngine.Object.DestroyImmediate(cameraRoot);
@@ -250,6 +252,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
 
             // } end of using (_customMarker.Auto())
+        }
+
+        private void InitializePreviewScene()
+        {
+            // Open scene
+            _previewScene = EditorSceneManager.NewPreviewScene();
+
+            // Add light
+            var light = new GameObject();
+            light.transform.rotation = Quaternion.Euler(50, -30, 0);
+            light.AddComponent<Light>().type = LightType.Directional;
+            SceneManager.MoveGameObjectToScene(light, _previewScene);
         }
 
         private Texture2D RenderAnimatedAvatar(string clipGUID, GameObject animatorRoot, Camera camera)
