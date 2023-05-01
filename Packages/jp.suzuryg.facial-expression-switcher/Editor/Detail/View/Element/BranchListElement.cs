@@ -15,7 +15,6 @@ using UnityEditor.UIElements;
 using UnityEditor.IMGUI.Controls;
 using UnityEditorInternal;
 using UniRx;
-using Hai.VisualExpressionsEditor.Scripts.Editor;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 {

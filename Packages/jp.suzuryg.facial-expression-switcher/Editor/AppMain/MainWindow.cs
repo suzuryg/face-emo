@@ -1,19 +1,17 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using UniRx;
-using System;
-using UnityEngine.UIElements;
-using Hai.VisualExpressionsEditor.Scripts.Editor;
-using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {

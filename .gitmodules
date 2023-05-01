@@ -4,9 +4,6 @@
 [submodule "External/av3-animator-as-code"]
 	path = External/av3-animator-as-code
 	url = git@github.com:suzuryg/av3-animator-as-code.git
-[submodule "External/blendshape-viewer"]
-	path = External/blendshape-viewer
-	url = git@github.com:suzuryg/blendshape-viewer.git
 [submodule "External/Extenject"]
 	path = External/Extenject
 	url = git@github.com:suzuryg/Extenject.git
