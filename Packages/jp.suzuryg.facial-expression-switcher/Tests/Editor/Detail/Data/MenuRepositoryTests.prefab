@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3252022815924816013}
   - component: {fileID: 3252022815924816014}
-  - component: {fileID: 3252022815924816015}
+  - component: {fileID: 3410333060631997124}
   m_Layer: 0
   m_Name: MenuRepositoryTests
   m_TagString: Untagged
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 132a9d999eb18ad47898442fc2a88db0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3252022815924816015
+--- !u!114 &3410333060631997124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -53,8 +53,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3252022815924816008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9647093156341204ebc7009fd5eb82fe, type: 3}
+  m_Script: {fileID: 11500000, guid: a27497147d2a64643a03fadd236ad885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WriteDefaults: 0
-  TransitionDurationSeconds: 0
+  SerializableMenu: {fileID: 0}

@@ -108,9 +108,11 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             }
         }
 
-        [MenuItem("GameObject/FacialExpressionSwitcher", false, 20)]
+        [MenuItem("GameObject/FacialExpressionSwitcher/Create", false, 20)]
         public static void Create(MenuCommand menuCommand)
         {
+            var gameObject = GetLauncherObject(menuCommand);
+
             // Create GameObject which has unique name in acitive scene.
             var baseName = DomainConstants.SystemName;
             var objectName = baseName;
@@ -120,13 +122,45 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 objectName = $"{baseName}_{cnt}";
                 cnt++;
             }
+            gameObject.name = objectName;
+        }
 
-            var gameObject = new GameObject(objectName, typeof(FESLauncherComponent));
+        [MenuItem("GameObject/FacialExpressionSwitcher/Open", false, 21)]
+        public static void Open(MenuCommand menuCommand)
+        {
+            var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: null, filters: new[] { "FESProject" , "asset" });
+            if (string.IsNullOrEmpty(selectedPath)) { return; }
+
+            // OpenFilePanel path is in OS format, so convert it to Unity format
+            var unityPath = PathConverter.ToUnityPath(selectedPath);
+
+            var gameObject = GetLauncherObject(menuCommand);
+            var name = System.IO.Path.GetFileName(selectedPath).Replace(".asset", string.Empty);
+            gameObject.name = name;
+
+            var installer = new FESInstaller(gameObject);
+            var backupper = installer.Container.Resolve<IBackupper>();
+            try
+            {
+                backupper.Import(unityPath);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Failed to open FESProject.", "OK");
+                if (gameObject is GameObject) { DestroyImmediate(gameObject); }
+            }
+        }
+
+        private static GameObject GetLauncherObject(MenuCommand menuCommand)
+        {
+            var gameObject = new GameObject();
+            gameObject.AddComponent<FESLauncherComponent>();
             GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject);
             Undo.RegisterCreatedObjectUndo(gameObject, $"Create {DomainConstants.SystemName} Object");
             Selection.activeObject = gameObject;
-
             UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(gameObject.GetComponent<FESLauncherComponent>(), true);
+            return gameObject;
         }
     }
 }

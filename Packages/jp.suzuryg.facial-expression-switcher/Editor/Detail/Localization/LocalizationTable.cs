@@ -88,6 +88,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExpressionEditorView_Delimiter = "Delimiter";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
 
+        public string FESBackupper_Message_FailedToFindTargetAvatar = "Failed to find tareget avatar. Make sure the avatar is active.";
+        public string FESBackupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";
+        public string FESBackupper_Message_FailedToFindTransformObject = "Failed to find transform object.";
+
         public string ExMenu_Setting = "Setting";
         public string ExMenu_EmoteLock = "Emote Lock ON [NOT Saved]";
         public string ExMenu_BlinkOff = "Blink OFF [NOT Saved]";

@@ -1,62 +1,84 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEditor;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
     [UnityEditor.CustomEditor(typeof(MenuRepositoryTestComponent))]
-    public class MenuRepositoryTests : UnityEditor.Editor
+    public class MenuRepositoryTests : Editor
     {
+        private static readonly string OutputDir = "Assets/Temp";
+        private static readonly string OutputPath = OutputDir + "/MenuRepositoryTests.asset";
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            if (UnityEngine.GUILayout.Button("Clear"))
+            if (!UnpackPrefab()) { Debug.LogError("Failed to unpack prefab."); }
+
+            if (GUILayout.Button("Clear (Scene)"))
             {
                 try
                 {
-                    if (UnpackPrefab())
-                    {
-                        Clear();
-                        UnityEditor.EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Test passed!", "OK");
-                    }
+                    Clear(isAsset: false);
+                    EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Clear (Scene) Test passed!", "OK");
                 }
-                catch (System.Exception ex)
-                {
-                    UnityEditor.EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK");
-                }
+                catch (System.Exception ex) { EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK"); }
             }
 
-            if (UnityEngine.GUILayout.Button("Save"))
+            if (GUILayout.Button("Save (Scene)"))
             {
                 try
                 {
-                    if (UnpackPrefab())
-                    {
-                        Save();
-                        UnityEditor.EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Test passed!", "OK");
-                    }
+                    Save(isAsset: false);
+                    EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Save (Scene) Test passed!", "OK");
                 }
-                catch (System.Exception ex)
-                {
-                    UnityEditor.EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK");
-                }
+                catch (System.Exception ex) { EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK"); }
             }
 
-            if (UnityEngine.GUILayout.Button("Load"))
+            if (GUILayout.Button("Load (Scene)"))
             {
                 try
                 {
-                    if (UnpackPrefab())
-                    {
-                        Load();
-                        UnityEditor.EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Test passed!", "OK");
-                    }
+                    Load(isAsset: false);
+                    EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Load (Scene) Test passed!", "OK");
                 }
-                catch (System.Exception ex)
+                catch (System.Exception ex) { EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK"); }
+            }
+
+            GUILayout.Space(10);
+
+            if (GUILayout.Button("Clear (Asset)"))
+            {
+                try
                 {
-                    UnityEditor.EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK");
+                    Clear(isAsset: true);
+                    EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Clear (Asset) Test passed!", "OK");
                 }
+                catch (System.Exception ex) { EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK"); }
+            }
+
+            if (GUILayout.Button("Save (Asset)"))
+            {
+                try
+                {
+                    Save(isAsset: true);
+                    EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Save (Asset) Test passed!", "OK");
+                }
+                catch (System.Exception ex) { EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK"); }
+            }
+
+            if (GUILayout.Button("Load (Asset)"))
+            {
+                try
+                {
+                    Load(isAsset: true);
+                    EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), "Load (Asset) Test passed!", "OK");
+                }
+                catch (System.Exception ex) { EditorUtility.DisplayDialog(nameof(MenuRepositoryTests), $"Test failed.\n{ex.ToString()}", "OK"); }
             }
         }
 
@@ -83,40 +105,45 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             }
         }
 
-        public void Clear()
+        public void Clear(bool isAsset)
         {
-            var menuRepositoryTestComponent = target as MenuRepositoryTestComponent;
-            var serializableMenu = menuRepositoryTestComponent.gameObject.GetComponent<SerializableMenu>();
-            var menuRepository = new MenuRepository(serializableMenu);
+            if (isAsset)
+            {
+                if (AssetDatabase.LoadAssetAtPath<SerializableMenu>(OutputPath) is SerializableMenu)
+                {
+                    AssetDatabase.DeleteAsset(OutputPath);
+                }
+            }
+            else
+            {
+                var menuRepositoryTestComponent = target as MenuRepositoryTestComponent;
+                var menuRepository = new MenuRepository(menuRepositoryTestComponent.gameObject.GetComponent<MenuRepositoryComponent>());
 
-            var menu = new Menu();
+                var menu = new Domain.Menu();
 
-            menuRepository.Save(null, menu, "MenuRepositoryTests(Clear)");
+                menuRepository.Save(null, menu, "MenuRepositoryTests(Clear)");
 
-            menu = menuRepository.Load(null);
-            Assert.That(menu.Registered.Count, Is.EqualTo(0));
-            Assert.That(menu.Unregistered.Count, Is.EqualTo(0));
+                menu = menuRepository.Load(null);
+                Assert.That(menu.Registered.Count, Is.EqualTo(0));
+                Assert.That(menu.Unregistered.Count, Is.EqualTo(0));
+            }
         }
 
-        public void Save()
+        public void Save(bool isAsset)
         {
-            var menuRepositoryTestComponent = target as MenuRepositoryTestComponent;
-            var serializableMenu = menuRepositoryTestComponent.gameObject.GetComponent<SerializableMenu>();
-            var menuRepository = new MenuRepository(serializableMenu);
+            var menu = new Domain.Menu();
 
-            var menu = new Menu();
-
-            var r0 = menu.AddMode(Menu.RegisteredId);
-            var r1 = menu.AddGroup(Menu.RegisteredId);
-            var r2 = menu.AddMode(Menu.RegisteredId);
-            var r3 = menu.AddMode(Menu.RegisteredId);
+            var r0 = menu.AddMode(Domain.Menu.RegisteredId);
+            var r1 = menu.AddGroup(Domain.Menu.RegisteredId);
+            var r2 = menu.AddMode(Domain.Menu.RegisteredId);
+            var r3 = menu.AddMode(Domain.Menu.RegisteredId);
             var r4 = menu.AddMode(r1);
             var r5 = menu.AddMode(r1);
 
-            var u0 = menu.AddGroup(Menu.UnregisteredId);
-            var u1 = menu.AddMode(Menu.UnregisteredId);
-            var u2 = menu.AddMode(Menu.UnregisteredId);
-            var u3 = menu.AddGroup(Menu.UnregisteredId);
+            var u0 = menu.AddGroup(Domain.Menu.UnregisteredId);
+            var u1 = menu.AddMode(Domain.Menu.UnregisteredId);
+            var u2 = menu.AddMode(Domain.Menu.UnregisteredId);
+            var u3 = menu.AddGroup(Domain.Menu.UnregisteredId);
             var u4 = menu.AddMode(u0);
             var u5 = menu.AddMode(u3);
 
@@ -150,46 +177,96 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             menu.ModifyBranchProperties(u5, 0, EyeTrackingControl.Animation, MouthTrackingControl.Animation, true, false, false, true);
             menu.ModifyBranchProperties(u5, 1, EyeTrackingControl.Tracking, MouthTrackingControl.Animation, true, false, false, false);
 
-            menu.SetAnimation(new Animation("anim00"), r0);
-            menu.SetAnimation(new Animation("anim01"), r0, 0, BranchAnimationType.Base);
-            menu.SetAnimation(new Animation("anim02"), r0, 0, BranchAnimationType.Left);
-            menu.SetAnimation(new Animation("anim03"), r0, 0, BranchAnimationType.Right);
-            menu.SetAnimation(new Animation("anim04"), r0, 0, BranchAnimationType.Both);
-            menu.SetAnimation(new Animation("anim05"), r2);
+            menu.SetAnimation(new Domain.Animation("anim00"), r0);
+            menu.SetAnimation(new Domain.Animation("anim01"), r0, 0, BranchAnimationType.Base);
+            menu.SetAnimation(new Domain.Animation("anim02"), r0, 0, BranchAnimationType.Left);
+            menu.SetAnimation(new Domain.Animation("anim03"), r0, 0, BranchAnimationType.Right);
+            menu.SetAnimation(new Domain.Animation("anim04"), r0, 0, BranchAnimationType.Both);
+            menu.SetAnimation(new Domain.Animation("anim05"), r2);
 
-            menu.SetAnimation(new Animation("anim06"),  u1);
-            menu.SetAnimation(new Animation("anim07"),  u1, 0, BranchAnimationType.Base);
-            menu.SetAnimation(new Animation("anim08"),  u1, 0, BranchAnimationType.Left);
-            menu.SetAnimation(new Animation("anim09"),  u1, 0, BranchAnimationType.Right);
-            menu.SetAnimation(new Animation("anim10"), u1, 0, BranchAnimationType.Both);
-            menu.SetAnimation(new Animation("anim11"), u4);
+            menu.SetAnimation(new Domain.Animation("anim06"),  u1);
+            menu.SetAnimation(new Domain.Animation("anim07"),  u1, 0, BranchAnimationType.Base);
+            menu.SetAnimation(new Domain.Animation("anim08"),  u1, 0, BranchAnimationType.Left);
+            menu.SetAnimation(new Domain.Animation("anim09"),  u1, 0, BranchAnimationType.Right);
+            menu.SetAnimation(new Domain.Animation("anim10"), u1, 0, BranchAnimationType.Both);
+            menu.SetAnimation(new Domain.Animation("anim11"), u4);
 
-            menuRepository.Save(null, menu, "MenuRepositoryTests(Save)");
+            Domain.Menu loaded = null;
+            if (isAsset)
+            {
+                if (!AssetDatabase.IsValidFolder(OutputDir))
+                {
+                    AV3Utility.CreateFolderRecursively(OutputDir);
+                }
 
-            menu = menuRepository.Load(null);
+                var exporterRoot = new GameObject();
+                var importerRoot = new GameObject();
+                try
+                {
+                    var exporter = new MenuRepository(exporterRoot.AddComponent<MenuRepositoryComponent>());
+                    exporter.Save(string.Empty, menu, "MenuRepositoryTests(Save)");
+                    var expoted = CreateInstance<SerializableMenu>();
+                    AssetDatabase.CreateAsset(expoted, OutputPath);
+                    exporter.Export(expoted);
 
-            Assert.That(menu.GetMode(r0).DisplayName, Is.EqualTo("r0"));
-            Assert.That(menu.GetGroup(r1).DisplayName, Is.EqualTo("r1"));
-            Assert.That(menu.GetMode(r2).DisplayName, Is.EqualTo("r2"));
-            Assert.That(menu.GetMode(r3).DisplayName, Is.EqualTo("r3"));
-            Assert.That(menu.GetMode(r4).DisplayName, Is.EqualTo("r4"));
-            Assert.That(menu.GetMode(r5).DisplayName, Is.EqualTo("r5"));
+                    var importer = new MenuRepository(importerRoot.AddComponent<MenuRepositoryComponent>());
+                    var imported = AssetDatabase.LoadAssetAtPath<SerializableMenu>(OutputPath);
+                    importer.Import(imported);
+                    loaded = importer.Load(string.Empty);
+                }
+                finally
+                {
+                    if (exporterRoot is GameObject) { DestroyImmediate(exporterRoot); }
+                    if (importerRoot is GameObject) { DestroyImmediate(importerRoot); }
+                }
+            }
+            else
+            {
+                var menuRepositoryTestComponent = target as MenuRepositoryTestComponent;
+                var menuRepository = new MenuRepository(menuRepositoryTestComponent.gameObject.GetComponent<MenuRepositoryComponent>());
+                menuRepository.Save(null, menu, "MenuRepositoryTests(Save)");
+                loaded = menuRepository.Load(null);
+            }
 
-            Assert.That(menu.GetGroup(u0).DisplayName, Is.EqualTo("u0"));
-            Assert.That(menu.GetMode(u1).DisplayName, Is.EqualTo("u1"));
-            Assert.That(menu.GetMode(u2).DisplayName, Is.EqualTo("u2"));
-            Assert.That(menu.GetGroup(u3).DisplayName, Is.EqualTo("u3"));
-            Assert.That(menu.GetMode(u4).DisplayName, Is.EqualTo("u4"));
-            Assert.That(menu.GetMode(u5).DisplayName, Is.EqualTo("u5"));
+            Assert.That(loaded.GetMode(r0).DisplayName, Is.EqualTo("r0"));
+            Assert.That(loaded.GetGroup(r1).DisplayName, Is.EqualTo("r1"));
+            Assert.That(loaded.GetMode(r2).DisplayName, Is.EqualTo("r2"));
+            Assert.That(loaded.GetMode(r3).DisplayName, Is.EqualTo("r3"));
+            Assert.That(loaded.GetMode(r4).DisplayName, Is.EqualTo("r4"));
+            Assert.That(loaded.GetMode(r5).DisplayName, Is.EqualTo("r5"));
+
+            Assert.That(loaded.GetGroup(u0).DisplayName, Is.EqualTo("u0"));
+            Assert.That(loaded.GetMode(u1).DisplayName, Is.EqualTo("u1"));
+            Assert.That(loaded.GetMode(u2).DisplayName, Is.EqualTo("u2"));
+            Assert.That(loaded.GetGroup(u3).DisplayName, Is.EqualTo("u3"));
+            Assert.That(loaded.GetMode(u4).DisplayName, Is.EqualTo("u4"));
+            Assert.That(loaded.GetMode(u5).DisplayName, Is.EqualTo("u5"));
         }
 
-        public void Load()
+        public void Load(bool isAsset)
         {
-            var menuRepositoryTestComponent = target as MenuRepositoryTestComponent;
-            var serializableMenu = menuRepositoryTestComponent.gameObject.GetComponent<SerializableMenu>();
-            var menuRepository = new MenuRepository(serializableMenu);
-
-            var menu = menuRepository.Load(null);
+            Domain.Menu menu = null;
+            if (isAsset)
+            {
+                var importerRoot = new GameObject();
+                try
+                {
+                    var importer = new MenuRepository(importerRoot.AddComponent<MenuRepositoryComponent>());
+                    var imported = AssetDatabase.LoadAssetAtPath<SerializableMenu>(OutputPath);
+                    importer.Import(imported);
+                    menu = importer.Load(string.Empty);
+                }
+                finally
+                {
+                    if (importerRoot is GameObject) { DestroyImmediate(importerRoot); }
+                }
+            }
+            else
+            {
+                var menuRepositoryTestComponent = target as MenuRepositoryTestComponent;
+                var menuRepository = new MenuRepository(menuRepositoryTestComponent.gameObject.GetComponent<MenuRepositoryComponent>());
+                menu = menuRepository.Load(null);
+            }
 
             Assert.That(menu.Registered.GetModeAt(0).DisplayName, Is.EqualTo("r0"));
             Assert.That(menu.Registered.GetGroupAt(1).DisplayName, Is.EqualTo("r1"));

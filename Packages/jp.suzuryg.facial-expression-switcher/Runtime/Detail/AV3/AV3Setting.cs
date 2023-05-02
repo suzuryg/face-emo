@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
-    public class AV3Setting : MonoBehaviour
+    public class AV3Setting : ScriptableObject
     {
         public VRCAvatarDescriptor TargetAvatar;
         public List<string> MouthMorphBlendShapes = new List<string>();
         public List<GameObject> AdditionalToggleObjects = new List<GameObject>();
         public List<GameObject> AdditionalTransformObjects = new List<GameObject>();
+
+        public string TargetAvatarPath;
+        public List<string> AdditionalToggleObjectPaths = new List<string>();
+        public List<string> AdditionalTransformObjectPaths = new List<string>();
 
         public bool SmoothAnalogFist = true;
         public double TransitionDurationSeconds = 0.1;

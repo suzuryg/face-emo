@@ -1,32 +1,63 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using UnityEditor;
+using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
-    public class MenuRepository : IMenuRepository
+    public interface IMenuBackupper
     {
-        private SerializableMenu _serializableMenu;
+        void Export(SerializableMenu rootAsset);
+        void Import(SerializableMenu rootAsset);
+    }
 
-        public MenuRepository(SerializableMenu serializableMenu)
+    public class MenuRepository : IMenuRepository, IMenuBackupper
+    {
+        private MenuRepositoryComponent _component;
+
+        public MenuRepository(MenuRepositoryComponent component)
         {
-            _serializableMenu = serializableMenu;
+            _component = component;
         }
 
-        public bool Exists(string source)
-        {
-            return _serializableMenu is SerializableMenu;
-        }
+        public bool Exists(string source) => true;
 
-        public Menu Load(string source) => _serializableMenu.Load();
-
-        public void Save(string destination, Menu menu, string comment)
+        public Domain.Menu Load(string source)
         {
-            if (UnityEditor.EditorApplication.isPlaying)
+            if (_component.SerializableMenu is null)
             {
-                UnityEditor.EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Changes in play mode are not saved.", "OK");
+                _component.SerializableMenu =  ScriptableObject.CreateInstance<SerializableMenu>();
+                _component.SerializableMenu.Save(new Domain.Menu(), isAsset: false);
+            }
+            return _component.SerializableMenu.Load();
+        }
+
+        public void Save(string destination, Domain.Menu menu, string comment)
+        {
+            if (EditorApplication.isPlaying)
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Changes in play mode are not saved.", "OK");
             }
 
-            UnityEditor.Undo.RegisterCompleteObjectUndo(_serializableMenu, comment);
-            _serializableMenu.Save(menu);
+            // Re-create an instance of SerializableMenu when saving so that it is saved independently even if the Component is copied.
+            // Undo records the complete state of MenuRepository.
+            Undo.RegisterCompleteObjectUndo(_component, comment);
+            _component.SerializableMenu = ScriptableObject.CreateInstance<SerializableMenu>();
+            _component.SerializableMenu.Save(menu, isAsset: false);
+        }
+
+        public void Export(SerializableMenu rootAsset)
+        {
+            // Instances held in the MenuRepository should be separate from asset instances.
+            var menu = Load(string.Empty);
+            rootAsset.Save(menu, isAsset: true);
+            AssetDatabase.SaveAssets();
+        }
+
+        public void Import(SerializableMenu rootAsset)
+        {
+            // Instances held in the MenuRepository should be separate from asset instances.
+            var menu = rootAsset.Load();
+            Save(string.Empty, menu, "Import Menu");
         }
     }
 }

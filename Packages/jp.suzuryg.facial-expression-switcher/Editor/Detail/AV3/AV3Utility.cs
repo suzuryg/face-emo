@@ -8,6 +8,7 @@ using Suzuryg.FacialExpressionSwitcher.Domain;
 using VRC.SDK3.Avatars.Components;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
@@ -221,6 +222,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return blendShapes;
         }
 
+        public static string ConvertNameToSafePath(string name)
+        {
+            StringBuilder sb = new StringBuilder(name.Length);
+            foreach (char c in name)
+            {
+                if (char.IsControl(c) || char.IsWhiteSpace(c) ||
+                    c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|' ||
+                    c == '%' || c == '#' || c == '{' || c == '}' || c == '[' || c == ']' || c == '`' || c == '^')
+                {
+                    sb.Append('_'); // Replace invalid characters with an underscore or any other suitable character
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
 
         // https://hacchi-man.hatenablog.com/entry/2020/08/23/220000
         public static void CreateFolderRecursively(string path)

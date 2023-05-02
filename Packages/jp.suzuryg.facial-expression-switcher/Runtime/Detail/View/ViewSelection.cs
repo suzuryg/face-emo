@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
-    public class ViewSelection : MonoBehaviour
+    public class ViewSelection : ScriptableObject
     {
         public string HierarchyView;
         public string MenuItemListView;

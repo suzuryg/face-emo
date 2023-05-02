@@ -1,9 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
@@ -24,7 +20,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 
         public List<SerializableCondition> Conditions;
 
-        public void Save(IBranch branch)
+        public void Save(IBranch branch, bool isAsset)
         {
             EyeTrackingControl = branch.EyeTrackingControl;
             MouthTrackingControl = branch.MouthTrackingControl;
@@ -36,34 +32,64 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             if (branch.BaseAnimation is Domain.Animation)
             {
                 BaseAnimation = CreateInstance<SerializableAnimation>();
+#if UNITY_EDITOR
+                if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(BaseAnimation, this); }
+#else
+                if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
                 BaseAnimation.Save(branch.BaseAnimation);
+                BaseAnimation.name = $"Animation_{BaseAnimation.GUID}";
             }
             if (branch.LeftHandAnimation is Domain.Animation)
             {
                 LeftHandAnimation = CreateInstance<SerializableAnimation>();
+#if UNITY_EDITOR
+                if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(LeftHandAnimation, this); }
+#else
+                if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
                 LeftHandAnimation.Save(branch.LeftHandAnimation);
+                LeftHandAnimation.name = $"Animation_{LeftHandAnimation.GUID}";
             }
             if (branch.RightHandAnimation is Domain.Animation)
             {
                 RightHandAnimation = CreateInstance<SerializableAnimation>();
+#if UNITY_EDITOR
+                if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(RightHandAnimation, this); }
+#else
+                if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
                 RightHandAnimation.Save(branch.RightHandAnimation);
+                RightHandAnimation.name = $"Animation_{RightHandAnimation.GUID}";
             }
             if (branch.BothHandsAnimation is Domain.Animation)
             {
                 BothHandsAnimation = CreateInstance<SerializableAnimation>();
+#if UNITY_EDITOR
+                if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(BothHandsAnimation, this); }
+#else
+                if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
                 BothHandsAnimation.Save(branch.BothHandsAnimation);
+                BothHandsAnimation.name = $"Animation_{BothHandsAnimation.GUID}";
             }
 
             Conditions = new List<SerializableCondition>();
             foreach (var condition in branch.Conditions)
             {
                 var serializableCondition = CreateInstance<SerializableCondition>();
+#if UNITY_EDITOR
+                if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(serializableCondition, this); }
+#else
+                if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
                 serializableCondition.Save(condition);
+                serializableCondition.name = "Condition";
                 Conditions.Add(serializableCondition);
             }
         }
 
-        public void Load(Menu menu, string id, int index)
+        public void Load(Domain.Menu menu, string id, int index)
         {
             menu.ModifyBranchProperties(id, index,
                 eyeTrackingControl: EyeTrackingControl,

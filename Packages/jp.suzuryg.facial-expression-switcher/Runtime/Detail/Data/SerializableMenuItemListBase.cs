@@ -1,9 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
@@ -15,7 +11,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
         public List<SerializableMode> Modes;
         public List<SerializableGroup> Groups;
 
-        public void Save(IMenuItemList menuItemList)
+        public void Save(IMenuItemList menuItemList, bool isAsset) 
         {
             Types = new List<MenuItemType>();
             Ids = new List<string>();
@@ -32,21 +28,33 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
                         Types.Add(type);
                         Ids.Add(id);
                         var serializableMode = CreateInstance<SerializableMode>();
-                        serializableMode.Save(menuItemList.GetMode(id));
+#if UNITY_EDITOR
+                        if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(serializableMode, this); }
+#else
+                        if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
+                        serializableMode.Save(menuItemList.GetMode(id), isAsset);
+                        serializableMode.name = $"Mode_{id}";
                         Modes.Add(serializableMode);
                         break;
                     case MenuItemType.Group:
                         Types.Add(type);
                         Ids.Add(id);
                         var serializableGroup = CreateInstance<SerializableGroup>();
-                        serializableGroup.Save(menuItemList.GetGroup(id));
+#if UNITY_EDITOR
+                        if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(serializableGroup, this); }
+#else
+                        if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
+                        serializableGroup.Save(menuItemList.GetGroup(id), isAsset);
+                        serializableGroup.name = $"Group_{id}";
                         Groups.Add(serializableGroup);
                         break;
                 }
             }
         }
 
-        public virtual void Load(Menu menu, string destination)
+        public virtual void Load(Domain.Menu menu, string destination)
         {
             if (Types.Count != Modes.Count + Groups.Count)
             {

@@ -22,6 +22,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
         void Generate(IMenu menu);
     }
 
+    public interface IBackupper : IDisposable
+    {
+        void SetName(string name);
+        void AutoBackup();
+        void Export(string path);
+        void Import(string path);
+    }
+
     public enum GenerateFxResult
     {
         Succeeded,
@@ -46,12 +54,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
     {
         IMenuRepository _menuRepository;
         IFxGenerator _fxGenerator;
+        IBackupper _backupper;
         IGenerateFxPresenter _generateFxPresenter;
 
-        public GenerateFxUseCase(IMenuRepository menuRepository, IFxGenerator fxGenerator, IGenerateFxPresenter generateFxPresenter)
+        public GenerateFxUseCase(IMenuRepository menuRepository, IFxGenerator fxGenerator, IBackupper backupper, IGenerateFxPresenter generateFxPresenter)
         {
             _menuRepository = menuRepository;
             _fxGenerator = fxGenerator;
+            _backupper = backupper;
             _generateFxPresenter = generateFxPresenter;
         }
 
@@ -74,6 +84,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
                 var menu = _menuRepository.Load(menuId);
 
                 _fxGenerator.Generate(menu);
+                _backupper.AutoBackup();
 
                 _generateFxPresenter.Complete(GenerateFxResult.Succeeded);
             }

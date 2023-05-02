@@ -1,35 +1,41 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
-    public class SerializableMenu : MonoBehaviour
+    public class SerializableMenu : ScriptableObject
     {
         public double Version = 1.0;
         public string DefaultSelection;
-        public List<string> MouthMorphBlendShapes = new List<string>();
         public SerializableRegisteredMenuItemList Registered;
         public SerializableUnregisteredMenuItemList Unregistered;
 
-        public void Save(IMenu menu)
+        public void Save(IMenu menu, bool isAsset)
         {
             DefaultSelection = menu.DefaultSelection;
 
-            Registered = ScriptableObject.CreateInstance<SerializableRegisteredMenuItemList>();
-            Registered.Save(menu.Registered);
+            Registered = CreateInstance<SerializableRegisteredMenuItemList>();
+#if UNITY_EDITOR
+            if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(Registered, this); }
+#else
+            if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
+            Registered.Save(menu.Registered, isAsset);
+            Registered.name = Domain.Menu.RegisteredId;
 
-            Unregistered = ScriptableObject.CreateInstance<SerializableUnregisteredMenuItemList>();
-            Unregistered.Save(menu.Unregistered);
+            Unregistered = CreateInstance<SerializableUnregisteredMenuItemList>();
+#if UNITY_EDITOR
+            if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(Unregistered, this); }
+#else
+            if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
+            Unregistered.Save(menu.Unregistered, isAsset);
+            Unregistered.name = Domain.Menu.UnregisteredId;
         }
 
-        public Menu Load()
+        public Domain.Menu Load()
         {
-            var menu = new Menu();
+            var menu = new Domain.Menu();
 
             Registered?.Load(menu);
             Unregistered?.Load(menu);

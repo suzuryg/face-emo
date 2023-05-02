@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 {
-    public class ThumbnailSetting : MonoBehaviour
+    public class ThumbnailSetting : ScriptableObject
     {
         [NonSerialized] public static readonly float MinOrthoSize = 0.01f;
         [NonSerialized] public static readonly float MaxOrthoSize = 0.2f;

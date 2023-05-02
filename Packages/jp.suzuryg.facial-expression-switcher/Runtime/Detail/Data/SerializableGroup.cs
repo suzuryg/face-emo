@@ -1,10 +1,4 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
@@ -12,9 +6,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
     {
         public string DisplayName;
 
-        public void Save(IGroup group)
+        public void Save(IGroup group, bool isAsset)
         {
-            base.Save(group);
+            base.Save(group, isAsset);
             DisplayName = group.DisplayName;
         }
 

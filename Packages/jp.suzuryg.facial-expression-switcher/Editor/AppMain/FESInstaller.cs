@@ -11,77 +11,79 @@ using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using Suzuryg.FacialExpressionSwitcher.Detail.View.Element;
+using Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor;
 using UnityEngine;
 using UnityEditor;
 using Zenject;
-using Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
     public class FESInstaller
     {
         public DiContainer Container { get; } = new DiContainer();
+        public string RootObjectName { get; private set; }
 
         public FESInstaller(GameObject launcherObject)
         {
-            // Bind MonoBehaviour classes
-            var serializableMenu = launcherObject.GetComponent<SerializableMenu>();
-            if (serializableMenu is null)
-            {
-                serializableMenu = launcherObject.AddComponent<SerializableMenu>();
-            }
-            serializableMenu.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<SerializableMenu>().FromInstance(serializableMenu).AsSingle();
+            RootObjectName = launcherObject.name;
 
-            var hierarchyViewState = launcherObject.GetComponent<HierarchyViewState>();
-            if (hierarchyViewState is null)
-            {
-                hierarchyViewState = launcherObject.AddComponent<HierarchyViewState>();
-            }
-            hierarchyViewState.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<HierarchyViewState>().FromInstance(hierarchyViewState).AsSingle();
+            // Bind Monobehaviour instances
+            var menuRepositoryComponent = launcherObject.GetComponent<MenuRepositoryComponent>();
+            if (menuRepositoryComponent is null) { menuRepositoryComponent = launcherObject.AddComponent<MenuRepositoryComponent>(); }
+            menuRepositoryComponent.hideFlags = HideFlags.HideInInspector;
+            Container.Bind<MenuRepositoryComponent>().FromInstance(menuRepositoryComponent).AsSingle();
 
-            var menuItemiListViewState = launcherObject.GetComponent<MenuItemListViewState>();
-            if (menuItemiListViewState is null)
-            {
-                menuItemiListViewState = launcherObject.AddComponent<MenuItemListViewState>();
-            }
-            menuItemiListViewState.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<MenuItemListViewState>().FromInstance(menuItemiListViewState).AsSingle();
+            var launcher = launcherObject.GetComponent<FESLauncherComponent>();
+            if (launcher is null) { launcher = launcherObject.AddComponent<FESLauncherComponent>(); }
+            launcher.hideFlags = HideFlags.None;
 
-            var viewSelection = launcherObject.GetComponent<ViewSelection>();
-            if (viewSelection is null)
-            {
-                viewSelection = launcherObject.AddComponent<ViewSelection>();
-            }
-            viewSelection.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<ViewSelection>().FromInstance(viewSelection).AsSingle();
+            // Bind ScriptableObject instances
+            if (launcher.AV3Setting is null) { launcher.AV3Setting = ScriptableObject.CreateInstance<AV3Setting>(); }
+            if (launcher.ExpressionEditorSetting is null) { launcher.ExpressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>(); }
+            if (launcher.ThumbnailSetting is null) { launcher.ThumbnailSetting = ScriptableObject.CreateInstance<ThumbnailSetting>(); }
+            if (launcher.HierarchyViewState is null) { launcher.HierarchyViewState = ScriptableObject.CreateInstance<HierarchyViewState>(); }
+            if (launcher.MenuItemListViewState is null) { launcher.MenuItemListViewState = ScriptableObject.CreateInstance<MenuItemListViewState>(); }
+            if (launcher.ViewSelection is null) { launcher.ViewSelection = ScriptableObject.CreateInstance<ViewSelection>(); }
 
-            var aV3Setting = launcherObject.GetComponent<AV3Setting>();
-            if (aV3Setting is null)
+            // Avoid binding the same reference when the component is copied.
+            var instanceId = launcherObject.GetInstanceID();
+            if (instanceId != launcher.InstanceId)
             {
-                aV3Setting = launcherObject.AddComponent<AV3Setting>();
-            }
-            aV3Setting.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<AV3Setting>().FromInstance(aV3Setting).AsSingle();
+                var AV3Setting = ScriptableObject.CreateInstance<AV3Setting>();
+                EditorUtility.CopySerialized(launcher.AV3Setting, AV3Setting);
+                launcher.AV3Setting = AV3Setting;
 
-            var thumbnailSetting = launcherObject.GetComponent<ThumbnailSetting>();
-            if (thumbnailSetting is null)
-            {
-                thumbnailSetting = launcherObject.AddComponent<ThumbnailSetting>();
-            }
-            thumbnailSetting.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<ThumbnailSetting>().FromInstance(thumbnailSetting).AsSingle();
+                var ExpressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>();
+                EditorUtility.CopySerialized(launcher.ExpressionEditorSetting, ExpressionEditorSetting);
+                launcher.ExpressionEditorSetting = ExpressionEditorSetting;
 
-            var expressionEditorSetting = launcherObject.GetComponent<ExpressionEditorSetting>();
-            if (expressionEditorSetting is null)
-            {
-                expressionEditorSetting = launcherObject.AddComponent<ExpressionEditorSetting>();
-            }
-            expressionEditorSetting.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<ExpressionEditorSetting>().FromInstance(expressionEditorSetting).AsSingle();
+                var ThumbnailSetting = ScriptableObject.CreateInstance<ThumbnailSetting>();
+                EditorUtility.CopySerialized(launcher.ThumbnailSetting, ThumbnailSetting);
+                launcher.ThumbnailSetting = ThumbnailSetting;
 
-            // Bind non-MonoBehaviour classes
+                var HierarchyViewState = ScriptableObject.CreateInstance<HierarchyViewState>();
+                EditorUtility.CopySerialized(launcher.HierarchyViewState, HierarchyViewState);
+                launcher.HierarchyViewState = HierarchyViewState;
+
+                var MenuItemListViewState = ScriptableObject.CreateInstance<MenuItemListViewState>();
+                EditorUtility.CopySerialized(launcher.MenuItemListViewState, MenuItemListViewState);
+                launcher.MenuItemListViewState = MenuItemListViewState;
+
+                var ViewSelection = ScriptableObject.CreateInstance<ViewSelection>();
+                EditorUtility.CopySerialized(launcher.ViewSelection, ViewSelection);
+                launcher.ViewSelection = ViewSelection;
+
+                launcher.InstanceId = instanceId;
+            }
+
+            Container.Bind<AV3Setting>().FromInstance(launcher.AV3Setting).AsSingle();
+            Container.Bind<ExpressionEditorSetting>().FromInstance(launcher.ExpressionEditorSetting).AsSingle();
+            Container.Bind<ThumbnailSetting>().FromInstance(launcher.ThumbnailSetting).AsSingle();
+            Container.Bind<HierarchyViewState>().FromInstance(launcher.HierarchyViewState).AsSingle();
+            Container.Bind<MenuItemListViewState>().FromInstance(launcher.MenuItemListViewState).AsSingle();
+            Container.Bind<ViewSelection>().FromInstance(launcher.ViewSelection).AsSingle();
+
+            // Bind non-serialized classes
             Container.BindInterfacesTo<SubWindowManager>().AsSingle();
 
             Container.Bind<UpdateMenuSubject>().AsSingle();
@@ -124,15 +126,16 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<ISetNewAnimationPresenter>().To<SetNewAnimationPresenter>().AsSingle();
             Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
 
+            Container.BindInterfacesTo<MenuRepository>().AsSingle();
             Container.Bind<SelectionSynchronizer>().AsSingle();
             Container.Bind<MainThumbnailDrawer>().AsSingle();
             Container.Bind<GestureTableThumbnailDrawer>().AsSingle();
             Container.Bind<ExMenuThumbnailDrawer>().AsSingle();
             Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
-            Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
             Container.Bind<ModeNameProvider>().AsSingle();
             Container.Bind<AnimationElement>().AsSingle();
             Container.Bind<ExpressionEditor>().AsSingle();
+            Container.Bind<IBackupper>().To<FESBackupper>().AsSingle();
 
             Container.Bind<BranchListElement>().AsTransient();
             Container.Bind<GestureTableElement>().AsTransient();

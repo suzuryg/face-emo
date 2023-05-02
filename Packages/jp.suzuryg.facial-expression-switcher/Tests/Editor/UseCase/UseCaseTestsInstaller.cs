@@ -19,7 +19,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             if (UseCaseTestConstants.UseActualRepository)
             {
                 // Re-use usecase tests for menu-repository's test.
-                Container.Bind<SerializableMenu>().FromNewComponentOnNewGameObject().AsTransient();
+                Container.Bind<MenuRepositoryComponent>().FromNewComponentOnNewGameObject().AsSingle();
                 Container.Bind<IMenuRepository>().To<MenuRepository>().AsSingle();
             }
             else

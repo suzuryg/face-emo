@@ -1,6 +1,8 @@
 {
     "name": "jp.suzuryg.facial-expression-switcher.appmain.Runtime",
-    "references": [],
+    "references": [
+        "GUID:79c0d231dad4cc84e8226bd51341a07b"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -1,9 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
@@ -22,7 +18,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 
         public List<SerializableBranch> Branches;
 
-        public void Save(IMode mode)
+        public void Save(IMode mode, bool isAsset)
         {
             DisplayName = mode.DisplayName;
 
@@ -35,19 +31,31 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             if (mode.Animation is Domain.Animation)
             {
                 Animation = CreateInstance<SerializableAnimation>();
+#if UNITY_EDITOR
+                if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(Animation, this); }
+#else
+                if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
                 Animation.Save(mode.Animation);
+                Animation.name = $"Animation_{Animation.GUID}";
             }
 
             Branches = new List<SerializableBranch>();
             foreach (var branch in mode.Branches)
             {
                 var serializableBranch = CreateInstance<SerializableBranch>();
-                serializableBranch.Save(branch);
+#if UNITY_EDITOR
+                if (isAsset) { UnityEditor.AssetDatabase.AddObjectToAsset(serializableBranch, this); }
+#else
+                if (isAsset) { throw new FacialExpressionSwitcherException("SerializableMenu cannot be made into an asset in Play mode."); }
+#endif
+                serializableBranch.Save(branch, isAsset);
+                serializableBranch.name = "Branch";
                 Branches.Add(serializableBranch);
             }
         }
 
-        public void Load(Menu menu, string id)
+        public void Load(Domain.Menu menu, string id)
         {
             menu.ModifyModeProperties(id,
                 displayName: DisplayName,

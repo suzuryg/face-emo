@@ -58,6 +58,9 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 _subWindowManager = _installer.Container.Resolve<ISubWindowManager>().AddTo(_disposables);
                 _subWindowManager.Initialize(titleContent.text, _installer);
 
+                var backupper = _installer.Container.Resolve<IBackupper>().AddTo(_disposables);
+                backupper.SetName(_installer.RootObjectName);
+
                 // Disposables
                 _installer.Container.Resolve<ModeNameProvider>().AddTo(_disposables);
                 _installer.Container.Resolve<AnimationElement>().AddTo(_disposables);

@@ -43,6 +43,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Clone Fx controller
             // TODO: Is asset creation needed?
+            // VRC_AnimatorTrackingControl is not references to the AnimatorController but values held in the AnimatorController,
+            // so if the AnimatorController is copied, changing the destination asset will not affect the original AnimatorController.
             var originalPath = AssetDatabase.GetAssetPath(originalFxController);
             if (!AssetDatabase.CopyAsset(originalPath, DestinationPath)) // TODO: Suppress warnings (missing script)
             {
