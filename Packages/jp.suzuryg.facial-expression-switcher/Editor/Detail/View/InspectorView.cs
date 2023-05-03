@@ -47,6 +47,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private LocalizationTable _localizationTable;
 
+        private GUIStyle _warningLabelStyle = new GUIStyle();
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public InspectorView(
@@ -80,6 +82,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 var element = _additionalTransformObjects.serializedProperty.GetArrayElementAtIndex(index);
                 EditorGUI.PropertyField(rect, element, GUIContent.none);
             };
+
+            // Styles
+            _warningLabelStyle = new GUIStyle(GUI.skin.label);
+            _warningLabelStyle.normal.textColor = Color.red;
 
             // Set text
             SetText(_localizationSetting.Table);
@@ -257,17 +263,42 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
                 EditorGUILayout.Space();
 
+                // Additional toggle objects
                 _additionalToggleObjects.drawHeaderCallback = (Rect rect) =>
                 {
                     EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalToggleObjects);
                 };
                 _additionalToggleObjects.DoLayoutList();
 
+                var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
+                var toggleProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalToggleObjects));
+                for (int i = 0; i < toggleProperty?.arraySize; i++)
+                {
+                    var gameObject = toggleProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
+                    if (gameObject is null) { continue; }
+                    if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
+                    {
+                        EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
+                    }
+                }
+
+                // Additional transform objects
                 _additionalTransformObjects.drawHeaderCallback = (Rect rect) =>
                 {
                     EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalTransformObjects);
                 };
                 _additionalTransformObjects.DoLayoutList();
+
+                var transformProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalTransformObjects));
+                for (int i = 0; i < transformProperty?.arraySize; i++)
+                {
+                    var gameObject = transformProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
+                    if (gameObject is null) { continue; }
+                    if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
+                    {
+                        EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
+                    }
+                }
             }
             _av3Setting.ApplyModifiedProperties();
         }

@@ -75,6 +75,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string InspectorView_TargetAvatar = "Target Avatar";
         public string InspectorView_GenerateModeThumbnails = "Generate Expression Mode Thumbnails";
+        public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
 
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
         public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";

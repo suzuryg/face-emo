@@ -74,6 +74,7 @@ MonoBehaviour:
   ModeNameProvider_NoExpression: "\u8868\u60C5\u306A\u3057"
   InspectorView_TargetAvatar: "\u5BFE\u8C61\u30A2\u30D0\u30BF\u30FC"
   InspectorView_GenerateModeThumbnails: "\u8868\u60C5\u30E2\u30FC\u30C9\u306E\u30B5\u30E0\u30CD\u30A4\u30EB\u3092\u751F\u6210\u3059\u308B"
+  InspectorView_Message_NotInAvatar: "\u306F\u30A2\u30D0\u30BF\u30FC\u5185\u306E\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8\u3067\u306F\u306A\u3044\u305F\u3081\u3001\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u306F\u9069\u7528\u3055\u308C\u307E\u305B\u3093\u3002 "
   InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u56FA\u5B9A (1bit)"
   InspectorView_AddConfig_BlinkOff: "\u307E\u3070\u305F\u304DOFF (1bit)"
   InspectorView_AddConfig_DanceGimmick: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF
