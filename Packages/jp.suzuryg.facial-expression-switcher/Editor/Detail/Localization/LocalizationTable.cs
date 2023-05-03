@@ -87,6 +87,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
 
+        public string InspectorView_Thumbnail = "Thumbnail Setting";
+        public string InspectorView_Thumbnail_Distance = "Distance";
+        public string InspectorView_Thumbnail_HorizontalPosition = "Position (Horizontal)";
+        public string InspectorView_Thumbnail_VerticalPosition = "Position (Vertical)";
+        public string InspectorView_Thumbnail_HorizontalAngle = "Angle (Horizontal)";
+        public string InspectorView_Thumbnail_VerticalAngle = "Angle (Vertical)";
+        public string InspectorView_Thumbnail_Reset = "Reset";
+
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
         public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";
         public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick (1bit)";

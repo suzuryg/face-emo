@@ -88,6 +88,13 @@ MonoBehaviour:
     mouth at build time (recommended)
   InspectorView_Message_NotInAvatar: ' is not an object in the avatar, so animation
     is not applied.'
+  InspectorView_Thumbnail: Thumbnail Setting
+  InspectorView_Thumbnail_Distance: Distance
+  InspectorView_Thumbnail_HorizontalPosition: Position (Horizontal)
+  InspectorView_Thumbnail_VerticalPosition: Position (Vertical)
+  InspectorView_Thumbnail_HorizontalAngle: Angle (Horizontal)
+  InspectorView_Thumbnail_VerticalAngle: Angle (Vertical)
+  InspectorView_Thumbnail_Reset: Reset
   InspectorView_AddConfig_EmoteLock: Emote Lock (1bit)
   InspectorView_AddConfig_BlinkOff: Blink OFF (1bit)
   InspectorView_AddConfig_DanceGimmick: Dance Gimmick (1bit)

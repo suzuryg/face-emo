@@ -2,6 +2,7 @@
 using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail;
 using Suzuryg.FacialExpressionSwitcher.Detail.Data;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using System;
 using UnityEngine;
@@ -34,10 +35,16 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
                 _rootObject = (target as FESLauncherComponent).gameObject;
                 var installer = new FESInstaller(_rootObject);
+
+                // Inspector view
                 _inspectorView = installer.Container.Resolve<InspectorView>().AddTo(_disposables);
                 _inspectorView.OnLaunchButtonClicked.Synchronize().Subscribe(_ => Launch()).AddTo(_disposables);
                 _inspectorView.OnLocaleChanged.Synchronize().Subscribe(ChangeLocale).AddTo(_disposables);
 
+                // Disposables
+                installer.Container.Resolve<InspectorThumbnailDrawer>().AddTo(_disposables);
+
+                // Initialize
                 var menuRepository = installer.Container.Resolve<IMenuRepository>();
                 var updateMenuSubject = installer.Container.Resolve<UpdateMenuSubject>();
                 updateMenuSubject.OnNext(menuRepository.Load(null));

@@ -48,6 +48,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         public ExMenuThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
+    public class InspectorThumbnailDrawer : ThumbnailDrawerBase
+    {
+        protected override int Width => _thumbnailSetting.Inspector_Width;
+        protected override int Height => _thumbnailSetting.Inspector_Height;
+        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
+        protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
+        protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
+        protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
+        public InspectorThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
+    }
+
     public abstract class ThumbnailDrawerBase : IDisposable
     {
         // Constants
@@ -205,7 +217,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                             CameraPosX);
 
                         var distance = Math.Abs(animator.GetBoneTransform(HumanBodyBones.Neck).position.y - _aV3Setting.TargetAvatar.ViewPosition.y);
-                        y = Mathf.Lerp(distance, -distance, CameraPosY);
+                        y = Mathf.Lerp(-distance, distance, CameraPosY);
                     }
                     else
                     {
@@ -220,7 +232,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 camera.orthographicSize = OrthoSize;
                 camera.transform.position = new Vector3(x, _aV3Setting.TargetAvatar.ViewPosition.y + y, 1);
                 cameraRoot.transform.rotation = Quaternion.Euler(0, 180, 0);
-                camera.transform.RotateAround(_aV3Setting.TargetAvatar.ViewPosition, Vector3.right, CameraAngleX);
+                camera.transform.RotateAround(_aV3Setting.TargetAvatar.ViewPosition, Vector3.left, CameraAngleX);
                 camera.transform.RotateAround(clonedAvatar.transform.position, Vector3.down, CameraAngleY);
 
                 // Generate thumbnails

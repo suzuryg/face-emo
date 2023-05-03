@@ -35,5 +35,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 
         [NonSerialized] public static readonly int ExMenu_Width = 256;
         [NonSerialized] public static readonly int ExMenu_Height = 256;
+
+        public int Inspector_Width = 256;
+        public int Inspector_Height = 256;
     }
 }

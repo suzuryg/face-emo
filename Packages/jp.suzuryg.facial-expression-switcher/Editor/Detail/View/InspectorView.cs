@@ -26,7 +26,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private Subject<Locale> _onLocaleChanged = new Subject<Locale>();
 
         private ILocalizationSetting _localizationSetting;
+        private ThumbnailDrawerBase _thumbnailDrawer;
         private SerializedObject _av3Setting;
+        private SerializedObject _thumbnailSetting;
 
         private ReorderableList _mouthMorphBlendShapes;
         private ReorderableList _additionalToggleObjects;
@@ -35,6 +37,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private bool _isMouthMorphBlendShapesOpened = false;
         private bool _isAddtionalToggleOpened = false;
         private bool _isAddtionalTransformOpened = false;
+        private bool _isThumbnailOpened = false;
         private bool _isExpressionsMenuItemsOpened = false;
         private bool _isPreferencesOpened = false;
 
@@ -46,10 +49,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public InspectorView(
             ILocalizationSetting localizationSetting,
-            AV3Setting av3Setting)
+            InspectorThumbnailDrawer exMenuThumbnailDrawer,
+            AV3Setting av3Setting,
+            ThumbnailSetting thumbnailSetting)
         {
             _localizationSetting = localizationSetting;
+            _thumbnailDrawer = exMenuThumbnailDrawer;
             _av3Setting = new SerializedObject(av3Setting);
+            _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -94,6 +101,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         public void OnGUI()
         {
             _av3Setting.Update();
+            _thumbnailSetting.Update();
 
             // Launch button
             if (GUILayout.Button(_localizationTable.InspectorView_Launch, GUILayout.Height(EditorGUIUtility.singleLineHeight * 3)))
@@ -140,6 +148,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             EditorGUILayout.Space(10);
 
+            // Thumbnail Setting
+            _isThumbnailOpened = EditorGUILayout.Foldout(_isThumbnailOpened, _localizationTable.InspectorView_Thumbnail);
+            if (_isThumbnailOpened)
+            {
+                Field_ThumbnailSetting();
+            }
+
+            EditorGUILayout.Space(10);
+
             // Expressions Menu Setting Items
             _isExpressionsMenuItemsOpened = EditorGUILayout.Foldout(_isExpressionsMenuItemsOpened, _localizationTable.InspectorView_ExpressionsMenuSettingItems);
             if (_isExpressionsMenuItemsOpened)
@@ -157,6 +174,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
 
             _av3Setting.ApplyModifiedProperties();
+            _thumbnailSetting.ApplyModifiedProperties();
         }
 
         private void SetText(LocalizationTable localizationTable)
@@ -293,6 +311,105 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
                 {
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
+                }
+            }
+        }
+
+        private void Field_ThumbnailSetting()
+        {
+            // Draw thumbnail
+            float aspectRatio = 1;
+            float inspectorWidth = EditorGUIUtility.currentViewWidth;
+            float newHeight = inspectorWidth * aspectRatio;
+            var textureWidth = (int)inspectorWidth;
+            var textureHeight = (int)newHeight;
+            Rect textureRect = GUILayoutUtility.GetRect(textureWidth, textureHeight, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false));
+            var width = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Inspector_Width));
+            var height = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Inspector_Height));
+            if (width.intValue != textureWidth ||
+                height.intValue != textureHeight)
+            {
+                width.intValue = textureWidth;
+                height.intValue = textureHeight;
+                _thumbnailDrawer.ClearCache();
+            }
+            _thumbnailDrawer.Update();
+            var texture = _thumbnailDrawer.GetThumbnail(new Domain.Animation(string.Empty));
+            GUI.DrawTexture(textureRect, texture);
+
+            EditorGUILayout.Space(10);
+
+            // Draw sliders
+            var labelTexts = new []
+            {
+                _localizationTable.InspectorView_Thumbnail_Distance,
+                _localizationTable.InspectorView_Thumbnail_HorizontalPosition,
+                _localizationTable.InspectorView_Thumbnail_VerticalPosition,
+                _localizationTable.InspectorView_Thumbnail_HorizontalAngle,
+                _localizationTable.InspectorView_Thumbnail_VerticalAngle,
+            };
+            var labelWidth = labelTexts
+                .Select(text => GUI.skin.label.CalcSize(new GUIContent(text)).x)
+                .DefaultIfEmpty()
+                .Max();
+            labelWidth += 10;
+
+            var distance = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_OrthoSize));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_Distance, distance.floatValue, ThumbnailSetting.MinOrthoSize, ThumbnailSetting.MaxOrthoSize,
+                value => { distance.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+
+            var hPosition = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraPosX));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_HorizontalPosition, hPosition.floatValue, 0, 1,
+                value => { hPosition.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+
+            var vPosition = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraPosY));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_VerticalPosition, vPosition.floatValue, 0, 1,
+                value => { vPosition.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+
+            var hAngle = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraAngleH));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_HorizontalAngle, hAngle.floatValue, ThumbnailSetting.MaxCameraAngleH * -1, ThumbnailSetting.MaxCameraAngleH,
+                value => { hAngle.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+
+            var vAngle = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraAngleV));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_VerticalAngle, vAngle.floatValue, ThumbnailSetting.MaxCameraAngleV * -1, ThumbnailSetting.MaxCameraAngleV,
+                value => { vAngle.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+
+            EditorGUILayout.Space(10);
+
+            // Draw reset button
+            if (GUILayout.Button(_localizationTable.InspectorView_Thumbnail_Reset))
+            {
+                distance.floatValue = 0.1f;
+                hPosition.floatValue = 0.5f;
+                vPosition.floatValue = 0.5f;
+                hAngle.floatValue = 0;
+                vAngle.floatValue = 0;
+                _thumbnailDrawer.ClearCache();
+            }
+        }
+
+        private void Field_Slider(string labelText, float value, float minValue, float maxValue, Action<float> onValueChanged, float labelWidth)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                // Label
+                GUIContent labelContent = new GUIContent(labelText);
+                Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
+                GUI.Label(labelRect, labelContent);
+
+                // Slider
+                Rect sliderRect = GUILayoutUtility.GetRect(labelRect.x, labelRect.y, GUILayout.ExpandWidth(true));
+                var sliderValue = GUI.HorizontalSlider(sliderRect, value, minValue, maxValue);
+                if (!Mathf.Approximately(sliderValue, value))
+                {
+                    onValueChanged(sliderValue);
+                }
+
+                // DelayedFloatField
+                var fieldValue = EditorGUILayout.DelayedFloatField(value, GUILayout.Width(80));
+                if (!Mathf.Approximately(fieldValue, value))
+                {
+                    onValueChanged(fieldValue);
                 }
             }
         }
