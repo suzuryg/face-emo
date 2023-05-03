@@ -5,8 +5,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 {
     public class LocalizationTable : ScriptableObject
     {
-        public string Common_Delete = "Delete";
+        public string Common_Add = "Add";
         public string Common_Cancel = "Cancel";
+        public string Common_Delete = "Delete";
         public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following group?";
@@ -73,8 +74,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string ModeNameProvider_NoExpression = "NoExpression";
 
+        public string InspectorView_Launch = "Launch FacialExpressionSwitcher";
         public string InspectorView_TargetAvatar = "Target Avatar";
         public string InspectorView_GenerateModeThumbnails = "Generate Expression Mode Thumbnails";
+        public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
+        public string InspectorView_ExpressionsMenuSettingItems = "Expressions Menu Setting Items";
+        public string InspectorView_Preferences = "Menu Properties";
+        public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
+        public string InspectorView_TransitionDuration = "Transition Duration (sec)";
+        public string InspectorView_DoNotTransitionWhenSpeaking = "Do Not Transition When Speaking";
+        public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
+        public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
 
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";

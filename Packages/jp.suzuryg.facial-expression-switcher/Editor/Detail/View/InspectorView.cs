@@ -28,22 +28,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private ILocalizationSetting _localizationSetting;
         private SerializedObject _av3Setting;
 
-        private bool _isMouthMorphBlendShapesOpened = false;
         private ReorderableList _mouthMorphBlendShapes;
         private ReorderableList _additionalToggleObjects;
         private ReorderableList _additionalTransformObjects;
 
-        private bool _isMenuPropertiesSettingOpened = false;
-
-        private string _mouthMorphBlendShapesText;
-        private string _addText;
-        private string _cancelText;
-        private string _menuPropertiesText;
-        private string _smoothAnalogFistText;
-        private string _transitionDurationSecondsText;
-        private string _replaceBlinkText;
-        private string _disableTrackingControlsText;
-        private string _doNotTransitionWhenSpeakingText;
+        private bool _isMouthMorphBlendShapesOpened = false;
+        private bool _isAddtionalToggleOpened = false;
+        private bool _isAddtionalTransformOpened = false;
+        private bool _isExpressionsMenuItemsOpened = false;
+        private bool _isPreferencesOpened = false;
 
         private LocalizationTable _localizationTable;
 
@@ -70,6 +63,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Additional expression objects
             _additionalToggleObjects = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalToggleObjects)));
+            _additionalToggleObjects.headerHeight = 0;
             _additionalToggleObjects.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
             {
                 var element = _additionalToggleObjects.serializedProperty.GetArrayElementAtIndex(index);
@@ -77,6 +71,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             };
 
             _additionalTransformObjects = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalTransformObjects)));
+            _additionalTransformObjects.headerHeight = 0;
             _additionalTransformObjects.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
             {
                 var element = _additionalTransformObjects.serializedProperty.GetArrayElementAtIndex(index);
@@ -98,61 +93,89 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public void OnGUI()
         {
-            if (GUILayout.Button($"Launch {DomainConstants.SystemName}"))
+            _av3Setting.Update();
+
+            // Launch button
+            if (GUILayout.Button(_localizationTable.InspectorView_Launch, GUILayout.Height(EditorGUIUtility.singleLineHeight * 3)))
             {
                 _onLaunchButtonClicked.OnNext(Unit.Default);
             }
+            EditorGUILayout.Space(10);
 
-            var oldLocale = _localizationSetting.Locale;
-            var newLocale = (Locale)EditorGUILayout.EnumPopup(oldLocale);
-            if (newLocale != oldLocale)
-            {
-                _localizationSetting.SetLocale(newLocale);
-                _onLocaleChanged.OnNext(newLocale);
-                SetText(_localizationSetting.Table);
-            }
+            // Target avatar
+            EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)), new GUIContent(_localizationTable.InspectorView_TargetAvatar));
 
-            _isMenuPropertiesSettingOpened = EditorGUILayout.Foldout(_isMenuPropertiesSettingOpened, _menuPropertiesText);
-            if (_isMenuPropertiesSettingOpened)
-            {
-                MenuPropertiesGUI();
-            }
+            EditorGUILayout.Space(10);
 
-            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened, _mouthMorphBlendShapesText);
+            // Locale
+            Field_Locale();
+
+            EditorGUILayout.Space(10);
+
+            // Mouth Morph Blend Shapes
+            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened, _localizationTable.InspectorView_MouthMorphBlendShapes);
             if (_isMouthMorphBlendShapesOpened)
             {
                 _mouthMorphBlendShapes.list = GetMouthMorphBlendShapes(); // Is it necessary to get every frame?
                 _mouthMorphBlendShapes.DoLayoutList();
             }
+
+            EditorGUILayout.Space(10);
+
+            // Additional Toggle Objects
+            _isAddtionalToggleOpened = EditorGUILayout.Foldout(_isAddtionalToggleOpened, _localizationTable.Common_AddtionalToggleObjects);
+            if (_isAddtionalToggleOpened)
+            {
+                Field_AdditionalToggleObjects();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Additional Transform Objects
+            _isAddtionalTransformOpened = EditorGUILayout.Foldout(_isAddtionalTransformOpened, _localizationTable.Common_AddtionalTransformObjects);
+            if (_isAddtionalTransformOpened)
+            {
+                Field_AdditionalTransformObjects();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Expressions Menu Setting Items
+            _isExpressionsMenuItemsOpened = EditorGUILayout.Foldout(_isExpressionsMenuItemsOpened, _localizationTable.InspectorView_ExpressionsMenuSettingItems);
+            if (_isExpressionsMenuItemsOpened)
+            {
+                Field_ExpressionsMenuSettingItems();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Preferences
+            _isPreferencesOpened = EditorGUILayout.Foldout(_isPreferencesOpened, _localizationTable.InspectorView_Preferences);
+            if (_isPreferencesOpened)
+            {
+                Field_Preferences();
+            }
+
+            _av3Setting.ApplyModifiedProperties();
         }
 
         private void SetText(LocalizationTable localizationTable)
         {
             _localizationTable = localizationTable;
+        }
 
-            if (localizationTable.HierarchyView_Title == "HierarchyView")
-            {
-                _mouthMorphBlendShapesText = "MouthMorphBlendShapes";
-                _addText = "Add";
-                _cancelText = "Cancel";
-                _menuPropertiesText = "Menu Properties";
-                _smoothAnalogFistText = "Smooth Analog Fist";
-                _transitionDurationSecondsText = "Transition Duration (sec)";
-                _doNotTransitionWhenSpeakingText = "Do Not Transition When Speaking.";
-                _replaceBlinkText = "Replace blink with animation at build time (recommended)";
-                _disableTrackingControlsText = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
-            }
-            else
-            {
-                _mouthMorphBlendShapesText = "口変形キャンセル用シェイプキー";
-                _addText = "追加";
-                _cancelText = "キャンセル";
-                _menuPropertiesText = "メニュー設定";
-                _smoothAnalogFistText = "アナログ値のスムージング";
-                _transitionDurationSecondsText = "遷移時間（秒）";
-                _doNotTransitionWhenSpeakingText = "発話中は表情遷移しない";
-                _replaceBlinkText = "ビルド時にまばたきをアニメーションに置き換える（推奨）";
-                _disableTrackingControlsText = "ビルド時に目と口のVRCTrackingControlを無効にする（推奨）";
+        private void Field_Locale()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            { 
+                var oldLocale = _localizationSetting.Locale;
+                var newLocale = (Locale)EditorGUILayout.EnumPopup(new GUIContent("言語設定 (Language Setting)"), oldLocale);
+                if (newLocale != oldLocale)
+                {
+                    _localizationSetting.SetLocale(newLocale);
+                    _onLocaleChanged.OnNext(newLocale);
+                    SetText(_localizationSetting.Table);
+                }
             }
         }
 
@@ -184,7 +207,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             UnityEditor.PopupWindow.Show(
                 new Rect(Event.current.mousePosition, Vector2.one),
-                new ListSelectPopupContent<string>(faceBlendShapes, _addText, _cancelText,
+                new ListSelectPopupContent<string>(faceBlendShapes, _localizationTable.Common_Add, _localizationTable.Common_Cancel,
                 new Action<IReadOnlyList<string>>(blendShapes =>
                 {
                     var existing = new HashSet<string>(GetMouthMorphBlendShapes());
@@ -230,77 +253,76 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _av3Setting.ApplyModifiedProperties();
         }
 
-        private void MenuPropertiesGUI()
+        private void Field_AdditionalToggleObjects()
         {
-            _av3Setting.Update();
-            using (new EditorGUILayout.VerticalScope())
+            var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
+
+            _additionalToggleObjects.drawHeaderCallback = (Rect rect) =>
             {
-                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)), new GUIContent(_localizationTable.InspectorView_TargetAvatar));
-                EditorGUILayout.Space();
+                EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalToggleObjects);
+            };
+            _additionalToggleObjects.DoLayoutList();
 
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _smoothAnalogFistText);
-                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_transitionDurationSecondsText));
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DoNotTransitionWhenSpeaking)), _doNotTransitionWhenSpeakingText);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GenerateModeThumbnails)), _localizationTable.InspectorView_GenerateModeThumbnails);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _replaceBlinkText);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _disableTrackingControlsText);
-
-                EditorGUILayout.Space();
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       _localizationTable.InspectorView_AddConfig_EmoteLock);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick);
-                if (_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)).boolValue)
+            var toggleProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalToggleObjects));
+            for (int i = 0; i < toggleProperty?.arraySize; i++)
+            {
+                var gameObject = toggleProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
+                if (gameObject is null) { continue; }
+                if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
                 {
-                    TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock);
-                }
-                else
-                {
-                    ViewUtility.LayoutDummyToggle(_localizationTable.InspectorView_AddConfig_ContactLock);
-                }
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPriority)),    _localizationTable.InspectorView_AddConfig_HandPriority);
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);
-
-                EditorGUILayout.Space();
-
-                // Additional toggle objects
-                _additionalToggleObjects.drawHeaderCallback = (Rect rect) =>
-                {
-                    EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalToggleObjects);
-                };
-                _additionalToggleObjects.DoLayoutList();
-
-                var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
-                var toggleProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalToggleObjects));
-                for (int i = 0; i < toggleProperty?.arraySize; i++)
-                {
-                    var gameObject = toggleProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
-                    if (gameObject is null) { continue; }
-                    if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
-                    {
-                        EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
-                    }
-                }
-
-                // Additional transform objects
-                _additionalTransformObjects.drawHeaderCallback = (Rect rect) =>
-                {
-                    EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalTransformObjects);
-                };
-                _additionalTransformObjects.DoLayoutList();
-
-                var transformProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalTransformObjects));
-                for (int i = 0; i < transformProperty?.arraySize; i++)
-                {
-                    var gameObject = transformProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
-                    if (gameObject is null) { continue; }
-                    if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
-                    {
-                        EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
-                    }
+                    EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
                 }
             }
-            _av3Setting.ApplyModifiedProperties();
+        }
+
+        private void Field_AdditionalTransformObjects()
+        {
+            var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
+
+            _additionalTransformObjects.drawHeaderCallback = (Rect rect) =>
+            {
+                EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalTransformObjects);
+            };
+            _additionalTransformObjects.DoLayoutList();
+
+            var transformProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalTransformObjects));
+            for (int i = 0; i < transformProperty?.arraySize; i++)
+            {
+                var gameObject = transformProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
+                if (gameObject is null) { continue; }
+                if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
+                {
+                    EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
+                }
+            }
+        }
+
+        private void Field_ExpressionsMenuSettingItems()
+        {
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       _localizationTable.InspectorView_AddConfig_EmoteLock);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick);
+            if (_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)).boolValue)
+            {
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock);
+            }
+            else
+            {
+                ViewUtility.LayoutDummyToggle(_localizationTable.InspectorView_AddConfig_ContactLock);
+            }
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPriority)),    _localizationTable.InspectorView_AddConfig_HandPriority);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);
+        }
+
+        private void Field_Preferences()
+        {
+            EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_localizationTable.InspectorView_TransitionDuration));
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DoNotTransitionWhenSpeaking)), _localizationTable.InspectorView_DoNotTransitionWhenSpeaking);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GenerateModeThumbnails)), _localizationTable.InspectorView_GenerateModeThumbnails);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _localizationTable.InspectorView_SmoothAnalogFist);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _localizationTable.InspectorView_ReplaceBlink);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _localizationTable.InspectorView_DisableTrackingControls);
         }
 
         private static void TogglePropertyField(SerializedProperty serializedProperty, string label)

@@ -101,6 +101,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             if (_previewAvatar is GameObject) { UnityEngine.Object.DestroyImmediate(_previewAvatar); }
             _previewAvatar = UnityEngine.Object.Instantiate(avatarRoot);
+            _previewAvatar.SetActive(true);
             _previewAvatar.hideFlags = HideFlags.HideAndDontSave;
 
             AnimationMode.StartAnimationMode();

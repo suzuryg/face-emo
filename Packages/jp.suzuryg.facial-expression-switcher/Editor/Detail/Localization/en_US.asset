@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400add5ab2f7cbf448558d4a8505230b, type: 3}
   m_Name: en_US
   m_EditorClassIdentifier: 
-  Common_Delete: Delete
+  Common_Add: Add
   Common_Cancel: Cancel
+  Common_Delete: Delete
   Common_AddtionalToggleObjects: Addtional Expression Objects (Toggle)
   Common_AddtionalTransformObjects: Addtional Expression Objects (Transform)
   Common_Message_DeleteGroup: Are you sure you want to delete the following group?
@@ -73,8 +74,20 @@ MonoBehaviour:
   AnimationElement_Message_GuidWasNotFound: The selected animation clip does not
     exist in this project.
   ModeNameProvider_NoExpression: NoExpression
+  InspectorView_Launch: Launch FacialExpressionSwitcher
   InspectorView_TargetAvatar: Target Avatar
   InspectorView_GenerateModeThumbnails: Generate Expression Mode Thumbnails
+  InspectorView_MouthMorphBlendShapes: MouthMorphBlendShapes
+  InspectorView_ExpressionsMenuSettingItems: Expressions Menu Setting Items
+  InspectorView_Preferences: Menu Properties
+  InspectorView_SmoothAnalogFist: Smooth Analog Fist
+  InspectorView_TransitionDuration: Transition Duration (sec)
+  InspectorView_DoNotTransitionWhenSpeaking: Do Not Transition When Speaking
+  InspectorView_ReplaceBlink: Replace blink with animation at build time (recommended)
+  InspectorView_DisableTrackingControls: Disable VRCTrackingControls for eyes and
+    mouth at build time (recommended)
+  InspectorView_Message_NotInAvatar: ' is not an object in the avatar, so animation
+    is not applied.'
   InspectorView_AddConfig_EmoteLock: Emote Lock (1bit)
   InspectorView_AddConfig_BlinkOff: Blink OFF (1bit)
   InspectorView_AddConfig_DanceGimmick: Dance Gimmick (1bit)
