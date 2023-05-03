@@ -372,7 +372,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             // Create AFK sub-state machine
-            // TODO: Play AFK emotes (idle, afk start, afk, afk end)
             var afkStateMachine = layer.NewSubStateMachine("AFK", 1, -1)
                 .WithEntryPosition(0, 0).WithAnyStatePosition(0, -1).WithParentStateMachinePosition(0, -2).WithExitPosition(0, 5);
             layer.EntryTransitionsTo(afkStateMachine)
@@ -393,6 +392,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             afkStandbyState.TransitionsTo(afkEnterState)
                 .WithTransitionDurationSeconds(0.1f)
                 .When(layer.BoolParameter("Dummy").IsFalse());
+            if (aV3Setting.AfkEnterFace is AnimationClip && aV3Setting.AfkEnterFace != null) { afkEnterState.WithAnimation(aV3Setting.AfkEnterFace); }
 
             var afkState = afkStateMachine.NewState("AFK", 0, 3)
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), false)
@@ -402,6 +402,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             afkEnterState.TransitionsTo(afkState)
                 .WithTransitionDurationSeconds(0.75f)
                 .AfterAnimationFinishes();
+            if (aV3Setting.AfkFace is AnimationClip && aV3Setting.AfkFace != null) { afkState.WithAnimation(aV3Setting.AfkFace); }
 
             var afkExitState = afkStateMachine.NewState("AFK Exit", 0, 4)
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), true)
@@ -414,6 +415,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             afkExitState.Exits()
                 .WithTransitionDurationSeconds(0.1f)
                 .AfterAnimationFinishes();
+            if (aV3Setting.AfkExitFace is AnimationClip && aV3Setting.AfkExitFace != null) { afkExitState.WithAnimation(aV3Setting.AfkExitFace); }
 
             // Create override state
             var overrideState = layer.NewState("in OVERRIDE", 2, -1);

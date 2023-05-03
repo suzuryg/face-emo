@@ -95,6 +95,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_Thumbnail_VerticalAngle = "Angle (Vertical)";
         public string InspectorView_Thumbnail_Reset = "Reset";
 
+        public string InspectorView_AFK = "AFK Face Setting";
+        public string InspectorView_AFK_EnterFace = "AFK Enter Face";
+        public string InspectorView_AFK_Face = "AFK Face";
+        public string InspectorView_AFK_ExitFace = "AFK Exit Face";
+
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
         public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";
         public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick (1bit)";

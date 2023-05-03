@@ -15,6 +15,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public List<string> AdditionalToggleObjectPaths = new List<string>();
         public List<string> AdditionalTransformObjectPaths = new List<string>();
 
+        public AnimationClip AfkEnterFace;
+        public AnimationClip AfkFace;
+        public AnimationClip AfkExitFace;
+
         public bool SmoothAnalogFist = true;
         public double TransitionDurationSeconds = 0.1;
         public bool GenerateModeThumbnails = true;

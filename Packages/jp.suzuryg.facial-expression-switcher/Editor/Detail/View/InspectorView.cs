@@ -37,6 +37,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private bool _isMouthMorphBlendShapesOpened = false;
         private bool _isAddtionalToggleOpened = false;
         private bool _isAddtionalTransformOpened = false;
+        private bool _isAFKOpened = false;
         private bool _isThumbnailOpened = false;
         private bool _isExpressionsMenuItemsOpened = false;
         private bool _isPreferencesOpened = false;
@@ -144,6 +145,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (_isAddtionalTransformOpened)
             {
                 Field_AdditionalTransformObjects();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // AFK face setting
+            _isAFKOpened = EditorGUILayout.Foldout(_isAFKOpened, _localizationTable.InspectorView_AFK);
+            if (_isAFKOpened)
+            {
+                Field_AFKFace();
             }
 
             EditorGUILayout.Space(10);
@@ -313,6 +323,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
                 }
             }
+        }
+
+        private void Field_AFKFace()
+        {
+            EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AfkEnterFace)), new GUIContent(_localizationTable.InspectorView_AFK_EnterFace));
+            EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AfkFace)), new GUIContent(_localizationTable.InspectorView_AFK_Face));
+            EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AfkExitFace)), new GUIContent(_localizationTable.InspectorView_AFK_ExitFace));
         }
 
         private void Field_ThumbnailSetting()

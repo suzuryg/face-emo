@@ -92,6 +92,10 @@ MonoBehaviour:
   InspectorView_Thumbnail_HorizontalAngle: "\u89D2\u5EA6\uFF08\u6C34\u5E73\uFF09"
   InspectorView_Thumbnail_VerticalAngle: "\u89D2\u5EA6\uFF08\u5782\u76F4\uFF09"
   InspectorView_Thumbnail_Reset: "\u30EA\u30BB\u30C3\u30C8"
+  InspectorView_AFK: "AFK\u8868\u60C5\u8A2D\u5B9A"
+  InspectorView_AFK_EnterFace: "AFK\u958B\u59CB\u6642\u306E\u8868\u60C5"
+  InspectorView_AFK_Face: "AFK\u4E2D\u306E\u8868\u60C5"
+  InspectorView_AFK_ExitFace: "AFK\u7D42\u4E86\u6642\u306E\u8868\u60C5"
   InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u56FA\u5B9A (1bit)"
   InspectorView_AddConfig_BlinkOff: "\u307E\u3070\u305F\u304DOFF (1bit)"
   InspectorView_AddConfig_DanceGimmick: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF
