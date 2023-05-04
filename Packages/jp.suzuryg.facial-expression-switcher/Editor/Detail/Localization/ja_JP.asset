@@ -15,6 +15,14 @@ MonoBehaviour:
   Common_Add: "\u8FFD\u52A0"
   Common_Cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB"
   Common_Delete: "\u524A\u9664"
+  Common_Neutral: Neutral
+  Common_Fist: Fist
+  Common_HandOpen: Open
+  Common_Fingerpoint: Point
+  Common_Victory: Victory
+  Common_RockNRoll: Rock
+  Common_HandGun: Gun
+  Common_ThumbsUp: Thumbs
   Common_AddtionalToggleObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
     (Toggle)"
   Common_AddtionalTransformObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8 
@@ -49,25 +57,9 @@ MonoBehaviour:
   BranchListView_OneSide: "\u7247\u624B\u304C"
   BranchListView_Either: "\u7247\u624B\u307E\u305F\u306F\u4E21\u624B\u304C"
   BranchListView_Both: "\u4E21\u624B\u304C"
-  BranchListView_Neutral: Neutral
-  BranchListView_Fist: Fist
-  BranchListView_HandOpen: HandOpen
-  BranchListView_Fingerpoint: Fingerpoint
-  BranchListView_Victory: Victory
-  BranchListView_RockNRoll: RockNRoll
-  BranchListView_HandGun: HandGun
-  BranchListView_ThumbsUp: ThumbsUp
   BranchListView_Equals: "\u3068\u4E00\u81F4"
   BranchListView_NotEqual: "\u3068\u4E0D\u4E00\u81F4"
   GestureTableView_AddBranch: "\u5206\u5C90\u3092\u8FFD\u52A0"
-  GestureTableView_Neutral: Neutral
-  GestureTableView_Fist: Fist
-  GestureTableView_HandOpen: Open
-  GestureTableView_Fingerpoint: Point
-  GestureTableView_Victory: Victory
-  GestureTableView_RockNRoll: Rock
-  GestureTableView_HandGun: Gun
-  GestureTableView_ThumbsUp: Thumbs
   SettingView_GroupDeleteConfirmation: "\u30B0\u30EB\u30FC\u30D7\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
   SettingView_ModeDeleteConfirmation: "\u30E2\u30FC\u30C9\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
   SettingView_BranchDeleteConfirmation: "\u5206\u5C90\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
