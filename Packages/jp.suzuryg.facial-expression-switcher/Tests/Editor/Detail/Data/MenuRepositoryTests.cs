@@ -216,8 +216,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
                 }
                 finally
                 {
-                    if (exporterRoot is GameObject) { DestroyImmediate(exporterRoot); }
-                    if (importerRoot is GameObject) { DestroyImmediate(importerRoot); }
+                    if (exporterRoot != null) { DestroyImmediate(exporterRoot); }
+                    if (importerRoot != null) { DestroyImmediate(importerRoot); }
                 }
             }
             else
@@ -258,7 +258,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
                 }
                 finally
                 {
-                    if (importerRoot is GameObject) { DestroyImmediate(importerRoot); }
+                    if (importerRoot != null) { DestroyImmediate(importerRoot); }
                 }
             }
             else

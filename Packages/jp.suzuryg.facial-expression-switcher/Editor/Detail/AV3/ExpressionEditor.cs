@@ -99,7 +99,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var avatarRoot = _aV3Setting?.TargetAvatar?.gameObject;
             if (avatarRoot is null) { return; }
 
-            if (_previewAvatar is GameObject) { UnityEngine.Object.DestroyImmediate(_previewAvatar); }
+            if (_previewAvatar != null) { UnityEngine.Object.DestroyImmediate(_previewAvatar); }
             _previewAvatar = UnityEngine.Object.Instantiate(avatarRoot);
             _previewAvatar.SetActive(true);
             _previewAvatar.hideFlags = HideFlags.HideAndDontSave;
@@ -121,7 +121,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
             finally
             {
-                if (_previewAvatar is GameObject) { UnityEngine.Object.DestroyImmediate(_previewAvatar); }
+                if (_previewAvatar != null) { UnityEngine.Object.DestroyImmediate(_previewAvatar); }
                 AnimationMode.StopAnimationMode();
             }
         }
@@ -130,7 +130,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         {
             var origin = new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
             var avatarRoot = _aV3Setting?.TargetAvatar?.gameObject;
-            if (avatarRoot is GameObject)
+            if (avatarRoot != null)
             {
                 var clonedAvatar = UnityEngine.Object.Instantiate(avatarRoot);
                 try

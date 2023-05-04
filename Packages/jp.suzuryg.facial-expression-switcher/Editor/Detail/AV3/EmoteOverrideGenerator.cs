@@ -18,7 +18,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var controllerPath = dirPath + "/" + Path.GetFileName(AV3Constants.Path_EmoteOverrideController);
 
             // Check existence
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) is GameObject)
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null)
             {
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, $"\"{prefabPath}\" already exists!", "OK");
                 return;

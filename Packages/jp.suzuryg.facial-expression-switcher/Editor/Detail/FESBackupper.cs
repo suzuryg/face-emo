@@ -143,7 +143,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         {
             // Avatar
             if (_aV3Setting.TargetAvatarPath.StartsWith("/") &&
-                GameObject.Find(_aV3Setting.TargetAvatarPath) is GameObject avatarRoot &&
+                GameObject.Find(_aV3Setting.TargetAvatarPath) is GameObject avatarRoot && avatarRoot != null &&
                 avatarRoot.GetComponent<VRCAvatarDescriptor>() is VRCAvatarDescriptor avatarDescriptor)
             {
                 _aV3Setting.TargetAvatar = avatarDescriptor;
@@ -158,7 +158,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             foreach (var path in _aV3Setting.AdditionalToggleObjectPaths)
             {
                 if (path.StartsWith("/") &&
-                    GameObject.Find(path) is GameObject toggle)
+                    GameObject.Find(path) is GameObject toggle && toggle != null)
                 {
                     _aV3Setting.AdditionalToggleObjects.Add(toggle);
                 }
@@ -173,7 +173,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             foreach (var path in _aV3Setting.AdditionalTransformObjectPaths)
             {
                 if (path.StartsWith("/") &&
-                    GameObject.Find(path) is GameObject transform)
+                    GameObject.Find(path) is GameObject transform && transform != null)
                 {
                     _aV3Setting.AdditionalTransformObjects.Add(transform);
                 }

@@ -709,7 +709,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             {
                 var prefabName = Path.GetFileNameWithoutExtension(path);
                 var existing = rootObject.transform.Find(prefabName)?.gameObject;
-                if (existing is GameObject)
+                if (existing != null)
                 {
                     UnityEngine.Object.DestroyImmediate(existing);
                 }

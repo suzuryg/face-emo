@@ -250,11 +250,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
             finally
             {
-                if (cameraRoot is GameObject)
+                if (cameraRoot != null)
                 {
                     UnityEngine.Object.DestroyImmediate(cameraRoot);
                 }
-                if (clonedAvatar is GameObject)
+                if (clonedAvatar != null)
                 {
                     UnityEngine.Object.DestroyImmediate(clonedAvatar);
                 }

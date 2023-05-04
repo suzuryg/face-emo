@@ -180,7 +180,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             launcherObject.SetActive(false);
             var anotherObject = GameObject.Find(rootObjectPath);
             launcherObject.SetActive(true);
-            if (anotherObject is GameObject)
+            if (anotherObject != null)
             {
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} has duplicate path. Please change GameObject's name.", "OK");
                 return null;
