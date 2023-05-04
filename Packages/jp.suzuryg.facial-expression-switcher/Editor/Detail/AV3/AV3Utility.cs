@@ -180,12 +180,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static List<string> GetEyeLidsBlendShapes(VRCAvatarDescriptor avatarDescriptor)
         {
             var ret = new List<string>();
-            if (avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes is int[] &&
+            if (avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes != null &&
                 avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh != null &&
-                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh is SkinnedMeshRenderer &&
-                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh != null &&
-                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh is Mesh sharedMesh)
+                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh != null)
             {
+                var sharedMesh = avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh;
                 foreach (var index in avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes)
                 {
                     if (index < sharedMesh.blendShapeCount)
