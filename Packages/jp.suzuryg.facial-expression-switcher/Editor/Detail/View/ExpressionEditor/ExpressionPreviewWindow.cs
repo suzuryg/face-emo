@@ -35,6 +35,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 AssetDatabase.CopyAsset($"{DetailConstants.IconDirectory}/sentiment_satisfied_FILL0_wght400_GRAD200_opsz48.png", iconPath);
             }
+            minSize = new Vector2(300, 300);
             base.OnEnable();
         }
 

@@ -17,6 +17,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
     public class ExpressionEditorView : IDisposable
     {
         private static readonly float IndentWidth = 20;
+        private static readonly float ToggleWidth = 15;
 
         private ISubWindowProvider _subWindowProvider;
         private ILocalizationSetting _localizationSetting;
@@ -147,6 +148,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 maxBlendShapeNameWidth + IndentWidth + padding.left + padding.right + verticalScrollbarWidth);
             var leftContentWidth = window.position.width - padding.left - padding.right - rightContentWidth - leftRightMargin;
 
+            // Set minimum window size
+            var minLeftContentWidth = GUI.skin.label.CalcSize(new GUIContent(_localizationTable.ExpressionEditorView_ShowOnlyDifferFromDefaultValue)).x + ToggleWidth;
+            var minWindowWidth = padding.left + minLeftContentWidth + leftRightMargin + rightContentWidth + padding.right;
+            const float minWindowHeight = 300;
+            window.minSize = new Vector2(minWindowWidth, minWindowHeight);
+
             // Update property values when finished moving the Slider.
             if (Event.current.type == EventType.MouseUp)
             {
@@ -204,7 +211,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 using (var check = new EditorGUI.ChangeCheckScope())
                 {
                     EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ShowOnlyDifferFromDefaultValue)),
-                        new GUIContent(string.Empty), GUILayout.Width(15));
+                        new GUIContent(string.Empty), GUILayout.Width(ToggleWidth));
 
                     if (check.changed)
                     {
