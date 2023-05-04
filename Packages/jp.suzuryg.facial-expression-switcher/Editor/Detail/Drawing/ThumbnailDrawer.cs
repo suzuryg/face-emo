@@ -111,14 +111,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                     }
                 }
             }).AddTo(_disposables);
-
-            // Initialize
-            InitializePreviewScene();
         }
 
         public void Dispose()
         {
-            EditorSceneManager.ClosePreviewScene(_previewScene);
             _disposables?.Dispose();
         }
 
@@ -184,6 +180,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
 
             // Prepare objects
+            InitializePreviewScene();
             GameObject clonedAvatar = null;
             GameObject cameraRoot = new GameObject();
             try
@@ -261,6 +258,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 {
                     UnityEngine.Object.DestroyImmediate(clonedAvatar);
                 }
+                EditorSceneManager.ClosePreviewScene(_previewScene);
             }
 
             // } end of using (_customMarker.Auto())
