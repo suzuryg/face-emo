@@ -67,7 +67,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             float yCurrent = rect.y + thumbnailHeight;
 
             var animationTexture = thumbnailDrawer.GetThumbnail(animation);
-            if (animationTexture is Texture2D)
+            if (animationTexture != null)
             {
                 GUI.DrawTexture(thumbnailRect, animationTexture);
             }
@@ -99,7 +99,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
                 const float iconMarginRate = 0.1f;
                 var iconMargin = Math.Min(width * iconMarginRate, height * iconMarginRate);
-                var clipExits = clip is AnimationClip;
+                var clipExits = clip != null;
 
                 // Create
                 if (GUI.Button(createRect, string.Empty))
@@ -283,7 +283,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             var animationName = $"{baseAnimationName}.anim";
             for (int i = 0; i < int.MaxValue; i++)
             {
-                if (AssetDatabase.LoadAssetAtPath<AnimationClip>($"{defaultDir}/{animationName}") is AnimationClip)
+                if (AssetDatabase.LoadAssetAtPath<AnimationClip>($"{defaultDir}/{animationName}") != null)
                 {
                     animationName = $"{baseAnimationName}_{i}.anim";
                 }

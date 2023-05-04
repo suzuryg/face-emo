@@ -63,7 +63,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 var elementId = GetElementId(menuItemId);
                 var element = FindItem(elementId, rootItem);
-                if (element is TreeViewItem)
+                if (element != null)
                 {
                     elements.Add(element);
                 }

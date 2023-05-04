@@ -392,7 +392,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             afkStandbyState.TransitionsTo(afkEnterState)
                 .WithTransitionDurationSeconds(0.1f)
                 .When(layer.BoolParameter("Dummy").IsFalse());
-            if (aV3Setting.AfkEnterFace is AnimationClip && aV3Setting.AfkEnterFace != null) { afkEnterState.WithAnimation(aV3Setting.AfkEnterFace); }
+            if (aV3Setting.AfkEnterFace != null && aV3Setting.AfkEnterFace != null) { afkEnterState.WithAnimation(aV3Setting.AfkEnterFace); }
 
             var afkState = afkStateMachine.NewState("AFK", 0, 3)
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), false)
@@ -402,7 +402,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             afkEnterState.TransitionsTo(afkState)
                 .WithTransitionDurationSeconds(0.75f)
                 .AfterAnimationFinishes();
-            if (aV3Setting.AfkFace is AnimationClip && aV3Setting.AfkFace != null) { afkState.WithAnimation(aV3Setting.AfkFace); }
+            if (aV3Setting.AfkFace != null && aV3Setting.AfkFace != null) { afkState.WithAnimation(aV3Setting.AfkFace); }
 
             var afkExitState = afkStateMachine.NewState("AFK Exit", 0, 4)
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), true)
@@ -415,7 +415,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             afkExitState.Exits()
                 .WithTransitionDurationSeconds(0.1f)
                 .AfterAnimationFinishes();
-            if (aV3Setting.AfkExitFace is AnimationClip && aV3Setting.AfkExitFace != null) { afkExitState.WithAnimation(aV3Setting.AfkExitFace); }
+            if (aV3Setting.AfkExitFace != null && aV3Setting.AfkExitFace != null) { afkExitState.WithAnimation(aV3Setting.AfkExitFace); }
 
             // Create override state
             var overrideState = layer.NewState("in OVERRIDE", 2, -1);
@@ -835,7 +835,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Generate fesh mesh blendshape animation
             var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
-            if (faceMesh is SkinnedMeshRenderer)
+            if (faceMesh != null)
             {
                 var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
                 var excludeLipSync = true;

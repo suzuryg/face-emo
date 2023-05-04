@@ -144,7 +144,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             // Avatar
             if (_aV3Setting.TargetAvatarPath.StartsWith("/") &&
                 GameObject.Find(_aV3Setting.TargetAvatarPath) is GameObject avatarRoot && avatarRoot != null &&
-                avatarRoot.GetComponent<VRCAvatarDescriptor>() is VRCAvatarDescriptor avatarDescriptor)
+                avatarRoot.GetComponent<VRCAvatarDescriptor>() is VRCAvatarDescriptor avatarDescriptor && avatarDescriptor != null)
             {
                 _aV3Setting.TargetAvatar = avatarDescriptor;
             }

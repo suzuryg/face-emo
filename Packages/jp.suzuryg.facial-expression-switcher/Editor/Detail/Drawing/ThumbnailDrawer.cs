@@ -201,7 +201,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 var animator = clonedAvatar.GetComponent<Animator>();
                 float x = 0;
                 float y = 0;
-                if (animator is Animator)
+                if (animator != null)
                 {
                     if (animator.isHuman)
                     {

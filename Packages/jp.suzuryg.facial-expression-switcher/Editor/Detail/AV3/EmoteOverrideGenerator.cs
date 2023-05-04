@@ -23,7 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, $"\"{prefabPath}\" already exists!", "OK");
                 return;
             }
-            else if (AssetDatabase.LoadAssetAtPath<AnimatorController>(controllerPath) is AnimatorController)
+            else if (AssetDatabase.LoadAssetAtPath<AnimatorController>(controllerPath) != null)
             {
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, $"\"{controllerPath}\" already exists!", "OK");
                 return;

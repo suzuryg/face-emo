@@ -168,7 +168,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             _addBranchButton?.SetEnabled(canAddBranch);
 
-            if (_addBranchButton is Button)
+            if (_addBranchButton != null)
             {
                 if (canAddBranch)
                 {

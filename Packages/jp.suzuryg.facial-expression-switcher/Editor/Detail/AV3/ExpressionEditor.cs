@@ -135,7 +135,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 var clonedAvatar = UnityEngine.Object.Instantiate(avatarRoot);
                 try
                 {
-                    if (clonedAvatar.GetComponent<Animator>() is Animator animator && animator.isHuman)
+                    var animator = clonedAvatar.GetComponent<Animator>();
+                    if (animator != null && animator.isHuman)
                     {
                         var clip = new AnimationClip();
                         AnimationMode.StartAnimationMode();
@@ -490,7 +491,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             foreach (var binding in bindings)
             {
                 var curve = AnimationUtility.GetEditorCurve(animationClip, binding.Value);
-                if (curve is AnimationCurve && curve.keys.Length > 0) { blendShapes[binding.Key] = curve.keys[0].value; }
+                if (curve != null && curve.keys.Length > 0) { blendShapes[binding.Key] = curve.keys[0].value; }
             }
             return blendShapes;
         }
@@ -514,7 +515,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var transformPath = AnimationUtility.CalculateTransformPath(gameObject?.transform, animator?.transform);
 
             var curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_IsActive", type = typeof(GameObject) });
-            if (curve is AnimationCurve && curve.keys.Length > 0)
+            if (curve != null && curve.keys.Length > 0)
             {
                 var value = curve.keys[0].value;
                 if (value > 0)
@@ -573,27 +574,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Get local position
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.x", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.PositionX = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.PositionX = curve.keys[0].value; propertyExists = true; }
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.y", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.PositionY = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.PositionY = curve.keys[0].value; propertyExists = true; }
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalPosition.z", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.PositionZ = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.PositionZ = curve.keys[0].value; propertyExists = true; }
 
             // Get local rotation
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.x", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.RotationX = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.RotationX = curve.keys[0].value; propertyExists = true; }
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.y", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.RotationY = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.RotationY = curve.keys[0].value; propertyExists = true; }
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "localEulerAnglesRaw.z", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.RotationZ = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.RotationZ = curve.keys[0].value; propertyExists = true; }
 
             // Get local scale
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.x", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.ScaleX = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.ScaleX = curve.keys[0].value; propertyExists = true; }
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.y", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.ScaleY = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.ScaleY = curve.keys[0].value; propertyExists = true; }
             curve = AnimationUtility.GetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.z", type = typeof(Transform) });
-            if (curve is AnimationCurve && curve.keys.Length > 0) { transform.ScaleZ = curve.keys[0].value; propertyExists = true; }
+            if (curve != null && curve.keys.Length > 0) { transform.ScaleZ = curve.keys[0].value; propertyExists = true; }
 
             if (propertyExists) { return transform; }
             else { return null; }

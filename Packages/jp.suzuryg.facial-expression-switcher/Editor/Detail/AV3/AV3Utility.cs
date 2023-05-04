@@ -217,7 +217,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Get blendshape names and weights
             var blendShapes = new Dictionary<string, float>();
-            if (faceMesh.sharedMesh is Mesh)
+            if (faceMesh != null && faceMesh.sharedMesh != null)
             {
                 for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
                 {

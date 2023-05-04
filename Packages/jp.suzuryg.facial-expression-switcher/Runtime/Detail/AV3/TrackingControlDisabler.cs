@@ -81,7 +81,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             foreach (var behaviour in behaviours)
             {
-                if (behaviour is VRC_AnimatorTrackingControl trackingControl)
+                if (behaviour is VRC_AnimatorTrackingControl trackingControl && trackingControl != null)
                 {
                     trackingControl.trackingEyes = VRC_AnimatorTrackingControl.TrackingType.NoChange;
                     trackingControl.trackingMouth = VRC_AnimatorTrackingControl.TrackingType.NoChange;

@@ -46,7 +46,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 // Create container
                 var dummyContainer = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_TemplateContainer);
-                if (dummyContainer is AnimatorController)
+                if (dummyContainer != null)
                 {
                     AssetDatabase.DeleteAsset(AV3Constants.Path_TemplateContainer);
                 }

@@ -191,7 +191,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         private void Field_AnimationClip()
         {
             var ret = EditorGUILayout.ObjectField(_expressionEditor.Clip, typeof(AnimationClip), allowSceneObjects: false);
-            if (ret is AnimationClip animationClip && !ReferenceEquals(animationClip, _expressionEditor.Clip))
+            if (ret is AnimationClip animationClip && animationClip != null && !ReferenceEquals(animationClip, _expressionEditor.Clip))
             {
                 _expressionEditor.Open(animationClip);
             }

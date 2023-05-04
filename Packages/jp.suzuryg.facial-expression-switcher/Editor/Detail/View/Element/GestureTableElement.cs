@@ -256,7 +256,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         EditorGUIUtility.singleLineHeight),
                         GetGestureText(leftHand) + " ▶ " + GetGestureText(rightHand), _gestureLabelStyle);
                     // Thumbnail
-                    if (thumbnail is Texture2D)
+                    if (thumbnail != null)
                     {
                         GUI.DrawTexture(new Rect(
                             elementRect.x + ElementPadding + (contentWidth - thumbnailWidth) / 2,

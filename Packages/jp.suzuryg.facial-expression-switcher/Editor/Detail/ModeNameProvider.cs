@@ -45,7 +45,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             if (mode.UseAnimationNameAsDisplayName)
             {
                 var clip = AV3Utility.GetAnimationClipWithName(mode.Animation);
-                if (clip.clip is AnimationClip)
+                if (clip.clip != null)
                 {
                     return clip.name;
                 }

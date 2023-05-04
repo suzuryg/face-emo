@@ -16,7 +16,7 @@ public class AssetUpdateDetector : AssetPostprocessor
         foreach (string assetPath in importedAssets)
         {
             var list = new List<string>();
-            if (AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath) is AnimationClip)
+            if (AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath) != null)
             {
                 list.Add(AssetDatabase.AssetPathToGUID(assetPath));
             }
