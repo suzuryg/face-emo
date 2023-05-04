@@ -125,8 +125,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened, _localizationTable.InspectorView_MouthMorphBlendShapes);
             if (_isMouthMorphBlendShapesOpened)
             {
-                _mouthMorphBlendShapes.list = GetMouthMorphBlendShapes(); // Is it necessary to get every frame?
-                _mouthMorphBlendShapes.DoLayoutList();
+                Field_MouthMorphBlendShape();
             }
 
             EditorGUILayout.Space(10);
@@ -280,6 +279,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
 
             _av3Setting.ApplyModifiedProperties();
+        }
+
+        private void Field_MouthMorphBlendShape()
+        {
+            _mouthMorphBlendShapes.list = GetMouthMorphBlendShapes(); // Is it necessary to get every frame?
+            _mouthMorphBlendShapes.DoLayoutList();
+
+            EditorGUILayout.Space(10);
+
+            if (GUILayout.Button(_localizationTable.Common_Clear) &&
+                EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                    _localizationTable.Common_Message_ClearMouthMorphBlendShapes,
+                    _localizationTable.Common_Yes, _localizationTable.Common_No))
+            {
+                var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
+                property.ClearArray();
+            }
         }
 
         private void Field_AdditionalToggleObjects()
