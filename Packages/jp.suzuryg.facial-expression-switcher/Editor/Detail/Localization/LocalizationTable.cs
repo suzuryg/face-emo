@@ -103,6 +103,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only Differ From Default Value";
         public string ExpressionEditorView_Delimiter = "Delimiter";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
+        public string ExpressionEditorView_NoBlendShapes = "No Blend Shapes";
+        public string ExpressionEditorView_NoObjects = "No Objects";
 
         public string FESBackupper_Message_FailedToFindTargetAvatar = "Failed to find tareget avatar. Make sure the avatar is active.";
         public string FESBackupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";

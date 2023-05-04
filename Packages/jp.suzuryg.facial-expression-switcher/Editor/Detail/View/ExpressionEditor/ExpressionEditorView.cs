@@ -494,6 +494,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 _faceBlendShapeFoldoutStates[category.Key] = EditorGUILayout.Foldout(_faceBlendShapeFoldoutStates[category.Key], category.Key);
                 if (_faceBlendShapeFoldoutStates[category.Key])
                 {
+                    // If there is no blend shape in the category, display so.
+                    if (!category.Value.Any())
+                    {
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            GUILayout.Space(IndentWidth);
+                            GUILayout.Label(_localizationTable.ExpressionEditorView_NoBlendShapes);
+                        }
+                        continue;
+                    }
+
+                    // If there are any blend shapes in the category, display them.
                     foreach (var blendShapeKey in category.Value)
                     {
                         using (new GUILayout.HorizontalScope())
@@ -536,6 +548,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             _toggleFoldoutState = EditorGUILayout.Foldout(_toggleFoldoutState, _localizationTable.Common_AddtionalToggleObjects);
             if (_toggleFoldoutState)
             {
+                // If there is no object, display so.
+                if (!_expressionEditor.AdditionalToggles.Any())
+                {
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Space(IndentWidth);
+                        GUILayout.Label(_localizationTable.ExpressionEditorView_NoObjects);
+                    }
+                }
+
+                // If there are any objects, display them.
                 foreach (var toggle in _expressionEditor.AdditionalToggles)
                 {
                     using (new GUILayout.HorizontalScope())
@@ -577,6 +600,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             _transformFoldoutState = EditorGUILayout.Foldout(_transformFoldoutState, _localizationTable.Common_AddtionalTransformObjects);
             if (_transformFoldoutState)
             {
+                // If there is no object, display so.
+                if (!_expressionEditor.AdditionalTransforms.Any())
+                {
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Space(IndentWidth);
+                        GUILayout.Label(_localizationTable.ExpressionEditorView_NoObjects);
+                    }
+                }
+
+                // If there are any objects, display them.
                 foreach (var transform in _expressionEditor.AdditionalTransforms)
                 {
                     using (new GUILayout.HorizontalScope())
