@@ -228,7 +228,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
             if (avatarDescriptor != null)
             {
-                var replaceBlink = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).boolValue;
+                var replaceBlink = _av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)).boolValue;
                 var excludeBlink = !replaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
                 var excludeLipSync = true;
                 faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, excludeBlink, excludeLipSync).Select(x => x.Key).ToList();
