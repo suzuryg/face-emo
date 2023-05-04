@@ -30,6 +30,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private MainThumbnailDrawer _thumbnailDrawer;
+        private GestureTableThumbnailDrawer _gestureTableThumbnailDrawer;
         private SerializedObject _thumbnailSetting;
 
         private Button _openGestureTableWindowButton;
@@ -57,6 +58,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             MainThumbnailDrawer thumbnailDrawer,
+            GestureTableThumbnailDrawer gestureTableThumbnailDrawer,
             ThumbnailSetting thumbnailSetting)
         {
             // Usecases
@@ -72,6 +74,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _thumbnailDrawer = thumbnailDrawer;
+            _gestureTableThumbnailDrawer = gestureTableThumbnailDrawer;
             _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
             // Update menu event handler
@@ -203,6 +206,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnUpdateThumbnailButtonClicked()
         {
             _thumbnailDrawer.ClearCache();
+            _gestureTableThumbnailDrawer.ClearCache();
         }
 
         private void OnOpenGestureTableWindowButtonClicked()

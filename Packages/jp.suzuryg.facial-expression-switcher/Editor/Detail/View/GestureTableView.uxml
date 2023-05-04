@@ -12,17 +12,11 @@
 		<engine:IMGUIContainer name="GestureTableContainer"/>
 
 		<engine:VisualElement name="BottomRow" class="GridItem">
-
-			<engine:VisualElement name="LeftCol" class="BottomRowItem">
-				<engine:Button name="UpdateThumbnailButton"/>
-				<engine:SliderInt name="ThumbnailWidthSlider"/>
-				<engine:SliderInt name="ThumbnailHeightSlider"/>
-			</engine:VisualElement>
-
-			<engine:VisualElement name="RightCol" class="BottomRowItem">
-				<engine:Button name="AddBranchButton"/>
-			</engine:VisualElement>
-
+			<engine:Label name="ThumbnailWidthLabel" class="Label"/>
+			<engine:SliderInt name="ThumbnailWidthSlider" class="Slider"/>
+			<engine:Label name="ThumbnailHeightLabel" class="Label"/>
+			<engine:SliderInt name="ThumbnailHeightSlider" class="Slider"/>
+			<engine:Button name="AddBranchButton" class="Button"/>
 		</engine:VisualElement>
 	</engine:VisualElement>
 </engine:UXML>

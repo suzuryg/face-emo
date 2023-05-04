@@ -21,6 +21,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_HandGun = "Gun";
         public string Common_ThumbsUp = "Thumbs";
 
+        public string Common_ThumbnailWidth = "Thumbnail Width";
+        public string Common_ThumbnailHeight = "Thumbnail Height";
         public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following group?";

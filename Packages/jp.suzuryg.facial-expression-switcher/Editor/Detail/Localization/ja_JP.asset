@@ -26,6 +26,8 @@ MonoBehaviour:
   Common_RockNRoll: Rock
   Common_HandGun: Gun
   Common_ThumbsUp: Thumbs
+  Common_ThumbnailWidth: "\u30B5\u30E0\u30CD\u30A4\u30EB\u5E45"
+  Common_ThumbnailHeight: "\u30B5\u30E0\u30CD\u30A4\u30EB\u9AD8"
   Common_AddtionalToggleObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8
     (Toggle)"
   Common_AddtionalTransformObjects: "\u8FFD\u52A0\u8868\u60C5\u30AA\u30D6\u30B8\u30A7\u30AF\u30C8 

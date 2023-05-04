@@ -31,16 +31,27 @@
     flex-direction: row;
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: 100px;
+    flex-basis: 30px;
     align-self: auto;
 }
 
-.BottomRowItem
+.Slider
 {
-    margin: 5px;
-    border-color: black;
-    border-width: 1px;
-    padding: 5px;
-    width: 300px;
+    margin-left: 10px;
+    width: 200px;
+    height: 30px;
+}
+
+#ThumbnailHeightLabel
+{
+    margin-left: 10px;
+}
+
+.Button
+{
+    margin-left: auto;
+    margin-top: -1px;
+    width: 200px;
+    height: 20px;
 }
 

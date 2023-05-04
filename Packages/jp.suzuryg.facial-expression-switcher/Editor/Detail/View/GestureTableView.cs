@@ -31,10 +31,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private GestureTableElement _gestureTableElement;
 
         private IMGUIContainer _gestureTableContainer;
+        private Label _thumbnailWidthLabel;
+        private Label _thumbnailHeightLabel;
         private SliderInt _thumbnailWidthSlider;
         private SliderInt _thumbnailHeightSlider;
         private Button _addBranchButton;
-        private Button _updateThumbnailButton;
 
         private StyleColor _canAddButtonColor = Color.black;
         private StyleColor _canAddButtonBackgroundColor = Color.yellow;
@@ -99,11 +100,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Query Elements
             _gestureTableContainer = root.Q<IMGUIContainer>("GestureTableContainer");
+            _thumbnailWidthLabel = root.Q<Label>("ThumbnailWidthLabel");
+            _thumbnailHeightLabel = root.Q<Label>("ThumbnailHeightLabel");
             _thumbnailWidthSlider = root.Q<SliderInt>("ThumbnailWidthSlider");
             _thumbnailHeightSlider = root.Q<SliderInt>("ThumbnailHeightSlider");
             _addBranchButton = root.Q<Button>("AddBranchButton");
-            _updateThumbnailButton = root.Q<Button>("UpdateThumbnailButton");
-            NullChecker.Check(_gestureTableContainer, _thumbnailWidthSlider, _thumbnailHeightSlider, _addBranchButton, _updateThumbnailButton);
+            NullChecker.Check(_gestureTableContainer, _thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _addBranchButton);
 
             // Add event handlers
             Observable.FromEvent(x => _addBranchButton.clicked += x, x => _addBranchButton.clicked -= x)
@@ -142,8 +144,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Add event handlers
             _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
             _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
-            Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
-                .Synchronize().Subscribe(_ => OnUpdateThumbnailButtonClicked()).AddTo(_disposables);
 
             // Set text
             SetText(_localizationSetting.Table);
@@ -151,8 +151,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
-            _addBranchButton.text = localizationTable.GestureTableView_AddBranch;
-            _updateThumbnailButton.text = "Update thumbnail";
+            if (_addBranchButton != null) { _addBranchButton.text = localizationTable.GestureTableView_AddBranch; }
+            if (_thumbnailWidthLabel != null) { _thumbnailWidthLabel.text = localizationTable.Common_ThumbnailWidth; }
+            if (_thumbnailHeightLabel != null) { _thumbnailHeightLabel.text = localizationTable.Common_ThumbnailHeight; }
         }
 
         private void OnMenuUpdated(IMenu menu)
@@ -217,11 +218,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
         {
             // TODO: Reduce unnecessary redrawing
-            _thumbnailDrawer.ClearCache();
-        }
-
-        private void OnUpdateThumbnailButtonClicked()
-        {
             _thumbnailDrawer.ClearCache();
         }
 

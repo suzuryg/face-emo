@@ -40,6 +40,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(HandGesture left, HandGesture right)?> _onSelectionChanged = new Subject<(HandGesture left, HandGesture right)?>();
         private Subject<Unit> _onBranchIndexExceeded = new Subject<Unit>();
 
+        private ISubWindowProvider _subWindowProvider;
         private GestureTableThumbnailDrawer _thumbnailDrawer;
         private ThumbnailSetting _thumbnailSetting;
         private LocalizationTable _localizationTable;
@@ -55,10 +56,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public GestureTableElement(
             IReadOnlyLocalizationSetting localizationSetting,
+            ISubWindowProvider subWindowProvider,
             GestureTableThumbnailDrawer thumbnailDrawer,
             ThumbnailSetting thumbnailSetting)
         {
             // Dependencies
+            _subWindowProvider = subWindowProvider;
             _thumbnailDrawer = thumbnailDrawer;
             _thumbnailSetting = thumbnailSetting;
 
@@ -105,16 +108,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _thumbnailDrawer.Update();
 
             // Draw table
-            var viewRect = new Rect(
-                rect.x, rect.y,
-                Padding + GetTableWidth() + Padding + ScrollRightMargin,
-                Padding + GetTableHeight() + Padding + ScrollBottomMargin);
-
+            var width = GetRectWidth();
+            var height = GetRectHeight();
+            var viewRect = new Rect(rect.x, rect.y, width, height);
             using (var scope = new GUI.ScrollViewScope(rect, _scrollPosition, viewRect))
             {
                 DrawTable(rect);
                 _scrollPosition = scope.scrollPosition;
             }
+
+            // Set max window size
+            const float bottomRowHeight = 30;
+            const float padding = 5;
+            var window = _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>();
+            if (window != null) { window.maxSize = new Vector2(width + padding * 2, height + bottomRowHeight + padding * 2); }
         }
 
         private void SetText(LocalizationTable localizationTable)
@@ -162,6 +169,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private float GetTableHeight()
         {
             return GetElementHeight() * Mode.GestureList.Count;
+        }
+
+        private float GetRectWidth()
+        {
+            return Padding + GetTableWidth() + Padding + ScrollRightMargin;
+        }
+
+        private float GetRectHeight()
+        {
+            return Padding + GetTableHeight() + Padding + ScrollBottomMargin;
         }
 
         private void DrawTable(Rect rect)

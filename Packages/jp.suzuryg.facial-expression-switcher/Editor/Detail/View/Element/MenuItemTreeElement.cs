@@ -303,7 +303,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 // Workaround for resize problem
                 Repaint();
-                Debug.LogWarning($"Exception occured when drawing MenuItemView's row, and exception was ignored.\n{ex.ToString()}");
+                Debug.Log($"Exception occured when drawing MenuItemView's row, and exception was ignored.\n{ex.ToString()}");
             }
         }
 
