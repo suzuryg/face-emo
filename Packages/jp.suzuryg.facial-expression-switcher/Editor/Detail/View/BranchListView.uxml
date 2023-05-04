@@ -11,6 +11,7 @@
 	<engine:VisualElement name="RootGrid">
 		<engine:VisualElement name="TopRow">
 			<engine:Label name="TitleLabel"/>
+			<engine:Button name="OpenGestureTableWindowButton"/>
 		</engine:VisualElement>
 		<engine:IMGUIContainer name="BranchListContainer"/>
 	</engine:VisualElement>

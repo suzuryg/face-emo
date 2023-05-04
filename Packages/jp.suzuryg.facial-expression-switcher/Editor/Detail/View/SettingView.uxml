@@ -9,25 +9,21 @@
 						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
 >
 	<engine:VisualElement name="RootGrid">
-		<engine:VisualElement name="LeftCol" class="GridItem">
-			<engine:Button name="UpdateThumbnailButton"/>
-			<engine:SliderInt name="ThumbnailWidthSlider"/>
-			<engine:SliderInt name="ThumbnailHeightSlider"/>
+		<engine:VisualElement name="LeftCol">
+			<engine:VisualElement name="ThumbnailRow">
+				<engine:Label name="ThumbnailWidthLabel" class="Label"/>
+				<engine:SliderInt name="ThumbnailWidthSlider" class="Slider"/>
+				<engine:Label name="ThumbnailHeightLabel" class="Label"/>
+				<engine:SliderInt name="ThumbnailHeightSlider" class="Slider"/>
+				<engine:Button name="UpdateThumbnailButton"/>
+			</engine:VisualElement>
+
+			<engine:VisualElement name="DefaultSelectionRow">
+				<engine:Label name="DefaultSelectionLabel" class="Label"/>
+				<engine:IMGUIContainer name="DefaultSelectionComboBox"/>
+			</engine:VisualElement>
 		</engine:VisualElement>
 
-		<engine:VisualElement name="CenterCol" class="GridItem">
-			<engine:Button name="OpenGestureTableWindowButton"/>
-			<engine:IMGUIContainer name="DefaultSelectionComboBox"/>
-		</engine:VisualElement>
-
-		<engine:VisualElement name="RightCol" class="GridItem">
-			<engine:Button name="GenerateButton"/>
-		</engine:VisualElement>
-
-		<engine:VisualElement name="DeleteConfirmationCol" class="GridItem">
-			<engine:Toggle name="GroupDeleteConfirmation"/>
-			<engine:Toggle name="ModeDeleteConfirmation"/>
-			<engine:Toggle name="BranchDeleteConfirmation"/>
-		</engine:VisualElement>
+		<engine:Button name="ApplyButton"/>
 	</engine:VisualElement>
 </engine:UXML>

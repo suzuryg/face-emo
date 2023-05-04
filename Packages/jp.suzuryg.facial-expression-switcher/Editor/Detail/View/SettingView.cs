@@ -26,22 +26,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private ILocalizationSetting _localizationSetting;
         private LocalizationTable _localizationTable;
 
-        private ISubWindowProvider _subWindowProvider;
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private MainThumbnailDrawer _thumbnailDrawer;
         private GestureTableThumbnailDrawer _gestureTableThumbnailDrawer;
         private SerializedObject _thumbnailSetting;
 
-        private Button _openGestureTableWindowButton;
-        private Button _updateThumbnailButton;
+        private Label _thumbnailWidthLabel;
+        private Label _thumbnailHeightLabel;
         private SliderInt _thumbnailWidthSlider;
         private SliderInt _thumbnailHeightSlider;
-        private Button _generateButton;
+        private Button _updateThumbnailButton;
+        private Label _defaultSelectionLabel;
         private IMGUIContainer _defaultSelectionComboBoxArea;
-        private Toggle _groupDeleteConfirmation;
-        private Toggle _modeDeleteConfirmation;
-        private Toggle _branchDeleteConfirmation;
+        private Button _applyButton;
 
         private List<ModeEx> _flattendModes = new List<ModeEx>();
         private string[] _modePaths = new string[0];
@@ -53,7 +51,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IModifyMenuPropertiesUseCase modifyMenuPropertiesUseCase,
             IGenerateFxUseCase generateFxUseCase,
             IGenerateFxPresenter generateFxPresenter,
-            ISubWindowProvider subWindowProvider,
             ILocalizationSetting localizationSetting,
             ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
@@ -69,7 +66,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _generateFxPresenter = generateFxPresenter;
 
             // Others
-            _subWindowProvider = subWindowProvider;
             _localizationSetting = localizationSetting;
             _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
@@ -92,10 +88,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
             _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
 
-            _groupDeleteConfirmation.UnregisterValueChangedCallback(OnGroupDeleteConfirmationChanged);
-            _modeDeleteConfirmation.UnregisterValueChangedCallback(OnModeDeleteConfirmationChanged);
-            _branchDeleteConfirmation.UnregisterValueChangedCallback(OnBranchDeleteConfirmationChanged);
-
             _disposables.Dispose();
         }
 
@@ -110,17 +102,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             uxml.CloneTree(root);
 
             // Query Elements
-            _openGestureTableWindowButton = root.Q<Button>("OpenGestureTableWindowButton");
-            _updateThumbnailButton = root.Q<Button>("UpdateThumbnailButton");
+            _thumbnailWidthLabel = root.Q<Label>("ThumbnailWidthLabel");
+            _thumbnailHeightLabel = root.Q<Label>("ThumbnailHeightLabel");
             _thumbnailWidthSlider = root.Q<SliderInt>("ThumbnailWidthSlider");
             _thumbnailHeightSlider = root.Q<SliderInt>("ThumbnailHeightSlider");
-            _generateButton = root.Q<Button>("GenerateButton");
+            _updateThumbnailButton = root.Q<Button>("UpdateThumbnailButton");
+            _defaultSelectionLabel = root.Q<Label>("DefaultSelectionLabel");
             _defaultSelectionComboBoxArea = root.Q<IMGUIContainer>("DefaultSelectionComboBox");
-            _groupDeleteConfirmation = root.Q<Toggle>("GroupDeleteConfirmation");
-            _modeDeleteConfirmation = root.Q<Toggle>("ModeDeleteConfirmation");
-            _branchDeleteConfirmation = root.Q<Toggle>("BranchDeleteConfirmation");
-            NullChecker.Check(_openGestureTableWindowButton, _updateThumbnailButton, _thumbnailWidthSlider, _thumbnailHeightSlider, _generateButton, _defaultSelectionComboBoxArea,
-                _groupDeleteConfirmation, _modeDeleteConfirmation, _branchDeleteConfirmation);
+            _applyButton = root.Q<Button>("ApplyButton");
+            NullChecker.Check(_thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _updateThumbnailButton,
+               _defaultSelectionLabel, _defaultSelectionComboBoxArea,  _applyButton);
 
             // Initialize fields
             _thumbnailSetting.Update();
@@ -137,24 +128,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailHeightSlider.highValue = ThumbnailSetting.Main_MaxHeight;
             _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Height)).intValue;
 
-            _groupDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyGroupDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyGroupDeleteConfirmation) : DetailConstants.DefaultGroupDeleteConfirmation;
-            _modeDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyModeDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyModeDeleteConfirmation) : DetailConstants.DefaultModeDeleteConfirmation;
-            _branchDeleteConfirmation.value = EditorPrefs.HasKey(DetailConstants.KeyBranchDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyBranchDeleteConfirmation) : DetailConstants.DefaultBranchDeleteConfirmation;
-
             // Add event handlers
             _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
             _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
 
-            _groupDeleteConfirmation.RegisterValueChangedCallback(OnGroupDeleteConfirmationChanged);
-            _modeDeleteConfirmation.RegisterValueChangedCallback(OnModeDeleteConfirmationChanged);
-            _branchDeleteConfirmation.RegisterValueChangedCallback(OnBranchDeleteConfirmationChanged);
-
-            Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
-                .Synchronize().Subscribe(_ => OnOpenGestureTableWindowButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnUpdateThumbnailButtonClicked()).AddTo(_disposables);
-            Observable.FromEvent(x => _generateButton.clicked += x, x => _generateButton.clicked -= x)
-                .Synchronize().Subscribe(_ => OnGenerateButtonClicked()).AddTo(_disposables);
+            Observable.FromEvent(x => _applyButton.clicked += x, x => _applyButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnApplyButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _defaultSelectionComboBoxArea.onGUIHandler += x, x => _defaultSelectionComboBoxArea.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ => DefaultSelectionComboBoxOnGUI()).AddTo(_disposables);
 
@@ -166,13 +147,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _localizationTable = localizationTable;
 
-            _openGestureTableWindowButton.text = "Open Gesuture Table Window";
-            _updateThumbnailButton.text = localizationTable.MainView_UpdateThumbnails;
-            _generateButton.text = "Generate";
+            if (_thumbnailWidthLabel != null) { _thumbnailWidthLabel.text = localizationTable.Common_ThumbnailWidth; }
+            if (_thumbnailHeightLabel != null) { _thumbnailHeightLabel.text = localizationTable.Common_ThumbnailHeight; }
+            if (_updateThumbnailButton != null) { _updateThumbnailButton.text = localizationTable.SettingView_UpdateThumbnails; }
 
-            _groupDeleteConfirmation.text = _localizationTable.SettingView_GroupDeleteConfirmation;
-            _modeDeleteConfirmation.text = _localizationTable.SettingView_ModeDeleteConfirmation;
-            _branchDeleteConfirmation.text = _localizationTable.SettingView_BranchDeleteConfirmation;
+            if (_defaultSelectionLabel != null) { _defaultSelectionLabel.text = localizationTable.SettingView_DefaultSelectedMode; }
+
+            if (_applyButton != null) { _applyButton.text = localizationTable.SettingView_ApplyToAvatar; }
         }
 
         private void OnMenuUpdated(IMenu menu)
@@ -191,12 +172,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
         }   
 
-        private void OnGroupDeleteConfirmationChanged(ChangeEvent<bool> changeEvent) => EditorPrefs.SetBool(DetailConstants.KeyGroupDeleteConfirmation, changeEvent.newValue);
-
-        private void OnModeDeleteConfirmationChanged(ChangeEvent<bool> changeEvent) => EditorPrefs.SetBool(DetailConstants.KeyModeDeleteConfirmation, changeEvent.newValue);
-
-        private void OnBranchDeleteConfirmationChanged(ChangeEvent<bool> changeEvent) => EditorPrefs.SetBool(DetailConstants.KeyBranchDeleteConfirmation, changeEvent.newValue);
-
         private void OnThumbnailSettingChanged<T>(ChangeEvent<T> changeEvent)
         {
             // TODO: Reduce unnecessary redrawing
@@ -209,14 +184,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _gestureTableThumbnailDrawer.ClearCache();
         }
 
-        private void OnOpenGestureTableWindowButtonClicked()
+        private void OnApplyButtonClicked()
         {
-            _subWindowProvider.Provide<GestureTableWindow>()?.Focus();
-        }
-
-        private void OnGenerateButtonClicked()
-        {
-            _generateFxUseCase.Handle("");
+            if (EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                _localizationTable.SettingView_Message_ConfirmApplyToAvatar,
+                _localizationTable.Common_Yes, _localizationTable.Common_No))
+            {
+                _generateFxUseCase.Handle("");
+            }
         }
 
         private void OnGenerateFxPresenterCompleted(

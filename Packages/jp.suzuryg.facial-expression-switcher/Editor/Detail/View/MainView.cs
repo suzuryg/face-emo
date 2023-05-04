@@ -17,7 +17,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
     public class MainView : IDisposable
     {
         private static readonly float Padding = 20;
-        private static readonly float MinHeight = 200;
+        private static readonly float MinHeight = 330;
 
         private HierarchyView _hierarchyView;
         private MenuItemListView _menuItemListView;

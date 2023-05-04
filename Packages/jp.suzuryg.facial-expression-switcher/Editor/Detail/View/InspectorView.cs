@@ -19,6 +19,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public class InspectorView : IDisposable
     {
+        private static readonly float ToggleWidth = 15;
+
         public IObservable<Unit> OnLaunchButtonClicked => _onLaunchButtonClicked.AsObservable();
         public IObservable<Locale> OnLocaleChanged => _onLocaleChanged.AsObservable();
 
@@ -40,7 +42,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private bool _isAFKOpened = false;
         private bool _isThumbnailOpened = false;
         private bool _isExpressionsMenuItemsOpened = false;
-        private bool _isPreferencesOpened = false;
+        private bool _isAvatarApplicationOpened = false;
+        private bool _isEditorSettingOpened = false;
 
         private LocalizationTable _localizationTable;
 
@@ -175,11 +178,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             EditorGUILayout.Space(10);
 
-            // Preferences
-            _isPreferencesOpened = EditorGUILayout.Foldout(_isPreferencesOpened, _localizationTable.InspectorView_Preferences);
-            if (_isPreferencesOpened)
+            // Avatar application setting
+            _isAvatarApplicationOpened = EditorGUILayout.Foldout(_isAvatarApplicationOpened, _localizationTable.InspectorView_AvatarApplicationSetting);
+            if (_isAvatarApplicationOpened)
             {
-                Field_Preferences();
+                Field_AvatarApplicationSetting();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Editor setting
+            _isEditorSettingOpened = EditorGUILayout.Foldout(_isEditorSettingOpened, _localizationTable.InspectorView_EditorSetting);
+            if (_isEditorSettingOpened)
+            {
+                Field_EditorSetting();
             }
 
             _av3Setting.ApplyModifiedProperties();
@@ -466,7 +478,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);
         }
 
-        private void Field_Preferences()
+        private void Field_AvatarApplicationSetting()
         {
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_localizationTable.InspectorView_TransitionDuration));
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DoNotTransitionWhenSpeaking)), _localizationTable.InspectorView_DoNotTransitionWhenSpeaking);
@@ -476,14 +488,35 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _localizationTable.InspectorView_DisableTrackingControls);
         }
 
+        private void Field_EditorSetting()
+        {
+            ToggleEditorPrefsField(DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation, _localizationTable.InspectorView_GroupDeleteConfirmation);
+            ToggleEditorPrefsField(DetailConstants.KeyModeDeleteConfirmation, DetailConstants.DefaultModeDeleteConfirmation, _localizationTable.InspectorView_ModeDeleteConfirmation);
+            ToggleEditorPrefsField(DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, _localizationTable.InspectorView_BranchDeleteConfirmation);
+        }
+
         private static void TogglePropertyField(SerializedProperty serializedProperty, string label)
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                var value = EditorGUILayout.Toggle(string.Empty, serializedProperty.boolValue, GUILayout.Width(15));
+                var value = EditorGUILayout.Toggle(string.Empty, serializedProperty.boolValue, GUILayout.Width(ToggleWidth));
                 if (value != serializedProperty.boolValue)
                 {
                     serializedProperty.boolValue = value;
+                }
+                GUILayout.Label(label);
+            }
+        }
+
+        private static void ToggleEditorPrefsField(string key, bool defaultValue, string label)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var oldValue = EditorPrefs.HasKey(key) ? EditorPrefs.GetBool(key) : defaultValue;
+                var newValue = EditorGUILayout.Toggle(string.Empty, oldValue, GUILayout.Width(ToggleWidth));
+                if (newValue != oldValue)
+                {
+                    EditorPrefs.SetBool(key, newValue);
                 }
                 GUILayout.Label(label);
             }

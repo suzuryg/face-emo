@@ -36,6 +36,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IReadOnlyLocalizationSetting _localizationSetting;
         private LocalizationTable _localizationTable;
 
+        private ISubWindowProvider _subWindowProvider;
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
@@ -43,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private MainThumbnailDrawer _thumbnailDrawer;
 
         private Label _titleLabel;
+        private Button _openGestureTableWindowButton;
         private IMGUIContainer _branchListContainer;
 
         private AnimationElement _animationElement;
@@ -64,6 +66,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IAddBranchPresenter addBranchPresenter,
 
             IReadOnlyLocalizationSetting localizationSetting,
+            ISubWindowProvider subWindowProvider,
             ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
@@ -88,6 +91,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Others
             _localizationSetting = localizationSetting;
+            _subWindowProvider = subWindowProvider;
             _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
@@ -138,10 +142,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Query elements
             _titleLabel = root.Q<Label>("TitleLabel");
+            _openGestureTableWindowButton = root.Q<Button>("OpenGestureTableWindowButton");
             _branchListContainer = root.Q<IMGUIContainer>("BranchListContainer");
-            NullChecker.Check(_titleLabel, _branchListContainer);
+            NullChecker.Check(_titleLabel, _openGestureTableWindowButton, _branchListContainer);
 
             // Add event handlers
+            Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnOpenGestureTableWindowButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _branchListContainer.onGUIHandler += x, x => _branchListContainer.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ =>
                 {
@@ -167,7 +174,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void SetText(LocalizationTable localizationTable)
         {
             _localizationTable = localizationTable;
+            _openGestureTableWindowButton.text = localizationTable.BranchListView_OpenGestureTable;
             _titleLabel.text = localizationTable.BranchListView_Title;
+        }
+
+        private void OnOpenGestureTableWindowButtonClicked()
+        {
+            _subWindowProvider.Provide<GestureTableWindow>()?.Focus();
         }
 
         private void OnMenuUpdated(IMenu menu)

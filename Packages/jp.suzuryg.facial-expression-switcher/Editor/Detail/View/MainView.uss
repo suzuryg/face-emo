@@ -38,7 +38,7 @@
 
 #HierarchyView
 {
-    flex-grow: 0.5;
+    flex-grow: 1.0;
     flex-shrink: 1.0;
     flex-basis: auto;
     align-self: auto;
@@ -54,7 +54,7 @@
 
 #BranchListView
 {
-    flex-grow: 3.0;
+    flex-grow: 1.0;
     flex-shrink: 1.0;
     flex-basis: auto;
     align-self: auto;
@@ -64,7 +64,7 @@
 {
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: 100px;
+    flex-basis: 60px;
     align-self: auto;
 }
 

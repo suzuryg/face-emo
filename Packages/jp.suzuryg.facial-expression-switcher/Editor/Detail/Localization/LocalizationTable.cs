@@ -30,8 +30,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected branch?";
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
 
-        public string MainView_UpdateThumbnails = "Update Thumbnails";
-
         public string HierarchyView_Title = "HierarchyView";
         public string HierarchyView_RegisteredMenuItemList = "ItemsToRegister";
         public string HierarchyView_UnregisteredMenuItemList = "ItemsNotToRegister";
@@ -47,6 +45,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string MenuItemListView_Empty = "This group is empty.";
 
         public string BranchListView_Title = "BranchView";
+        public string BranchListView_OpenGestureTable = "Open Gesture Table";
         public string BranchListView_UseLeftTrigger = "Use Left Trigger";
         public string BranchListView_UseRightTrigger = "Use Right Trigger";
         public string BranchListView_NotReachableBranch = "This branch is not used.";
@@ -64,11 +63,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string BranchListView_Equals = "Equals";
         public string BranchListView_NotEqual = "NotEqual";
 
-        public string GestureTableView_AddBranch = "Add Branch";
+        public string SettingView_UpdateThumbnails = "Update Thumbnails";
+        public string SettingView_DefaultSelectedMode = "Default Selected Mode";
+        public string SettingView_ApplyToAvatar = "Apply to Avatar";
+        public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
 
-        public string SettingView_GroupDeleteConfirmation = "Confirm When Deleting Group";
-        public string SettingView_ModeDeleteConfirmation = "Confirm When Deleting Mode";
-        public string SettingView_BranchDeleteConfirmation = "Confirm When Deleting Branch";
+        public string GestureTableView_AddBranch = "Add Branch";
 
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
 
@@ -78,13 +78,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_TargetAvatar = "Target Avatar";
         public string InspectorView_GenerateModeThumbnails = "Generate Expression Mode Thumbnails";
         public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
-        public string InspectorView_ExpressionsMenuSettingItems = "Expressions Menu Setting Items";
-        public string InspectorView_Preferences = "Menu Properties";
-        public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
-        public string InspectorView_TransitionDuration = "Transition Duration (sec)";
-        public string InspectorView_DoNotTransitionWhenSpeaking = "Do Not Transition When Speaking";
-        public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
-        public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
 
         public string InspectorView_Thumbnail = "Thumbnail Setting";
@@ -100,6 +93,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AFK_Face = "AFK Face";
         public string InspectorView_AFK_ExitFace = "AFK Exit Face";
 
+        public string InspectorView_ExpressionsMenuSettingItems = "Expressions Menu Setting Items";
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
         public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";
         public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick (1bit)";
@@ -107,6 +101,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AddConfig_Override = "Emote Override (1bit)";
         public string InspectorView_AddConfig_HandPriority = "Hand Priority (4bit)";
         public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
+
+        public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
+        public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
+        public string InspectorView_TransitionDuration = "Transition Duration (sec)";
+        public string InspectorView_DoNotTransitionWhenSpeaking = "Do Not Transition When Speaking";
+        public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
+        public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
+
+        public string InspectorView_EditorSetting = "Editor Setting";
+        public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Group";
+        public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Mode";
+        public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Branch";
 
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only Differ From Default Value";
         public string ExpressionEditorView_Delimiter = "Delimiter";
