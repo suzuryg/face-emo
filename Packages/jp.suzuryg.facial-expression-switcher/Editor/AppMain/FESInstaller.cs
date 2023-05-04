@@ -135,6 +135,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<AnimationElement>().AsSingle();
             Container.Bind<ExpressionEditor>().AsSingle();
             Container.Bind<IBackupper>().To<FESBackupper>().AsSingle();
+            Container.Bind<MainWindowProvider>().AsSingle();
 
             Container.Bind<BranchListElement>().AsTransient();
             Container.Bind<GestureTableElement>().AsTransient();

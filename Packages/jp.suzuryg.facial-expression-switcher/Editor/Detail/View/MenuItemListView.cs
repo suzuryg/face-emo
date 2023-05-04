@@ -152,6 +152,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             SetText(_localizationSetting.Table);
         }
 
+        public float GetMinWidth()
+        {
+            if (_menuItemTreeElement != null) { return _menuItemTreeElement.GetMinWidth(); }
+            else { return 0; }
+        }
+
         private void InitializeTreeElement()
         {
             var menu = _menuItemTreeElement?.Menu;

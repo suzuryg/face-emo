@@ -28,6 +28,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly int PropertiesWidth = 150;
         private static readonly int ToggleWidth = 15;
         private static readonly int MinHeight = 100;
+        private static readonly int ReorderableListDragHandleWidth = 50;
         private static readonly Color ActiveElementColor = new Color(0f, 0.5f, 1f, 0.4f);
         private static readonly Color FocusedElementColor = new Color(0f, 0.5f, 1f, 0.4f);
 
@@ -322,9 +323,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             return margin;
         }
 
-        private float GetWidth()
+        public float GetWidth()
         {
-            return Padding + Math.Max(GetUpperContentWidth(), GetLowerContentWidth()) + MinHorizontalMargin * 2 + Padding;
+            return ReorderableListDragHandleWidth + Padding + Math.Max(GetUpperContentWidth(), GetLowerContentWidth()) + MinHorizontalMargin * 2 + Padding;
         }
 
         private float GetElementHeight(int index)

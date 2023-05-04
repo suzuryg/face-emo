@@ -23,6 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         private Undo.UndoRedoCallback _undoRedoCallback;
         private FESInstaller _installer;
         private ISubWindowManager _subWindowManager;
+        private MainWindowProvider _mainWindowProvider;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -52,6 +53,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             {
                 _installer = FESInstaller.GetInstaller(_launcherObjectPath);
 
+                _mainWindowProvider = _installer.Container.Resolve<MainWindowProvider>();
                 _mainView = _installer.Container.Resolve<MainView>().AddTo(_disposables);
                 _mainView.Initialize(rootVisualElement);
 
@@ -86,6 +88,11 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 };
                 Undo.undoRedoPerformed += _undoRedoCallback;
             }
+        }
+
+        private void OnGUI()
+        {
+            _mainWindowProvider?.OnGUI.OnNext(this);
         }
 
         private void Clean()

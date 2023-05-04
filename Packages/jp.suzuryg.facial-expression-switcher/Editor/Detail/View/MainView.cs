@@ -16,10 +16,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public class MainView : IDisposable
     {
+        private static readonly float Padding = 20;
+        private static readonly float MinHeight = 200;
+
         private HierarchyView _hierarchyView;
         private MenuItemListView _menuItemListView;
         private BranchListView _branchListView;
         private SettingView _settingView;
+
+        private VisualElement _hierarchyArea;
+        private VisualElement _menuItemListArea;
+        private VisualElement _branchListArea;
+        private VisualElement _settingArea;
 
         private UseCaseErrorHandler _useCaseErrorHandler;
 
@@ -30,7 +38,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             MenuItemListView menuItemListView,
             BranchListView branchListView,
             SettingView settingView,
-
+            MainWindowProvider mainWindowProvider,
             UseCaseErrorHandler useCaseErrorHandler)
         {
             // Views
@@ -41,6 +49,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Others
             _useCaseErrorHandler = useCaseErrorHandler.AddTo(_disposables);
+
+            // MainWindow OnGUI event handler
+            mainWindowProvider.OnGUI.Synchronize().ObserveOnMainThread().Subscribe(OnGUI).AddTo(_disposables);
         }
 
         public void Dispose()
@@ -61,17 +72,31 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             uxml.CloneTree(root);
 
             // Query Elements
-            var hierarchyArea = root.Q<VisualElement>("HierarchyView");
-            var menuItemListArea = root.Q<VisualElement>("MenuItemListView");
-            var branchListArea =  root.Q<VisualElement>("BranchListView");
-            var settingArea =  root.Q<VisualElement>("SettingView");
-            NullChecker.Check(hierarchyArea, menuItemListArea, branchListArea, settingArea);
+            _hierarchyArea = root.Q<VisualElement>("HierarchyView");
+            _menuItemListArea = root.Q<VisualElement>("MenuItemListView");
+            _branchListArea =  root.Q<VisualElement>("BranchListView");
+            _settingArea =  root.Q<VisualElement>("SettingView");
+            NullChecker.Check(_hierarchyArea, _menuItemListArea, _branchListArea, _settingArea);
 
             // Initialize Views
-            _hierarchyView.Initialize(hierarchyArea);
-            _menuItemListView.Initialize(menuItemListArea);
-            _branchListView.Initialize(branchListArea);
-            _settingView.Initialize(settingArea);
+            _hierarchyView.Initialize(_hierarchyArea);
+            _menuItemListView.Initialize(_menuItemListArea);
+            _branchListView.Initialize(_branchListArea);
+            _settingView.Initialize(_settingArea);
+        }
+
+        private void OnGUI(EditorWindow mainWindow)
+        {
+            var hierarchyViewWidth = _hierarchyView != null ? _hierarchyView.GetMinWidth() : 0;
+            var menuItemListViewWidth = _menuItemListView != null ? _menuItemListView.GetMinWidth() : 0;
+            var branchListViewWidth = _branchListView != null ? _branchListView.GetMinWidth() : 0;
+
+            if (_hierarchyArea != null) { _hierarchyArea.style.minWidth = hierarchyViewWidth; }
+            if (_menuItemListArea != null) { _menuItemListArea.style.minWidth = menuItemListViewWidth; }
+            if (_branchListArea != null) { _branchListArea.style.minWidth = branchListViewWidth; }
+
+            var minWidth = Padding + hierarchyViewWidth + menuItemListViewWidth + branchListViewWidth + Padding;
+            mainWindow.minSize = new Vector2(minWidth, MinHeight);
         }
     }
 }

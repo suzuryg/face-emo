@@ -158,6 +158,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             SetText(_localizationSetting.Table);
         }
 
+        public float GetMinWidth()
+        {
+            if (_branchListElement != null) { return _branchListElement.GetWidth(); }
+            else { return 0; }
+        }
+
         private void SetText(LocalizationTable localizationTable)
         {
             _localizationTable = localizationTable;

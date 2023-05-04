@@ -125,6 +125,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             SetText(_localizationSetting.Table);
         }
 
+        public float GetMinWidth() => 220;
+
         private void InitializeTreeElement()
         {
             var menu = _hierarchyTreeElement?.Menu;

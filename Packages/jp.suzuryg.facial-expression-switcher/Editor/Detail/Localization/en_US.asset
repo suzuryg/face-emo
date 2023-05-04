@@ -15,12 +15,25 @@ MonoBehaviour:
   Common_Add: Add
   Common_Cancel: Cancel
   Common_Delete: Delete
+  Common_Clear: Clear
+  Common_Yes: Yes
+  Common_No: No
+  Common_Neutral: Neutral
+  Common_Fist: Fist
+  Common_HandOpen: Open
+  Common_Fingerpoint: Point
+  Common_Victory: Victory
+  Common_RockNRoll: Rock
+  Common_HandGun: Gun
+  Common_ThumbsUp: Thumbs
   Common_AddtionalToggleObjects: Addtional Expression Objects (Toggle)
   Common_AddtionalTransformObjects: Addtional Expression Objects (Transform)
   Common_Message_DeleteGroup: Are you sure you want to delete the following group?
   Common_Message_DeleteMode: Are you sure you want to delete the following mode?
   Common_Message_DeleteBranch: Are you sure you want to delete the currently selected
     branch?
+  Common_Message_ClearMouthMorphBlendShapes: Are you sure you want to clear mouth
+    morph blend shapes?
   MainView_UpdateThumbnails: Update Thumbnails
   HierarchyView_Title: HierarchyView
   HierarchyView_RegisteredMenuItemList: ItemsToRegister
@@ -28,7 +41,7 @@ MonoBehaviour:
   HierarchyView_Message_CanNotRename: The "Use animation name as mode name" setting
     is enabled. Disable the setting if you want to change the mode name.
   MenuItemListView_Title: MenuItemListView
-  MenuItemListView_UseAnimationNameAsDisplayName: Use Animation Name As  Mode Name
+  MenuItemListView_UseAnimationNameAsDisplayName: Use ClipName As  ModeName
   MenuItemListView_EyeTracking: Enable Eye Tracking
   MenuItemListView_MouthTracking: Enable Lip Sync
   MenuItemListView_Blink: Enable Blink
@@ -49,25 +62,9 @@ MonoBehaviour:
   BranchListView_OneSide: OneHand
   BranchListView_Either: EitherHands
   BranchListView_Both: BothHands
-  BranchListView_Neutral: Neutral
-  BranchListView_Fist: Fist
-  BranchListView_HandOpen: HandOpen
-  BranchListView_Fingerpoint: Fingerpoint
-  BranchListView_Victory: Victory
-  BranchListView_RockNRoll: RockNRoll
-  BranchListView_HandGun: HandGun
-  BranchListView_ThumbsUp: ThumbsUp
   BranchListView_Equals: Equals
   BranchListView_NotEqual: NotEqual
   GestureTableView_AddBranch: Add Branch
-  GestureTableView_Neutral: Neutral
-  GestureTableView_Fist: Fist
-  GestureTableView_HandOpen: HandOpen
-  GestureTableView_Fingerpoint: Fingerpoint
-  GestureTableView_Victory: Victory
-  GestureTableView_RockNRoll: RockNRoll
-  GestureTableView_HandGun: HandGun
-  GestureTableView_ThumbsUp: ThumbsUp
   SettingView_GroupDeleteConfirmation: Confirm When Deleting Group
   SettingView_ModeDeleteConfirmation: Confirm When Deleting Mode
   SettingView_BranchDeleteConfirmation: Confirm When Deleting Branch
@@ -95,6 +92,10 @@ MonoBehaviour:
   InspectorView_Thumbnail_HorizontalAngle: Angle (Horizontal)
   InspectorView_Thumbnail_VerticalAngle: Angle (Vertical)
   InspectorView_Thumbnail_Reset: Reset
+  InspectorView_AFK: AFK Face Setting
+  InspectorView_AFK_EnterFace: AFK Enter Face
+  InspectorView_AFK_Face: AFK Face
+  InspectorView_AFK_ExitFace: AFK Exit Face
   InspectorView_AddConfig_EmoteLock: Emote Lock (1bit)
   InspectorView_AddConfig_BlinkOff: Blink OFF (1bit)
   InspectorView_AddConfig_DanceGimmick: Dance Gimmick (1bit)
@@ -106,6 +107,8 @@ MonoBehaviour:
     Value
   ExpressionEditorView_Delimiter: Delimiter
   ExpressionEditorView_UncategorizedBlendShapes: Uncategorized Blend Shapes
+  ExpressionEditorView_NoBlendShapes: No Blend Shapes
+  ExpressionEditorView_NoObjects: No Objects
   FESBackupper_Message_FailedToFindTargetAvatar: Failed to find tareget avatar. Make
     sure the avatar is active.
   FESBackupper_Message_FailedToFindToggleObject: Failed to find toggle object.

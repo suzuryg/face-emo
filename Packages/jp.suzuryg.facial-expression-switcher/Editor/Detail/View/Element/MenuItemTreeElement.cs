@@ -23,6 +23,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly float LeftMargin = 0;
         private static readonly float BottomMargin = 5;
         private static readonly float RightMargin = 10;
+        private static readonly float ToggleWidth = 15;
+        private static readonly float ThumbnailMargin = 10;
+        private static readonly float AmountOfThumbnailShift = 30;
         private static readonly int Padding = 10;
         private static readonly Color SelectedRowColor = new Color(0f, 0.5f, 1f, 0.4f);
 
@@ -62,6 +65,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private float _previousThumbnailWidth;
         private float _previousThumbnailHeight;
         private Texture2D _selectedBackgroundTexture;
+        private float _maxLabelWidth;
 
         private string _useAnimationNameText;
         private string _eyeTrackingText;
@@ -140,6 +144,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public override void OnGUI(Rect rect)
         {
+            // Update max label width
+            _maxLabelWidth = GUI.skin.label.CalcSize(new GUIContent(_localizationTable.MenuItemListView_UseAnimationNameAsDisplayName)).x;
+
             // Update thumbnails
             var animations = GetAnimations();
             foreach (var animation in animations)
@@ -296,7 +303,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 // Workaround for resize problem
                 Repaint();
-                Debug.LogException(ex);
+                Debug.LogWarning($"Exception occured when drawing MenuItemView's row, and exception was ignored.\n{ex.ToString()}");
             }
         }
 
@@ -347,7 +354,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     // Use animation name
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var useAnimationName = EditorGUILayout.Toggle(string.Empty, mode.UseAnimationNameAsDisplayName, GUILayout.Width(15));
+                        var useAnimationName = EditorGUILayout.Toggle(string.Empty, mode.UseAnimationNameAsDisplayName, GUILayout.Width(ToggleWidth));
                         if (useAnimationName != mode.UseAnimationNameAsDisplayName)
                         {
                             _onModePropertiesModified.OnNext((menuItemId, null, useAnimationName, null, null, null, null));
@@ -362,7 +369,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     Func<bool, EyeTrackingControl> boolToEye = (bool value) => value ? EyeTrackingControl.Tracking : EyeTrackingControl.Animation;
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var eyeTracking = EditorGUILayout.Toggle(string.Empty, eyeToBool(mode.EyeTrackingControl), GUILayout.Width(15));
+                        var eyeTracking = EditorGUILayout.Toggle(string.Empty, eyeToBool(mode.EyeTrackingControl), GUILayout.Width(ToggleWidth));
                         if (eyeTracking != eyeToBool(mode.EyeTrackingControl))
                         {
                             _onModePropertiesModified.OnNext((menuItemId, null, null, boolToEye(eyeTracking), null, null, null));
@@ -375,7 +382,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     {
                         using (new EditorGUILayout.HorizontalScope())
                         {
-                            var blink = EditorGUILayout.Toggle(string.Empty, mode.BlinkEnabled, GUILayout.Width(15));
+                            var blink = EditorGUILayout.Toggle(string.Empty, mode.BlinkEnabled, GUILayout.Width(ToggleWidth));
                             if (blink != mode.BlinkEnabled)
                             {
                                 _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, blink, null));
@@ -393,7 +400,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     Func<bool, MouthTrackingControl> boolToMouth = (bool value) => value ? MouthTrackingControl.Tracking : MouthTrackingControl.Animation;
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var mouthTracking = EditorGUILayout.Toggle(string.Empty, mouthToBool(mode.MouthTrackingControl), GUILayout.Width(15));
+                        var mouthTracking = EditorGUILayout.Toggle(string.Empty, mouthToBool(mode.MouthTrackingControl), GUILayout.Width(ToggleWidth));
                         if (mouthTracking != mouthToBool(mode.MouthTrackingControl))
                         {
                             _onModePropertiesModified.OnNext((menuItemId, null, null, null, boolToMouth(mouthTracking), null, null));
@@ -406,7 +413,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     {
                         using (new EditorGUILayout.HorizontalScope())
                         {
-                            var mouthMorphCancel = EditorGUILayout.Toggle(string.Empty, mode.MouthMorphCancelerEnabled, GUILayout.Width(15));
+                            var mouthMorphCancel = EditorGUILayout.Toggle(string.Empty, mode.MouthMorphCancelerEnabled, GUILayout.Width(ToggleWidth));
                             if (mouthMorphCancel != mode.MouthMorphCancelerEnabled)
                             {
                                 _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, null, mouthMorphCancel));
@@ -420,7 +427,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     }
                 }
 
-                GUILayout.Space(10);
+                GUILayout.Space(ThumbnailMargin);
 
                 // Animation
                 var thumbnailWidth = _thumbnailSetting.Main_Width;
@@ -458,6 +465,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 rect.y + TopMargin,
                 Math.Max(rect.width - LeftMargin - RightMargin, 0),
                 Math.Max(rect.height - TopMargin - BottomMargin, 0));
+        }
+
+        public float GetMinWidth()
+        {
+            return Padding + LeftMargin + ToggleWidth + _maxLabelWidth + ThumbnailMargin + AmountOfThumbnailShift + _thumbnailSetting.Main_Width + RightMargin + Padding;
         }
 
         private IMenuItemList GetRootMenuItemList()
