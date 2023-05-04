@@ -137,20 +137,34 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         public static SkinnedMeshRenderer GetFaceMesh(VRCAvatarDescriptor avatarDescriptor)
         {
-            SkinnedMeshRenderer faceMesh;
+            if (avatarDescriptor == null) { return null; }
+
+            SkinnedMeshRenderer faceMesh = null;
+            // Get from lipSync
             if (avatarDescriptor.lipSync == VRC_AvatarDescriptor.LipSyncStyle.VisemeBlendShape &&
-                avatarDescriptor.VisemeSkinnedMesh is SkinnedMeshRenderer)
+                avatarDescriptor.VisemeSkinnedMesh != null)
             {
                 faceMesh = avatarDescriptor.VisemeSkinnedMesh;
             }
+            // Get from eyelids
             else if (avatarDescriptor.customEyeLookSettings.eyelidType == VRCAvatarDescriptor.EyelidType.Blendshapes &&
-                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh is SkinnedMeshRenderer)
+                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh != null)
             {
                 faceMesh = avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh;
             }
-            else
+            // Get from body object
+            else if (avatarDescriptor.gameObject != null && avatarDescriptor.gameObject.transform != null)
             {
-                faceMesh = null;
+                var avatarRoot = avatarDescriptor.gameObject.transform;
+                for (int i = 0; i < avatarRoot.childCount; i++)
+                {
+                    var child = avatarRoot.GetChild(i);
+                    if (child != null && child.name == "Body")
+                    {
+                        faceMesh = child.GetComponent<SkinnedMeshRenderer>();
+                        if (faceMesh != null) { break; }
+                    }
+                }
             }
             return faceMesh;
         }
