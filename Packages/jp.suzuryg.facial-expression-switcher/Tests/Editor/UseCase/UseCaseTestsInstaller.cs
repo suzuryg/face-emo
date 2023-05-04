@@ -14,8 +14,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
         public UseCaseTestsInstaller()
         {
-            Container.Bind<IAnimationEditor>().To<MockAnimationEditor>().AsTransient();
-
             if (UseCaseTestConstants.UseActualRepository)
             {
                 // Re-use usecase tests for menu-repository's test.
@@ -41,7 +39,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<ChangeConditionOrderUseCase>().AsTransient();
             Container.Bind<ModifyConditionUseCase>().AsTransient();
             Container.Bind<RemoveConditionUseCase>().AsTransient();
-            Container.Bind<SetNewAnimationUseCase>().AsTransient();
             Container.Bind<SetExistingAnimationUseCase>().AsTransient();
 
             Container.Bind<UpdateMenuSubject>().AsSingle();
@@ -59,7 +56,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<IChangeConditionOrderPresenter>().To<MockChangeConditionOrderPresenter>().AsSingle();
             Container.Bind<IModifyConditionPresenter>().To<MockModifyConditionPresenter>().AsSingle();
             Container.Bind<IRemoveConditionPresenter>().To<MockRemoveConditionPresenter>().AsSingle();
-            Container.Bind<ISetNewAnimationPresenter>().To<MockSetNewAnimationPresenter>().AsSingle();
             Container.Bind<ISetExistingAnimationPresenter>().To<MockSetExistingAnimationPresenter>().AsSingle();
         }
     }

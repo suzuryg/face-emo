@@ -36,7 +36,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             IChangeConditionOrderPresenter changeConditionOrderPresenter,
             IModifyConditionPresenter modifyConditionPresenter,
             IRemoveConditionPresenter removeConditionPresenter,
-            ISetNewAnimationPresenter setNewAnimationPresenter,
             ISetExistingAnimationPresenter setExistingAnimationPresenter)
         {
             createMenuPresenter.Observable.Synchronize().Subscribe(x =>
@@ -179,15 +178,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
                 if (x.removeConditionResult != RemoveConditionResult.Succeeded)
                 {
                     EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.removeConditionResult.GetType().Name}: {x.removeConditionResult}", "OK");
-                    if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
-                }
-            }).AddTo(_disposables);
-
-            setNewAnimationPresenter.Observable.Synchronize().Subscribe(x =>
-            {
-                if (x.setNewAnimationResult != SetNewAnimationResult.Succeeded)
-                {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.setNewAnimationResult.GetType().Name}: {x.setNewAnimationResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);

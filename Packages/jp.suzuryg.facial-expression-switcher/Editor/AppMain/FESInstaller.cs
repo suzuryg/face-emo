@@ -104,7 +104,6 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IChangeConditionOrderUseCase>().To<ChangeConditionOrderUseCase>().AsTransient();
             Container.Bind<IModifyConditionUseCase>().To<ModifyConditionUseCase>().AsTransient();
             Container.Bind<IRemoveConditionUseCase>().To<RemoveConditionUseCase>().AsTransient();
-            Container.Bind<ISetNewAnimationUseCase>().To<SetNewAnimationUseCase>().AsTransient();
             Container.Bind<ISetExistingAnimationUseCase>().To<SetExistingAnimationUseCase>().AsTransient();
 
             Container.Bind<ICreateMenuPresenter>().To<CreateMenuPresenter>().AsSingle();
@@ -123,7 +122,6 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IChangeConditionOrderPresenter>().To<ChangeConditionOrderPresenter>().AsSingle();
             Container.Bind<IModifyConditionPresenter>().To<ModifyConditionPresenter>().AsSingle();
             Container.Bind<IRemoveConditionPresenter>().To<RemoveConditionPresenter>().AsSingle();
-            Container.Bind<ISetNewAnimationPresenter>().To<SetNewAnimationPresenter>().AsSingle();
             Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
 
             Container.BindInterfacesTo<MenuRepository>().AsSingle();

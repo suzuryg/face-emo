@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using Suzuryg.FacialExpressionSwitcher.Domain;
-using Suzuryg.FacialExpressionSwitcher.UseCase;
-using Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu;
+using System;
 using System.Collections.Generic;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyAnimation
@@ -41,8 +40,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
             Assert.That(mockSetExistingAnimationPresenter.Result, Is.EqualTo(SetExistingAnimationResult.ArgumentNull));
 
             // Menu is not opened
-            MockAnimationEditor mockAnimationEditor = new MockAnimationEditor();
-            var animation = mockAnimationEditor.Create("");
+            var animation = new Animation(Guid.NewGuid().ToString("N"));
             if (!UseCaseTestConstants.UseActualRepository)
             {
                 setExistingAnimationUseCase.Handle(menuId, animation, ""); 
@@ -96,11 +94,11 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode.ModifyA
             Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].RightHandAnimation, Is.Null);
             Assert.That(loadMenu().Registered.GetModeAt(0).Branches[0].BothHandsAnimation, Is.Null);
 
-            var a0 = mockAnimationEditor.Create("");
-            var a1 = mockAnimationEditor.Create("");
-            var a2 = mockAnimationEditor.Create("");
-            var a3 = mockAnimationEditor.Create("");
-            var a4 = mockAnimationEditor.Create("");
+            var a0 = new Animation(Guid.NewGuid().ToString("N"));
+            var a1 = new Animation(Guid.NewGuid().ToString("N"));
+            var a2 = new Animation(Guid.NewGuid().ToString("N"));
+            var a3 = new Animation(Guid.NewGuid().ToString("N"));
+            var a4 = new Animation(Guid.NewGuid().ToString("N"));
             var ids = new List<string>();
             ids.Add(a0.GUID);
             ids.Add(a1.GUID);
