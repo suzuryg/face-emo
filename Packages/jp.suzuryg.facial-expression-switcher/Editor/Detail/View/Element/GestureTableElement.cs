@@ -42,6 +42,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private GestureTableThumbnailDrawer _thumbnailDrawer;
         private ThumbnailSetting _thumbnailSetting;
+        private LocalizationTable _localizationTable;
 
         private Vector2 _scrollPosition = Vector2.zero;
         private Texture2D _elementBorderTexture;
@@ -49,15 +50,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private GUIStyle _gestureLabelStyle;
         private Color _gestureLabelColor;
-
-        private string _neutralText;
-        private string _fistText;
-        private string _handOpenText;
-        private string _fingerpointText;
-        private string _victoryText;
-        private string _rockNRollText;
-        private string _handGunText;
-        private string _thumbsUpText;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -127,14 +119,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void SetText(LocalizationTable localizationTable)
         {
-            _neutralText = localizationTable.GestureTableView_Neutral;
-            _fistText = localizationTable.GestureTableView_Fist;
-            _handOpenText = localizationTable.GestureTableView_HandOpen;
-            _fingerpointText = localizationTable.GestureTableView_Fingerpoint;
-            _victoryText = localizationTable.GestureTableView_Victory;
-            _rockNRollText = localizationTable.GestureTableView_RockNRoll;
-            _handGunText = localizationTable.GestureTableView_HandGun;
-            _thumbsUpText = localizationTable.GestureTableView_ThumbsUp;
+            _localizationTable = localizationTable;
         }
 
         public void Setup(IMenu menu)
@@ -300,21 +285,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             switch (handGesture)
             {
                 case HandGesture.Neutral:
-                   return _neutralText;
+                    return _localizationTable.Common_Neutral;
                 case HandGesture.Fist:
-                    return _fistText;
+                    return _localizationTable.Common_Fist;
                 case HandGesture.HandOpen:
-                    return _handOpenText;
+                    return _localizationTable.Common_HandOpen;
                 case HandGesture.Fingerpoint:
-                    return _fingerpointText;
+                    return _localizationTable.Common_Fingerpoint;
                 case HandGesture.Victory:
-                    return _victoryText;
+                    return _localizationTable.Common_Victory;
                 case HandGesture.RockNRoll:
-                    return _rockNRollText;
+                    return _localizationTable.Common_RockNRoll;
                 case HandGesture.HandGun:
-                    return _handGunText;
+                    return _localizationTable.Common_HandGun;
                 case HandGesture.ThumbsUp:
-                    return _thumbsUpText;
+                    return _localizationTable.Common_ThumbsUp;
                 default:
                     throw new FacialExpressionSwitcherException("Unknown hand gesture.");
             }

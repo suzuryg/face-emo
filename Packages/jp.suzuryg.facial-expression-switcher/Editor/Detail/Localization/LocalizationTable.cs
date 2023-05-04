@@ -8,6 +8,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_Add = "Add";
         public string Common_Cancel = "Cancel";
         public string Common_Delete = "Delete";
+        public string Common_Neutral = "Neutral";
+        public string Common_Fist = "Fist";
+        public string Common_HandOpen = "Open";
+        public string Common_Fingerpoint = "Point";
+        public string Common_Victory = "Victory";
+        public string Common_RockNRoll = "Rock";
+        public string Common_HandGun = "Gun";
+        public string Common_ThumbsUp = "Thumbs";
         public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following group?";
@@ -45,26 +53,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string BranchListView_OneSide = "OneHand";
         public string BranchListView_Either = "EitherHands";
         public string BranchListView_Both = "BothHands";
-        public string BranchListView_Neutral = "Neutral";
-        public string BranchListView_Fist = "Fist";
-        public string BranchListView_HandOpen = "HandOpen";
-        public string BranchListView_Fingerpoint = "Fingerpoint";
-        public string BranchListView_Victory = "Victory";
-        public string BranchListView_RockNRoll = "RockNRoll";
-        public string BranchListView_HandGun = "HandGun";
-        public string BranchListView_ThumbsUp = "ThumbsUp";
         public string BranchListView_Equals = "Equals";
         public string BranchListView_NotEqual = "NotEqual";
 
         public string GestureTableView_AddBranch = "Add Branch";
-        public string GestureTableView_Neutral = "Neutral";
-        public string GestureTableView_Fist = "Fist";
-        public string GestureTableView_HandOpen = "HandOpen";
-        public string GestureTableView_Fingerpoint = "Fingerpoint";
-        public string GestureTableView_Victory = "Victory";
-        public string GestureTableView_RockNRoll = "RockNRoll";
-        public string GestureTableView_HandGun = "HandGun";
-        public string GestureTableView_ThumbsUp = "ThumbsUp";
 
         public string SettingView_GroupDeleteConfirmation = "Confirm When Deleting Group";
         public string SettingView_ModeDeleteConfirmation = "Confirm When Deleting Mode";

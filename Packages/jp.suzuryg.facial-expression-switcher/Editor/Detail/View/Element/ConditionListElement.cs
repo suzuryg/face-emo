@@ -20,7 +20,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly int Padding = 0;
         private static readonly int Margin = 2;
         private static readonly int HandWidth = 125;
-        private static readonly int HandGestureWidth = 85;
+        private static readonly int HandGestureWidth = 70;
         private static readonly int ComparisonOperatorWidth = 75;
         private static readonly int MinHeight = 100;
 
@@ -118,14 +118,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 _bothText,
             };
 
-            _neutralText = localizationTable.BranchListView_Neutral;
-            _fistText = localizationTable.BranchListView_Fist;
-            _handOpenText = localizationTable.BranchListView_HandOpen;
-            _fingerpointText = localizationTable.BranchListView_Fingerpoint;
-            _victoryText = localizationTable.BranchListView_Victory;
-            _rockNRollText = localizationTable.BranchListView_RockNRoll;
-            _handGunText = localizationTable.BranchListView_HandGun;
-            _thumbsUpText = localizationTable.BranchListView_ThumbsUp;
+            _neutralText = localizationTable.Common_Neutral;
+            _fistText = localizationTable.Common_Fist;
+            _handOpenText = localizationTable.Common_HandOpen;
+            _fingerpointText = localizationTable.Common_Fingerpoint;
+            _victoryText = localizationTable.Common_Victory;
+            _rockNRollText = localizationTable.Common_RockNRoll;
+            _handGunText = localizationTable.Common_HandGun;
+            _thumbsUpText = localizationTable.Common_ThumbsUp;
 
             _handGestureList = new List<string>()
             {
