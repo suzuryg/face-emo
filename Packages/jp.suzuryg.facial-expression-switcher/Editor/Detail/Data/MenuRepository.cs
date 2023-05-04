@@ -23,7 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 
         public Domain.Menu Load(string source)
         {
-            if (_component.SerializableMenu is null)
+            if (_component.SerializableMenu == null)
             {
                 _component.SerializableMenu =  ScriptableObject.CreateInstance<SerializableMenu>();
                 _component.SerializableMenu.Save(new Domain.Menu(), isAsset: false);

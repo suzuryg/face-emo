@@ -290,7 +290,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             }
 
             // If animation clip is not found, return error icon
-            if (clip is null)
+            if (clip == null)
             {
                 return _errorIcon;
             }

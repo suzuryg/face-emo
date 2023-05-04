@@ -28,7 +28,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         private void Initialize()
         {
-            if (_rootObject is null)
+            if (_rootObject == null)
             {
                 _disposables?.Dispose();
                 _disposables = new CompositeDisposable();

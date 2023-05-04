@@ -61,7 +61,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 // Copy template FX controller
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Creating fx controller...", 0);
-                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate) is null)
+                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate) == null)
                 {
                     throw new FacialExpressionSwitcherException("FX template was not found.");
                 }
@@ -80,7 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 // Generate layers
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating layers...", 0);
                 var avatarDescriptor = _aV3Setting.TargetAvatar;
-                if (avatarDescriptor is null)
+                if (avatarDescriptor == null)
                 {
                     throw new FacialExpressionSwitcherException("AvatarDescriptor was not found.");
                 }
@@ -104,7 +104,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA root object...", 0);
                 var rootObject = GetMARootObject(avatarDescriptor);
-                if (rootObject is null)
+                if (rootObject == null)
                 {
                     throw new FacialExpressionSwitcherException("Failed to get MA root object.");
                 }
@@ -687,13 +687,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         private static GameObject GetMARootObject(VRCAvatarDescriptor avatarDescriptor)
         {
             var avatarRoot = avatarDescriptor.gameObject;
-            if (avatarRoot is null)
+            if (avatarRoot == null)
             {
                 return null;
             }
 
             var rootObject = avatarRoot.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
-            if (rootObject is null)
+            if (rootObject == null)
             {
                 rootObject = new GameObject(AV3Constants.MARootObjectName);
                 rootObject.transform.parent = avatarRoot.transform;
@@ -715,7 +715,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 }
 
                 var loaded = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (loaded is null)
+                if (loaded == null)
                 {
                     throw new FacialExpressionSwitcherException($"Failed to load prefab: {path}");
                 }
@@ -874,7 +874,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var clip = aac.NewClip().Looping();
 
             var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
-            if (faceMesh is null)
+            if (faceMesh == null)
             {
                 return clip;
             }
@@ -893,7 +893,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             const string blendShapePrefix = "blendShape.";
 
             var template = AssetDatabase.LoadAssetAtPath<AnimationClip>(AV3Constants.Path_BlinkTemplate);
-            if (template is null)
+            if (template == null)
             {
                 throw new FacialExpressionSwitcherException("Blink template was not found.");
             }
@@ -915,7 +915,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var clip = aac.NewClip();
 
             var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
-            if (faceMesh is null)
+            if (faceMesh == null)
             {
                 return clip;
             }

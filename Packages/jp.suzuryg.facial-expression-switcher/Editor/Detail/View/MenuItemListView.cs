@@ -160,7 +160,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _treeElementDisposables = new CompositeDisposable();
 
             // Initialize tree element
-            if (_menuItemListViewState.TreeViewState is null)
+            if (_menuItemListViewState.TreeViewState == null)
             {
                 _menuItemListViewState.TreeViewState = new TreeViewState();
             }

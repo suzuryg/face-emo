@@ -97,7 +97,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public void StartSampling()
         {
             var avatarRoot = _aV3Setting?.TargetAvatar?.gameObject;
-            if (avatarRoot is null) { return; }
+            if (avatarRoot == null) { return; }
 
             if (_previewAvatar != null) { UnityEngine.Object.DestroyImmediate(_previewAvatar); }
             _previewAvatar = UnityEngine.Object.Instantiate(avatarRoot);
@@ -233,7 +233,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public void SetToggleBuffer(int objectId, bool isActive) 
         {
             var gameObject = GetMatchedToggleObject(objectId);
-            if (gameObject is null) { return; }
+            if (gameObject == null) { return; }
 
             // Set buffer
             _animatedAdditionalTogglesBuffer[objectId] = (gameObject, isActive);
@@ -484,7 +484,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         private Dictionary<string, float> GetBlendShapeValues(AnimationClip animationClip, IEnumerable<string> blendShapeNames)
         {
             var blendShapes = new Dictionary<string, float>();
-            if (animationClip is null) { return blendShapes; }
+            if (animationClip == null) { return blendShapes; }
 
             var bindings = GetBlendShapeBindings(blendShapeNames);
             foreach (var binding in bindings)

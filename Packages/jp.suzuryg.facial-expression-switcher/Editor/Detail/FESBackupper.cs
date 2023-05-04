@@ -104,7 +104,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         public void Import(string path)
         {
             var imported = AssetDatabase.LoadAssetAtPath<FESProject>(path);
-            if (imported is null) { throw new FacialExpressionSwitcherException("Failed to load FESProject asset."); }
+            if (imported == null) { throw new FacialExpressionSwitcherException("Failed to load FESProject asset."); }
 
             _menuBackupper.Import(imported.SerializableMenu);
             EditorUtility.CopySerialized(imported.AV3Setting, _aV3Setting);

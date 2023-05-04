@@ -295,7 +295,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             for (int i = 0; i < toggleProperty?.arraySize; i++)
             {
                 var gameObject = toggleProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
-                if (gameObject is null) { continue; }
+                if (gameObject == null) { continue; }
                 if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
                 {
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
@@ -317,7 +317,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             for (int i = 0; i < transformProperty?.arraySize; i++)
             {
                 var gameObject = transformProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
-                if (gameObject is null) { continue; }
+                if (gameObject == null) { continue; }
                 if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
                 {
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);

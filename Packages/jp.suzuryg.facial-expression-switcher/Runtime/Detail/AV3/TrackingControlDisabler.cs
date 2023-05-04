@@ -35,7 +35,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             var originalFxController = avatarDescriptor.baseAnimationLayers[fxIndex].animatorController;
-            if (!fxExists || originalFxController is null)
+            if (!fxExists || originalFxController == null)
             {
                 // Pre-processing is not needed.
                 return;

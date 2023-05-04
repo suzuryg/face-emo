@@ -31,7 +31,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             const string IconDir = "Assets/Editor Default Resources/Icons";
             AV3Utility.CreateFolderRecursively(IconDir);
             var iconPath = IconDir + $"/{typeof(ExpressionPreviewWindow).FullName}.png";
-            if (AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath) is null)
+            if (AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath) == null)
             {
                 AssetDatabase.CopyAsset($"{DetailConstants.IconDirectory}/sentiment_satisfied_FILL0_wght400_GRAD200_opsz48.png", iconPath);
             }

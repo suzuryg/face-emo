@@ -33,7 +33,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Start generation Template FX controller.", 0);
 
                 // Copy template FX controller
-                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_BearsDenFx) is null)
+                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_BearsDenFx) == null)
                 {
                     throw new FacialExpressionSwitcherException("Original template was not found.");
                 }

@@ -312,22 +312,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 BlackTranslucent.Apply();
             }
 
-            if (CreateIcon is null)
+            if (CreateIcon == null)
             {
                 CreateIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/note_add_FILL0_wght400_GRAD200_opsz150.png");
             }
 
-            if (OpenIcon is null)
+            if (OpenIcon == null)
             {
                 OpenIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz150.png");
             }
 
-            if (CopyIcon is null)
+            if (CopyIcon == null)
             {
                 CopyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/content_copy_FILL0_wght400_GRAD200_opsz150.png");
             }
 
-            if (EditIcon is null)
+            if (EditIcon == null)
             {
                 EditIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/edit_FILL0_wght400_GRAD200_opsz150.png");
             }

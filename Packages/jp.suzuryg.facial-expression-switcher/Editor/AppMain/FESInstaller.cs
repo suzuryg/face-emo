@@ -29,21 +29,21 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
             // Bind Monobehaviour instances
             var menuRepositoryComponent = launcherObject.GetComponent<MenuRepositoryComponent>();
-            if (menuRepositoryComponent is null) { menuRepositoryComponent = launcherObject.AddComponent<MenuRepositoryComponent>(); }
+            if (menuRepositoryComponent == null) { menuRepositoryComponent = launcherObject.AddComponent<MenuRepositoryComponent>(); }
             menuRepositoryComponent.hideFlags = HideFlags.HideInInspector;
             Container.Bind<MenuRepositoryComponent>().FromInstance(menuRepositoryComponent).AsSingle();
 
             var launcher = launcherObject.GetComponent<FESLauncherComponent>();
-            if (launcher is null) { launcher = launcherObject.AddComponent<FESLauncherComponent>(); }
+            if (launcher == null) { launcher = launcherObject.AddComponent<FESLauncherComponent>(); }
             launcher.hideFlags = HideFlags.None;
 
             // Bind ScriptableObject instances
-            if (launcher.AV3Setting is null) { launcher.AV3Setting = ScriptableObject.CreateInstance<AV3Setting>(); }
-            if (launcher.ExpressionEditorSetting is null) { launcher.ExpressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>(); }
-            if (launcher.ThumbnailSetting is null) { launcher.ThumbnailSetting = ScriptableObject.CreateInstance<ThumbnailSetting>(); }
-            if (launcher.HierarchyViewState is null) { launcher.HierarchyViewState = ScriptableObject.CreateInstance<HierarchyViewState>(); }
-            if (launcher.MenuItemListViewState is null) { launcher.MenuItemListViewState = ScriptableObject.CreateInstance<MenuItemListViewState>(); }
-            if (launcher.ViewSelection is null) { launcher.ViewSelection = ScriptableObject.CreateInstance<ViewSelection>(); }
+            if (launcher.AV3Setting == null) { launcher.AV3Setting = ScriptableObject.CreateInstance<AV3Setting>(); }
+            if (launcher.ExpressionEditorSetting == null) { launcher.ExpressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>(); }
+            if (launcher.ThumbnailSetting == null) { launcher.ThumbnailSetting = ScriptableObject.CreateInstance<ThumbnailSetting>(); }
+            if (launcher.HierarchyViewState == null) { launcher.HierarchyViewState = ScriptableObject.CreateInstance<HierarchyViewState>(); }
+            if (launcher.MenuItemListViewState == null) { launcher.MenuItemListViewState = ScriptableObject.CreateInstance<MenuItemListViewState>(); }
+            if (launcher.ViewSelection == null) { launcher.ViewSelection = ScriptableObject.CreateInstance<ViewSelection>(); }
 
             // Avoid binding the same reference when the component is copied.
             var instanceId = launcherObject.GetInstanceID();
@@ -170,7 +170,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             }
 
             var launcherObject = GameObject.Find(rootObjectPath);
-            if (launcherObject is null)
+            if (launcherObject == null)
             {
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} was not found. Please activate the GameObject.", "OK");
                 return null;
