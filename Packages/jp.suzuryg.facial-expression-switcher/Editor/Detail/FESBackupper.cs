@@ -128,14 +128,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             _aV3Setting.AdditionalToggleObjectPaths.Clear();
             foreach (var toggle in _aV3Setting.AdditionalToggleObjects)
             {
-                _aV3Setting.AdditionalToggleObjectPaths.Add(toggle.GetFullPath());
+                if (toggle != null) { _aV3Setting.AdditionalToggleObjectPaths.Add(toggle.GetFullPath()); }
             }
 
             // Transforms
             _aV3Setting.AdditionalTransformObjectPaths.Clear();
             foreach (var transform in _aV3Setting.AdditionalTransformObjects)
             {
-                _aV3Setting.AdditionalTransformObjectPaths.Add(transform.GetFullPath());
+                if (transform != null) { _aV3Setting.AdditionalTransformObjectPaths.Add(transform.GetFullPath()); }
             }
         }
 

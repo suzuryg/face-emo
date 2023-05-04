@@ -193,7 +193,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Get additional toggles
             foreach (var gameObject in _aV3Setting?.AdditionalToggleObjects)
             {
-                if (gameObject is GameObject)
+                if (gameObject != null)
                 {
                     var id = gameObject.GetInstanceID();
                     _additionalToggles[id] = (gameObject, gameObject.activeSelf);
@@ -206,7 +206,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Get additional transforms
             foreach (var gameObject in _aV3Setting?.AdditionalTransformObjects)
             {
-                if (gameObject is GameObject)
+                if (gameObject != null) 
                 {
                     var id = gameObject.GetInstanceID();
                     _additionalTransforms[id] = TransformProxy.FromGameObject(gameObject);
@@ -537,7 +537,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             GameObject targetObject = null;
             foreach (var gameObject in _aV3Setting?.AdditionalToggleObjects)
             {
-                if (gameObject?.GetInstanceID() == objectId)
+                if (gameObject != null && gameObject?.GetInstanceID() == objectId)
                 {
                     targetObject = gameObject;
                     break;

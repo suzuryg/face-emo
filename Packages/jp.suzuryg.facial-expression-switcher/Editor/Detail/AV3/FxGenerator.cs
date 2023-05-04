@@ -850,7 +850,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Generate additional expresstion objects animation
             foreach (var gameObject in _aV3Setting.AdditionalToggleObjects)
             {
-                if (gameObject is GameObject)
+                if (gameObject != null)
                 {
                     clip = clip.Toggling(new[] { gameObject }, gameObject.activeSelf);
                 }
@@ -858,7 +858,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             foreach (var gameObject in _aV3Setting.AdditionalTransformObjects)
             {
-                if (gameObject is GameObject)
+                if (gameObject != null)
                 {
                     clip = clip.Positioning(new[] { gameObject }, gameObject.transform.localPosition);
                     clip = clip.Rotationing(new[] { gameObject }, gameObject.transform.localEulerAngles);
