@@ -181,7 +181,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         {
             var ret = new List<string>();
             if (avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes is int[] &&
+                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh != null &&
                 avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh is SkinnedMeshRenderer &&
+                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh != null &&
                 avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh is Mesh sharedMesh)
             {
                 foreach (var index in avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes)
