@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -161,6 +162,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _flattendModes = AV3Utility.FlattenMenuItemList(menu.Registered, _modeNameProvider);
             _modePaths = _flattendModes.Select(x => x.PathToMode).ToArray();
 
+            // Rename to avoid name duplication (for Popup)
+            var used = new HashSet<string>();
+            for (int i = 0; i < _modePaths.Length; i++)
+            {
+                while (used.Contains(_modePaths[i])) { _modePaths[i] = AddNumberToName(_modePaths[i]); }
+                used.Add(_modePaths[i]);
+            }
+
+            // Update default selection
             _defaultSelection = 0;
             for (int i = 0; i < _flattendModes.Count; i++)
             {
@@ -171,6 +181,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 }
             }
         }   
+
+        private string AddNumberToName(string input)
+        {
+            const string pattern = @"\((\d+)\)$";
+            var match = Regex.Match(input, pattern);
+            if (match.Success)
+            {
+                int currentNumber = int.Parse(match.Groups[1].Value);
+                int nextNumber = currentNumber + 1;
+                return Regex.Replace(input, pattern, $"({nextNumber})");
+            }
+            else
+            {
+                return input + "(1)";
+            }
+        }
 
         private void OnThumbnailSettingChanged<T>(ChangeEvent<T> changeEvent)
         {
