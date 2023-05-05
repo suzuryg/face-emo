@@ -87,8 +87,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var init = layer.NewState("INIT", 0, 0);
             var gate = layer.NewState("GATE", 1, 0);
             init.TransitionsTo(gate).
-                When(layer.Av3().IsLocal.IsEqualTo(true)).
-                And(layer.BoolParameter(AV3Constants.ParamName_CN_EXPRESSION_PARAMETER_LOADING_COMP).IsTrue());
+                When(layer.Av3().IsLocal.IsEqualTo(true));
 
             // Create Mode states machines
             foreach (var priority in PatternsLRPriority)

@@ -150,8 +150,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var init = layer.NewState("INIT", 0, 0);
             var gate = layer.NewState("GATE", 1, 0);
             init.TransitionsTo(gate).
-                When(layer.Av3().IsLocal.IsEqualTo(true)).
-                And(layer.BoolParameter(AV3Constants.ParamName_CN_EXPRESSION_PARAMETER_LOADING_COMP).IsTrue());
+                When(layer.Av3().IsLocal.IsEqualTo(true));
 
             // Create each mode's sub-state machine
             for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
@@ -775,9 +774,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     break;
                 }
             }
-
-            // Checker
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EXPRESSION_PARAMETER_LOADING_COMP, syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true });
 
             // Config (Saved) (Bool)
             if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }

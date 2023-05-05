@@ -26,9 +26,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly string ParamName_GestureLeftWeight = "GestureLeftWeight";
         public static readonly string ParamName_GestureRightWeight = "GestureRightWeight";
 
-        // Checker
-        public static readonly string ParamName_CN_EXPRESSION_PARAMETER_LOADING_COMP = "CN_EXPRESSION_PARAMETER_LOADING_COMP";
-
         // Config (Saved) (Bool)
         public static readonly string ParamName_CN_CONTROLLER_TYPE_QUEST = "CN_CONTROLLER_TYPE_QUEST";
         public static readonly string ParamName_CN_CONTROLLER_TYPE_INDEX = "CN_CONTROLLER_TYPE_INDEX";
