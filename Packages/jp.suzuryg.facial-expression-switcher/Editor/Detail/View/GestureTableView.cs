@@ -212,7 +212,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _gestureTableElement?.ChangeSelection(viewSelection.MenuItemListView, viewSelection.BranchListView, viewSelection.GestureTableView);
             UpdateDisplay();
-            _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>()?.Focus();
         }
 
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
