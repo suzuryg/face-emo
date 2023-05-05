@@ -397,7 +397,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), false)
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE), false)
                 .TrackingSets(TrackingElement.Eyes, VRC_AnimatorTrackingControl.TrackingType.Animation)
-                .TrackingSets(TrackingElement.Mouth, VRC_AnimatorTrackingControl.TrackingType.Animation);
+                .TrackingSets(TrackingElement.Mouth, VRC_AnimatorTrackingControl.TrackingType.Tracking);
             afkEnterState.TransitionsTo(afkState)
                 .WithTransitionDurationSeconds(0.75f)
                 .AfterAnimationFinishes();
