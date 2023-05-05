@@ -68,6 +68,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 GenerateFaceEmoteControlLayer(aac, animatorController);
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, "Generation Succeeded!", "OK");
             }
             finally
             {
