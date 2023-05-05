@@ -338,24 +338,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                         .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
                         .When(layer.Av3().AFK.IsTrue())
                         .Or()
-                        .When(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE).IsNotEqualTo(emoteIndex));
-
-                    if (aV3Setting.DoNotTransitionWhenSpeaking)
-                    {
-                        exitEmote.And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
-                    }
+                        .When(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE).IsNotEqualTo(emoteIndex))
+                        .And(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE).IsFalse())
+                        .Or()
+                        .When(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE).IsNotEqualTo(emoteIndex))
+                        .And(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE).IsTrue())
+                        .And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
 
                     // If use over-limit mode, extra-exit-transition is needed
                     if (useOverLimitMode)
                     {
                         var exitEmoteOverlimit = emoteState.Exits()
                             .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
-                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex));
-
-                        if (aV3Setting.DoNotTransitionWhenSpeaking)
-                        {
-                            exitEmoteOverlimit.And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
-                        }
+                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex))
+                            .And(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE).IsFalse())
+                            .Or()
+                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex))
+                            .And(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE).IsTrue())
+                            .And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
                     }
                 }
 
@@ -571,6 +571,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Override, AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE));
             }
 
+            // Wait emote by voice setting
+            if (_aV3Setting.AddConfig_Override)
+            {
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Voice, AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE));
+            }
+
             // Hand priority setting
             if (_aV3Setting.AddConfig_HandPriority)
             {
@@ -632,56 +638,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             control.subMenu = subMenu;
             return control;
         }
-
-// ExParam generation is not used
-#if false
-        private void GenerateExParams(IReadOnlyList<ModeEx> modes, IMenu menu, string exParamsPath)
-        {
-            AssetDatabase.DeleteAsset(exParamsPath);
-            var exParams = new VRCExpressionParameters();
-
-            int defaultModeIndex = 0;
-            for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
-            {
-                var mode = modes[modeIndex];
-                var id = mode.Mode.GetId();
-                if (id == menu.DefaultSelection)
-                {
-                    defaultModeIndex = modeIndex;
-                    break;
-                }
-            }
-
-            exParams.parameters = new[]
-            {
-                // Checker
-                new ExParam() { name = AV3Constants.ParamName_CN_EXPRESSION_PARAMETER_LOADING_COMP, valueType = ExType.Bool, defaultValue = 1, saved = false, },
-
-                // Config (Saved) (Bool)
-                new ExParam() { name = AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,         valueType = ExType.Bool, defaultValue = 0, saved = true, },
-                new ExParam() { name = AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,         valueType = ExType.Bool, defaultValue = 0, saved = true, },
-                new ExParam() { name = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,   valueType = ExType.Bool, defaultValue = 0, saved = true, },
-                new ExParam() { name = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,   valueType = ExType.Bool, defaultValue = 0, saved = true, },
-                new ExParam() { name = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,        valueType = ExType.Bool, defaultValue = 0, saved = true, },
-                new ExParam() { name = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,       valueType = ExType.Bool, defaultValue = 0, saved = true, },
-                new ExParam() { name = AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE,     valueType = ExType.Bool, defaultValue = 1, saved = true, },
-                new ExParam() { name = AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,    valueType = ExType.Bool, defaultValue = 1, saved = true, },
-
-                // Config (Saved) (Int)
-                new ExParam() { name = AV3Constants.ParamName_EM_EMOTE_PATTERN, valueType = ExType.Int, defaultValue = defaultModeIndex, saved = true, },
-
-                // Config (Not saved) (Bool)
-                new ExParam() { name = AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,         valueType = ExType.Bool, defaultValue = 0, saved = false, },
-                new ExParam() { name = AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,  valueType = ExType.Bool, defaultValue = 0, saved = false, },
-                new ExParam() { name = AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE, valueType = ExType.Bool, defaultValue = 0, saved = false, },
-
-                // Synced (Int)
-                new ExParam() { name = AV3Constants.ParamName_SYNC_EM_EMOTE, valueType = ExType.Int, defaultValue = 0, saved = false, },
-            };
-
-            AssetDatabase.CreateAsset(exParams, exParamsPath);
-        }
-#endif
 
         private static GameObject GetMARootObject(VRCAvatarDescriptor avatarDescriptor)
         {
@@ -784,6 +740,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,        syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
             if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock) { modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE, syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
             if (_aV3Setting.AddConfig_Override) {       modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,     syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
+            if (_aV3Setting.AddConfig_Voice) {          modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE,  syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
 
             // Config (Saved) (Int)
             modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_EM_EMOTE_PATTERN, syncType = ParameterSyncType.Int, defaultValue = defaultModeIndex, saved = true, });

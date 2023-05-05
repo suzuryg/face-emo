@@ -24,13 +24,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public bool GenerateModeThumbnails = true;
         public bool ReplaceBlink = true;
         public bool DisableTrackingControls = true;
-        public bool DoNotTransitionWhenSpeaking = false;
 
         public bool AddConfig_EmoteLock = true;
         public bool AddConfig_BlinkOff = true;
         public bool AddConfig_DanceGimmick = true;
         public bool AddConfig_ContactLock = true;
         public bool AddConfig_Override = true;
+        public bool AddConfig_Voice = true;
         public bool AddConfig_HandPriority = true;
         public bool AddConfig_Controller = true;
 

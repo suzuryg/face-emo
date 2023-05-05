@@ -99,13 +99,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick (1bit)";
         public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock (1bit)";
         public string InspectorView_AddConfig_Override = "Emote Override (1bit)";
+        public string InspectorView_AddConfig_Voice = "Do Not Transition When Speaking (1bit)";
         public string InspectorView_AddConfig_HandPriority = "Hand Priority (4bit)";
         public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
 
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
         public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
         public string InspectorView_TransitionDuration = "Transition Duration (sec)";
-        public string InspectorView_DoNotTransitionWhenSpeaking = "Do Not Transition When Speaking";
         public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
 
@@ -130,6 +130,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExMenu_DanceGimmick = "Enable Dance Gimmick [NOT Saved]";
         public string ExMenu_ContactLock = "Enable Contact Emote Lock";
         public string ExMenu_Override = "Enable Emote Override";
+        public string ExMenu_Voice = "Do Not Transition When Speaking";
         public string ExMenu_HandPriority = "Hand Priority";
         public string ExMenu_HandPriority_PrimeLeft = "Prime Left";
         public string ExMenu_HandPriority_PrimeRight = "Prime Right";

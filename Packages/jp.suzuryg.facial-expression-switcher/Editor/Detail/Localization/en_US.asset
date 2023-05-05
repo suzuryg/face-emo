@@ -26,6 +26,8 @@ MonoBehaviour:
   Common_RockNRoll: Rock
   Common_HandGun: Gun
   Common_ThumbsUp: Thumbs
+  Common_ThumbnailWidth: Thumbnail Width
+  Common_ThumbnailHeight: Thumbnail Height
   Common_AddtionalToggleObjects: Addtional Expression Objects (Toggle)
   Common_AddtionalTransformObjects: Addtional Expression Objects (Transform)
   Common_Message_DeleteGroup: Are you sure you want to delete the following group?
@@ -34,7 +36,6 @@ MonoBehaviour:
     branch?
   Common_Message_ClearMouthMorphBlendShapes: Are you sure you want to clear mouth
     morph blend shapes?
-  MainView_UpdateThumbnails: Update Thumbnails
   HierarchyView_Title: HierarchyView
   HierarchyView_RegisteredMenuItemList: ItemsToRegister
   HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
@@ -48,6 +49,7 @@ MonoBehaviour:
   MenuItemListView_MouthMorphCanceler: Mouth Morph Canceller
   MenuItemListView_Empty: This group is empty.
   BranchListView_Title: BranchView
+  BranchListView_OpenGestureTable: Open Gesture Table
   BranchListView_UseLeftTrigger: Use Left Trigger
   BranchListView_UseRightTrigger: Use Right Trigger
   BranchListView_NotReachableBranch: This branch is not used.
@@ -64,10 +66,12 @@ MonoBehaviour:
   BranchListView_Both: BothHands
   BranchListView_Equals: Equals
   BranchListView_NotEqual: NotEqual
+  SettingView_UpdateThumbnails: Update Thumbnails
+  SettingView_DefaultSelectedMode: Default Selected Mode
+  SettingView_ApplyToAvatar: Apply to Avatar
+  SettingView_Message_ConfirmApplyToAvatar: Are you sure you want to apply facial
+    expression menu to the avatar?
   GestureTableView_AddBranch: Add Branch
-  SettingView_GroupDeleteConfirmation: Confirm When Deleting Group
-  SettingView_ModeDeleteConfirmation: Confirm When Deleting Mode
-  SettingView_BranchDeleteConfirmation: Confirm When Deleting Branch
   AnimationElement_Message_GuidWasNotFound: The selected animation clip does not
     exist in this project.
   ModeNameProvider_NoExpression: NoExpression
@@ -75,14 +79,6 @@ MonoBehaviour:
   InspectorView_TargetAvatar: Target Avatar
   InspectorView_GenerateModeThumbnails: Generate Expression Mode Thumbnails
   InspectorView_MouthMorphBlendShapes: MouthMorphBlendShapes
-  InspectorView_ExpressionsMenuSettingItems: Expressions Menu Setting Items
-  InspectorView_Preferences: Menu Properties
-  InspectorView_SmoothAnalogFist: Smooth Analog Fist
-  InspectorView_TransitionDuration: Transition Duration (sec)
-  InspectorView_DoNotTransitionWhenSpeaking: Do Not Transition When Speaking
-  InspectorView_ReplaceBlink: Replace blink with animation at build time (recommended)
-  InspectorView_DisableTrackingControls: Disable VRCTrackingControls for eyes and
-    mouth at build time (recommended)
   InspectorView_Message_NotInAvatar: ' is not an object in the avatar, so animation
     is not applied.'
   InspectorView_Thumbnail: Thumbnail Setting
@@ -96,13 +92,25 @@ MonoBehaviour:
   InspectorView_AFK_EnterFace: AFK Enter Face
   InspectorView_AFK_Face: AFK Face
   InspectorView_AFK_ExitFace: AFK Exit Face
+  InspectorView_ExpressionsMenuSettingItems: Expressions Menu Setting Items
   InspectorView_AddConfig_EmoteLock: Emote Lock (1bit)
   InspectorView_AddConfig_BlinkOff: Blink OFF (1bit)
   InspectorView_AddConfig_DanceGimmick: Dance Gimmick (1bit)
   InspectorView_AddConfig_ContactLock: Contact Emote Lock (1bit)
   InspectorView_AddConfig_Override: Emote Override (1bit)
+  InspectorView_AddConfig_Voice: Do Not Transition When Speaking (1bit)
   InspectorView_AddConfig_HandPriority: Hand Priority (4bit)
   InspectorView_AddConfig_Controller: Controller Type (2bit)
+  InspectorView_AvatarApplicationSetting: Avatar Application Setting
+  InspectorView_SmoothAnalogFist: Smooth Analog Fist
+  InspectorView_TransitionDuration: Transition Duration (sec)
+  InspectorView_ReplaceBlink: Replace blink with animation at build time (recommended)
+  InspectorView_DisableTrackingControls: Disable VRCTrackingControls for eyes and
+    mouth at build time (recommended)
+  InspectorView_EditorSetting: Editor Setting
+  InspectorView_GroupDeleteConfirmation: Confirm When Deleting Group
+  InspectorView_ModeDeleteConfirmation: Confirm When Deleting Mode
+  InspectorView_BranchDeleteConfirmation: Confirm When Deleting Branch
   ExpressionEditorView_ShowOnlyDifferFromDefaultValue: Show Only Differ From Default
     Value
   ExpressionEditorView_Delimiter: Delimiter
@@ -119,6 +127,7 @@ MonoBehaviour:
   ExMenu_DanceGimmick: Enable Dance Gimmick [NOT Saved]
   ExMenu_ContactLock: Enable Contact Emote Lock
   ExMenu_Override: Enable Emote Override
+  ExMenu_Voice: Do Not Transition When Speaking
   ExMenu_HandPriority: Hand Priority
   ExMenu_HandPriority_PrimeLeft: Prime Left
   ExMenu_HandPriority_PrimeRight: Prime Right

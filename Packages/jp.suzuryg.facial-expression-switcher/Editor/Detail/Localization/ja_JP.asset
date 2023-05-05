@@ -95,13 +95,14 @@ MonoBehaviour:
     (1bit)"
   InspectorView_AddConfig_ContactLock: "Contact\u8868\u60C5\u56FA\u5B9A (1bit)"
   InspectorView_AddConfig_Override: "\u8868\u60C5\u4E0A\u66F8\u304D (1bit)"
+  InspectorView_AddConfig_Voice: "\u767A\u8A71\u4E2D\u306F\u8868\u60C5\u9077\u79FB\u3057\u306A\u3044
+    (1bit)"
   InspectorView_AddConfig_HandPriority: "\u5DE6\u53F3\u512A\u5148\u8A2D\u5B9A (4bit)"
   InspectorView_AddConfig_Controller: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u5207\u308A\u66FF\u3048
     (2bit)"
   InspectorView_AvatarApplicationSetting: "\u30A2\u30D0\u30BF\u30FC\u9069\u7528\u8A2D\u5B9A"
   InspectorView_SmoothAnalogFist: "\u30C8\u30EA\u30AC\u30FC\u306E\u62BC\u3057\u8FBC\u307F\u91CF\u3092\u30B9\u30E0\u30FC\u30B8\u30F3\u30B0\u3059\u308B"
   InspectorView_TransitionDuration: "\u8868\u60C5\u306E\u9077\u79FB\u6642\u9593\uFF08\u79D2\uFF09"
-  InspectorView_DoNotTransitionWhenSpeaking: "\u767A\u8A71\u4E2D\u306F\u8868\u60C5\u9077\u79FB\u3057\u306A\u3044"
   InspectorView_ReplaceBlink: "\u30D3\u30EB\u30C9\u6642\u306B\u307E\u3070\u305F\u304D\u3092\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u306B\u7F6E\u304D\u63DB\u3048\u308B\uFF08\u63A8\u5968\uFF09"
   InspectorView_DisableTrackingControls: "\u30D3\u30EB\u30C9\u6642\u306B\u76EE\u3068\u53E3\u306EVRCTrackingControl\u3092\u7121\u52B9\u306B\u3059\u308B\uFF08\u63A8\u5968\uFF09"
   InspectorView_EditorSetting: "\u30A8\u30C7\u30A3\u30BF\u8A2D\u5B9A"
@@ -125,6 +126,7 @@ MonoBehaviour:
     Saved]"
   ExMenu_ContactLock: "Contact\u8868\u60C5\u56FA\u5B9A\u6709\u52B9"
   ExMenu_Override: "\u8868\u60C5\u4E0A\u66F8\u304D\u6709\u52B9"
+  ExMenu_Voice: "\u767A\u8A71\u4E2D\u306F\u8868\u60C5\u9077\u79FB\u3057\u306A\u3044"
   ExMenu_HandPriority: "\u5DE6\u53F3\u512A\u5148\u8A2D\u5B9A"
   ExMenu_HandPriority_PrimeLeft: "\u5DE6\u624B\u512A\u5148"
   ExMenu_HandPriority_PrimeRight: "\u53F3\u624B\u512A\u5148"

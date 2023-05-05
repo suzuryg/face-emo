@@ -35,6 +35,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly string ParamName_CN_EMOTE_SELECT_ONLY_RIGHT = "CN_EMOTE_SELECT_ONLY_RIGHT";
         public static readonly string ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE = "CN_CONTACT_EMOTE_LOCK_ENABLE";
         public static readonly string ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE = "SYNC_CN_EMOTE_OVERRIDE_ENABLE";
+        public static readonly string ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE = "SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE";
+
 
         // Config (Saved) (Int)
         public static readonly string ParamName_EM_EMOTE_PATTERN = "EM_EMOTE_PATTERN";
