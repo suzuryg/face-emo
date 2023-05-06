@@ -677,6 +677,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 var instantiated = PrefabUtility.InstantiatePrefab(loaded) as GameObject;
                 instantiated.transform.parent = rootObject.transform;
+                instantiated.transform.SetAsFirstSibling();
             }
         }
 
