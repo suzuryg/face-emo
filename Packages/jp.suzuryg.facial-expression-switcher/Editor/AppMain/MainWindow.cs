@@ -52,6 +52,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             if (_launcherObjectPath is string)
             {
                 _installer = FESInstaller.GetInstaller(_launcherObjectPath);
+                if (_installer == null) { Clean(); return; }
 
                 _mainWindowProvider = _installer.Container.Resolve<MainWindowProvider>();
                 _mainView = _installer.Container.Resolve<MainView>().AddTo(_disposables);
