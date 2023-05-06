@@ -251,18 +251,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var layer = aac.CreateSupportingArbitraryControllerLayer(animatorController, layerName);
             layer.StateMachine.WithEntryPosition(0, 0).WithAnyStatePosition(2, -2).WithExitPosition(2, 0);
 
+            // Create not-afk sub-state machine
+            var notAfkStateMachine = layer.NewSubStateMachine("Not AFK", 1, 0)
+                .WithEntryPosition(0, 0).WithAnyStatePosition(0, -1).WithParentStateMachinePosition(0, -2).WithExitPosition(2, 0);
+            notAfkStateMachine.TransitionsFromEntry()
+                .When(layer.Av3().AFK.IsFalse());
+            notAfkStateMachine.Exits();
+
             // Create face emote playing states
             var emptyClip = aac.NewClip();
             var emptyName = "Empty";
             for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
             {
                 var mode = modes[modeIndex];
-                AacFlStateMachine stateMachine = layer.StateMachine;
+                var stateMachine = notAfkStateMachine;
 
-                // If use over-limit mode, create sub-state machines 
+                // If use over-limit mode, create sub-state machines
                 if (useOverLimitMode)
                 {
-                    var modeStateMachine = layer.NewSubStateMachine(mode.PathToMode, 1, modeIndex)
+                    var modeStateMachine = stateMachine.NewSubStateMachine(mode.PathToMode, 1, modeIndex)
                         .WithEntryPosition(0, 0).WithAnyStatePosition(0, -1).WithParentStateMachinePosition(0, -2).WithExitPosition(2, 0);
                     modeStateMachine.TransitionsFromEntry()
                         .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsEqualTo(modeIndex));
