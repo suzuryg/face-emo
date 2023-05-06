@@ -83,9 +83,9 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         public void CloseAllSubWinodows()
         {
-            GetWindow<GestureTableWindow>(null)?.Close();
-            GetWindow<ExpressionEditorWindow>(null)?.Close();
-            GetWindow<ExpressionPreviewWindow>(null)?.Close();
+            ProvideIfOpenedAlready<GestureTableWindow>()?.Close();
+            ProvideIfOpenedAlready<ExpressionEditorWindow>()?.Close();
+            ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.Close();
         }
 
         private T GetWindow<T>(Action<EditorWindow> initializeAction) where T : EditorWindow
