@@ -60,7 +60,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly string ParamName_GestureRWSmoothing = "_Hai_GestureRWSmoothing";
 
         public static readonly string RootMenuName = DomainConstants.SystemName;
-        public static readonly string MARootObjectName = DomainConstants.SystemName;
+        public static readonly string MARootObjectName = DomainConstants.SystemName + "Object";
 
         public static readonly int MaxEmoteNum = 256;
         public static readonly float VoiceThreshold = 0.01f;
