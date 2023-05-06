@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
 using UniRx;
+using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail
 {
@@ -37,13 +38,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             IChangeConditionOrderPresenter changeConditionOrderPresenter,
             IModifyConditionPresenter modifyConditionPresenter,
             IRemoveConditionPresenter removeConditionPresenter,
-            ISetExistingAnimationPresenter setExistingAnimationPresenter)
+            ISetExistingAnimationPresenter setExistingAnimationPresenter,
+            IReadOnlyLocalizationSetting localizationSetting)
         {
             createMenuPresenter.Observable.Synchronize().Subscribe(x =>
             {
                 if (x.createMenuResult != CreateMenuResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.createMenuResult.GetType().Name}: {x.createMenuResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.createMenuResult.GetType().Name}: {x.createMenuResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -52,7 +54,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.modifyMenuPropertiesResult != ModifyMenuPropertiesResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.modifyMenuPropertiesResult.GetType().Name}: {x.modifyMenuPropertiesResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.modifyMenuPropertiesResult.GetType().Name}: {x.modifyMenuPropertiesResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -61,7 +63,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.addMenuItemResult != AddMenuItemResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.addMenuItemResult.GetType().Name}: {x.addMenuItemResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.addMenuItemResult.GetType().Name}: {x.addMenuItemResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -70,7 +72,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.copyMenuItemResult != CopyMenuItemResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.copyMenuItemResult.GetType().Name}: {x.copyMenuItemResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.copyMenuItemResult.GetType().Name}: {x.copyMenuItemResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -79,7 +81,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.modifyModePropertiesResult != ModifyModePropertiesResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.modifyModePropertiesResult.GetType().Name}: {x.modifyModePropertiesResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.modifyModePropertiesResult.GetType().Name}: {x.modifyModePropertiesResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -88,7 +90,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.modifyGroupPropertiesResult != ModifyGroupPropertiesResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.modifyGroupPropertiesResult.GetType().Name}: {x.modifyGroupPropertiesResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.modifyGroupPropertiesResult.GetType().Name}: {x.modifyGroupPropertiesResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -97,7 +99,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.moveMenuItemResult != MoveMenuItemResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.moveMenuItemResult.GetType().Name}: {x.moveMenuItemResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.moveMenuItemResult.GetType().Name}: {x.moveMenuItemResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -106,7 +108,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.removeMenuItemResult != RemoveMenuItemResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.removeMenuItemResult.GetType().Name}: {x.removeMenuItemResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.removeMenuItemResult.GetType().Name}: {x.removeMenuItemResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -115,7 +117,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.generateFxResult != GenerateFxResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.generateFxResult.GetType().Name}: {x.generateFxResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.generateFxResult.GetType().Name}: {x.generateFxResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -124,7 +126,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.addBranchResult != AddBranchResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.addBranchResult.GetType().Name}: {x.addBranchResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.addBranchResult.GetType().Name}: {x.addBranchResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -133,7 +135,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.modifyBranchPropertiesResult != ModifyBranchPropertiesResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.modifyBranchPropertiesResult.GetType().Name}: {x.modifyBranchPropertiesResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.modifyBranchPropertiesResult.GetType().Name}: {x.modifyBranchPropertiesResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -142,7 +144,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.changeBranchOrderResult != ChangeBranchOrderResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.changeBranchOrderResult.GetType().Name}: {x.changeBranchOrderResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.changeBranchOrderResult.GetType().Name}: {x.changeBranchOrderResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -151,7 +153,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.removeBranchResult != RemoveBranchResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.removeBranchResult.GetType().Name}: {x.removeBranchResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.removeBranchResult.GetType().Name}: {x.removeBranchResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -160,7 +162,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.addConditionResult != AddConditionResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.addConditionResult.GetType().Name}: {x.addConditionResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.addConditionResult.GetType().Name}: {x.addConditionResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -169,7 +171,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.changeConditionOrderResult != ChangeConditionOrderResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.changeConditionOrderResult.GetType().Name}: {x.changeConditionOrderResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.changeConditionOrderResult.GetType().Name}: {x.changeConditionOrderResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -178,7 +180,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.modifyConditionResult != ModifyConditionResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.modifyConditionResult.GetType().Name}: {x.modifyConditionResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.modifyConditionResult.GetType().Name}: {x.modifyConditionResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -187,7 +189,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.removeConditionResult != RemoveConditionResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.removeConditionResult.GetType().Name}: {x.removeConditionResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.removeConditionResult.GetType().Name}: {x.removeConditionResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
@@ -196,7 +198,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             {
                 if (x.setExistingAnimationResult != SetExistingAnimationResult.Succeeded)
                 {
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.setExistingAnimationResult.GetType().Name}: {x.setExistingAnimationResult}", "OK");
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.setExistingAnimationResult.GetType().Name}: {x.setExistingAnimationResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);
