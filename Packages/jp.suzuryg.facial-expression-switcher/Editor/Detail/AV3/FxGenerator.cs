@@ -155,8 +155,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Create each mode's sub-state machine
             for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
             {
-                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{AV3Constants.LayerName_FaceEmoteSetControl}\" layer...",
-                    (float)modeIndex / modes.Count);
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...",
+                    1f / modes.Count * modeIndex);
 
                 var mode = modes[modeIndex];
                 var modeStateMachine = layer.NewSubStateMachine(mode.PathToMode, 2, modeIndex)
@@ -178,10 +178,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     {
                         for (int rightIndex = 0; rightIndex < AV3Constants.EmoteSelectToGesture.Count; rightIndex++)
                         {
-                            EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{AV3Constants.LayerName_FaceEmoteSetControl}\" layer...",
-                                (float)modeIndex / modes.Count
-                                + 1f / modes.Count * leftIndex / AV3Constants.EmoteSelectToGesture.Count
-                                + 1f / modes.Count / AV3Constants.EmoteSelectToGesture.Count * rightIndex / AV3Constants.EmoteSelectToGesture.Count);
+                            EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...",
+                                1f / modes.Count * modeIndex 
+                                + 1f / modes.Count / AV3Constants.EmoteSelectToGesture.Count * leftIndex 
+                                + 1f / modes.Count / AV3Constants.EmoteSelectToGesture.Count / AV3Constants.EmoteSelectToGesture.Count * rightIndex);
 
                             var preSelectEmoteIndex = AV3Utility.GetPreselectEmoteIndex(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex]);
                             var gestureState = modeStateMachine.NewState($"L{leftIndex} R{rightIndex}", 1, preSelectEmoteIndex);
@@ -263,6 +263,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var emptyName = "Empty";
             for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
             {
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...",
+                    1f / modes.Count * modeIndex);
+
                 var mode = modes[modeIndex];
                 var stateMachine = notAfkStateMachine;
 
@@ -279,6 +282,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 for (int branchIndex = -1; branchIndex < mode.Mode.Branches.Count; branchIndex++)
                 {
+                    EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...",
+                        1f / modes.Count * modeIndex
+                        + 1f / modes.Count / (mode.Mode.Branches.Count + 1) * (branchIndex + 1));
+
                     var emoteIndex = GetEmoteIndex(branchIndex, mode, useOverLimitMode);
                     AacFlState emoteState;
                     // Mode
