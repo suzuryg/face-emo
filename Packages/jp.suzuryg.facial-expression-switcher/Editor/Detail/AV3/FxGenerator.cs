@@ -536,7 +536,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             GenerateSubMenuRecursive(rootMenu, menu.Registered, idToModeIndex, container);
             GenerateSettingMenu(rootMenu, container);
 
-            container.controls.Add(CreateSubMenuControl(AV3Constants.RootMenuName, rootMenu));
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("af1ba8919b0ccb94a99caf43ac36f97d")); // face smile
+            container.controls.Add(CreateSubMenuControl(AV3Constants.RootMenuName, rootMenu, icon));
             AssetDatabase.AddObjectToAsset(rootMenu, container);
 
             EditorUtility.SetDirty(container);
@@ -552,7 +553,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 if (type == MenuItemType.Mode)
                 {
                     var mode = menuItemList.GetMode(id);
-                    var control = CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id]);
+                    var control = CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id], icon: null);
 
                     if (_aV3Setting.GenerateModeThumbnails)
                     {
@@ -573,7 +574,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                     var subMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
                     subMenu.name = group.DisplayName;
-                    parent.controls.Add(CreateSubMenuControl(group.DisplayName, subMenu));
+                    var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
+                    parent.controls.Add(CreateSubMenuControl(group.DisplayName, subMenu, icon));
 
                     GenerateSubMenuRecursive(subMenu, group, idToModeIndex, container);
                     AssetDatabase.AddObjectToAsset(subMenu, container);
@@ -591,91 +593,109 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Emote lock setting
             if (_aV3Setting.AddConfig_EmoteLock)
             {
-                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Lock.png");
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE, icon));
             }
 
             // Blink off setting
             if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink)
             {
-                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_BlinkOff,  AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/BlinkOff.png");
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_BlinkOff,  AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE, icon));
             }
 
             // Dance gimmick setting
             if (_aV3Setting.AddConfig_DanceGimmick)
             {
-                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_DanceGimmick, AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("9a20b3a6641e1af4e95e058f361790cb")); // person dance
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_DanceGimmick, AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE, icon));
             }
 
             // Contact emote lock setting
             if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock)
             {
-                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_ContactLock, AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/ContactLock.png");
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_ContactLock, AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE, icon));
             }
 
             // Emote override setting
             if (_aV3Setting.AddConfig_Override)
             {
-                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Override, AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("5acca5d9b1a37724880f1a1dc1bc54d3")); // hand waving
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Override, AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE, icon));
             }
 
             // Wait emote by voice setting
             if (_aV3Setting.AddConfig_Override)
             {
-                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Voice, AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("50865644fb00f2b4d88bf8a8186039f5")); // face gasp
+                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Voice, AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE, icon));
             }
 
             // Hand priority setting
             if (_aV3Setting.AddConfig_HandPriority)
             {
+                var leftPrimeIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandLR.png");
+                var rightPrimeIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandRL.png");
+                var leftOnlyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandL.png");
+                var rightOnlyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandR.png");
+
                 var handPrioritySetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
                 handPrioritySetting.name = loc.ExMenu_HandPriority;
                 handPrioritySetting.controls = new List<VRCExpressionsMenu.Control>()
                 {
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT),
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeRight, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT),
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT),
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyRight, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT),
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT, leftPrimeIcon),
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeRight, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT, rightPrimeIcon),
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT, leftOnlyIcon),
+                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyRight, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT, rightOnlyIcon),
                 };
-                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_HandPriority, handPrioritySetting));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/FaceSelect.png");
+                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_HandPriority, handPrioritySetting, icon));
                 AssetDatabase.AddObjectToAsset(handPrioritySetting, container);
             }
 
             // Controller setting
             if (_aV3Setting.AddConfig_Controller)
             {
+                var questIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/QuestController.png");
+                var indexIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/IndexController.png");
+
                 var controllerSetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
                 controllerSetting.name = loc.ExMenu_Controller;
                 controllerSetting.controls = new List<VRCExpressionsMenu.Control>()
                 {
-                    CreateBoolToggleControl(loc.ExMenu_Controller_Quest, AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST),
-                    CreateBoolToggleControl(loc.ExMenu_Controller_Index, AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX),
+                    CreateBoolToggleControl(loc.ExMenu_Controller_Quest, AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST, questIcon),
+                    CreateBoolToggleControl(loc.ExMenu_Controller_Index, AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX, indexIcon),
                 };
-                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_Controller, controllerSetting));
+                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Controller.png");
+                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_Controller, controllerSetting, icon));
                 AssetDatabase.AddObjectToAsset(controllerSetting, container);
             }
 
-            parent.controls.Add(CreateSubMenuControl(loc.ExMenu_Setting, settingRoot));
+            var settingIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Settings.png");
+            parent.controls.Add(CreateSubMenuControl(loc.ExMenu_Setting, settingRoot, settingIcon));
             AssetDatabase.AddObjectToAsset(settingRoot, container);
         }
 
-        private static VRCExpressionsMenu.Control CreateBoolToggleControl(string name, string parameterName)
+        private static VRCExpressionsMenu.Control CreateBoolToggleControl(string name, string parameterName, Texture2D icon)
         {
             var control = new VRCExpressionsMenu.Control();
             control.name = name;
             control.type = VRCExpressionsMenu.Control.ControlType.Toggle;
             control.parameter = new VRCExpressionsMenu.Control.Parameter() { name = parameterName };
             control.subParameters = new VRCExpressionsMenu.Control.Parameter[0];
+            control.icon = icon;
             return control;
         }
 
-        private static VRCExpressionsMenu.Control CreateIntToggleControl(string name, string parameterName, int value)
+        private static VRCExpressionsMenu.Control CreateIntToggleControl(string name, string parameterName, int value, Texture2D icon)
         {
-            var control = CreateBoolToggleControl(name, parameterName);
+            var control = CreateBoolToggleControl(name, parameterName, icon);
             control.value = value;
             return control;
         }
 
-        private static VRCExpressionsMenu.Control CreateSubMenuControl(string name, VRCExpressionsMenu subMenu)
+        private static VRCExpressionsMenu.Control CreateSubMenuControl(string name, VRCExpressionsMenu subMenu, Texture2D icon)
         {
             var control = new VRCExpressionsMenu.Control();
             control.name = name;
@@ -683,6 +703,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             control.parameter = new VRCExpressionsMenu.Control.Parameter() { name = string.Empty };
             control.subParameters = new VRCExpressionsMenu.Control.Parameter[0];
             control.subMenu = subMenu;
+            control.icon = icon;
             return control;
         }
 
