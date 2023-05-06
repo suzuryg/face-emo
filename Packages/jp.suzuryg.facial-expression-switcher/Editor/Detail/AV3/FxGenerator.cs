@@ -168,30 +168,48 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 modeStateMachine.Exits()
                     .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex));
 
-                // Create each gesture's state
-                for (int leftIndex = 0; leftIndex < AV3Constants.EmoteSelectToGesture.Count; leftIndex++)
+                // Check if the mode has branches
+                var hasBranches = modes[modeIndex].Mode.Branches.Count > 0;
+
+                if (hasBranches)
                 {
-                    for (int rightIndex = 0; rightIndex < AV3Constants.EmoteSelectToGesture.Count; rightIndex++)
+                    // Create each gesture's state
+                    for (int leftIndex = 0; leftIndex < AV3Constants.EmoteSelectToGesture.Count; leftIndex++)
                     {
-                        EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{AV3Constants.LayerName_FaceEmoteSetControl}\" layer...",
-                            (float)modeIndex / modes.Count
-                            + 1f / modes.Count * leftIndex / AV3Constants.EmoteSelectToGesture.Count
-                            + 1f / modes.Count / AV3Constants.EmoteSelectToGesture.Count * rightIndex / AV3Constants.EmoteSelectToGesture.Count);
+                        for (int rightIndex = 0; rightIndex < AV3Constants.EmoteSelectToGesture.Count; rightIndex++)
+                        {
+                            EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{AV3Constants.LayerName_FaceEmoteSetControl}\" layer...",
+                                (float)modeIndex / modes.Count
+                                + 1f / modes.Count * leftIndex / AV3Constants.EmoteSelectToGesture.Count
+                                + 1f / modes.Count / AV3Constants.EmoteSelectToGesture.Count * rightIndex / AV3Constants.EmoteSelectToGesture.Count);
 
-                        var preSelectEmoteIndex = AV3Utility.GetPreselectEmoteIndex(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex]);
-                        var gestureState = modeStateMachine.NewState($"L{leftIndex} R{rightIndex}", 1, preSelectEmoteIndex);
-                        gestureState.TransitionsFromEntry()
-                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PRESELECT).IsEqualTo(preSelectEmoteIndex));
-                        gestureState.Exits()
-                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PRESELECT).IsNotEqualTo(preSelectEmoteIndex))
-                            .Or()
-                            .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex));
+                            var preSelectEmoteIndex = AV3Utility.GetPreselectEmoteIndex(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex]);
+                            var gestureState = modeStateMachine.NewState($"L{leftIndex} R{rightIndex}", 1, preSelectEmoteIndex);
+                            gestureState.TransitionsFromEntry()
+                                .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PRESELECT).IsEqualTo(preSelectEmoteIndex));
+                            gestureState.Exits()
+                                .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PRESELECT).IsNotEqualTo(preSelectEmoteIndex))
+                                .Or()
+                                .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex));
 
-                        // Add parameter driver
-                        var branchIndex = GetBranchIndex(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex], mode.Mode);
-                        var emoteIndex = GetEmoteIndex(branchIndex, mode, useOverLimitMode);
-                        gestureState.Drives(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE), emoteIndex).DrivingLocally();
+                            // Add parameter driver
+                            var branchIndex = GetBranchIndex(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex], mode.Mode);
+                            var emoteIndex = GetEmoteIndex(branchIndex, mode, useOverLimitMode);
+                            gestureState.Drives(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE), emoteIndex).DrivingLocally();
+                        }
                     }
+                }
+                else
+                {
+                    // Create single state
+                    var state = modeStateMachine.NewState($"Any Gestures", 1, 0);
+                    state.TransitionsFromEntry();
+                    state.Exits()
+                        .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex));
+
+                    // Add parameter driver
+                    var emoteIndex = GetEmoteIndex(branchIndex: -1, mode, useOverLimitMode);
+                    state.Drives(layer.IntParameter(AV3Constants.ParamName_SYNC_EM_EMOTE), emoteIndex).DrivingLocally();
                 }
             }
 
