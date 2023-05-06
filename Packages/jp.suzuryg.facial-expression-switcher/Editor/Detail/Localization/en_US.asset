@@ -73,6 +73,7 @@ MonoBehaviour:
   SettingView_ApplyToAvatar: Apply to Avatar
   SettingView_Message_ConfirmApplyToAvatar: Are you sure you want to apply facial
     expression menu to the avatar?
+  SettingView_Message_Succeeded: Facial expression menu generation is completed!
   GestureTableView_AddBranch: Add Branch
   AnimationElement_Message_GuidWasNotFound: The selected animation clip does not
     exist in this project.
@@ -106,6 +107,7 @@ MonoBehaviour:
   InspectorView_AvatarApplicationSetting: Avatar Application Setting
   InspectorView_SmoothAnalogFist: Smooth Analog Fist
   InspectorView_TransitionDuration: Transition Duration (sec)
+  InspectorView_AddExpressionParameterPrefix: Add Expression Parameter Prefix (FES_)
   InspectorView_ReplaceBlink: Replace blink with animation at build time (recommended)
   InspectorView_DisableTrackingControls: Disable VRCTrackingControls for eyes and
     mouth at build time (recommended)
@@ -123,6 +125,11 @@ MonoBehaviour:
     sure the avatar is active.
   FESBackupper_Message_FailedToFindToggleObject: Failed to find toggle object.
   FESBackupper_Message_FailedToFindTransformObject: Failed to find transform object.
+  FxGenerator_Message_FaceMeshNotFound: Face mesh was not found. Default face and
+    blink may not be properly animated.
+  FxGenerator_Message_BlinkBlendShapeNotFound: Blink blend shape was not found. Blink
+    may not be properly animated.
+  ErrorHandler_Message_ErrorOccured: An error has occurred. Please check the console.
   ExMenu_Setting: Setting
   ExMenu_EmoteLock: Emote Lock ON [NOT Saved]
   ExMenu_BlinkOff: Blink OFF [NOT Saved]

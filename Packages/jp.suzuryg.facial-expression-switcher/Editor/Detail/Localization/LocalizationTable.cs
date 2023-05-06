@@ -68,6 +68,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string SettingView_DefaultSelectedMode = "Default Selected Mode";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
         public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
+        public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!";
 
         public string GestureTableView_AddBranch = "Add Branch";
 
