@@ -444,9 +444,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Create override state
             var overrideState = layer.NewState("in OVERRIDE", 2, -1);
             overrideState.TransitionsFromAny()
-                .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsTrue());
+                .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsTrue())
+                .And(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsFalse())
+                .Or()
+                .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsTrue())
+                .And(layer.Av3().InStation.IsFalse());
             overrideState.Exits()
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsFalse());
+
+            // Create dance state
+            var danceState = layer.NewState("in DANCE", 3, -1);
+            danceState.TransitionsFromAny()
+                .When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsTrue())
+                .And(layer.Av3().InStation.IsTrue())
+                .And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
+            danceState.Exits()
+                .When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsFalse())
+                .Or()
+                .When(layer.Av3().InStation.IsFalse());
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...", 1);
         }
