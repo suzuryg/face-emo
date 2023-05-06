@@ -67,6 +67,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 GenerateFaceEmoteControlLayer(aac, animatorController);
 
+                // Remove unused parameters
+                RemoveParameters(animatorController);
+
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, "Generation Succeeded!", "OK");
             }
@@ -258,6 +261,44 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                         var preSelectEmoteIndex = AV3Utility.GetPreselectEmoteIndex(converted.left, converted.right);
                         rightState.Drives(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PRESELECT), preSelectEmoteIndex).DrivingLocally();
                     }
+                }
+            }
+        }
+
+        private static void RemoveParameters(AnimatorController controller)
+        {
+            var paramNames = new[]
+            {
+                "CN_EXPRESSION_PARAMETER_LOADING_COMP",
+                "CN_EMOTE_PRELOCK_ENABLE",
+            };
+
+            foreach (var parameName in paramNames) { RemoveParameter(controller, parameName); }
+        }
+
+        private static void RemoveParameter(AnimatorController controller, string paramName)
+        {
+            if (controller != null)
+            {
+                // Find the index of the parameter to remove
+                int parameterIndex = -1;
+                for (int i = 0; i < controller.parameters.Length; i++)
+                {
+                    if (controller.parameters[i].name == paramName)
+                    {
+                        parameterIndex = i;
+                        break;
+                    }
+                }
+
+                // Remove the parameter if it's found
+                if (parameterIndex >= 0)
+                {
+                    controller.RemoveParameter(parameterIndex);
+                }
+                else
+                {
+                    Debug.LogError($"Parameter '{paramName}' was not found");
                 }
             }
         }
