@@ -107,6 +107,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
         public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
         public string InspectorView_TransitionDuration = "Transition Duration (sec)";
+        public string InspectorView_AddExpressionParameterPrefix = "Add Expression Parameter Prefix (FES_)";
         public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
 

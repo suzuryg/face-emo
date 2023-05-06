@@ -56,8 +56,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly string ParamName_CN_BLINK_ENABLE = "CN_BLINK_ENABLE";
         public static readonly string ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE = "CN_MOUTH_MORPH_CANCEL_ENABLE";
         public static readonly string ParamName_CN_EMOTE_OVERRIDE = "CN_EMOTE_OVERRIDE";
-        public static readonly string ParamName_GestureLWSmoothing = "_Hai_GestureLWSmoothing";
-        public static readonly string ParamName_GestureRWSmoothing = "_Hai_GestureRWSmoothing";
+        public static readonly string ParamName_EV_PLAY_INDICATOR_SOUND = "EV_PLAY_INDICATOR_SOUND";
+        public static readonly string ParamName_CNST_TOUCH_NADENADE_POINT = "CNST_TOUCH_NADENADE_POINT";
+        public static readonly string ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L = "CNST_TOUCH_EMOTE_LOCK_TRIGGER_L";
+        public static readonly string ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R = "CNST_TOUCH_EMOTE_LOCK_TRIGGER_R";
+        // public static readonly string ParamName_CN_IS_ACTION_ACTIVE = "CN_IS_ACTION_ACTIVE"; // Do not rename (to work with action layer)
+        public static readonly string ParamName_GestureLWSmoothing = "_Hai_GestureLWSmoothing"; // Do not rename (to work with blend tree)
+        public static readonly string ParamName_GestureRWSmoothing = "_Hai_GestureRWSmoothing"; // Do not rename (to work with blend tree)
+
+        public static readonly string ParameterPrefix = "FES_";
 
         public static readonly string RootMenuName = DomainConstants.SystemName;
         public static readonly string MARootObjectName = DomainConstants.SystemName + "Object";

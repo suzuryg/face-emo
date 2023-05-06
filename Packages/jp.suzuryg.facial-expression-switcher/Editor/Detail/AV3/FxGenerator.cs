@@ -733,28 +733,64 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             // Config (Saved) (Bool)
-            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
-            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,    syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,    syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,         syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,        syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
-            if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock) { modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE, syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
-            if (_aV3Setting.AddConfig_Override) {       modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,     syncType = ParameterSyncType.Bool, defaultValue = 1, saved = true, }); }
-            if (_aV3Setting.AddConfig_Voice) {          modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE,  syncType = ParameterSyncType.Bool, defaultValue = 0, saved = true, }); }
+            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,         ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,         ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,   ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,   ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,        ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,       ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock) { modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE, ParameterSyncType.Bool, defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_Override) {       modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,    ParameterSyncType.Bool, defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_Voice) {          modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE, ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
 
             // Config (Saved) (Int)
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_EM_EMOTE_PATTERN, syncType = ParameterSyncType.Int, defaultValue = defaultModeIndex, saved = true, });
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_EM_EMOTE_PATTERN, ParameterSyncType.Int, defaultValue: defaultModeIndex, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
 
             // Config (Not saved) (Bool)
-            if (_aV3Setting.AddConfig_EmoteLock) {                              modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,          syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, }); }
-            if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink) {   modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,   syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, }); }
-            if (_aV3Setting.AddConfig_DanceGimmick) {                           modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE,  syncType = ParameterSyncType.Bool, defaultValue = 0, saved = false, }); }
+            if (_aV3Setting.AddConfig_EmoteLock) {                              modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,         ParameterSyncType.Bool, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,  ParameterSyncType.Bool, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            if (_aV3Setting.AddConfig_DanceGimmick) {                           modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE, ParameterSyncType.Bool, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix)); }
 
             // Synced (Int)
-            modularAvatarParameters.parameters.Add(new ParameterConfig() { nameOrPrefix = AV3Constants.ParamName_SYNC_EM_EMOTE, syncType = ParameterSyncType.Int, defaultValue = 0, saved = false, });
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_EM_EMOTE, ParameterSyncType.Int, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
+
+            // Not synced
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EM_EMOTE_SELECT_L, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EM_EMOTE_SELECT_R, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EM_EMOTE_PRESELECT, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CN_BLINK_ENABLE, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CN_EMOTE_OVERRIDE, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EV_PLAY_INDICATOR_SOUND, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_NADENADE_POINT, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R, addPrefix: _aV3Setting.AddParameterPrefix));
 
             EditorUtility.SetDirty(modularAvatarParameters);
+        }
+
+        private static ParameterConfig MAParam(string name, ParameterSyncType type, float defaultValue, bool saved, bool addPrefix) 
+        {
+            var parameterConfig = new ParameterConfig();
+
+            parameterConfig.nameOrPrefix = name;
+            parameterConfig.syncType = type;
+            parameterConfig.defaultValue = defaultValue;
+            parameterConfig.saved = saved;
+            if (addPrefix) { parameterConfig.remapTo = AV3Constants.ParameterPrefix + name; }
+
+            return parameterConfig;
+        }
+
+        private static ParameterConfig NotSyncedMAParam(string name, bool addPrefix)
+        {
+            var parameterConfig = new ParameterConfig();
+
+            parameterConfig.nameOrPrefix = name;
+            parameterConfig.syncType = ParameterSyncType.NotSynced;
+            if (addPrefix) { parameterConfig.remapTo = AV3Constants.ParameterPrefix + name; }
+
+            return parameterConfig;
         }
 
         private void AddBlinkDisablerComponent(GameObject rootObject)

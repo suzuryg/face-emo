@@ -24,6 +24,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public bool GenerateModeThumbnails = true;
         public bool ReplaceBlink = true;
         public bool DisableTrackingControls = true;
+        public bool AddParameterPrefix = true;
 
         public bool AddConfig_EmoteLock = true;
         public bool AddConfig_BlinkOff = true;

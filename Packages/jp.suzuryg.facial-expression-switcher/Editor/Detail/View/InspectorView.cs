@@ -484,6 +484,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_localizationTable.InspectorView_TransitionDuration));
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GenerateModeThumbnails)), _localizationTable.InspectorView_GenerateModeThumbnails);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _localizationTable.InspectorView_SmoothAnalogFist);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddParameterPrefix)), _localizationTable.InspectorView_AddExpressionParameterPrefix);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _localizationTable.InspectorView_ReplaceBlink);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _localizationTable.InspectorView_DisableTrackingControls);
         }
