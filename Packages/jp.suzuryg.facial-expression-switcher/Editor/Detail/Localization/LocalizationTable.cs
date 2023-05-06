@@ -126,6 +126,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string FESBackupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";
         public string FESBackupper_Message_FailedToFindTransformObject = "Failed to find transform object.";
 
+        public string FxGenerator_Message_FaceMeshNotFound = "Face mesh was not found. Default face and blink may not be properly animated.";
+        public string FxGenerator_Message_BlinkBlendShapeNotFound = "Blink blend shape was not found. Blink may not be properly animated.";
+
         public string ExMenu_Setting = "Setting";
         public string ExMenu_EmoteLock = "Emote Lock ON [NOT Saved]";
         public string ExMenu_BlinkOff = "Blink OFF [NOT Saved]";

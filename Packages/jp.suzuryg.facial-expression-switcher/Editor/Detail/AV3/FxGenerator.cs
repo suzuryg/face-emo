@@ -49,7 +49,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             try
             {
                 //UnityEngine.Profiling.Profiler.BeginSample("FxGenerator");
-                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Start generation FX controller.", 0);
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Start FX controller generation.", 0);
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Creating folder...", 0);
                 var generatedDir = AV3Constants.Path_GeneratedDir + DateTime.Now.ToString("/yyyyMMdd_HHmmss");
@@ -868,6 +868,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private AacFlClip GetDefaultFaceAnimation(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
         {
+            var loc = _localizationSetting.GetCurrentLocaleTable();
+
             var clip = aac.NewClip();
 
             // Generate fesh mesh blendshape animation
@@ -882,6 +884,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     var weight = blendShapes[name];
                     clip = clip.BlendShape(faceMesh, name, weight);
                 }
+            }
+            else
+            {
+                Debug.LogError(loc.FxGenerator_Message_FaceMeshNotFound);
             }
 
             // Generate additional expresstion objects animation
@@ -906,13 +912,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return clip;
         }
 
-        private static AacFlClip GetBlinkAnimation(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
+        private AacFlClip GetBlinkAnimation(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
         {
+            var loc = _localizationSetting.GetCurrentLocaleTable();
+
             var clip = aac.NewClip().Looping();
 
             var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
             if (faceMesh == null)
             {
+                Debug.LogError(loc.FxGenerator_Message_FaceMeshNotFound);
                 return clip;
             }
 
@@ -920,6 +929,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             if (eyeLids.Count > 0)
             {
                 clip = clip.BlendShape(faceMesh, eyeLids.First(), GetBlinkCurve());
+            }
+            else
+            {
+                Debug.LogError(loc.FxGenerator_Message_BlinkBlendShapeNotFound);
             }
 
             return clip;
