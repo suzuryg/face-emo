@@ -30,25 +30,27 @@ MonoBehaviour:
   Common_ThumbnailHeight: Thumbnail Height
   Common_AddtionalToggleObjects: Addtional Expression Objects (Toggle)
   Common_AddtionalTransformObjects: Addtional Expression Objects (Transform)
+  Common_Message_InvalidDestination: You cannot move to here. Check the number of
+    modes and groups.
   Common_Message_DeleteGroup: Are you sure you want to delete the following group?
   Common_Message_DeleteMode: Are you sure you want to delete the following mode?
   Common_Message_DeleteBranch: Are you sure you want to delete the currently selected
     branch?
   Common_Message_ClearMouthMorphBlendShapes: Are you sure you want to clear mouth
     morph blend shapes?
-  HierarchyView_Title: HierarchyView
+  HierarchyView_Title: Hierarchy
   HierarchyView_RegisteredMenuItemList: ItemsToRegister
   HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
   HierarchyView_Message_CanNotRename: The "Use animation name as mode name" setting
     is enabled. Disable the setting if you want to change the mode name.
-  MenuItemListView_Title: MenuItemListView
+  MenuItemListView_Title: MenuItems
   MenuItemListView_UseAnimationNameAsDisplayName: Use ClipName As  ModeName
   MenuItemListView_EyeTracking: Enable Eye Tracking
   MenuItemListView_MouthTracking: Enable Lip Sync
   MenuItemListView_Blink: Enable Blink
   MenuItemListView_MouthMorphCanceler: Mouth Morph Canceller
   MenuItemListView_Empty: This group is empty.
-  BranchListView_Title: BranchView
+  BranchListView_Title: Branches
   BranchListView_OpenGestureTable: Open Gesture Table
   BranchListView_UseLeftTrigger: Use Left Trigger
   BranchListView_UseRightTrigger: Use Right Trigger
