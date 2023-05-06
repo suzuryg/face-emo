@@ -220,6 +220,75 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             }
         }
 
+        public string CopyMode(string modeId, string destination)
+        {
+            if (!CanAddModeTo(destination)) { throw new FacialExpressionSwitcherException("Mode can't be added."); }
+            else if (!ContainsMode(modeId)) { throw new FacialExpressionSwitcherException("Mode does not exist."); }
+
+            var mode = GetMode(modeId);
+            var copiedId = AddMode(destination);
+            var copiedMode = _modes[copiedId];
+
+            copiedMode.DisplayName = mode.DisplayName;
+            copiedMode.UseAnimationNameAsDisplayName = mode.UseAnimationNameAsDisplayName;
+            copiedMode.EyeTrackingControl = mode.EyeTrackingControl;
+            copiedMode.MouthTrackingControl = mode.MouthTrackingControl;
+            copiedMode.BlinkEnabled = mode.BlinkEnabled;
+            copiedMode.MouthMorphCancelerEnabled = mode.MouthMorphCancelerEnabled;
+            if (mode.Animation is Animation) { copiedMode.SetAnimation(mode.Animation, null, null); }
+
+            for (int i = 0; i < mode.Branches.Count; i++)
+            {
+                copiedMode.AddBranch();
+                foreach (var condition in mode.Branches[i].Conditions)
+                {
+                    copiedMode.AddCondition(i, new Condition(condition.Hand, condition.HandGesture, condition.ComparisonOperator));
+                }
+
+                copiedMode.ModifyBranchProperties(i,
+                    eyeTrackingControl: mode.Branches[i].EyeTrackingControl,
+                    mouthTrackingControl: mode.Branches[i].MouthTrackingControl,
+                    blinkEnabled: mode.Branches[i].BlinkEnabled,
+                    mouthMorphCancelerEnabled: mode.Branches[i].MouthMorphCancelerEnabled,
+                    isLeftTriggerUsed: mode.Branches[i].IsLeftTriggerUsed,
+                    isRightTriggerUsed: mode.Branches[i].IsRightTriggerUsed);
+
+                if (mode.Branches[i].BaseAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].BaseAnimation, i, BranchAnimationType.Base); }
+                if (mode.Branches[i].LeftHandAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].LeftHandAnimation, i, BranchAnimationType.Left); }
+                if (mode.Branches[i].RightHandAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].RightHandAnimation, i, BranchAnimationType.Right); }
+                if (mode.Branches[i].BothHandsAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].BothHandsAnimation, i, BranchAnimationType.Both); }
+            }
+
+            return copiedId;
+        }
+
+        public string CopyGroup(string groupId, string destination)
+        {
+            if (!CanAddGroupTo(destination)) { throw new FacialExpressionSwitcherException("Group can't be added."); }
+            else if (!ContainsGroup(groupId)) { throw new FacialExpressionSwitcherException("Group does not exist."); }
+
+            var group = GetGroup(groupId);
+            var copiedId = AddGroup(destination);
+            var copiedGroup = _groups[copiedId];
+
+            copiedGroup.DisplayName = group.DisplayName;
+
+            foreach (var id in group.Order)
+            {
+                if (ContainsMode(id))
+                {
+                    CopyMode(id, copiedId);
+                }
+                else if (ContainsGroup(id))
+                {
+                    CopyGroup(id, copiedId);
+                }
+                else { throw new FacialExpressionSwitcherException("Invalid menu item id."); }
+            }
+
+            return copiedId;
+        }
+
         public bool CanMoveMenuItemFrom(IReadOnlyList<string> ids)
         {
             foreach (var id in ids)

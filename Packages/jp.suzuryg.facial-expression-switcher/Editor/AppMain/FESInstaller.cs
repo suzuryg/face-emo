@@ -91,6 +91,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<ICreateMenuUseCase>().To<CreateMenuUseCase>().AsTransient();
             Container.Bind<IModifyMenuPropertiesUseCase>().To<ModifyMenuPropertiesUseCase>().AsTransient();
             Container.Bind<IAddMenuItemUseCase>().To<AddMenuItemUseCase>().AsTransient();
+            Container.Bind<ICopyMenuItemUseCase>().To<CopyMenuItemUseCase>().AsTransient();
             Container.Bind<IModifyModePropertiesUseCase>().To<ModifyModePropertiesUseCase>().AsTransient();
             Container.Bind<IModifyGroupPropertiesUseCase>().To<ModifyGroupPropertiesUseCase>().AsTransient();
             Container.Bind<IMoveMenuItemUseCase>().To<MoveMenuItemUseCase>().AsTransient();
@@ -109,6 +110,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<ICreateMenuPresenter>().To<CreateMenuPresenter>().AsSingle();
             Container.Bind<IModifyMenuPropertiesPresenter>().To<ModifyMenuPropertiesPresenter>().AsSingle();
             Container.Bind<IAddMenuItemPresenter>().To<AddMenuItemPresenter>().AsSingle();
+            Container.Bind<ICopyMenuItemPresenter>().To<CopyMenuItemPresenter>().AsSingle();
             Container.Bind<IModifyModePropertiesPresenter>().To<ModifyModePropertiesPresenter>().AsSingle();
             Container.Bind<IModifyGroupPropertiesPresenter>().To<ModifyGroupPropertiesPresenter>().AsSingle();
             Container.Bind<IMoveMenuItemPresenter>().To<MoveMenuItemPresenter>().AsSingle();

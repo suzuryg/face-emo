@@ -27,6 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
 
             Container.Bind<CreateMenuUseCase>().AsTransient();
             Container.Bind<AddMenuItemUseCase>().AsTransient();
+            Container.Bind<CopyMenuItemUseCase>().AsTransient();
             Container.Bind<ModifyModePropertiesUseCase>().AsTransient();
             Container.Bind<ModifyGroupPropertiesUseCase>().AsTransient();
             Container.Bind<MoveMenuItemUseCase>().AsTransient();
@@ -44,6 +45,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase
             Container.Bind<UpdateMenuSubject>().AsSingle();
             Container.Bind<ICreateMenuPresenter>().To<MockCreateMenuPresenter>().AsSingle();
             Container.Bind<IAddMenuItemPresenter>().To<MockAddMenuItemPresenter>().AsSingle();
+            Container.Bind<ICopyMenuItemPresenter>().To<MockCopyMenuItemPresenter>().AsSingle();
             Container.Bind<IModifyModePropertiesPresenter>().To<MockModifyModePropertiesPresenter>().AsSingle();
             Container.Bind<IModifyGroupPropertiesPresenter>().To<MockModifyGroupPropertiesPresenter>().AsSingle();
             Container.Bind<IMoveMenuItemPresenter>().To<MockMoveMenuItemPresenter>().AsSingle();

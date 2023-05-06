@@ -23,6 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             ICreateMenuPresenter createMenuPresenter,
             IModifyMenuPropertiesPresenter modifyMenuPropertiesPresenter,
             IAddMenuItemPresenter addMenuItemPresenter,
+            ICopyMenuItemPresenter copyMenuItemPresenter,
             IModifyModePropertiesPresenter modifyModePropertiesPresenter,
             IModifyGroupPropertiesPresenter modifyGroupPropertiesPresenter,
             IMoveMenuItemPresenter moveMenuItemPresenter,
@@ -61,6 +62,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
                 if (x.addMenuItemResult != AddMenuItemResult.Succeeded)
                 {
                     EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.addMenuItemResult.GetType().Name}: {x.addMenuItemResult}", "OK");
+                    if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
+                }
+            }).AddTo(_disposables);
+
+            copyMenuItemPresenter.Observable.Synchronize().Subscribe(x =>
+            {
+                if (x.copyMenuItemResult != CopyMenuItemResult.Succeeded)
+                {
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{x.copyMenuItemResult.GetType().Name}: {x.copyMenuItemResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);

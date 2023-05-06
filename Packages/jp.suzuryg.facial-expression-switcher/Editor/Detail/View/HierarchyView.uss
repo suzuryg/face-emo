@@ -65,6 +65,11 @@
     --unity-image: url("/Packages/jp.suzuryg.facial-expression-switcher/Editor/Detail/View/Icon/create_new_folder_FILL0_wght400_GRAD200_opsz48.png");
 }
 
+#CopyIcon
+{
+    --unity-image: url("/Packages/jp.suzuryg.facial-expression-switcher/Editor/Detail/View/Icon/content_copy_FILL0_wght400_GRAD200_opsz48.png");
+}
+
 #RemoveGroupIcon
 {
     --unity-image: url("/Packages/jp.suzuryg.facial-expression-switcher/Editor/Detail/View/Icon/delete_FILL0_wght400_GRAD200_opsz48.png");

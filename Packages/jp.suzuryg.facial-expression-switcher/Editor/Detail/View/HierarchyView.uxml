@@ -18,6 +18,9 @@
 				<engine:Button name="AddGroupButton" class="Button">
 					<engine:Image name="AddGroupIcon" class ="Icon"/>
 				</engine:Button>
+				<engine:Button name="CopyButton" class="Button">
+					<engine:Image name="CopyIcon" class ="Icon"/>
+				</engine:Button>
 				<engine:Button name="RemoveGroupButton" class="Button">
 					<engine:Image name="RemoveGroupIcon" class ="Icon"/>
 				</engine:Button>

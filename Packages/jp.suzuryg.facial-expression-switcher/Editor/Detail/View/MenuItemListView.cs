@@ -23,6 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
     public class MenuItemListView : IDisposable
     {
         private IAddMenuItemUseCase _addMenuItemUseCase;
+        private ICopyMenuItemUseCase _copyMenuItemUseCase;
         private IRemoveMenuItemUseCase _removeMenuItemUseCase;
         private IModifyModePropertiesUseCase _modifyModePropertiesUseCase;
         private IModifyGroupPropertiesUseCase _modifyGroupPropertiesUseCase;
@@ -42,6 +43,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private Label _titleLabel;
         private Button _addModeButton;
         private Button _addGroupButton;
+        private Button _copyButton;
         private Button _removeButton;
         private IMGUIContainer _addressBarContainer;
         private IMGUIContainer _treeViewContainer;
@@ -56,6 +58,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public MenuItemListView(
             IAddMenuItemUseCase addMenuItemUseCase,
+            ICopyMenuItemUseCase copyMenuItemUseCase,
             IRemoveMenuItemUseCase removeMenuItemUseCase,
             IModifyModePropertiesUseCase modifyModePropertiesUseCase,
             IModifyGroupPropertiesUseCase modifyGroupPropertiesUseCase,
@@ -74,6 +77,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             // Usecases
             _addMenuItemUseCase = addMenuItemUseCase;
+            _copyMenuItemUseCase = copyMenuItemUseCase;
             _removeMenuItemUseCase = removeMenuItemUseCase;
             _modifyModePropertiesUseCase = modifyModePropertiesUseCase;
             _modifyGroupPropertiesUseCase = modifyGroupPropertiesUseCase;
@@ -130,16 +134,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _titleLabel = root.Q<Label>("TitleLabel");
             _addModeButton = root.Q<Button>("AddModeButton");
             _addGroupButton = root.Q<Button>("AddGroupButton");
+            _copyButton = root.Q<Button>("CopyButton");
             _removeButton = root.Q<Button>("RemoveButton");
             _addressBarContainer = root.Q<IMGUIContainer>("AddressBarContainer");
             _treeViewContainer = root.Q<IMGUIContainer>("TreeViewContainer");
-            NullChecker.Check(_titleLabel, _addModeButton, _addGroupButton, _removeButton, _addressBarContainer, _treeViewContainer);
+            NullChecker.Check(_titleLabel, _addModeButton, _addGroupButton, _copyButton, _removeButton, _addressBarContainer, _treeViewContainer);
 
             // Add event handlers
             Observable.FromEvent(x => _addModeButton.clicked += x, x => _addModeButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnAddButtonClicked(AddMenuItemType.Mode)).AddTo(_disposables);
             Observable.FromEvent(x => _addGroupButton.clicked += x, x => _addGroupButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnAddButtonClicked(AddMenuItemType.Group)).AddTo(_disposables);
+            Observable.FromEvent(x => _copyButton.clicked += x, x => _copyButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnCopyButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _removeButton.clicked += x, x => _removeButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnRemoveButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _addressBarContainer.onGUIHandler += x, x => _addressBarContainer.onGUIHandler -= x)
@@ -251,6 +258,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             else
             {
                 _removeButton?.SetEnabled(false);
+            }
+
+            // Copy button
+            if (_addModeButton != null && _addGroupButton != null && _copyButton != null && _removeButton != null)
+            {
+                _copyButton?.SetEnabled(_addModeButton.enabledSelf && _addGroupButton.enabledSelf && _removeButton.enabledSelf);
+            }
+            else
+            {
+                _copyButton?.SetEnabled(false);
             }
         }
 
@@ -368,6 +385,28 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 {
                     _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType, _localizationTable.ModeNameProvider_NoExpression);
                 }
+            }
+        }
+
+        private void OnCopyButtonClicked()
+        {
+            var ids = _menuItemTreeElement.GetSelectedMenuItemIds();
+            if (ids is IReadOnlyList<string> && ids.Count == 1)
+            {
+                var id = ids[0];
+                var menu = _menuItemTreeElement.Menu;
+                var copiedName = "_copy";
+
+                if (menu.ContainsGroup(id))
+                {
+                    copiedName = menu.GetGroup(id).DisplayName + copiedName;
+                }
+                else if (menu.ContainsMode(id))
+                {
+                    copiedName = menu.GetMode(id).DisplayName + copiedName;
+                }
+
+                _copyMenuItemUseCase.Handle(id, copiedName);
             }
         }
 
