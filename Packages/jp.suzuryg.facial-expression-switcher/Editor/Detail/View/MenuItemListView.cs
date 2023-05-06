@@ -203,6 +203,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _addModeButton?.SetEnabled(false);
             _addGroupButton?.SetEnabled(false);
+            _copyButton?.SetEnabled(false);
             _removeButton?.SetEnabled(false);
 
             var menu = _menuItemTreeElement?.Menu;
