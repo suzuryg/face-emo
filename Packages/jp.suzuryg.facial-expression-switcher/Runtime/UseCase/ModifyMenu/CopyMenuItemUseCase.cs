@@ -66,7 +66,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                     var mode = menu.GetMode(menuItemId);
                     var parentId = mode.Parent.GetId();
 
-                    if (!menu.CanAddModeTo(parentId))
+                    if (!menu.CanAddMenuItemTo(parentId))
                     {
                         _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidDestination, null);
                         return;
@@ -80,7 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                     var group = menu.GetGroup(menuItemId);
                     var parentId = group.Parent.GetId();
 
-                    if (!menu.CanAddModeTo(parentId))
+                    if (!menu.CanAddMenuItemTo(parentId))
                     {
                         _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidDestination, null);
                         return;

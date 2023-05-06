@@ -82,7 +82,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public bool IsUsedId(string id) => ContainsMode(id) || ContainsGroup(id);
 
-        public bool CanAddModeTo(string destination)
+        public bool CanAddMenuItemTo(string destination)
         {
             if (destination == RegisteredId)
             {
@@ -140,8 +140,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
             return id;
         }
-
-        public bool CanAddGroupTo(string destination) => CanAddModeTo(destination);
 
         public string AddGroup(string destination, string id = null)
         {
@@ -222,7 +220,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public string CopyMode(string modeId, string destination)
         {
-            if (!CanAddModeTo(destination)) { throw new FacialExpressionSwitcherException("Mode can't be added."); }
+            if (!CanAddMenuItemTo(destination)) { throw new FacialExpressionSwitcherException("Mode can't be added."); }
             else if (!ContainsMode(modeId)) { throw new FacialExpressionSwitcherException("Mode does not exist."); }
 
             var mode = GetMode(modeId);
@@ -264,7 +262,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public string CopyGroup(string groupId, string destination)
         {
-            if (!CanAddGroupTo(destination)) { throw new FacialExpressionSwitcherException("Group can't be added."); }
+            if (!CanAddMenuItemTo(destination)) { throw new FacialExpressionSwitcherException("Group can't be added."); }
             else if (!ContainsGroup(groupId)) { throw new FacialExpressionSwitcherException("Group does not exist."); }
 
             var group = GetGroup(groupId);

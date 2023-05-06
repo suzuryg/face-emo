@@ -25,6 +25,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_ThumbnailHeight = "Thumbnail Height";
         public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
+        public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of modes and groups.";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following group?";
         public string Common_Message_DeleteMode = "Are you sure you want to delete the following mode?";
         public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected branch?";

@@ -80,7 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 
                 if (type == AddMenuItemType.Mode)
                 {
-                    if (menu.CanAddModeTo(menuItemListId))
+                    if (menu.CanAddMenuItemTo(menuItemListId))
                     {
                         addedItemId = menu.AddMode(menuItemListId);
 
@@ -97,7 +97,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                 }
                 else if (type == AddMenuItemType.Group)
                 {
-                    if (menu.CanAddGroupTo(menuItemListId))
+                    if (menu.CanAddMenuItemTo(menuItemListId))
                     {
                         addedItemId = menu.AddGroup(menuItemListId);
 

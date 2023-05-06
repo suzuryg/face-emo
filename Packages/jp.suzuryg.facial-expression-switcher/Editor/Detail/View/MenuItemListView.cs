@@ -367,10 +367,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
 
             var destination = args.destination ?? _menuItemListViewState.RootGroupId;
-            if (destination is string)
+            if (destination is null)
             {
-                _moveMenuItemUseCase.Handle("", args.source, destination, args.index);
+                return;
             }
+
+            var menu = (_menuItemTreeElement.Menu as Domain.Menu); // TODO: Add usecase
+            if (menu is null || !menu.CanAddMenuItemTo(destination))
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_InvalidDestination, "OK");
+                return;
+            }
+
+            _moveMenuItemUseCase.Handle("", args.source, destination, args.index);
         }
 
         private void OnAddButtonClicked(AddMenuItemType addMenuItemType)
