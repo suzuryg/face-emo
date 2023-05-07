@@ -21,8 +21,8 @@
 				<engine:Button name="CopyButton" class="Button">
 					<engine:Image name="CopyIcon" class ="Icon"/>
 				</engine:Button>
-				<engine:Button name="RemoveGroupButton" class="Button">
-					<engine:Image name="RemoveGroupIcon" class ="Icon"/>
+				<engine:Button name="RemoveButton" class="Button">
+					<engine:Image name="RemoveIcon" class ="Icon"/>
 				</engine:Button>
 			</engine:VisualElement>
 		</engine:VisualElement>

@@ -39,7 +39,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private Button _addModeButton;
         private Button _addGroupButton;
         private Button _copyButton;
-        private Button _removeGroupButton;
+        private Button _removeButton;
         private IMGUIContainer _treeViewContainer;
 
         private HierarchyTreeElement _hierarchyTreeElement;
@@ -111,9 +111,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _addModeButton = root.Q<Button>("AddModeButton");
             _addGroupButton = root.Q<Button>("AddGroupButton");
             _copyButton = root.Q<Button>("CopyButton");
-            _removeGroupButton = root.Q<Button>("RemoveGroupButton");
+            _removeButton = root.Q<Button>("RemoveButton");
             _treeViewContainer = root.Q<IMGUIContainer>("TreeViewContainer");
-            NullChecker.Check(_titleLabel, _addModeButton, _addGroupButton, _copyButton, _removeGroupButton, _treeViewContainer);
+            NullChecker.Check(_titleLabel, _addModeButton, _addGroupButton, _copyButton, _removeButton, _treeViewContainer);
 
             // Add event handlers
             Observable.FromEvent(x => _addModeButton.clicked += x, x => _addModeButton.clicked -= x)
@@ -122,7 +122,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 .Synchronize().Subscribe(_ => OnAddButtonClicked(AddMenuItemType.Group)).AddTo(_disposables);
             Observable.FromEvent(x => _copyButton.clicked += x, x => _copyButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnCopyButtonClicked()).AddTo(_disposables);
-            Observable.FromEvent(x => _removeGroupButton.clicked += x, x => _removeGroupButton.clicked -= x)
+            Observable.FromEvent(x => _removeButton.clicked += x, x => _removeButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnRemoveButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _treeViewContainer.onGUIHandler += x, x => _treeViewContainer.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ => _hierarchyTreeElement?.OnGUI(_treeViewContainer.contentRect)).AddTo(_disposables);
@@ -162,7 +162,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void SetText(LocalizationTable localizationTable)
         {
             _localizationTable = localizationTable;
-            _titleLabel.text = localizationTable.HierarchyView_Title;
+            if (_titleLabel != null) { _titleLabel.text = localizationTable.HierarchyView_Title; }
+
+            if (_addModeButton != null) { _addModeButton.tooltip = localizationTable.HierarchyView_Tooltip_AddMode; }
+            if (_addGroupButton != null) { _addGroupButton.tooltip = localizationTable.HierarchyView_Tooltip_AddGroup; }
+            if (_copyButton != null) { _copyButton.tooltip = localizationTable.HierarchyView_Tooltip_Copy; }
+            if (_removeButton != null) { _removeButton.tooltip = localizationTable.HierarchyView_Tooltip_Delete ; }
         }
 
         private void UpdateDisplay()
@@ -170,7 +175,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _addModeButton?.SetEnabled(false);
             _addGroupButton?.SetEnabled(false);
             _copyButton?.SetEnabled(false);
-            _removeGroupButton?.SetEnabled(false);
+            _removeButton?.SetEnabled(false);
 
             var menu = _hierarchyTreeElement?.Menu;
             var selectedMenuItemIds = _hierarchyTreeElement?.GetSelectedMenuItemIds();
@@ -204,25 +209,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Remove button
             if (id == Domain.Menu.RegisteredId)
             {
-                _removeGroupButton?.SetEnabled(false);
+                _removeButton?.SetEnabled(false);
             }
             else if (id == Domain.Menu.UnregisteredId)
             {
-                _removeGroupButton?.SetEnabled(false);
+                _removeButton?.SetEnabled(false);
             }
             else if (menu.ContainsGroup(id))
             {
-                _removeGroupButton?.SetEnabled(true);
+                _removeButton?.SetEnabled(true);
             }
             else if (menu.ContainsMode(id))
             {
-                _removeGroupButton?.SetEnabled(true);
+                _removeButton?.SetEnabled(true);
             }
 
             // Copy button
-            if (_addModeButton != null && _addGroupButton != null && _copyButton != null && _removeGroupButton != null)
+            if (_addModeButton != null && _addGroupButton != null && _copyButton != null && _removeButton != null)
             {
-                _copyButton?.SetEnabled(_addModeButton.enabledSelf && _addGroupButton.enabledSelf && _removeGroupButton.enabledSelf);
+                _copyButton?.SetEnabled(_addModeButton.enabledSelf && _addGroupButton.enabledSelf && _removeButton.enabledSelf);
             }
             else
             {

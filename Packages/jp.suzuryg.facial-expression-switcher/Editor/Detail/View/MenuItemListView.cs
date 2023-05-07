@@ -196,7 +196,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void SetText(LocalizationTable localizationTable)
         {
             _localizationTable = localizationTable;
-            _titleLabel.text = localizationTable.MenuItemListView_Title;
+            if (_titleLabel != null) { _titleLabel.text = localizationTable.MenuItemListView_Title; }
+
+            if (_addModeButton != null) { _addModeButton.tooltip = localizationTable.MenuItemListView_Tooltip_AddMode; }
+            if (_addGroupButton != null) { _addGroupButton.tooltip = localizationTable.MenuItemListView_Tooltip_AddGroup; }
+            if (_copyButton != null) { _copyButton.tooltip = localizationTable.MenuItemListView_Tooltip_Copy; }
+            if (_removeButton != null) { _removeButton.tooltip = localizationTable.MenuItemListView_Tooltip_Delete ; }
         }
 
         private void UpdateDisplay()

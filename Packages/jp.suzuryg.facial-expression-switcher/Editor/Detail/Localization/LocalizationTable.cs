@@ -35,9 +35,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string HierarchyView_RegisteredMenuItemList = "ItemsToRegister";
         public string HierarchyView_UnregisteredMenuItemList = "ItemsNotToRegister";
         public string HierarchyView_Message_CanNotRename = "The 'Use animation name as mode name' setting is enabled. Disable the setting if you want to change the mode name.";
+        public string HierarchyView_Tooltip_AddMode = "Create a new expression mode in the selected hierarchy";
+        public string HierarchyView_Tooltip_AddGroup = "Create a new expression group in the selected hierarchy";
+        public string HierarchyView_Tooltip_Copy = "Copy the selected expression mode or expression group in the same hierarchy";
+        public string HierarchyView_Tooltip_Delete = "Delete the selected expression mode or expression group";
 
         public string MenuItemListView_Title = "MenuItemView";
         public string MenuItemListView_UseAnimationNameAsDisplayName = "Use Animation Name As Mode Name";
+        public string MenuItemListView_Tooltip_AddMode = "Create a new expression mode in the current hierarchy";
+        public string MenuItemListView_Tooltip_AddGroup = "Create a new expression group in the current hierarchy";
+        public string MenuItemListView_Tooltip_Copy = "Copy the selected expression mode or expression group in the same hierarchy";
+        public string MenuItemListView_Tooltip_Delete = "Delete the selected expression mode or expression group";
 
         public string MenuItemListView_EyeTracking = "Enable Eye Tracking";
         public string MenuItemListView_MouthTracking = "Enable Mouth Tracking";
@@ -73,6 +81,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string GestureTableView_AddBranch = "Add Branch";
 
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
+        public string AnimationElement_Tooltip_Create = "Create a new animation clip";
+        public string AnimationElement_Tooltip_Open = "Open an animation clip";
+        public string AnimationElement_Tooltip_Copy = "Copy the attached animation clip";
+        public string AnimationElement_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip";
 
         public string ModeNameProvider_NoExpression = "NoExpression";
 

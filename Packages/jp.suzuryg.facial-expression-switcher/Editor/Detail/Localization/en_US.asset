@@ -43,8 +43,21 @@ MonoBehaviour:
   HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
   HierarchyView_Message_CanNotRename: The "Use animation name as mode name" setting
     is enabled. Disable the setting if you want to change the mode name.
+  HierarchyView_Tooltip_AddMode: Create a new expression mode in the selected hierarchy
+  HierarchyView_Tooltip_AddGroup: Create a new expression group in the selected hierarchy
+  HierarchyView_Tooltip_Copy: Copy the selected expression mode or expression group
+    in the same hierarchy
+  HierarchyView_Tooltip_Delete: Delete the selected expression mode or expression
+    group
   MenuItemListView_Title: MenuItems
   MenuItemListView_UseAnimationNameAsDisplayName: Use ClipName As  ModeName
+  MenuItemListView_Tooltip_AddMode: Create a new expression mode in the current hierarchy
+  MenuItemListView_Tooltip_AddGroup: Create a new expression group in the current
+    hierarchy
+  MenuItemListView_Tooltip_Copy: Copy the selected expression mode or expression
+    group in the same hierarchy
+  MenuItemListView_Tooltip_Delete: Delete the selected expression mode or expression
+    group
   MenuItemListView_EyeTracking: Enable Eye Tracking
   MenuItemListView_MouthTracking: Enable Lip Sync
   MenuItemListView_Blink: Enable Blink
@@ -77,6 +90,11 @@ MonoBehaviour:
   GestureTableView_AddBranch: Add Branch
   AnimationElement_Message_GuidWasNotFound: The selected animation clip does not
     exist in this project.
+  AnimationElement_Tooltip_Create: Create a new animation clip
+  AnimationElement_Tooltip_Open: Open an animation clip
+  AnimationElement_Tooltip_Copy: Copy the attached animation clip
+  AnimationElement_Tooltip_Edit: Open ExpressionEditor and edit the attached animation
+    clip
   ModeNameProvider_NoExpression: NoExpression
   InspectorView_Launch: Launch FacialExpressionSwitcher
   InspectorView_TargetAvatar: Target Avatar

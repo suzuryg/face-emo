@@ -102,7 +102,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 var clipExits = clip != null;
 
                 // Create
-                if (GUI.Button(createRect, string.Empty))
+                if (GUI.Button(createRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Create)))
                 {
                     var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
@@ -114,7 +114,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 GUI.DrawTexture(new Rect(createRect.x + iconMargin, createRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), CreateIcon, ScaleMode.ScaleToFit, alphaBlend: true);
 
                 // Open
-                if (GUI.Button(openRect, string.Empty))
+                if (GUI.Button(openRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Open)))
                 {
                     var guid = GetAnimationGuidWithDialog(DialogMode.Open, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
@@ -128,7 +128,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 // Copy
                 using (new EditorGUI.DisabledScope(!clipExits))
                 {
-                    if (GUI.Button(copyRect, string.Empty))
+                    if (GUI.Button(copyRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Copy)))
                     {
                         var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, modeDisplayName);
                         if (!string.IsNullOrEmpty(guid))
@@ -147,7 +147,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 // Edit
                 using (new EditorGUI.DisabledScope(!clipExits))
                 {
-                    if (GUI.Button(editRect, string.Empty))
+                    if (GUI.Button(editRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Edit)))
                     {
                         _expressionEditor.Open(clip);
                     }
