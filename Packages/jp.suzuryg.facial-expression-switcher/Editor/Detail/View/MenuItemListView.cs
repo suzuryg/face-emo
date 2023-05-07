@@ -379,7 +379,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
 
             var menu = (_menuItemTreeElement.Menu as Domain.Menu); // TODO: Add usecase
-            if (menu is null || !menu.CanAddMenuItemTo(destination))
+            if (menu is null || !menu.CanMoveMenuItemTo(args.source, destination))
             {
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_InvalidDestination, "OK");
                 return;
