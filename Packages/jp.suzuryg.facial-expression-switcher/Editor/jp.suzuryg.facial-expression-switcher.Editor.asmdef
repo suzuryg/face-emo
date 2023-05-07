@@ -1,10 +1,8 @@
 {
     "name": "jp.suzuryg.facial-expression-switcher.Editor",
     "references": [
-        "jp.suzuryg.facial-expression-switcher.domain.Editor",
-        "jp.suzuryg.facial-expression-switcher.usecase.Editor",
-        "Zenject",
-        "UniRx"
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285"
     ],
     "includePlatforms": [
         "Editor"
