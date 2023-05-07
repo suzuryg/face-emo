@@ -71,6 +71,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 _installer.Container.Resolve<GestureTableThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<ExMenuThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<InspectorThumbnailDrawer>().AddTo(_disposables);
+                _installer.Container.Resolve<SelectionSynchronizer>().AddTo(_disposables);
+
                 var expressionEditor = _installer.Container.Resolve<ExpressionEditor>().AddTo(_disposables);
                 expressionEditor.OnClipUpdated.Synchronize().ObserveOnMainThread().Subscribe(_ => Repaint()).AddTo(_disposables);
 

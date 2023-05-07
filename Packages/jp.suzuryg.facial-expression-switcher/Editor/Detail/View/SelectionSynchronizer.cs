@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.UseCase;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -6,23 +7,48 @@ using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
-    public class SelectionSynchronizer
+    public class SelectionSynchronizer : IDisposable
     {
         public IObservable<ViewSelection> OnSynchronizeSelection => _onSynchronizeSelection.AsObservable();
 
         private BehaviorSubject<ViewSelection> _onSynchronizeSelection;
 
         private IMenuRepository _menuRepository;
+        private UpdateMenuSubject _updateMenuSubject;
         private ViewSelection _viewSelection;
+
+        private IMenu _menu;
 
         private object _lockSelection = new object();
 
-        public SelectionSynchronizer(IMenuRepository menuRepository, ViewSelection viewSelection)
+        private CompositeDisposable _disposables = new CompositeDisposable();
+
+        public SelectionSynchronizer(IMenuRepository menuRepository, UpdateMenuSubject updateMenuSubject, ViewSelection viewSelection)
         {
             _menuRepository = menuRepository;
+            _updateMenuSubject = updateMenuSubject;
             _viewSelection = viewSelection;
 
             _onSynchronizeSelection = new BehaviorSubject<ViewSelection>(_viewSelection);
+
+            // Update menu event handler
+            _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+        }
+
+        private void OnMenuUpdated(IMenu menu) => _menu = menu;
+
+        private IMenu GetMenu()
+        {
+            if (_menu is null)
+            {
+                _menu = _menuRepository.Load(string.Empty);
+            }
+            return _menu;
         }
 
         public void ChangeHierarchyViewSelection(string menuItemId)
@@ -36,7 +62,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 {
                     _viewSelection.HierarchyView = menuItemId;
 
-                    var menu = _menuRepository.Load(string.Empty);
+                    var menu = GetMenu();
 
                     // If the selection target is MenuItemList.
                     if (menuItemId == Menu.RegisteredId || menuItemId == Menu.UnregisteredId || menu.ContainsGroup(menuItemId))
@@ -93,7 +119,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                     var previousMenuItemId = _viewSelection.MenuItemListView;
                     _viewSelection.MenuItemListView = menuItemId;
 
-                    var menu = _menuRepository.Load(string.Empty);
+                    var menu = GetMenu();
 
                     // If the selection target is MenuItemList.
                     if (menuItemId == Menu.RegisteredId || menuItemId == Menu.UnregisteredId || menu.ContainsGroup(menuItemId))
@@ -168,7 +194,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 {
                     _viewSelection.GestureTableView = (left, right);
 
-                    var menu = _menuRepository.Load(string.Empty);
+                    var menu = GetMenu();
 
                     // If the branch containing the selected gesture exists, select the branch.
                     _viewSelection.BranchListView = -1;
