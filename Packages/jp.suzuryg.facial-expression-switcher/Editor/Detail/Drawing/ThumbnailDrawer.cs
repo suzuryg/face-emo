@@ -38,8 +38,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
 
     public class ExMenuThumbnailDrawer : ThumbnailDrawerBase
     {
-        protected override int Width => ThumbnailSetting.ExMenu_Width;
-        protected override int Height => ThumbnailSetting.ExMenu_Width;
+        protected override int Width => ThumbnailSetting.ExMenu_InnerWidth;
+        protected override int Height => ThumbnailSetting.ExMenu_InnerHeight;
         protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
@@ -242,6 +242,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 foreach (var guid in requests)
                 {
                     _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera);
+
+                    // Padding if necessary
+                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null)
+                    {
+                        _cache[guid] = DrawingUtility.PaddingWithTransparentPixels(_cache[guid], ThumbnailSetting.ExMenu_OuterWidth, ThumbnailSetting.ExMenu_OuterHeight);
+                    }
 
                     // Reset animator status
                     clonedAvatar.SetActive(false);

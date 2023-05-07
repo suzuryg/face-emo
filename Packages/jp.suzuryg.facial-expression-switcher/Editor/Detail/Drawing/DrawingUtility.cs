@@ -57,5 +57,28 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 RenderTexture.active = activeRenderTextureCache;
             }
         }
+
+        public static Texture2D PaddingWithTransparentPixels(Texture2D original, int outerWidth, int outerHeight)
+        {
+            // Create a new transparent texture
+            Texture2D result = new Texture2D(outerWidth, outerHeight, TextureFormat.ARGB32, false);
+            Color[] clearColorArray = new Color[outerWidth * outerHeight];
+            for (int i = 0; i < clearColorArray.Length; i++) { clearColorArray[i] = new Color(0, 0, 0, 0); }
+            result.SetPixels(clearColorArray);
+
+            // Copy the original image into its top-center
+            int offsetX = (outerWidth - original.width) / 2;
+            int offsetY = outerHeight - original.height;
+            for (int y = 0; y < original.height; y++)
+            {
+                for (int x = 0; x < original.width; x++)
+                {
+                    result.SetPixel(x + offsetX, y + offsetY, original.GetPixel(x, y));
+                }
+            }
+
+            result.Apply();
+            return result;
+        }
     }
 }

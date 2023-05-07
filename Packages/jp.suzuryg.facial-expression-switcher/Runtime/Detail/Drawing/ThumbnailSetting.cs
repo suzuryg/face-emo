@@ -33,8 +33,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         [NonSerialized] public static readonly int GestureTable_MinHeight = 70;
         [NonSerialized] public static readonly int GestureTable_MaxHeight = 250;
 
-        [NonSerialized] public static readonly int ExMenu_Width = 256;
-        [NonSerialized] public static readonly int ExMenu_Height = 256;
+        [NonSerialized] public static readonly int ExMenu_InnerWidth = 208;
+        [NonSerialized] public static readonly int ExMenu_InnerHeight = 208;
+        [NonSerialized] public static readonly int ExMenu_OuterWidth = 256;
+        [NonSerialized] public static readonly int ExMenu_OuterHeight = 256;
 
         public int Inspector_Width = 256;
         public int Inspector_Height = 256;
