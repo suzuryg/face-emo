@@ -77,7 +77,7 @@ MonoBehaviour:
   BranchListView_Left: LeftHand
   BranchListView_Right: RightHand
   BranchListView_OneSide: OneHand
-  BranchListView_Either: EitherHands
+  BranchListView_Either: AnyHand(s)
   BranchListView_Both: BothHands
   BranchListView_Equals: Equals
   BranchListView_NotEqual: NotEqual
@@ -133,8 +133,8 @@ MonoBehaviour:
   InspectorView_GroupDeleteConfirmation: Confirm When Deleting Group
   InspectorView_ModeDeleteConfirmation: Confirm When Deleting Mode
   InspectorView_BranchDeleteConfirmation: Confirm When Deleting Branch
-  ExpressionEditorView_ShowOnlyDifferFromDefaultValue: Show Only Differ From Default
-    Value
+  ExpressionEditorView_ShowOnlyDifferFromDefaultValue: Show Only BlendShapes Different
+    From Default
   ExpressionEditorView_Delimiter: Delimiter
   ExpressionEditorView_UncategorizedBlendShapes: Uncategorized Blend Shapes
   ExpressionEditorView_NoBlendShapes: No Blend Shapes
