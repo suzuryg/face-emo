@@ -21,17 +21,6 @@ symlinks:
       - VRChatExtensions.cs
     include-meta-file: false
 
-  - src: ..\blendshape-viewer
-    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Hai\VisualExpressionsEditor
-    target:
-      - LICENSE
-    include-meta-file: false
-  - src: ..\blendshape-viewer\Assets\Hai
-    dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Hai\VisualExpressionsEditor
-    target:
-      - VisualExpressionsEditor
-    include-meta-file: true
-
   - src: ..\combo-gesture-expressions-av3\Assets\Hai\ComboGesture\Scripts\Editor\Internal
     dest: ..\..\Packages\jp.suzuryg.facial-expression-switcher\External\Hai\ComboGestureIntegrator\Internal
     target:
