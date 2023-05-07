@@ -1,7 +1,7 @@
 {
   "name": "jp.suzuryg.facial-expression-switcher",
   "displayName": "FacialExpressionSwitcher",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "unity": "2019.4",
   "description": "Facial expression configuration tool for VRChat Avatars 3.0",
   "author": {
@@ -9,10 +9,12 @@
     "email": "suzuryg@outlook.com",
     "url": "https://suzuryg.github.io/"
   },
-  "vpmDependencies": {
-    "com.vrchat.avatars": "3.1.x"
-  },
+  "url": "https://github.com/suzuryg/FacialExpressionSwitcher",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "2.0.2"
+  },
+  "vpmDependencies": {
+    "nadena.dev.modular-avatar":  ">=1.4.5",
+    "com.vrchat.avatars": ">=3.1.9"
   }
 }
