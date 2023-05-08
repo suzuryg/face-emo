@@ -3,6 +3,7 @@ using AnimatorAsCode.V0.Extensions.VRChat;
 using nadena.dev.modular_avatar.core;
 using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
+using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
 using Suzuryg.FacialExpressionSwitcher.External.Hai.ComboGestureIntegrator;
 using System;
 using System.Linq;
@@ -21,7 +22,7 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using ExParam = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.Parameter;
 using ExType = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.ValueType;
-using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
+using Sync = nadena.dev.modular_avatar.core.ParameterSyncType;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
@@ -801,26 +802,28 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             // Config (Saved) (Bool)
-            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,         ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_Controller) {     modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,         ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,   ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,   ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,        ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_HandPriority) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,       ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock) { modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE, ParameterSyncType.Bool, defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_Override) {       modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,    ParameterSyncType.Bool, defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_Voice) {          modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE, ParameterSyncType.Bool, defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            var contactLockEnabled = _aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock;
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,         _aV3Setting.AddConfig_Controller ? Sync.Bool : Sync.NotSynced,      defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,         _aV3Setting.AddConfig_Controller ? Sync.Bool : Sync.NotSynced,      defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,   _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,   _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,        _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,       _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE,     contactLockEnabled ? Sync.Bool : Sync.NotSynced,                    defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,    _aV3Setting.AddConfig_Override ? Sync.Bool : Sync.NotSynced,        defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE, _aV3Setting.AddConfig_Voice ? Sync.Bool : Sync.NotSynced,           defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
 
             // Config (Saved) (Int)
-            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_EM_EMOTE_PATTERN, ParameterSyncType.Int, defaultValue: defaultModeIndex, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_EM_EMOTE_PATTERN, Sync.Int, defaultValue: defaultModeIndex, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
 
             // Config (Not saved) (Bool)
-            if (_aV3Setting.AddConfig_EmoteLock) {                              modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,         ParameterSyncType.Bool, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink) {   modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,  ParameterSyncType.Bool, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix)); }
-            if (_aV3Setting.AddConfig_DanceGimmick) {                           modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE, ParameterSyncType.Bool, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix)); }
+            var blinkOffEnabled = _aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink;
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,         _aV3Setting.AddConfig_EmoteLock ? Sync.Bool : Sync.NotSynced,       defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,  blinkOffEnabled ? Sync.Bool : Sync.NotSynced,                       defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE, _aV3Setting.AddConfig_DanceGimmick ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
 
             // Synced (Int)
-            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_EM_EMOTE, ParameterSyncType.Int, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_EM_EMOTE, Sync.Int, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
 
             // Not synced
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EM_EMOTE_SELECT_L, addPrefix: _aV3Setting.AddParameterPrefix));
@@ -843,23 +846,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             parameterConfig.nameOrPrefix = name;
             parameterConfig.syncType = type;
-            parameterConfig.defaultValue = defaultValue;
-            parameterConfig.saved = saved;
             if (addPrefix) { parameterConfig.remapTo = AV3Constants.ParameterPrefix + name; }
+            if (type != Sync.NotSynced)
+            {
+                parameterConfig.defaultValue = defaultValue;
+                parameterConfig.saved = saved;
+            }
 
             return parameterConfig;
         }
 
-        private static ParameterConfig NotSyncedMAParam(string name, bool addPrefix)
-        {
-            var parameterConfig = new ParameterConfig();
-
-            parameterConfig.nameOrPrefix = name;
-            parameterConfig.syncType = ParameterSyncType.NotSynced;
-            if (addPrefix) { parameterConfig.remapTo = AV3Constants.ParameterPrefix + name; }
-
-            return parameterConfig;
-        }
+        private static ParameterConfig NotSyncedMAParam(string name, bool addPrefix) => MAParam(name, Sync.NotSynced, defaultValue: 0, saved: false, addPrefix: addPrefix);
 
         private void AddBlinkDisablerComponent(GameObject rootObject)
         {
