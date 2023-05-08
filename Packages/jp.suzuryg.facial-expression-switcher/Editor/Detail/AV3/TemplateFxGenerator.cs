@@ -85,7 +85,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var layerName = AV3Constants.LayerName_FaceEmoteControl;
             var layer = aac.CreateSupportingArbitraryControllerLayer(templateFx, layerName);
             AV3Utility.SetLayerWeight(templateFx, layerName, 0);
-            layer.StateMachine.WithEntryPosition(0, -1).WithAnyStatePosition(0, -2).WithExitPosition(4, 0);
+            layer.StateMachine.WithEntryPosition(0, -1).WithAnyStatePosition(0, -2).WithExitPosition(3, 0);
 
             // Create initializing states
             var init = layer.NewState("INIT", 0, 0);
@@ -99,17 +99,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{AV3Constants.LayerName_FaceEmoteControl}\" layer...",
                     (float)priority / PatternsLRPriority.Count);
 
-                var priorityGate = layer.NewState(priority.ToString() + "GATE", 2, (int)priority);
-                var priorityStateMachine = layer.NewSubStateMachine(priority.ToString(), 3, (int)priority)
+                var priorityStateMachine = layer.NewSubStateMachine(priority.ToString(), 2, (int)priority)
                     .WithEntryPosition(0, 0).WithAnyStatePosition(0, -1).WithParentStateMachinePosition(0, -2).WithExitPosition(2, 0);
-                priorityGate.TransitionsTo(priorityStateMachine)
-                    .When(layer.BoolParameter("Dummy").IsFalse());
 
                 switch (priority)
                 {
                     case PatternLRPriority.Normal:
                         //  Mode select
-                        gate.TransitionsTo(priorityGate)
+                        gate.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
@@ -131,14 +128,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                         break;
                     case PatternLRPriority.PrimeLeft:
                         //  Mode select
-                        gate.TransitionsTo(priorityGate)
+                        gate.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue());
-                        // Drive mode parameters
-                        priorityGate
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT), false)
-                            .DrivingLocally();
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue())
@@ -156,15 +147,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                         break;
                     case PatternLRPriority.PrimeRight:
                         //  Mode select
-                        gate.TransitionsTo(priorityGate)
+                        gate.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsTrue());
-                        // Drive mode parameters
-                        priorityGate
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT), false)
-                            .DrivingLocally();
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
@@ -182,16 +167,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                         break;
                     case PatternLRPriority.OnlyLeft:
                         //  Mode select
-                        gate.TransitionsTo(priorityGate)
+                        gate.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsTrue());
-                        // Drive mode parameters
-                        priorityGate
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT), false)
-                            .DrivingLocally();
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
@@ -209,17 +188,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                         break;
                     case PatternLRPriority.OnlyRight:
                         //  Mode select
-                        gate.TransitionsTo(priorityGate)
+                        gate.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
                             .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsTrue());
-                        // Drive mode parameters
-                        priorityGate
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT), false)
-                            .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT), false)
-                            .DrivingLocally();
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
                             .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
