@@ -633,26 +633,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_Voice, AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE, icon));
             }
 
-            // Hand priority setting
-            if (_aV3Setting.AddConfig_HandPriority)
+            // Hand pattern setting
+            if (_aV3Setting.AddConfig_HandPattern)
             {
-                var leftPrimeIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandLR.png");
-                var rightPrimeIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandRL.png");
-                var leftOnlyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandL.png");
-                var rightOnlyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandR.png");
+                var swapIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/HandRL.png");
+                var leftDisableIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Additional/HandL_disable.png");
+                var rightDisableIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Additional/HandR_disable.png");
 
-                var handPrioritySetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
-                handPrioritySetting.name = loc.ExMenu_HandPriority;
-                handPrioritySetting.controls = new List<VRCExpressionsMenu.Control>()
+                var handPatternSetting = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                handPatternSetting.name = loc.ExMenu_HandPattern;
+                handPatternSetting.controls = new List<VRCExpressionsMenu.Control>()
                 {
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT, leftPrimeIcon),
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_PrimeRight, AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT, rightPrimeIcon),
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT, leftOnlyIcon),
-                    CreateBoolToggleControl(loc.ExMenu_HandPriority_OnlyRight, AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT, rightOnlyIcon),
+                    CreateBoolToggleControl(loc.ExMenu_HandPattern_SwapLR, AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR, swapIcon),
+                    CreateBoolToggleControl(loc.ExMenu_HandPattern_DisableLeft, AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT, leftDisableIcon),
+                    CreateBoolToggleControl(loc.ExMenu_HandPattern_DisableRight, AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT, rightDisableIcon),
                 };
                 var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/FaceSelect.png");
-                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_HandPriority, handPrioritySetting, icon));
-                AssetDatabase.AddObjectToAsset(handPrioritySetting, container);
+                settingRoot.controls.Add(CreateSubMenuControl(loc.ExMenu_HandPattern, handPatternSetting, icon));
+                AssetDatabase.AddObjectToAsset(handPatternSetting, container);
             }
 
             // Controller setting
@@ -805,10 +803,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var contactLockEnabled = _aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock;
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,         _aV3Setting.AddConfig_Controller ? Sync.Bool : Sync.NotSynced,      defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,         _aV3Setting.AddConfig_Controller ? Sync.Bool : Sync.NotSynced,      defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
-            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT ,   _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
-            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT,   _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
-            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT,        _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
-            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT,       _aV3Setting.AddConfig_HandPriority ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR,          _aV3Setting.AddConfig_HandPattern ? Sync.Bool : Sync.NotSynced,     defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT,     _aV3Setting.AddConfig_HandPattern ? Sync.Bool : Sync.NotSynced,     defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT,    _aV3Setting.AddConfig_HandPattern ? Sync.Bool : Sync.NotSynced,     defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE,     contactLockEnabled ? Sync.Bool : Sync.NotSynced,                    defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE,    _aV3Setting.AddConfig_Override ? Sync.Bool : Sync.NotSynced,        defaultValue: 1, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE, _aV3Setting.AddConfig_Voice ? Sync.Bool : Sync.NotSynced,           defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));

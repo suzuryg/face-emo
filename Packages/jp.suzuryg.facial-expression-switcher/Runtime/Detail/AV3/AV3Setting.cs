@@ -32,7 +32,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public bool AddConfig_ContactLock = true;
         public bool AddConfig_Override = true;
         public bool AddConfig_Voice = true;
-        public bool AddConfig_HandPriority = true;
+        public bool AddConfig_HandPattern = true;
         public bool AddConfig_Controller = true;
 
         public string LastOpendOrSavedAnimationPath;

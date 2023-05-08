@@ -114,7 +114,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock (1bit)";
         public string InspectorView_AddConfig_Override = "Emote Override (1bit)";
         public string InspectorView_AddConfig_Voice = "Do Not Transition When Speaking (1bit)";
-        public string InspectorView_AddConfig_HandPriority = "Hand Priority (4bit)";
+        public string InspectorView_AddConfig_HandPattern = "Hand Pattern (3bit)";
         public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
 
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
@@ -151,11 +151,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExMenu_ContactLock = "Enable Contact Emote Lock";
         public string ExMenu_Override = "Enable Emote Override";
         public string ExMenu_Voice = "Do Not Transition When Speaking";
-        public string ExMenu_HandPriority = "Hand Priority";
-        public string ExMenu_HandPriority_PrimeLeft = "Prime Left";
-        public string ExMenu_HandPriority_PrimeRight = "Prime Right";
-        public string ExMenu_HandPriority_OnlyLeft = "Only Left";
-        public string ExMenu_HandPriority_OnlyRight = "Only Right";
+        public string ExMenu_HandPattern = "Hand Pattern";
+        public string ExMenu_HandPattern_SwapLR = "Swap LR";
+        public string ExMenu_HandPattern_DisableLeft = "Disable Left";
+        public string ExMenu_HandPattern_DisableRight = "Disable Right";
         public string ExMenu_Controller = "Controller";
         public string ExMenu_Controller_Quest = "Quest Controller";
         public string ExMenu_Controller_Index = "Index Controller";

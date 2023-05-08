@@ -120,7 +120,7 @@ MonoBehaviour:
   InspectorView_AddConfig_ContactLock: Contact Emote Lock (1bit)
   InspectorView_AddConfig_Override: Emote Override (1bit)
   InspectorView_AddConfig_Voice: Do Not Transition When Speaking (1bit)
-  InspectorView_AddConfig_HandPriority: Hand Priority (4bit)
+  InspectorView_AddConfig_HandPattern: Hand Pattern (3bit)
   InspectorView_AddConfig_Controller: Controller Type (2bit)
   InspectorView_AvatarApplicationSetting: Avatar Application Setting
   InspectorView_SmoothAnalogFist: Smooth Analog Fist
@@ -155,11 +155,10 @@ MonoBehaviour:
   ExMenu_ContactLock: Enable Contact Emote Lock
   ExMenu_Override: Enable Emote Override
   ExMenu_Voice: Do Not Transition When Speaking
-  ExMenu_HandPriority: Hand Priority
-  ExMenu_HandPriority_PrimeLeft: Prime Left
-  ExMenu_HandPriority_PrimeRight: Prime Right
-  ExMenu_HandPriority_OnlyLeft: Only Left
-  ExMenu_HandPriority_OnlyRight: Only Right
+  ExMenu_HandPattern: Hand Pattern
+  ExMenu_HandPattern_SwapLR: Swap LR
+  ExMenu_HandPattern_DisableLeft: Disable Left
+  ExMenu_HandPattern_DisableRight: Disable Right
   ExMenu_Controller: Controller
   ExMenu_Controller_Quest: Quest Controller
   ExMenu_Controller_Index: Index Controller

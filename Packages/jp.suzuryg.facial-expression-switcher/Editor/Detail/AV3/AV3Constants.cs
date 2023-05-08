@@ -29,10 +29,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         // Config (Saved) (Bool)
         public static readonly string ParamName_CN_CONTROLLER_TYPE_QUEST = "CN_CONTROLLER_TYPE_QUEST";
         public static readonly string ParamName_CN_CONTROLLER_TYPE_INDEX = "CN_CONTROLLER_TYPE_INDEX";
-        public static readonly string ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT = "CN_EMOTE_SELECT_PRIORITY_LEFT";
-        public static readonly string ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT = "CN_EMOTE_SELECT_PRIORITY_RIGHT";
-        public static readonly string ParamName_CN_EMOTE_SELECT_ONLY_LEFT = "CN_EMOTE_SELECT_ONLY_LEFT";
-        public static readonly string ParamName_CN_EMOTE_SELECT_ONLY_RIGHT = "CN_EMOTE_SELECT_ONLY_RIGHT";
+        public static readonly string ParamName_CN_EMOTE_SELECT_SWAP_LR = "CN_EMOTE_SELECT_SWAP_LR";
+        public static readonly string ParamName_CN_EMOTE_SELECT_DISABLE_LEFT = "CN_EMOTE_SELECT_DISABLE_LEFT";
+        public static readonly string ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT = "CN_EMOTE_SELECT_DISABLE_RIGHT";
         public static readonly string ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE = "CN_CONTACT_EMOTE_LOCK_ENABLE";
         public static readonly string ParamName_SYNC_CN_EMOTE_OVERRIDE_ENABLE = "SYNC_CN_EMOTE_OVERRIDE_ENABLE";
         public static readonly string ParamName_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE = "SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE";

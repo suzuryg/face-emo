@@ -111,7 +111,8 @@ MonoBehaviour:
   InspectorView_AddConfig_Override: "\u8868\u60C5\u4E0A\u66F8\u304D (1bit)"
   InspectorView_AddConfig_Voice: "\u767A\u8A71\u4E2D\u306F\u8868\u60C5\u9077\u79FB\u3057\u306A\u3044
     (1bit)"
-  InspectorView_AddConfig_HandPriority: "\u5DE6\u53F3\u512A\u5148\u8A2D\u5B9A (4bit)"
+  InspectorView_AddConfig_HandPattern: "\u30CF\u30F3\u30C9\u30D1\u30BF\u30FC\u30F3\u5207\u308A\u66FF\u3048
+    (3bit)"
   InspectorView_AddConfig_Controller: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u5207\u308A\u66FF\u3048
     (2bit)"
   InspectorView_AvatarApplicationSetting: "\u30A2\u30D0\u30BF\u30FC\u9069\u7528\u8A2D\u5B9A"
@@ -146,11 +147,10 @@ MonoBehaviour:
   ExMenu_ContactLock: "Contact\u8868\u60C5\u56FA\u5B9A\u6709\u52B9"
   ExMenu_Override: "\u8868\u60C5\u4E0A\u66F8\u304D\u6709\u52B9"
   ExMenu_Voice: "\u767A\u8A71\u4E2D\u306F\u8868\u60C5\u9077\u79FB\u3057\u306A\u3044"
-  ExMenu_HandPriority: "\u5DE6\u53F3\u512A\u5148\u8A2D\u5B9A"
-  ExMenu_HandPriority_PrimeLeft: "\u5DE6\u624B\u512A\u5148"
-  ExMenu_HandPriority_PrimeRight: "\u53F3\u624B\u512A\u5148"
-  ExMenu_HandPriority_OnlyLeft: "\u5DE6\u624B\u306E\u307F"
-  ExMenu_HandPriority_OnlyRight: "\u53F3\u624B\u306E\u307F"
+  ExMenu_HandPattern: "\u30CF\u30F3\u30C9\u30D1\u30BF\u30FC\u30F3\u5207\u308A\u66FF\u3048"
+  ExMenu_HandPattern_SwapLR: "\u5DE6\u53F3\u5165\u308C\u66FF\u3048"
+  ExMenu_HandPattern_DisableLeft: "\u5DE6\u624B\u3092\u7121\u52B9\u5316"
+  ExMenu_HandPattern_DisableRight: "\u53F3\u624B\u3092\u7121\u52B9\u5316"
   ExMenu_Controller: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC\u5207\u308A\u66FF\u3048"
   ExMenu_Controller_Quest: "Quest\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC"
   ExMenu_Controller_Index: "Index\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC"

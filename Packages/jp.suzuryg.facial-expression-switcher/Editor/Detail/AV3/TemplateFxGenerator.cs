@@ -13,15 +13,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
     public class TemplateFxGenerator
     {
-        private static readonly IReadOnlyList<PatternLRPriority> PatternsLRPriority = Enum.GetValues(typeof(PatternLRPriority)).Cast<PatternLRPriority>().ToList();
+        private static readonly IReadOnlyList<HandPattern> Patterns = Enum.GetValues(typeof(HandPattern)).Cast<HandPattern>().ToList();
 
-        private enum PatternLRPriority
+        private enum HandPattern
         {
-            Normal,
-            PrimeLeft,
-            PrimeRight,
-            OnlyLeft,
-            OnlyRight,
+            Normal_Left_Enabled_Right_Enabled,
+            Normal_Left_Enabled_Right_Disabled,
+            Normal_Left_Disabled_Right_Enabled,
+            Normal_Left_Disabled_Right_Disabled,
+            Swap_Left_Enabled_Right_Enabled,
+            Swap_Left_Enabled_Right_Disabled,
+            Swap_Left_Disabled_Right_Enabled,
+            Swap_Left_Disabled_Right_Disabled,
         }
 
         // After importing CustomAnimatorControllers, deep copy with CopyAssetsWithDependency (to change GUID).
@@ -94,120 +97,146 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 When(layer.Av3().IsLocal.IsEqualTo(true));
 
             // Create Mode states machines
-            foreach (var priority in PatternsLRPriority)
+            foreach (var pattern in Patterns)
             {
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{AV3Constants.LayerName_FaceEmoteControl}\" layer...",
-                    (float)priority / PatternsLRPriority.Count);
+                    (float)pattern / Patterns.Count);
 
-                var priorityStateMachine = layer.NewSubStateMachine(priority.ToString(), 2, (int)priority)
+                var priorityStateMachine = layer.NewSubStateMachine(pattern.ToString(), 2, (int)pattern)
                     .WithEntryPosition(0, 0).WithAnyStatePosition(0, -1).WithParentStateMachinePosition(0, -2).WithExitPosition(2, 0);
 
-                switch (priority)
+                switch (pattern)
                 {
-                    case PatternLRPriority.Normal:
+                    case HandPattern.Normal_Left_Enabled_Right_Enabled:
                         //  Mode select
                         gate.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsFalse());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsFalse());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
                         priorityStateMachine.Exits()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsTrue());
                         break;
-                    case PatternLRPriority.PrimeLeft:
+                    case HandPattern.Normal_Left_Enabled_Right_Disabled:
                         //  Mode select
                         gate.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsFalse());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
                         priorityStateMachine.Exits()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsFalse());
                         break;
-                    case PatternLRPriority.PrimeRight:
+                    case HandPattern.Normal_Left_Disabled_Right_Enabled:
                         //  Mode select
                         gate.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsTrue())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsFalse());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
                         priorityStateMachine.Exits()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsTrue());
                         break;
-                    case PatternLRPriority.OnlyLeft:
+                    case HandPattern.Normal_Left_Disabled_Right_Disabled:
                         //  Mode select
                         gate.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsTrue())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsFalse());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
                         priorityStateMachine.Exits()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsFalse());
                         break;
-                    case PatternLRPriority.OnlyRight:
+                    case HandPattern.Swap_Left_Enabled_Right_Enabled:
                         //  Mode select
                         gate.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
                         // Self transition & exit
                         priorityStateMachine.TransitionsTo(priorityStateMachine)
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsFalse())
-                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsTrue());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
                         priorityStateMachine.Exits()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_RIGHT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_LEFT).IsTrue())
-                            .Or()
-                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_ONLY_RIGHT).IsFalse());
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsTrue());
                         break;
+                    case HandPattern.Swap_Left_Enabled_Right_Disabled:
+                        //  Mode select
+                        gate.TransitionsTo(priorityStateMachine)
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
+                        // Self transition & exit
+                        priorityStateMachine.TransitionsTo(priorityStateMachine)
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsFalse())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
+                        priorityStateMachine.Exits()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsTrue()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsFalse());
+                        break;
+                    case HandPattern.Swap_Left_Disabled_Right_Enabled:
+                        //  Mode select
+                        gate.TransitionsTo(priorityStateMachine)
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
+                        // Self transition & exit
+                        priorityStateMachine.TransitionsTo(priorityStateMachine)
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsFalse());
+                        priorityStateMachine.Exits()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsTrue());
+                        break;
+                    case HandPattern.Swap_Left_Disabled_Right_Disabled:
+                        //  Mode select
+                        gate.TransitionsTo(priorityStateMachine)
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
+                        // Self transition & exit
+                        priorityStateMachine.TransitionsTo(priorityStateMachine)
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)   .IsTrue())
+                            .And(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT)  .IsTrue());
+                        priorityStateMachine.Exits()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR)       .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_LEFT)  .IsFalse()).Or()
+                            .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_SELECT_DISABLE_RIGHT) .IsFalse());
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unknown pattern.");
                 }
 
                 // Create each gesture's state
@@ -232,7 +261,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                             .And(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_SELECT_R).IsNotEqualTo(rightIndex));
 
                         // Add parameter driver
-                        var converted = ConvertGeture(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex], priority);
+                        var converted = ConvertGeture(AV3Constants.EmoteSelectToGesture[leftIndex], AV3Constants.EmoteSelectToGesture[rightIndex], pattern);
                         var preSelectEmoteIndex = AV3Utility.GetPreselectEmoteIndex(converted.left, converted.right);
                         rightState.Drives(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PRESELECT), preSelectEmoteIndex).DrivingLocally();
                     }
@@ -246,6 +275,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             {
                 "CN_EXPRESSION_PARAMETER_LOADING_COMP",
                 "CN_EMOTE_PRELOCK_ENABLE",
+                "CN_EMOTE_SELECT_PRIORITY_RIGHT",
+                "CN_EMOTE_SELECT_ONLY_LEFT",
+                "CN_EMOTE_SELECT_ONLY_RIGHT",
             };
 
             foreach (var parameName in paramNames) { RemoveParameter(controller, parameName); }
@@ -291,33 +323,29 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             };
         }
 
-        private static (HandGesture left, HandGesture right) ConvertGeture(HandGesture left, HandGesture right, PatternLRPriority priority)
+        private static (HandGesture left, HandGesture right) ConvertGeture(HandGesture left, HandGesture right, HandPattern priority)
         {
             switch (priority)
             {
-                case PatternLRPriority.Normal:
-                    // NOP
-                    break;
-                case PatternLRPriority.PrimeLeft:
-                    if (left != HandGesture.Neutral)
-                    {
-                        right = HandGesture.Neutral;
-                    }
-                    break;
-                case PatternLRPriority.PrimeRight:
-                    if (right != HandGesture.Neutral)
-                    {
-                        left = HandGesture.Neutral;
-                    }
-                    break;
-                case PatternLRPriority.OnlyLeft:
-                    right = HandGesture.Neutral;
-                    break;
-                case PatternLRPriority.OnlyRight:
-                    left = HandGesture.Neutral;
-                    break;
+                case HandPattern.Normal_Left_Enabled_Right_Enabled:
+                    return (left, right);
+                case HandPattern.Normal_Left_Enabled_Right_Disabled:
+                    return (left, HandGesture.Neutral);
+                case HandPattern.Normal_Left_Disabled_Right_Enabled:
+                    return (HandGesture.Neutral, right);
+                case HandPattern.Normal_Left_Disabled_Right_Disabled:
+                    return (HandGesture.Neutral, HandGesture.Neutral);
+                case HandPattern.Swap_Left_Enabled_Right_Enabled:
+                    return (right, left);
+                case HandPattern.Swap_Left_Enabled_Right_Disabled:
+                    return (HandGesture.Neutral, left);
+                case HandPattern.Swap_Left_Disabled_Right_Enabled:
+                    return (right, HandGesture.Neutral);
+                case HandPattern.Swap_Left_Disabled_Right_Disabled:
+                    return (HandGesture.Neutral, HandGesture.Neutral);
+                default:
+                    throw new InvalidOperationException("Unknown pattern.");
             }
-            return (left, right);
         }
     }
 }

@@ -523,6 +523,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             OnlyRight,
         }
 
+        /*
         private void AssertPriority(bool priorityLeft, bool priorityRight, bool onlyLeft, bool onlyRight, Priority priority, IReadOnlyList<string> layerNames)
         {
             _animator.SetBool(AV3Constants.ParamName_CN_EMOTE_SELECT_PRIORITY_LEFT, priorityLeft);
@@ -574,6 +575,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
                     break;
             }
         }
+        */
 
         private void AssertEmotePreselect(int left, int right, int preselect, IReadOnlyList<string> layerNames)
         {

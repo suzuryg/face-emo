@@ -475,7 +475,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Voice)),        _localizationTable.InspectorView_AddConfig_Voice);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPriority)),    _localizationTable.InspectorView_AddConfig_HandPriority);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern)),    _localizationTable.InspectorView_AddConfig_HandPattern);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);
         }
 
