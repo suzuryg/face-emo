@@ -399,7 +399,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     exitState.TransitionsFromEntry()
                         .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsNotEqualTo(modeIndex));
                     exitState.Exits()
-                        .When(layer.BoolParameter("Dummy").IsFalse());
+                        .When(layer.BoolParameter(AV3Constants.ParamName_Dummy).IsFalse());
                 }
             }
 
@@ -423,7 +423,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 .TrackingSets(TrackingElement.Mouth, VRC_AnimatorTrackingControl.TrackingType.Tracking);
             afkStandbyState.TransitionsTo(afkEnterState)
                 .WithTransitionDurationSeconds(0.1f)
-                .When(layer.BoolParameter("Dummy").IsFalse());
+                .When(layer.BoolParameter(AV3Constants.ParamName_Dummy).IsFalse());
             if (aV3Setting.AfkEnterFace != null && aV3Setting.AfkEnterFace != null) { afkEnterState.WithAnimation(aV3Setting.AfkEnterFace); }
 
             var afkState = afkStateMachine.NewState("AFK", 0, 3)
@@ -823,6 +823,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_EM_EMOTE, Sync.Int, defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
 
             // Not synced
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_Dummy, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EM_EMOTE_SELECT_L, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EM_EMOTE_SELECT_R, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EM_EMOTE_PRESELECT, addPrefix: _aV3Setting.AddParameterPrefix));

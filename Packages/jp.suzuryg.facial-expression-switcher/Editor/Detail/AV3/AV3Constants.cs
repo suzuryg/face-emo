@@ -49,6 +49,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly string ParamName_SYNC_EM_EMOTE = "SYNC_EM_EMOTE";
 
         // Not synced
+        public static readonly string ParamName_Dummy = "Dummy";
         public static readonly string ParamName_EM_EMOTE_SELECT_L = "EM_EMOTE_SELECT_L";
         public static readonly string ParamName_EM_EMOTE_SELECT_R = "EM_EMOTE_SELECT_R";
         public static readonly string ParamName_EM_EMOTE_PRESELECT = "EM_EMOTE_PRESELECT";
