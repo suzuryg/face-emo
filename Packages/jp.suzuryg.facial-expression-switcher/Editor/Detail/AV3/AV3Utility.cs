@@ -201,7 +201,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 var sharedMesh = avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh;
                 foreach (var index in avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes)
                 {
-                    if (index < sharedMesh.blendShapeCount)
+                    if (0 <= index && index < sharedMesh.blendShapeCount)
                     {
                         ret.Add(sharedMesh.GetBlendShapeName(index));
                     }
