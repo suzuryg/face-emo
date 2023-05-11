@@ -301,6 +301,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 return _errorIcon;
             }
 
+            // Synthesize avatar pose
+            var synthesized = AV3Utility.SynthesizeAvatarPose(clip);
+
             // Sample animation clip and render
             var positionCache = animatorRoot.transform.position;
             var rotationCache = animatorRoot.transform.rotation;
@@ -308,7 +311,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             {
                 AnimationMode.StartAnimationMode();
                 AnimationMode.BeginSampling();
-                AnimationMode.SampleAnimationClip(animatorRoot, clip, clip.length);
+                AnimationMode.SampleAnimationClip(animatorRoot, synthesized, synthesized.length);
                 AnimationMode.EndSampling();
 
                 // When sampling, the object relocates to the origin, so it must be restored to its initial position

@@ -291,6 +291,36 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return aV3Setting.TargetAvatar.GetComponent<Animator>();
         }
 
+        public static AnimationClip GetAvatarPoseClip()
+        {
+            // TODO: Support for avatar posture other than T-pose
+            var tPose = AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(AV3Constants.GUID_TPoseClip));
+            if (tPose == null)
+            {
+                Debug.LogError("T-pose animation clip not found.");
+            }
+            return tPose;
+        }
+
+        public static AnimationClip SynthesizeAvatarPose(AnimationClip animationClip)
+        {
+            var synthesized = new AnimationClip();
+
+            var avatarPose = GetAvatarPoseClip();
+            if (avatarPose != null) { EditorUtility.CopySerialized(avatarPose, synthesized); }
+
+            if (animationClip != null)
+            {
+                foreach (var binding in AnimationUtility.GetCurveBindings(animationClip))
+                {
+                    var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
+                    AnimationUtility.SetEditorCurve(synthesized, binding, curve);
+                }
+            }
+
+            return synthesized;
+        }
+
         public static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList, ModeNameProvider modeNameProvider)
         {
             var ret = new List<ModeEx>();

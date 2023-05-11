@@ -138,7 +138,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     var animator = clonedAvatar.GetComponent<Animator>();
                     if (animator != null && animator.isHuman)
                     {
-                        var clip = new AnimationClip();
+                        var clip = AV3Utility.GetAvatarPoseClip();
+                        if (clip == null) { clip = new AnimationClip(); }
                         AnimationMode.StartAnimationMode();
                         AnimationMode.BeginSampling();
                         AnimationMode.SampleAnimationClip(clonedAvatar, clip, clip.length);
@@ -446,8 +447,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private void InitializePreviewClip()
         {
-            _previewClip = new AnimationClip();
-            EditorUtility.CopySerialized(Clip, _previewClip);
+            _previewClip = AV3Utility.SynthesizeAvatarPose(Clip);
             RenderPreviewClip();
         }
 
