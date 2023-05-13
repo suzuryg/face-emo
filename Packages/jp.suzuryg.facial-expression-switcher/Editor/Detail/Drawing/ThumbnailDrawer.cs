@@ -1,4 +1,6 @@
-﻿using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
+﻿using Suzuryg.FacialExpressionSwitcher.Domain;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
+using Suzuryg.FacialExpressionSwitcher.Detail.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,7 +96,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             _thumbnailSetting = thumbnailSetting;
 
             // Others
-            _errorIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/error_FILL0_wght400_GRAD200_opsz300.png");
+            _errorIcon = ViewUtility.GetIconTexture("error_FILL0_wght400_GRAD200_opsz300.png");
+            NullChecker.Check(_errorIcon);
 
             // Update thumbnails when animation is updated
             // (Called after updating animation and saving with Ctrl-S)

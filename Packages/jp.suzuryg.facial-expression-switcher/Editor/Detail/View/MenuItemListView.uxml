@@ -12,18 +12,10 @@
 		<engine:VisualElement name="TopRow">
 			<engine:Label name="TitleLabel"/>
 			<engine:VisualElement name="TopRow_ButtonCol">
-				<engine:Button name="AddModeButton" class="Button">
-					<engine:Image name="AddModeIcon" class ="Icon"/>
-				</engine:Button>
-				<engine:Button name="AddGroupButton" class="Button">
-					<engine:Image name="AddGroupIcon" class ="Icon"/>
-				</engine:Button>
-				<engine:Button name="CopyButton" class="Button">
-					<engine:Image name="CopyIcon" class ="Icon"/>
-				</engine:Button>
-				<engine:Button name="RemoveButton" class="Button">
-					<engine:Image name="RemoveIcon" class ="Icon"/>
-				</engine:Button>
+				<engine:Button name="AddModeButton" class="Button"/>
+				<engine:Button name="AddGroupButton" class="Button"/>
+				<engine:Button name="CopyButton" class="Button"/>
+				<engine:Button name="RemoveButton" class="Button"/>
 			</engine:VisualElement>
 		</engine:VisualElement>
 		<engine:IMGUIContainer name="AddressBarContainer"/>

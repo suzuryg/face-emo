@@ -42,9 +42,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _modeNameProvider = modeNameProvider;
 
             // Set icon
-            _fileIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/description_FILL0_wght400_GRAD200_opsz20.png");
-            _openFolderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz20.png");
-            _closeFolderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_FILL0_wght400_GRAD200_opsz20.png");
+            _fileIcon = ViewUtility.GetIconTexture("description_FILL0_wght400_GRAD200_opsz20.png");
+            _openFolderIcon = ViewUtility.GetIconTexture("folder_open_FILL0_wght400_GRAD200_opsz20.png");
+            _closeFolderIcon = ViewUtility.GetIconTexture("folder_FILL0_wght400_GRAD200_opsz20.png");
             NullChecker.Check(_fileIcon, _openFolderIcon, _closeFolderIcon);
 
             // Textures

@@ -107,7 +107,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _previousThumbnailHeight = _thumbnailSetting.Main_Height;
 
             // Set icon
-            _folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_FILL0_wght400_GRAD200_opsz48.png");
+            _folderIcon = ViewUtility.GetIconTexture("folder_FILL0_wght400_GRAD200_opsz48.png");
             NullChecker.Check(_folderIcon);
 
             // Styles

@@ -155,6 +155,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 .Synchronize().Subscribe(_ => _menuItemTreeElement?.OnGUI(_treeViewContainer.contentRect)).AddTo(_disposables);
             _treeViewContainer.RegisterCallback<MouseLeaveEvent>(OnMouseLeft);
 
+            // Set icon
+            SetIcon();
+
             // Set text
             SetText(_localizationSetting.Table);
         }
@@ -202,6 +205,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (_addGroupButton != null) { _addGroupButton.tooltip = localizationTable.MenuItemListView_Tooltip_AddGroup; }
             if (_copyButton != null) { _copyButton.tooltip = localizationTable.MenuItemListView_Tooltip_Copy; }
             if (_removeButton != null) { _removeButton.tooltip = localizationTable.MenuItemListView_Tooltip_Delete ; }
+        }
+
+        private void SetIcon()
+        {
+            if (_addModeButton != null)     { _addModeButton.Add(ViewUtility.GetIconElement("note_add_FILL0_wght400_GRAD200_opsz48.png")); }
+            if (_addGroupButton != null)    { _addGroupButton.Add(ViewUtility.GetIconElement("create_new_folder_FILL0_wght400_GRAD200_opsz48.png")); }
+            if (_copyButton != null)        { _copyButton.Add(ViewUtility.GetIconElement("content_copy_FILL0_wght400_GRAD200_opsz48.png")); }
+            if (_removeButton != null)      { _removeButton.Add(ViewUtility.GetIconElement("delete_FILL0_wght400_GRAD200_opsz48.png")); }
         }
 
         private void UpdateDisplay()

@@ -22,6 +22,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private SerializedObject _aV3Object;
         private LocalizationTable _localizationTable;
 
+        private Texture2D _blackTranslucent;
+        private Texture2D _createIcon;
+        private Texture2D _openIcon;
+        private Texture2D _copyIcon;
+        private Texture2D _editIcon;
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public AnimationElement(
@@ -39,6 +45,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
             localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
 
+            // Initialization
+            SetIcon();
         }
 
         public void Dispose()
@@ -51,14 +59,27 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _localizationTable = localizationTable;
         }
 
+        private void SetIcon()
+        {
+            _blackTranslucent = new Texture2D(1, 1, TextureFormat.RGBA32, true);
+            _blackTranslucent.wrapMode = TextureWrapMode.Repeat;
+            _blackTranslucent.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
+            _blackTranslucent.Apply();
+
+            _createIcon = ViewUtility.GetIconTexture("note_add_FILL0_wght400_GRAD200_opsz150.png");
+            _openIcon = ViewUtility.GetIconTexture("folder_open_FILL0_wght400_GRAD200_opsz150.png");
+            _copyIcon = ViewUtility.GetIconTexture("content_copy_FILL0_wght400_GRAD200_opsz150.png");
+            _editIcon = ViewUtility.GetIconTexture("edit_FILL0_wght400_GRAD200_opsz150.png");
+
+            NullChecker.Check(_blackTranslucent, _createIcon, _openIcon, _copyIcon, _editIcon);
+        }
+
         // TODO: Specify up-left point, not a rect.
         public void Draw(Rect rect, Domain.Animation animation, MainThumbnailDrawer thumbnailDrawer,
             Action<string> setAnimationClipAction, // The argument is new animation's GUID.
             string modeDisplayName)
         {
             // Thumbnail
-            LoadTexture();
-
             var thumbnailWidth = _thumbnailSetting.Main_Width;
             var thumbnailHeight = _thumbnailSetting.Main_Height;
 
@@ -86,7 +107,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
             if (thumbnailRect.Contains(Event.current.mousePosition))
             {
-                GUI.DrawTexture(thumbnailRect, BlackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
+                GUI.DrawTexture(thumbnailRect, _blackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
 
                 const float margin = 5;
                 var width = thumbnailRect.width / 2 - margin * 2;
@@ -113,7 +134,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         setAnimationClipAction(guid);
                     }
                 }
-                GUI.DrawTexture(new Rect(createRect.x + iconMargin, createRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), CreateIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                GUI.DrawTexture(new Rect(createRect.x + iconMargin, createRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _createIcon, ScaleMode.ScaleToFit, alphaBlend: true);
 
                 // Open
                 if (GUI.Button(openRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Open)))
@@ -127,7 +148,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         setAnimationClipAction(guid);
                     }
                 }
-                GUI.DrawTexture(new Rect(openRect.x + iconMargin, openRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), OpenIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                GUI.DrawTexture(new Rect(openRect.x + iconMargin, openRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _openIcon, ScaleMode.ScaleToFit, alphaBlend: true);
 
                 // Copy
                 using (new EditorGUI.DisabledScope(!clipExits))
@@ -144,10 +165,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         }
                     }
                 }
-                GUI.DrawTexture(new Rect(copyRect.x + iconMargin, copyRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), CopyIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                GUI.DrawTexture(new Rect(copyRect.x + iconMargin, copyRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _copyIcon, ScaleMode.ScaleToFit, alphaBlend: true);
                 if (!clipExits)
                 {
-                    GUI.DrawTexture(copyRect, BlackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
+                    GUI.DrawTexture(copyRect, _blackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
                 }
 
                 // Edit
@@ -160,10 +181,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         _expressionEditor.Open(clip);
                     }
                 }
-                GUI.DrawTexture(new Rect(editRect.x + iconMargin, editRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), EditIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                GUI.DrawTexture(new Rect(editRect.x + iconMargin, editRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _editIcon, ScaleMode.ScaleToFit, alphaBlend: true);
                 if (!clipExits)
                 {
-                    GUI.DrawTexture(editRect, BlackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
+                    GUI.DrawTexture(editRect, _blackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
                 }
             }
         }
@@ -302,43 +323,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             return $"{baseAnimationName}.anim";
-        }
-
-        private static Texture2D BlackTranslucent = null;
-        private static Texture2D CreateIcon = null;
-        private static Texture2D OpenIcon = null;
-        private static Texture2D CopyIcon = null;
-        private static Texture2D EditIcon = null;
-
-        private static void LoadTexture()
-        {
-            if (BlackTranslucent == null)
-            {
-                BlackTranslucent = new Texture2D(1, 1, TextureFormat.RGBA32, true);
-                BlackTranslucent.wrapMode = TextureWrapMode.Repeat;
-                BlackTranslucent.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
-                BlackTranslucent.Apply();
-            }
-
-            if (CreateIcon == null)
-            {
-                CreateIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/note_add_FILL0_wght400_GRAD200_opsz150.png");
-            }
-
-            if (OpenIcon == null)
-            {
-                OpenIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/folder_open_FILL0_wght400_GRAD200_opsz150.png");
-            }
-
-            if (CopyIcon == null)
-            {
-                CopyIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/content_copy_FILL0_wght400_GRAD200_opsz150.png");
-            }
-
-            if (EditIcon == null)
-            {
-                EditIcon = AssetDatabase.LoadAssetAtPath<Texture2D>($"{DetailConstants.IconDirectory}/edit_FILL0_wght400_GRAD200_opsz150.png");
-            }
         }
     }
 }
