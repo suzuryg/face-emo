@@ -16,6 +16,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
     {
         private string _windowTitle;
         private FESInstaller _installer;
+        private SceneView _lastActiveSceneView;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -56,7 +57,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                         if (window is ExpressionPreviewWindow expressionPreviewWindow)
                         {
                             var expressionEditor = _installer.Container.Resolve<ExpressionEditor>();
-                            expressionPreviewWindow.Initialize(expressionEditor);
+                            expressionPreviewWindow.Initialize(expressionEditor, _lastActiveSceneView);
                         }
                     }
                     else
@@ -94,6 +95,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             if (existingWindow is T) { return existingWindow; }
             else
             {
+                _lastActiveSceneView = SceneView.lastActiveSceneView;
+
                 var window = ScriptableObject.CreateInstance<T>();
                 window.titleContent = new GUIContent(_windowTitle);
                 window.Show();

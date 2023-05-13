@@ -13,12 +13,32 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private AV3.ExpressionEditor _expressionEditor;
         private Texture2D _renderCache;
 
-        public void Initialize(AV3.ExpressionEditor expressionEditor)
+        public void Initialize(AV3.ExpressionEditor expressionEditor, SceneView lastActiveSceneView)
         {
             // Dependencies
             _expressionEditor = expressionEditor;
 
             // Initialization
+            if (lastActiveSceneView != null && lastActiveSceneView.cameraSettings != null)
+            {
+                var copied = new CameraSettings();
+
+                copied.speed = lastActiveSceneView.cameraSettings.speed;
+                copied.speedNormalized = lastActiveSceneView.cameraSettings.speedNormalized;
+                copied.speedMin = lastActiveSceneView.cameraSettings.speedMin;
+                copied.speedMax = lastActiveSceneView.cameraSettings.speedMax;
+                copied.easingEnabled = lastActiveSceneView.cameraSettings.easingEnabled;
+                copied.easingDuration = lastActiveSceneView.cameraSettings.easingDuration;
+                copied.accelerationEnabled = lastActiveSceneView.cameraSettings.accelerationEnabled;
+                copied.fieldOfView = lastActiveSceneView.cameraSettings.fieldOfView;
+                copied.nearClip = lastActiveSceneView.cameraSettings.nearClip;
+                copied.farClip = lastActiveSceneView.cameraSettings.farClip;
+                copied.dynamicClip = lastActiveSceneView.cameraSettings.dynamicClip;
+                copied.occlusionCulling = lastActiveSceneView.cameraSettings.occlusionCulling;
+
+                cameraSettings = copied;
+            }
+
             drawGizmos = false;
             const float initialZoom = 0.2f;
             LookAt(point: _expressionEditor.GetAvatarViewPosition(),
