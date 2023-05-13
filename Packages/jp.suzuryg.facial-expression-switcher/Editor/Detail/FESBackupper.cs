@@ -103,6 +103,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
 
         public void Import(string path)
         {
+            var guid = AssetDatabase.AssetPathToGUID(path);
+            if (string.IsNullOrEmpty(guid)) { throw new FacialExpressionSwitcherException(_localizationTable.Common_Message_GuidWasNotFound); }
+
             var imported = AssetDatabase.LoadAssetAtPath<FESProject>(path);
             if (imported == null) { throw new FacialExpressionSwitcherException("Failed to load FESProject asset."); }
 

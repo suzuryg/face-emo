@@ -154,7 +154,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             catch (Exception ex)
             {
                 Debug.LogException(ex);
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Failed to open FESProject.", "OK");
+                var message = ex is FacialExpressionSwitcherException ? ex.Message : "Failed to open FESProject.";
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, message, "OK");
                 if (gameObject != null) { DestroyImmediate(gameObject); }
             }
         }

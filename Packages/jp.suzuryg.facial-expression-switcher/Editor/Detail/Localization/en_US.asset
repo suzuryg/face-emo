@@ -40,6 +40,7 @@ MonoBehaviour:
     morph blend shapes?
   Common_Message_NotPossibleInPlayMode: This operation is not possible during Play
     mode.
+  Common_Message_GuidWasNotFound: The selected asset does not exist in this project.
   HierarchyView_Title: Hierarchy
   HierarchyView_RegisteredMenuItemList: ItemsToRegister
   HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
