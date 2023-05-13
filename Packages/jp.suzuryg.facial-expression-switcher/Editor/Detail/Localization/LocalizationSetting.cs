@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,8 +49,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             }
             else
             {
-                Locale = Locale.en_US;
-                Table = new LocalizationTable();
+                SetLocale(GetDefaultLocale());
             }
         }
 
@@ -65,16 +65,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
                 Table = AssetDatabase.LoadAssetAtPath<LocalizationTable>($"{DetailConstants.LocalizationDirectory}/en_US.asset");
             }
 
-            if (Table is LocalizationTable)
-            {
-                Locale = locale;
-                EditorPrefs.SetString(LocalePrefKey, Locale.ToString());
-                _onTableChanged.OnNext(Table);
-            }
-            else
-            {
-                throw new FacialExpressionSwitcherException("Failed to load localization table.");
-            }
+            if (Table == null) { Table = ScriptableObject.CreateInstance<LocalizationTable>(); }
+
+            Locale = locale;
+            EditorPrefs.SetString(LocalePrefKey, Locale.ToString());
+            _onTableChanged.OnNext(Table);
         }
 
         // TODO: Table property is unnecessary?
@@ -95,6 +90,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             else
             {
                 return new LocalizationTable();
+            }
+        }
+
+        [MenuItem("Tools/Suzuryg/FacialExpressionSwitcher/Debug/ResetLocale")]
+        public static void ResetLocale()
+        {
+            EditorPrefs.DeleteKey(LocalePrefKey);
+        }
+
+        private Locale GetDefaultLocale()
+        {
+            var currentCulture = CultureInfo.CurrentCulture;
+            if (currentCulture.Name == "ja-JP")
+            {
+                return Locale.ja_JP;
+            }
+            else
+            {
+                return Locale.en_US;
             }
         }
     }
