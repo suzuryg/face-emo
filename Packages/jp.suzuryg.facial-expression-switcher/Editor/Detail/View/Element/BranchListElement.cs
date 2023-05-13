@@ -106,6 +106,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private string _rightTriggerAnimationText;
         private string _bothTriggersAnimationText;
 
+        private Texture2D _redTexture; // Store to avoid destruction
         private GUIStyle _centerStyle;
         private GUIStyle _warningStyle;
 
@@ -153,7 +154,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 _warningStyle = new GUIStyle();
             }
             _centerStyle.alignment = TextAnchor.MiddleCenter;
-            _warningStyle.normal.textColor = Color.red;
+
+            if (EditorGUIUtility.isProSkin)
+            {
+                _warningStyle.normal.textColor = Color.red;
+            }
+            else
+            {
+                _redTexture = ViewUtility.MakeTexture(Color.red);
+                _warningStyle.normal.background = _redTexture;
+                _warningStyle.normal.textColor = Color.black;
+            }
 
             // Textures
             _activeBackgroundTexture = new Texture2D(1, 1);

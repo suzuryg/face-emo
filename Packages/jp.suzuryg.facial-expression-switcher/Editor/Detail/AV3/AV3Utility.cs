@@ -180,9 +180,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             // Exclude shape key for lip-sync
-            if (excludeLipSync && avatarDescriptor.VisemeBlendShapes is string[])
+            if (excludeLipSync)
             {
-                foreach (var name in avatarDescriptor.VisemeBlendShapes)
+                foreach (var name in GetLipSyncBlendShapes(avatarDescriptor))
                 {
                     toBeExcluded.Add(name);
                 }
@@ -205,6 +205,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     {
                         ret.Add(sharedMesh.GetBlendShapeName(index));
                     }
+                }
+            }
+            return ret;
+        }
+
+        public static List<string> GetLipSyncBlendShapes(VRCAvatarDescriptor avatarDescriptor)
+        {
+            var ret = new List<string>();
+            if (avatarDescriptor.VisemeBlendShapes is string[])
+            {
+                foreach (var name in avatarDescriptor.VisemeBlendShapes)
+                {
+                    ret.Add(name);
                 }
             }
             return ret;

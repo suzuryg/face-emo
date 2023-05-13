@@ -125,5 +125,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             return readableText;
         }
+
+        /// <summary>
+        /// Helper function to create a solid color texture
+        /// </summary>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public static Texture2D MakeTexture(Color col)
+        {
+            var texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, col);
+            texture.Apply();
+            return texture;
+        }
     }
 }

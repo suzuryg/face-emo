@@ -136,6 +136,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
         public string ExpressionEditorView_NoBlendShapes = "No Blend Shapes";
         public string ExpressionEditorView_NoObjects = "No Objects";
+        public string ExpressionEditorView_Message_BlinkBlendShapeExists = "Blend shapes for blink are included!";
+        public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lipsync are included!";
 
         public string FESBackupper_Message_FailedToFindTargetAvatar = "Failed to find tareget avatar. Make sure the avatar is active.";
         public string FESBackupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";

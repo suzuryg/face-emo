@@ -33,8 +33,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
         private Vector2 _leftScrollPosition = Vector2.zero;
         private Vector2 _rightScrollPosition = Vector2.zero;
+
+        private Texture2D _redTexture; // Store to avoid destruction
         private GUIStyle _removeButtonStyle = new GUIStyle();
         private GUIStyle _addPropertyButtonStyle = new GUIStyle();
+        private GUIStyle _warningTextStyle = new GUIStyle();
+        private GUIStyle _normalPropertyStyle = new GUIStyle();
+        private GUIStyle _warnedPropertyStyle = new GUIStyle();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -86,6 +91,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
         private void SetStyle()
         {
+            // Texture
+            _redTexture = ViewUtility.MakeTexture(Color.red);
+
             // Remove button
             _removeButtonStyle = new GUIStyle(GUI.skin.button);
             //_removeButtonStyle.fontStyle = FontStyle.Bold;
@@ -99,19 +107,26 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             // Add property button
             _addPropertyButtonStyle = new GUIStyle(GUI.skin.button);
             _addPropertyButtonStyle.alignment = TextAnchor.MiddleLeft;
-        }
 
-        /// <summary>
-        /// Helper function to create a solid color texture
-        /// </summary>
-        /// <param name="col"></param>
-        /// <returns></returns>
-        private Texture2D MakeTexture(Color col)
-        {
-            var texture = new Texture2D(1, 1);
-            texture.SetPixel(0, 0, col);
-            texture.Apply();
-            return texture;
+            // Warning text
+            _warningTextStyle = new GUIStyle(GUI.skin.label);
+            if (EditorGUIUtility.isProSkin)
+            {
+                _warningTextStyle.normal.textColor = Color.red;
+            }
+            else
+            {
+                _warningTextStyle.normal.background = _redTexture;
+                _warningTextStyle.normal.textColor = Color.black;
+            }
+
+            // Normal property
+            _normalPropertyStyle = new GUIStyle(GUI.skin.label);
+
+            // Warned prperty
+            _warnedPropertyStyle = new GUIStyle(GUI.skin.label);
+            _warnedPropertyStyle.normal.background = _redTexture;
+            _warnedPropertyStyle.normal.textColor = Color.black;
         }
 
         private void SetText(LocalizationTable localizationTable)
@@ -253,6 +268,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             // If no space is inserted here, the horizontal line of the topmost Slider will disappear.
             EditorGUILayout.Space();
 
+            // Draw warnings
+            if (_expressionEditor.AnimatedBlendShapesBuffer.Any(blendShape => _expressionEditor.BlinkBlendShapes.Contains(blendShape.Key)))
+            {
+                GUILayout.Label(_localizationTable.ExpressionEditorView_Message_BlinkBlendShapeExists, _warningTextStyle);
+            }
+            if (_expressionEditor.AnimatedBlendShapesBuffer.Any(blendShape => _expressionEditor.LipSyncBlendShapes.Contains(blendShape.Key)))
+            {
+                GUILayout.Label(_localizationTable.ExpressionEditorView_Message_LipSyncBlendShapeExists, _warningTextStyle);
+            }
+
             // Draw controls
             foreach (var blendShape in _expressionEditor.AnimatedBlendShapesBuffer)
             {
@@ -261,7 +286,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                     // Label
                     GUIContent labelContent = new GUIContent(blendShape.Key);
                     Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
-                    GUI.Label(labelRect, labelContent);
+                    var warned = _expressionEditor.BlinkBlendShapes.Contains(blendShape.Key) || _expressionEditor.LipSyncBlendShapes.Contains(blendShape.Key);
+                    GUI.Label(labelRect, labelContent, warned ? _warnedPropertyStyle : _normalPropertyStyle);
 
                     // Slider
                     const float increment = 0.1f;

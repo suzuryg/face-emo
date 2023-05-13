@@ -18,6 +18,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly float PreviewAvatarPosZ = 100;
 
         public AnimationClip Clip { get; private set; }
+        public HashSet<string> BlinkBlendShapes = new HashSet<string>();
+        public HashSet<string> LipSyncBlendShapes = new HashSet<string>();
         public IReadOnlyDictionary<string, float> FaceBlendShapes => _faceBlendShapes;
         public IReadOnlyDictionary<string, float> AnimatedBlendShapesBuffer => _animatedBlendShapesBuffer;
         public IReadOnlyDictionary<int, (GameObject gameObject, bool isActive)> AdditionalToggles => _additionalToggles;
@@ -169,6 +171,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         public void FetchProperties()
         {
+            BlinkBlendShapes.Clear();
+            LipSyncBlendShapes.Clear();
+
             _faceBlendShapes.Clear();
             _animatedBlendShapes.Clear();
             _animatedBlendShapesBuffer.Clear();
@@ -182,11 +187,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             _animatedAdditionalTogglesBuffer.Clear();
 
             // Get face blendshapes
-            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(_aV3Setting?.TargetAvatar, excludeBlink: false, excludeLipSync: true);
+            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(_aV3Setting?.TargetAvatar, excludeBlink: false, excludeLipSync: false);
+            BlinkBlendShapes = new HashSet<string>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting?.TargetAvatar));
+            LipSyncBlendShapes = new HashSet<string>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting?.TargetAvatar));
+
             var animatedBlendShapes = GetBlendShapeValues(Clip, _faceBlendShapes.Keys);
             foreach (var blendShape in animatedBlendShapes)
             {
-                if (!_expressionEditorSetting.ShowOnlyDifferFromDefaultValue || blendShape.Value != _faceBlendShapes[blendShape.Key])
+                if (!_expressionEditorSetting.ShowOnlyDifferFromDefaultValue ||
+                    blendShape.Value != _faceBlendShapes[blendShape.Key] ||
+                    BlinkBlendShapes.Contains(blendShape.Key) || // Add for warning display
+                    LipSyncBlendShapes.Contains(blendShape.Key))   // Add for warning display
                 {
                     _animatedBlendShapes[blendShape.Key] = blendShape.Value;
                 }

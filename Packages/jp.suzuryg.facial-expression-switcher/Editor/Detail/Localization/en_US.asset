@@ -142,6 +142,10 @@ MonoBehaviour:
   ExpressionEditorView_UncategorizedBlendShapes: Uncategorized Blend Shapes
   ExpressionEditorView_NoBlendShapes: No Blend Shapes
   ExpressionEditorView_NoObjects: No Objects
+  ExpressionEditorView_Message_BlinkBlendShapeExists: Blend shapes for blink are
+    included!
+  ExpressionEditorView_Message_LipSyncBlendShapeExists: Blend shapes for lipsync
+    are included!
   FESBackupper_Message_FailedToFindTargetAvatar: Failed to find tareget avatar. Make
     sure the avatar is active.
   FESBackupper_Message_FailedToFindToggleObject: Failed to find toggle object.
