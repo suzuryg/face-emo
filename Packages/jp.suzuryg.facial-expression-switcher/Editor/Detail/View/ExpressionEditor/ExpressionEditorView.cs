@@ -283,6 +283,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
+                    const float minValue = 0;
+                    const float maxValue = 100;
+
                     // Label
                     GUIContent labelContent = new GUIContent(blendShape.Key);
                     Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
@@ -292,7 +295,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                     // Slider
                     const float increment = 0.1f;
                     Rect sliderRect = GUILayoutUtility.GetRect(labelRect.x, labelRect.y, GUILayout.ExpandWidth(true), GUILayout.MinWidth(100));
-                    var sliderValue = GUI.HorizontalSlider(sliderRect, blendShape.Value, 0, 100);
+                    var sliderValue = GUI.HorizontalSlider(sliderRect, blendShape.Value, minValue, maxValue);
                     sliderValue = Mathf.Round(sliderValue / increment) * increment;
                     if (!Mathf.Approximately(sliderValue, blendShape.Value))
                     {
@@ -301,6 +304,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
                     // DelayedFloatField
                     var fieldValue = EditorGUILayout.DelayedFloatField(blendShape.Value, GUILayout.Width(40));
+                    fieldValue = Math.Max(Math.Min(fieldValue, maxValue), minValue);
                     if (!Mathf.Approximately(fieldValue, blendShape.Value))
                     {
                         changed[blendShape.Key] = fieldValue;
