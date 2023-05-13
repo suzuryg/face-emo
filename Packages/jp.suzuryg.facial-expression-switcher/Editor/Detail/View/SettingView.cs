@@ -212,6 +212,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnApplyButtonClicked()
         {
+            if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
             if (EditorUtility.DisplayDialog(DomainConstants.SystemName,
                 _localizationTable.SettingView_Message_ConfirmApplyToAvatar,
                 _localizationTable.Common_Yes, _localizationTable.Common_No))

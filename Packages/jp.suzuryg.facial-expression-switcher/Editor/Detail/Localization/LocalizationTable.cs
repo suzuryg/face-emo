@@ -30,6 +30,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_Message_DeleteMode = "Are you sure you want to delete the following mode?";
         public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected branch?";
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
+        public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
 
         public string HierarchyView_Title = "HierarchyView";
         public string HierarchyView_RegisteredMenuItemList = "ItemsToRegister";

@@ -104,6 +104,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 // Create
                 if (GUI.Button(createRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Create)))
                 {
+                    if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
                     var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
                     {
@@ -116,6 +118,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 // Open
                 if (GUI.Button(openRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Open)))
                 {
+                    if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
                     var guid = GetAnimationGuidWithDialog(DialogMode.Open, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
                     {
@@ -130,6 +134,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     if (GUI.Button(copyRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Copy)))
                     {
+                        if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
                         var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, modeDisplayName);
                         if (!string.IsNullOrEmpty(guid))
                         {
@@ -149,6 +155,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     if (GUI.Button(editRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Edit)))
                     {
+                        if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
                         _expressionEditor.Open(clip);
                     }
                 }

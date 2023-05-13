@@ -38,6 +38,8 @@ MonoBehaviour:
     branch?
   Common_Message_ClearMouthMorphBlendShapes: Are you sure you want to clear mouth
     morph blend shapes?
+  Common_Message_NotPossibleInPlayMode: This operation is not possible during Play
+    mode.
   HierarchyView_Title: Hierarchy
   HierarchyView_RegisteredMenuItemList: ItemsToRegister
   HierarchyView_UnregisteredMenuItemList: ItemsNotToRegister
