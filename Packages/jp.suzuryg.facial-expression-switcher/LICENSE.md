@@ -3,7 +3,7 @@ FacialExpressionSwitcher is licensed under the MIT license, as described below.
 ---
 
 The MIT License (MIT)
-Copyright (c) 2023 Suzuryg
+Copyright (c) 2023 suzuryg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
