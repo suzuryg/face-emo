@@ -132,6 +132,15 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 rootVisualElement.Clear();
                 Build();
             }
+            // Workaround for ScriptableObject null in Play mode.
+            // If ScriptableObject is null, the following problems occur.
+            // - Thumbnails cannot be rendered
+            // - Slider values are reset (e.g., thumbnail size)
+            // TODO: Fix overall processing when changing Play mode
+            else if (playModeStateChange == PlayModeStateChange.ExitingEditMode || playModeStateChange == PlayModeStateChange.ExitingPlayMode)
+            {
+                Close();
+            }
         }
     }
 }
