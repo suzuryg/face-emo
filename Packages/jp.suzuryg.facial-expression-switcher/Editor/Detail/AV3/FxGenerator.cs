@@ -684,6 +684,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             control.parameter = new VRCExpressionsMenu.Control.Parameter() { name = parameterName };
             control.subParameters = new VRCExpressionsMenu.Control.Parameter[0];
             control.icon = icon;
+            control.labels = new VRCExpressionsMenu.Control.Label[0];
             return control;
         }
 
@@ -703,6 +704,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             control.subParameters = new VRCExpressionsMenu.Control.Parameter[0];
             control.subMenu = subMenu;
             control.icon = icon;
+            control.labels = new VRCExpressionsMenu.Control.Label[0];
             return control;
         }
 
