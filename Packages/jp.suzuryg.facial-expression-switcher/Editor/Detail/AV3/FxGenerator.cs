@@ -112,7 +112,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA components...", 0);
                 AddMergeAnimatorComponent(rootObject, animatorController);
-                AddMenuInstallerComponent(rootObject, avatarDescriptor, exMenu);
+                AddMenuInstallerComponent(rootObject, exMenu);
                 AddParameterComponent(rootObject, modes, menu);
 
                 AddBlinkDisablerComponent(rootObject);
@@ -767,7 +767,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             EditorUtility.SetDirty(modularAvatarMergeAnimator);
         }
 
-        private static void AddMenuInstallerComponent(GameObject rootObject, VRCAvatarDescriptor avatarDescriptor, VRCExpressionsMenu expressionsMenu)
+        private static void AddMenuInstallerComponent(GameObject rootObject, VRCExpressionsMenu expressionsMenu)
         {
             foreach (var component in rootObject.GetComponents<ModularAvatarMenuInstaller>())
             {
@@ -776,7 +776,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var modularAvatarMenuInstaller = rootObject.AddComponent<ModularAvatarMenuInstaller>();
 
             modularAvatarMenuInstaller.menuToAppend = expressionsMenu;
-            modularAvatarMenuInstaller.installTargetMenu = avatarDescriptor.expressionsMenu;
 
             EditorUtility.SetDirty(modularAvatarMenuInstaller);
         }
