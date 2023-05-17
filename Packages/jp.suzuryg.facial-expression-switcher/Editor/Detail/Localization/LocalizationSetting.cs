@@ -62,7 +62,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             }
             else
             {
-                Table = AssetDatabase.LoadAssetAtPath<LocalizationTable>($"{DetailConstants.LocalizationDirectory}/en_US.asset");
+                // en_US has the table in source code, not asset.
+                Table = ScriptableObject.CreateInstance<LocalizationTable>();
             }
 
             if (Table == null) { Table = ScriptableObject.CreateInstance<LocalizationTable>(); }

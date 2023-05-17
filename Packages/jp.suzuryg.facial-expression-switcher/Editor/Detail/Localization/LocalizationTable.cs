@@ -33,29 +33,29 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
 
-        public string HierarchyView_Title = "HierarchyView";
+        public string HierarchyView_Title = "Hierarchy";
         public string HierarchyView_RegisteredMenuItemList = "ItemsToRegister";
         public string HierarchyView_UnregisteredMenuItemList = "ItemsNotToRegister";
-        public string HierarchyView_Message_CanNotRename = "The 'Use animation name as mode name' setting is enabled. Disable the setting if you want to change the mode name.";
+        public string HierarchyView_Message_CanNotRename = "The \"Use animation name as mode name\" setting is enabled. Disable the setting if you want to change the mode name.";
         public string HierarchyView_Tooltip_AddMode = "Create a new expression mode in the selected hierarchy";
         public string HierarchyView_Tooltip_AddGroup = "Create a new expression group in the selected hierarchy";
         public string HierarchyView_Tooltip_Copy = "Copy the selected expression mode or expression group in the same hierarchy";
         public string HierarchyView_Tooltip_Delete = "Delete the selected expression mode or expression group";
 
-        public string MenuItemListView_Title = "MenuItemView";
-        public string MenuItemListView_UseAnimationNameAsDisplayName = "Use Animation Name As Mode Name";
+        public string MenuItemListView_Title = "MenuItems";
+        public string MenuItemListView_UseAnimationNameAsDisplayName = "Use ClipName As ModeName";
         public string MenuItemListView_Tooltip_AddMode = "Create a new expression mode in the current hierarchy";
         public string MenuItemListView_Tooltip_AddGroup = "Create a new expression group in the current hierarchy";
         public string MenuItemListView_Tooltip_Copy = "Copy the selected expression mode or expression group in the same hierarchy";
         public string MenuItemListView_Tooltip_Delete = "Delete the selected expression mode or expression group";
 
         public string MenuItemListView_EyeTracking = "Enable Eye Tracking";
-        public string MenuItemListView_MouthTracking = "Enable Mouth Tracking";
+        public string MenuItemListView_MouthTracking = "Enable Lip Sync";
         public string MenuItemListView_Blink = "Enable Blink";
-        public string MenuItemListView_MouthMorphCanceler = "Enable Mouth Morph Canceler";
+        public string MenuItemListView_MouthMorphCanceler = "Mouth Morph Canceler";
         public string MenuItemListView_Empty = "This group is empty.";
 
-        public string BranchListView_Title = "BranchView";
+        public string BranchListView_Title = "Branches";
         public string BranchListView_OpenGestureTable = "Open Gesture Table";
         public string BranchListView_UseLeftTrigger = "Use Left Trigger";
         public string BranchListView_UseRightTrigger = "Use Right Trigger";
@@ -69,7 +69,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string BranchListView_Left = "LeftHand";
         public string BranchListView_Right = "RightHand";
         public string BranchListView_OneSide = "OneHand";
-        public string BranchListView_Either = "EitherHands";
+        public string BranchListView_Either = "AnyHand(s)";
         public string BranchListView_Both = "BothHands";
         public string BranchListView_Equals = "Equals";
         public string BranchListView_NotEqual = "NotEqual";
@@ -131,7 +131,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Mode";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Branch";
 
-        public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only Differ From Default Value";
+        public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From Default";
         public string ExpressionEditorView_Delimiter = "Delimiter";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
         public string ExpressionEditorView_NoBlendShapes = "No Blend Shapes";
