@@ -132,6 +132,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Branch";
 
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From Default";
+        public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect In Preview On Mouse Over";
         public string ExpressionEditorView_Delimiter = "Delimiter";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
         public string ExpressionEditorView_NoBlendShapes = "No Blend Shapes";

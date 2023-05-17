@@ -129,6 +129,7 @@ MonoBehaviour:
   InspectorView_ModeDeleteConfirmation: "\u30E2\u30FC\u30C9\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
   InspectorView_BranchDeleteConfirmation: "\u5206\u5C90\u306E\u524A\u9664\u6642\u306B\u78BA\u8A8D"
   ExpressionEditorView_ShowOnlyDifferFromDefaultValue: "\u30C7\u30D5\u30A9\u30EB\u30C8\u8868\u60C5\u3068\u7570\u306A\u308B\u5024\u306E\u30B7\u30A7\u30A4\u30D7\u30AD\u30FC\u306E\u307F\u8868\u793A"
+  ExpressionEditorView_ReflectInPreviewOnMouseOver: "\u30DE\u30A6\u30B9\u30AA\u30FC\u30D0\u30FC\u3067\u30D7\u30EC\u30D3\u30E5\u30FC\u306B\u53CD\u6620"
   ExpressionEditorView_Delimiter: "\u30B7\u30A7\u30A4\u30D7\u30AD\u30FC\u306E\u533A\u5207\u308A\u6587\u5B57"
   ExpressionEditorView_UncategorizedBlendShapes: "\u672A\u5206\u985E\u306E\u30B7\u30A7\u30A4\u30D7\u30AD\u30FC"
   ExpressionEditorView_NoBlendShapes: "\u30B7\u30A7\u30A4\u30D7\u30AD\u30FC\u304C\u3042\u308A\u307E\u305B\u3093"

@@ -315,24 +315,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return tPose;
         }
 
-        public static AnimationClip SynthesizeAvatarPose(AnimationClip animationClip)
+        public static AnimationClip SynthesizeClip(AnimationClip baseClip, AnimationClip additionalClip)
         {
             var synthesized = new AnimationClip();
 
-            var avatarPose = GetAvatarPoseClip();
-            if (avatarPose != null) { EditorUtility.CopySerialized(avatarPose, synthesized); }
+            if (baseClip != null) { EditorUtility.CopySerialized(baseClip, synthesized); }
 
-            if (animationClip != null)
+            if (additionalClip != null)
             {
-                foreach (var binding in AnimationUtility.GetCurveBindings(animationClip))
+                foreach (var binding in AnimationUtility.GetCurveBindings(additionalClip))
                 {
-                    var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
+                    var curve = AnimationUtility.GetEditorCurve(additionalClip, binding);
                     AnimationUtility.SetEditorCurve(synthesized, binding, curve);
                 }
             }
 
             return synthesized;
         }
+
+        public static AnimationClip SynthesizeAvatarPose(AnimationClip animationClip) => SynthesizeClip(GetAvatarPoseClip(), animationClip);
 
         public static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList, ModeNameProvider modeNameProvider)
         {

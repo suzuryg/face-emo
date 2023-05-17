@@ -36,6 +36,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private GameObject _previewAvatar;
         private AnimationClip _previewClip;
+        private string _previewBlendShape;
         private Dictionary<string, float> _faceBlendShapes = new Dictionary<string, float>();
         private Dictionary<string, float> _animatedBlendShapes = new Dictionary<string, float>();
         private Dictionary<string, float> _animatedBlendShapesBuffer = new Dictionary<string, float>();
@@ -96,6 +97,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
+        public void SetPreviewBlendShape(string blendShapeName)
+        {
+            var previous = _previewBlendShape;
+            _previewBlendShape = blendShapeName;
+            if (previous != _previewBlendShape) { RenderPreviewClip(); }
+        }
+
         public void StartSampling()
         {
             var avatarRoot = _aV3Setting?.TargetAvatar?.gameObject;
@@ -106,9 +114,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             _previewAvatar.SetActive(true);
             _previewAvatar.hideFlags = HideFlags.HideAndDontSave;
 
+            // Synthesize preview blend shape
+            AnimationClip synthesized;
+            if (string.IsNullOrEmpty(_previewBlendShape))
+            {
+                synthesized = _previewClip;
+            }
+            else
+            {
+                synthesized = new AnimationClip();
+                if (_previewClip != null) { EditorUtility.CopySerialized(_previewClip, synthesized); }
+                SetBlendShapeValue(synthesized, _previewBlendShape, 100);
+            }
+
+            // Sample
             AnimationMode.StartAnimationMode();
             AnimationMode.BeginSampling();
-            AnimationMode.SampleAnimationClip(_previewAvatar, _previewClip, _previewClip.length);
+            AnimationMode.SampleAnimationClip(_previewAvatar, synthesized, synthesized.length);
             AnimationMode.EndSampling();
 
             _previewAvatar.transform.position = new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);

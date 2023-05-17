@@ -35,8 +35,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         private Vector2 _rightScrollPosition = Vector2.zero;
 
         private Texture2D _redTexture; // Store to avoid destruction
+        private Texture2D _yellowTexture; // Store to avoid destruction
         private GUIStyle _removeButtonStyle = new GUIStyle();
+        private GUIStyle _addPropertyLabelStyle = new GUIStyle();
         private GUIStyle _addPropertyButtonStyle = new GUIStyle();
+        private GUIStyle _addPropertyButtonMouseOverStyle = new GUIStyle();
         private GUIStyle _warningTextStyle = new GUIStyle();
         private GUIStyle _normalPropertyStyle = new GUIStyle();
         private GUIStyle _warnedPropertyStyle = new GUIStyle();
@@ -93,6 +96,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         {
             // Texture
             _redTexture = ViewUtility.MakeTexture(Color.red);
+            _yellowTexture = ViewUtility.MakeTexture(Color.yellow);
 
             // Remove button
             _removeButtonStyle = new GUIStyle(GUI.skin.button);
@@ -104,9 +108,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             //_removeButtonStyle.active.background = MakeTexture(new Color(0.8f, 0, 0));
             //_removeButtonStyle.active.textColor = Color.white;
 
-            // Add property button
+            // Add property label / button
+            _addPropertyLabelStyle = new GUIStyle(GUI.skin.label);
+            _addPropertyLabelStyle.fixedHeight = EditorGUIUtility.singleLineHeight * 1.5f;
+
             _addPropertyButtonStyle = new GUIStyle(GUI.skin.button);
             _addPropertyButtonStyle.alignment = TextAnchor.MiddleLeft;
+            _addPropertyButtonStyle.fixedHeight = EditorGUIUtility.singleLineHeight * 1.5f;
+
+            _addPropertyButtonMouseOverStyle = new GUIStyle(GUI.skin.button);
+            _addPropertyButtonMouseOverStyle.alignment = TextAnchor.MiddleLeft;
+            _addPropertyButtonMouseOverStyle.normal.background = _yellowTexture;
+            _addPropertyButtonMouseOverStyle.normal.textColor = Color.black;
+            _addPropertyButtonMouseOverStyle.fixedHeight = EditorGUIUtility.singleLineHeight * 1.5f;
 
             // Warning text
             _warningTextStyle = new GUIStyle(GUI.skin.label);
@@ -199,6 +213,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 using (new EditorGUILayout.VerticalScope(GUILayout.Width(rightContentWidth), GUILayout.Height(contentHeight)))
                 {
                     Field_FaceBlendShapeDelimiter();
+                    Field_ReflectInPreviewOnMouseOver();
                     using (var scope = new EditorGUILayout.ScrollViewScope(_rightScrollPosition))
                     {
                         Field_FaceBlendShapes();
@@ -235,6 +250,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                     }
                 }
                 GUILayout.Label(_localizationTable.ExpressionEditorView_ShowOnlyDifferFromDefaultValue);
+            }
+        }
+
+        private void Field_ReflectInPreviewOnMouseOver()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                using (var check = new EditorGUI.ChangeCheckScope())
+                {
+                    EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ReflectInPreviewOnMouseOver)),
+                        new GUIContent(string.Empty), GUILayout.Width(ToggleWidth));
+
+                    if (check.changed)
+                    {
+                        _expressionEditorSetting.ApplyModifiedProperties();
+                    }
+                }
+                GUILayout.Label(_localizationTable.ExpressionEditorView_ReflectInPreviewOnMouseOver);
             }
         }
 
@@ -526,6 +559,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
             // Draw buttons
             var added = new List<string>();
+            var blendShapeMouseOver = string.Empty;
             foreach (var category in categorized)
             {
                 _faceBlendShapeFoldoutStates[category.Key] = EditorGUILayout.Foldout(_faceBlendShapeFoldoutStates[category.Key], category.Key);
@@ -551,11 +585,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
                             if (_expressionEditor.AnimatedBlendShapesBuffer.ContainsKey(blendShapeKey))
                             {
-                                GUILayout.Label(blendShapeKey);
+                                GUILayout.Label(blendShapeKey, _addPropertyLabelStyle);
                             }
                             else
                             {
-                                if (GUILayout.Button(blendShapeKey, _addPropertyButtonStyle))
+                                var buttonRect = GUILayoutUtility.GetRect(new GUIContent(blendShapeKey), _addPropertyButtonStyle);
+                                var buttonStyle = _addPropertyButtonStyle;
+
+                                var reflect = _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ReflectInPreviewOnMouseOver)).boolValue;
+                                if (reflect && buttonRect.Contains(Event.current.mousePosition))
+                                {
+                                    buttonStyle = _addPropertyButtonMouseOverStyle;
+                                    blendShapeMouseOver = blendShapeKey;
+                                }
+
+                                if (GUI.Button(buttonRect, blendShapeKey, buttonStyle))
                                 {
                                     added.Add(blendShapeKey);
                                 }
@@ -563,6 +607,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                         }
                     }
                 }
+            }
+
+            // Preview mouse over blend shape
+            // Since it is always judged not to be mouse-over at the Layout event, the preview process is called only at the Repaint event.
+            if (Event.current.type == EventType.Repaint)
+            {
+                _expressionEditor.SetPreviewBlendShape(blendShapeMouseOver);
             }
 
             // Set buffer

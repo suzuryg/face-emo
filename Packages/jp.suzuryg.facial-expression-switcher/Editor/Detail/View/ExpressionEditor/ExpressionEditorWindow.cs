@@ -9,6 +9,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
     {
         private ISubWindowProvider _subWindowProvider;
 
+        public ExpressionEditorWindow() : base()
+        {
+            // Avoid duplicate invocations of blend shape preview on mouseover.
+            wantsMouseMove = false;
+        }
+
         public void SetProvider(ISubWindowProvider subWindowProvider)
         {
             _subWindowProvider = subWindowProvider;
