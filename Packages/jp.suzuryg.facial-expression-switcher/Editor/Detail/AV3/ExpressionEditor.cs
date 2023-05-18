@@ -152,6 +152,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         public Vector3 GetAvatarViewPosition()
         {
+            // Returns view position if previewable in T-pose.
+            if (AV3Utility.GetAvatarPoseClip() != null && _aV3Setting?.TargetAvatar?.ViewPosition != null)
+            {
+                return _aV3Setting.TargetAvatar.ViewPosition + new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
+            }
+            // Returns head position if not previewable in T-pose.
+            else
+            {
+                return GetAvatarHeadPosition();
+            }
+        }
+
+        public Vector3 GetAvatarHeadPosition()
+        {
             var origin = new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
             var avatarRoot = _aV3Setting?.TargetAvatar?.gameObject;
             if (avatarRoot != null)
@@ -182,7 +196,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 finally
                 {
                     AnimationMode.StopAnimationMode();
-                    UnityEngine.Object.DestroyImmediate(clonedAvatar);
+                    if (clonedAvatar != null) { UnityEngine.Object.DestroyImmediate(clonedAvatar); }
                 }
             }
             else
