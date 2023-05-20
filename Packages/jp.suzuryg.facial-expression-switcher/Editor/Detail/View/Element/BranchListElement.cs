@@ -34,6 +34,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly Color FocusedElementColor = new Color(0f, 0.5f, 1f, 0.4f);
 
         public IMenu Menu { get; private set; }
+        public string SelectedModeId { get; private set; }
         public bool IsSimplified { get; set; } = false;
 
         public IObservable<(
@@ -91,7 +92,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private ReorderableList _reorderableList;
         private List<ConditionListElement> _conditionListElements = new List<ConditionListElement>();
-        private string _selectedModeId;
         private Vector2 _scrollPosition = Vector2.zero;
         private Texture2D _activeBackgroundTexture;
         private Texture2D _focusedBackgroundTexture;
@@ -202,7 +202,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             // Draw list
-            if (Menu is null || !Menu.ContainsMode(_selectedModeId))
+            if (Menu is null || !Menu.ContainsMode(SelectedModeId))
             {
                 return;
             }
@@ -231,9 +231,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public void ChangeModeSelection(string modeId)
         {
-            if (_selectedModeId != modeId)
+            if (SelectedModeId != modeId)
             {
-                _selectedModeId = modeId;
+                SelectedModeId = modeId;
                 UpdateList();
                 ChangeBranchSelection(-1);
             }
@@ -288,9 +288,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private void UpdateList()
         {
             List<IBranch> branches = new List<IBranch>();
-            if (Menu is IMenu && Menu.ContainsMode(_selectedModeId))
+            if (Menu is IMenu && Menu.ContainsMode(SelectedModeId))
             {
-                branches = Menu.GetMode(_selectedModeId).Branches.ToList();
+                branches = Menu.GetMode(SelectedModeId).Branches.ToList();
             }
 
             _reorderableList.index = Math.Min(_reorderableList.index, branches.Count  - 1);
@@ -303,10 +303,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 var branch = branches[branchIndex];
                 var conditionElement = new ConditionListElement(branchIndex, branch.Conditions, _localizationSetting).AddTo(_conditionDisposables);
-                conditionElement.OnAddConditionButtonClicked.Subscribe(x => _onAddConditionButtonClicked.OnNext((_selectedModeId, x.branchIndex, x.condition))).AddTo(_conditionDisposables);
-                conditionElement.OnModifyConditionButtonClicked.Subscribe(x => _onModifyConditionButtonClicked.OnNext((_selectedModeId, x.branchIndex, x.conditionIndex, x.condition))).AddTo(_conditionDisposables);
-                conditionElement.OnConditionOrderChanged.Subscribe(x => _onConditionOrderChanged.OnNext((_selectedModeId, x.branchIndex, x.from, x.to))).AddTo(_conditionDisposables);
-                conditionElement.OnRemoveConditionButtonClicked.Subscribe(x => _onRemoveConditionButtonClicked.OnNext((_selectedModeId, x.branchIndex, x.conditionIndex))).AddTo(_conditionDisposables);
+                conditionElement.OnAddConditionButtonClicked.Subscribe(x => _onAddConditionButtonClicked.OnNext((SelectedModeId, x.branchIndex, x.condition))).AddTo(_conditionDisposables);
+                conditionElement.OnModifyConditionButtonClicked.Subscribe(x => _onModifyConditionButtonClicked.OnNext((SelectedModeId, x.branchIndex, x.conditionIndex, x.condition))).AddTo(_conditionDisposables);
+                conditionElement.OnConditionOrderChanged.Subscribe(x => _onConditionOrderChanged.OnNext((SelectedModeId, x.branchIndex, x.from, x.to))).AddTo(_conditionDisposables);
+                conditionElement.OnRemoveConditionButtonClicked.Subscribe(x => _onRemoveConditionButtonClicked.OnNext((SelectedModeId, x.branchIndex, x.conditionIndex))).AddTo(_conditionDisposables);
                 _conditionListElements.Add(conditionElement);
             }
         }
@@ -348,12 +348,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         {
             if (IsSimplified) { return SimplifiedHeight; }
 
-            if (Menu is null || !Menu.ContainsMode(_selectedModeId))
+            if (Menu is null || !Menu.ContainsMode(SelectedModeId))
             {
                 return MinHeight;
             }
 
-            var mode = Menu.GetMode(_selectedModeId);
+            var mode = Menu.GetMode(SelectedModeId);
 
             if (mode.Branches.Count <= index || _conditionListElements.Count <= index)
             {
@@ -376,12 +376,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void DrawElement(Rect rect, int index, bool isActive, bool isFocused)
         {
-            if (Menu is null || !Menu.ContainsMode(_selectedModeId))
+            if (Menu is null || !Menu.ContainsMode(SelectedModeId))
             {
                 return;
             }
 
-            var mode = Menu.GetMode(_selectedModeId);
+            var mode = Menu.GetMode(SelectedModeId);
 
             if (mode.Branches.Count <= index || _conditionListElements.Count <= index)
             {
@@ -418,7 +418,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _eyeTrackingText);
                 if (eyeTracking != eyeToBool(branch.EyeTrackingControl))
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null));
+                    _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null));
                 }
 
                 yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
@@ -433,7 +433,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _blinkText);
                     if (blink != branch.BlinkEnabled)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, blink, null, null, null));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, blink, null, null, null));
                     }
                 }
 
@@ -449,7 +449,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthTrackingText);
                 if (mouthTracking != mouthToBool(branch.MouthTrackingControl))
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null));
+                    _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null));
                 }
 
                 yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
@@ -464,7 +464,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
                     if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, mouthMorphCancel, null, null));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, mouthMorphCancel, null, null));
                     }
                 }
                 else
@@ -484,7 +484,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useLeftTriggerText);
                     if (useLeftTrigger != branch.IsLeftTriggerUsed)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, useLeftTrigger, null));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, useLeftTrigger, null));
                     }
                 }
                 else
@@ -504,7 +504,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useRightTriggerText);
                     if (useRightTrigger != branch.IsRightTriggerUsed)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, null, useRightTrigger));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, null, useRightTrigger));
                     }
                 }
                 else
@@ -533,7 +533,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             if (!IsSimplified)
             {
                 _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
-                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Base)); }, _modeNameProvider.Provide(mode));
+                    guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Base)); }, _modeNameProvider.Provide(mode));
 
                 xCurrent = xBegin;
                 yCurrent += _animationElement.GetHeight() + VerticalMargin;
@@ -550,7 +550,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     var newPath = AssetDatabase.GetAssetPath(newClip);
                     var newGUID = AssetDatabase.AssetPathToGUID(newPath);
-                    _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Base));
+                    _onAnimationChanged.OnNext((newGUID, SelectedModeId, index, BranchAnimationType.Base));
                 }
             }
 
@@ -560,7 +560,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
                 {
                     _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
-                        guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Left)); }, _modeNameProvider.Provide(mode));
+                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Left)); }, _modeNameProvider.Provide(mode));
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _leftTriggerAnimationText, _centerStyle);
                 }
 
@@ -573,7 +573,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
                 {
                     _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
-                        guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Right)); }, _modeNameProvider.Provide(mode));
+                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Right)); }, _modeNameProvider.Provide(mode));
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _rightTriggerAnimationText, _centerStyle);
                 }
 
@@ -586,7 +586,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
                 {
                     _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
-                        guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Both)); }, _modeNameProvider.Provide(mode));
+                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Both)); }, _modeNameProvider.Provide(mode));
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
                 }
             }
@@ -611,17 +611,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void OnElementAdded(ReorderableList reorderableList)
         {
-            _onAddBranchButtonClicked.OnNext(_selectedModeId);
+            _onAddBranchButtonClicked.OnNext(SelectedModeId);
         }
 
         private void OnElementRemoved(ReorderableList reorderableList)
         {
-            _onRemoveBranchButtonClicked.OnNext((_selectedModeId, _reorderableList.index));
+            _onRemoveBranchButtonClicked.OnNext((SelectedModeId, _reorderableList.index));
         }
 
         private void OnElementOrderChanged(ReorderableList reorderableList, int oldIndex, int newIndex)
         {
-            _onBranchOrderChanged.OnNext((_selectedModeId, oldIndex, newIndex));
+            _onBranchOrderChanged.OnNext((SelectedModeId, oldIndex, newIndex));
         }
 
         private void OnElementSelectionChanged(ReorderableList reorderableList)
@@ -633,12 +633,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         {
             List<Domain.Animation> animations = new List<Domain.Animation>();
 
-            if (Menu is null || !Menu.ContainsMode(_selectedModeId))
+            if (Menu is null || !Menu.ContainsMode(SelectedModeId))
             {
                 return animations;
             }
 
-            var mode = Menu.GetMode(_selectedModeId);
+            var mode = Menu.GetMode(SelectedModeId);
             foreach (var branch in mode.Branches)
             {
                 animations.Add(branch.BaseAnimation);

@@ -23,6 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
     {
         private ISetExistingAnimationUseCase _setExistingAnimationUseCase;
         private IAddBranchUseCase _addBranchUseCase;
+        private IAddMultipleBranchesUseCase _addMultipleBranchesUseCase;
         private IChangeBranchOrderUseCase _changeBranchOrderUseCase;
         private IModifyBranchPropertiesUseCase _modifyBranchPropertiesUseCase;
         private IRemoveBranchUseCase _removeBranchUseCase;
@@ -45,17 +46,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private Label _titleLabel;
         private Toggle _simplifyToggle;
+        private IMGUIContainer _presetContainer;
         private Button _openGestureTableWindowButton;
         private IMGUIContainer _branchListContainer;
 
         private AnimationElement _animationElement;
         private BranchListElement _branchListElement;
 
+        private int _selectedPresetIndex = 0;
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public BranchListView(
             ISetExistingAnimationUseCase setExistingAnimationUseCase,
             IAddBranchUseCase addBranchUseCase,
+            IAddMultipleBranchesUseCase addMultipleBranchesUseCase,
             IChangeBranchOrderUseCase changeBranchOrderUseCase,
             IModifyBranchPropertiesUseCase modifyBranchPropertiesUseCase,
             IRemoveBranchUseCase removeBranchUseCase,
@@ -79,6 +84,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Usecases
             _setExistingAnimationUseCase = setExistingAnimationUseCase;
             _addBranchUseCase = addBranchUseCase;
+            _addMultipleBranchesUseCase = addMultipleBranchesUseCase;
             _changeBranchOrderUseCase = changeBranchOrderUseCase;
             _modifyBranchPropertiesUseCase = modifyBranchPropertiesUseCase;
             _removeBranchUseCase = removeBranchUseCase;
@@ -148,15 +154,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Query elements
             _titleLabel = root.Q<Label>("TitleLabel");
             _simplifyToggle = root.Q<Toggle>("SimplifyToggle");
+            _presetContainer = root.Q<IMGUIContainer>("PresetContainer");
             _openGestureTableWindowButton = root.Q<Button>("OpenGestureTableWindowButton");
             _branchListContainer = root.Q<IMGUIContainer>("BranchListContainer");
-            NullChecker.Check(_titleLabel, _openGestureTableWindowButton, _branchListContainer);
+            NullChecker.Check(_titleLabel, _simplifyToggle, _presetContainer, _openGestureTableWindowButton, _branchListContainer);
 
             // Initialize elements
             _simplifyToggle.value = _branchListElement.IsSimplified;
 
             // Add event handlers
             _simplifyToggle.RegisterValueChangedCallback(OnSimplifyValueChanged);
+            Observable.FromEvent(x => _presetContainer.onGUIHandler += x, x => _presetContainer.onGUIHandler -= x)
+                .Synchronize().Subscribe(_ => OnBranchPresetGUI(_presetContainer.contentRect)).AddTo(_disposables);
             Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnOpenGestureTableWindowButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _branchListContainer.onGUIHandler += x, x => _branchListContainer.onGUIHandler -= x)
@@ -292,6 +301,138 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
                 // Make the created branch selected in GestureTableView
                 _selectionSynchronizer.ChangeBranchListViewSelection(_branchListElement?.GetNumOfBranches() - 1 ?? -1);
+            }
+        }
+
+        private void OnBranchPresetGUI(Rect rect)
+        {
+            var menu = _branchListElement.Menu;
+            var modeId = _branchListElement.SelectedModeId;
+            var enabled = true;
+            if (menu is null || string.IsNullOrEmpty(modeId) || !menu.ContainsMode(modeId))
+            {
+                enabled = false;
+            }
+
+            var presets = new[]
+            {
+                _localizationTable.BranchListView_Preset_LeftOnly,
+                _localizationTable.BranchListView_Preset_RightOnly,
+                _localizationTable.BranchListView_Preset_LeftPriority,
+                _localizationTable.BranchListView_Preset_RightPriority,
+                _localizationTable.BranchListView_Preset_Combination,
+            };
+
+            using (new EditorGUI.DisabledScope(!enabled))
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                // Select preset
+                GUILayout.Label(_localizationTable.BranchListView_Preset);
+                _selectedPresetIndex = EditorGUILayout.Popup(_selectedPresetIndex, presets);
+                if (GUILayout.Button(_localizationTable.Common_Add, GUILayout.Width(50)))
+                {
+                    if (_selectedPresetIndex < 0 || _selectedPresetIndex >= presets.Length)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.BranchListView_Message_InvalidPreset, "OK");
+                        return;
+                    }
+
+                    // Add preset
+                    var preset = presets[_selectedPresetIndex];
+                    if (EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.BranchListView_Message_AddPreset + "\n" + preset,
+                        _localizationTable.Common_Yes, _localizationTable.Common_No))
+                    {
+                        var gestures = new[]
+                        {
+                            HandGesture.Neutral,
+                            HandGesture.Fist,
+                            HandGesture.HandOpen,
+                            HandGesture.Fingerpoint,
+                            HandGesture.Victory,
+                            HandGesture.RockNRoll,
+                            HandGesture.HandGun,
+                            HandGesture.ThumbsUp,
+                        };
+                        // Left only
+                        if (preset == _localizationTable.BranchListView_Preset_LeftOnly)
+                        {
+                            var branches = new List<Condition[]>();
+                            foreach (var gesture in gestures)
+                            {
+                                if (gesture == HandGesture.Neutral) { continue; }
+                                branches.Add(new[] { new Condition(Hand.Left, gesture, ComparisonOperator.Equals) });
+                            }
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                        }
+                        // Right only
+                        else if (preset == _localizationTable.BranchListView_Preset_RightOnly)
+                        {
+                            var branches = new List<Condition[]>();
+                            foreach (var gesture in gestures)
+                            {
+                                if (gesture == HandGesture.Neutral) { continue; }
+                                branches.Add(new[] { new Condition(Hand.Right, gesture, ComparisonOperator.Equals) });
+                            }
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                        }
+                        // Left priority
+                        else if (preset == _localizationTable.BranchListView_Preset_LeftPriority)
+                        {
+                            var branches = new List<Condition[]>();
+                            foreach (var gesture in gestures)
+                            {
+                                if (gesture == HandGesture.Neutral) { continue; }
+                                branches.Add(new[] { new Condition(Hand.Left, gesture, ComparisonOperator.Equals) });
+                            }
+                            foreach (var gesture in gestures)
+                            {
+                                if (gesture == HandGesture.Neutral) { continue; }
+                                branches.Add(new[] { new Condition(Hand.Right, gesture, ComparisonOperator.Equals) });
+                            }
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                        }
+                        // Right priority
+                        else if (preset == _localizationTable.BranchListView_Preset_RightPriority)
+                        {
+                            var branches = new List<Condition[]>();
+                            foreach (var gesture in gestures)
+                            {
+                                if (gesture == HandGesture.Neutral) { continue; }
+                                branches.Add(new[] { new Condition(Hand.Right, gesture, ComparisonOperator.Equals) });
+                            }
+                            foreach (var gesture in gestures)
+                            {
+                                if (gesture == HandGesture.Neutral) { continue; }
+                                branches.Add(new[] { new Condition(Hand.Left, gesture, ComparisonOperator.Equals) });
+                            }
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                        }
+                        // Combination
+                        else if (preset == _localizationTable.BranchListView_Preset_Combination)
+                        {
+                            var branches = new List<Condition[]>();
+                            foreach (var left in gestures)
+                            {
+                                foreach (var right in gestures)
+                                {
+                                    if (left == HandGesture.Neutral && right == HandGesture.Neutral) { continue; }
+                                    branches.Add(new[]
+                                    {
+                                        new Condition(Hand.Left, left, ComparisonOperator.Equals),
+                                        new Condition(Hand.Right, right, ComparisonOperator.Equals),
+                                    });
+                                }
+                            }
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                        }
+                        // Invalid preset
+                        else
+                        {
+                            EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.BranchListView_Message_InvalidPreset, "OK");
+                            return;
+                        }
+                    }
+                }
             }
         }
     }

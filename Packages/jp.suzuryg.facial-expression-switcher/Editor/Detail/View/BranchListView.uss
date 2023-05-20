@@ -34,6 +34,22 @@
     align-self: auto;
 }
 
+#SimplifyToggle
+{
+    margin-left: auto;
+    margin-top: -6px;
+    width: 75px;
+    height: 20px;
+}
+
+#PresetContainer
+{
+    margin-top: -5px;
+    margin-right: 10px;
+    width: 265px;
+    height: 20px;
+}
+
 #OpenGestureTableWindowButton
 {
     margin-top: -5px;

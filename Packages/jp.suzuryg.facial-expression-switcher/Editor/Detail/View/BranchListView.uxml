@@ -12,6 +12,7 @@
 		<engine:VisualElement name="TopRow">
 			<engine:Label name="TitleLabel"/>
 			<engine:Toggle name="SimplifyToggle"/>
+			<engine:IMGUIContainer name="PresetContainer"/>
 			<engine:Button name="OpenGestureTableWindowButton"/>
 		</engine:VisualElement>
 		<engine:IMGUIContainer name="BranchListContainer"/>

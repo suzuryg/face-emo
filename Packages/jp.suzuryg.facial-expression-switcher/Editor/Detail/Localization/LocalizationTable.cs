@@ -74,6 +74,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string BranchListView_Both = "BothHands";
         public string BranchListView_Equals = "Equals";
         public string BranchListView_NotEqual = "NotEqual";
+        public string BranchListView_Preset = "Preset";
+        public string BranchListView_Preset_LeftOnly = "Left Only (7 Patterns)";
+        public string BranchListView_Preset_RightOnly = "Right Only (7 Patterns)";
+        public string BranchListView_Preset_LeftPriority = "Left Priority (14 Patterns)";
+        public string BranchListView_Preset_RightPriority = "Right Priority (14 Patterns)";
+        public string BranchListView_Preset_Combination = "Combination (63 Patterns)";
+        public string BranchListView_Message_AddPreset = "Are you sure you want to add the following facial expression preset?";
+        public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
 
         public string SettingView_UpdateThumbnails = "Update Thumbnails";
         public string SettingView_DefaultSelectedMode = "Default Selected Mode";

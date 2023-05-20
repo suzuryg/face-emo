@@ -98,6 +98,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IRemoveMenuItemUseCase>().To<RemoveMenuItemUseCase>().AsTransient();
             Container.Bind<IGenerateFxUseCase>().To<GenerateFxUseCase>().AsTransient();
             Container.Bind<IAddBranchUseCase>().To<AddBranchUseCase>().AsTransient();
+            Container.Bind<IAddMultipleBranchesUseCase>().To<AddMultipleBranchesUseCase>().AsTransient();
             Container.Bind<IModifyBranchPropertiesUseCase>().To<ModifyBranchPropertiesUseCase>().AsTransient();
             Container.Bind<IChangeBranchOrderUseCase>().To<ChangeBranchOrderUseCase>().AsTransient();
             Container.Bind<IRemoveBranchUseCase>().To<RemoveBranchUseCase>().AsTransient();
@@ -117,6 +118,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<IRemoveMenuItemPresenter>().To<RemoveMenuItemPresenter>().AsSingle();
             Container.Bind<IGenerateFxPresenter>().To<GenerateFxPresenter>().AsSingle();
             Container.Bind<IAddBranchPresenter>().To<AddBranchPresenter>().AsSingle();
+            Container.Bind<IAddMultipleBranchesPresenter>().To<AddMultipleBranchesPresenter>().AsSingle();
             Container.Bind<IModifyBranchPropertiesPresenter>().To<ModifyBranchPropertiesPresenter>().AsSingle();
             Container.Bind<IChangeBranchOrderPresenter>().To<ChangeBranchOrderPresenter>().AsSingle();
             Container.Bind<IRemoveBranchPresenter>().To<RemoveBranchPresenter>().AsSingle();
