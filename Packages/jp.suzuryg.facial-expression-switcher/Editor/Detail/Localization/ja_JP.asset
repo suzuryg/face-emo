@@ -59,6 +59,7 @@ MonoBehaviour:
   MenuItemListView_MouthMorphCanceler: "\u53E3\u5909\u5F62\u30AD\u30E3\u30F3\u30BB\u30EB\u6709\u52B9"
   MenuItemListView_Empty: "\u3053\u306E\u30B0\u30EB\u30FC\u30D7\u306F\u7A7A\u3067\u3059\u3002"
   BranchListView_Title: "\u5206\u5C90\u30D3\u30E5\u30FC"
+  BranchListView_Simplify: "\u7C21\u6613\u8868\u793A"
   BranchListView_OpenGestureTable: "\u30B8\u30A7\u30B9\u30C1\u30E3\u30FC\u8868\u3092\u958B\u304F"
   BranchListView_UseLeftTrigger: "\u5DE6\u30C8\u30EA\u30AC\u30FC\u3092\u4F7F\u7528\u3059\u308B"
   BranchListView_UseRightTrigger: "\u53F3\u30C8\u30EA\u30AC\u30FC\u3092\u4F7F\u7528\u3059\u308B"

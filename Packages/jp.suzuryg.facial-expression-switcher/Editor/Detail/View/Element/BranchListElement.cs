@@ -28,11 +28,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly int PropertiesWidth = 150;
         private static readonly int ToggleWidth = 15;
         private static readonly int MinHeight = 100;
+        private static readonly int SimplifiedHeight = 65;
         private static readonly int ReorderableListDragHandleWidth = 50;
         private static readonly Color ActiveElementColor = new Color(0f, 0.5f, 1f, 0.4f);
         private static readonly Color FocusedElementColor = new Color(0f, 0.5f, 1f, 0.4f);
 
         public IMenu Menu { get; private set; }
+        public bool IsSimplified { get; set; } = false;
 
         public IObservable<(
             string clipGUID,
@@ -189,12 +191,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         public void OnGUI(Rect rect)
         {
             // Update thumbnails
-            var animations = GetAnimations();
-            foreach (var animation in animations)
+            if (!IsSimplified)
             {
-                _thumbnailDrawer.GetThumbnail(animation);
+                var animations = GetAnimations();
+                foreach (var animation in animations)
+                {
+                    _thumbnailDrawer.GetThumbnail(animation);
+                }
+                _thumbnailDrawer.Update();
             }
-            _thumbnailDrawer.Update();
 
             // Draw list
             if (Menu is null || !Menu.ContainsMode(_selectedModeId))
@@ -341,6 +346,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private float GetElementHeight(int index)
         {
+            if (IsSimplified) { return SimplifiedHeight; }
+
             if (Menu is null || !Menu.ContainsMode(_selectedModeId))
             {
                 return MinHeight;
@@ -397,142 +404,191 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
             // Conditions
             var conditionHeight = Math.Max(ConditionListElement.GetMinHeight(), _animationElement.GetHeight());
+            if (IsSimplified) { conditionHeight = SimplifiedHeight; }
             condition.OnGUI(new Rect(xCurrent, yCurrent, ConditionListElement.GetWidth(), conditionHeight));
 
             xCurrent += ConditionListElement.GetWidth() + upperHorizontalMargin;
 
             // Eye tracking
-            Func<EyeTrackingControl, bool> eyeToBool = (EyeTrackingControl eyeTrackingControl) => eyeTrackingControl == EyeTrackingControl.Tracking;
-            Func<bool, EyeTrackingControl> boolToEye = (bool value) => value ? EyeTrackingControl.Tracking : EyeTrackingControl.Animation;
-            var eyeTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), eyeToBool(branch.EyeTrackingControl), string.Empty);
-            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _eyeTrackingText);
-            if (eyeTracking != eyeToBool(branch.EyeTrackingControl))
+            if (!IsSimplified)
             {
-                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null));
-            }
+                Func<EyeTrackingControl, bool> eyeToBool = (EyeTrackingControl eyeTrackingControl) => eyeTrackingControl == EyeTrackingControl.Tracking;
+                Func<bool, EyeTrackingControl> boolToEye = (bool value) => value ? EyeTrackingControl.Tracking : EyeTrackingControl.Animation;
+                var eyeTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), eyeToBool(branch.EyeTrackingControl), string.Empty);
+                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _eyeTrackingText);
+                if (eyeTracking != eyeToBool(branch.EyeTrackingControl))
+                {
+                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null));
+                }
 
-            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+                yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+            }
 
             // Blink
-            using (new EditorGUI.DisabledScope(!_aV3Setting.ReplaceBlink))
+            if (!IsSimplified)
             {
-                var blink = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.BlinkEnabled, string.Empty);
-                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _blinkText);
-                if (blink != branch.BlinkEnabled)
+                using (new EditorGUI.DisabledScope(!_aV3Setting.ReplaceBlink))
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, blink, null, null, null));
+                    var blink = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.BlinkEnabled, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _blinkText);
+                    if (blink != branch.BlinkEnabled)
+                    {
+                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, blink, null, null, null));
+                    }
                 }
-            }
 
-            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+                yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+            }
 
             // Mouth tracking
             Func<MouthTrackingControl, bool> mouthToBool = (MouthTrackingControl mouthTrackingControl) => mouthTrackingControl == MouthTrackingControl.Tracking;
             Func<bool, MouthTrackingControl> boolToMouth = (bool value) => value ? MouthTrackingControl.Tracking : MouthTrackingControl.Animation;
-            var mouthTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), mouthToBool(branch.MouthTrackingControl), string.Empty);
-            GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthTrackingText);
-            if (mouthTracking != mouthToBool(branch.MouthTrackingControl))
+            if (!IsSimplified)
             {
-                _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null));
-            }
+                var mouthTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), mouthToBool(branch.MouthTrackingControl), string.Empty);
+                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthTrackingText);
+                if (mouthTracking != mouthToBool(branch.MouthTrackingControl))
+                {
+                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null));
+                }
 
-            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+                yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+            }
 
             // Mouth morph cancel
-            if (mouthToBool(branch.MouthTrackingControl))
+            if (!IsSimplified)
             {
-                var mouthMorphCancel = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.MouthMorphCancelerEnabled, string.Empty);
-                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
-                if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
+                if (mouthToBool(branch.MouthTrackingControl))
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, mouthMorphCancel, null, null));
+                    var mouthMorphCancel = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.MouthMorphCancelerEnabled, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
+                    if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
+                    {
+                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, mouthMorphCancel, null, null));
+                    }
                 }
-            }
-            else
-            {
-                ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _mouthMorphCancelerText);
-            }
+                else
+                {
+                    ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _mouthMorphCancelerText);
+                }
 
-            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+                yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+            }
 
             // Is left trigger used
-            if (branch.CanLeftTriggerUsed)
+            if (!IsSimplified)
             {
-                var useLeftTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsLeftTriggerUsed, string.Empty);
-                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useLeftTriggerText);
-                if (useLeftTrigger != branch.IsLeftTriggerUsed)
+                if (branch.CanLeftTriggerUsed)
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, useLeftTrigger, null));
+                    var useLeftTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsLeftTriggerUsed, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useLeftTriggerText);
+                    if (useLeftTrigger != branch.IsLeftTriggerUsed)
+                    {
+                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, useLeftTrigger, null));
+                    }
                 }
-            }
-            else
-            {
-                ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _useLeftTriggerText);
-            }
+                else
+                {
+                    ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _useLeftTriggerText);
+                }
 
-            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+                yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+            }
 
             // Is right trigger used
-            if (branch.CanRightTriggerUsed)
+            if (!IsSimplified)
             {
-                var useRightTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsRightTriggerUsed, string.Empty);
-                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useRightTriggerText);
-                if (useRightTrigger != branch.IsRightTriggerUsed)
+                if (branch.CanRightTriggerUsed)
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, null, useRightTrigger));
+                    var useRightTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsRightTriggerUsed, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useRightTriggerText);
+                    if (useRightTrigger != branch.IsRightTriggerUsed)
+                    {
+                        _onModifyBranchPropertiesButtonClicked.OnNext((_selectedModeId, index, null, null, null, null, null, useRightTrigger));
+                    }
                 }
-            }
-            else
-            {
-                ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _useRightTriggerText);
-            }
+                else
+                {
+                    ViewUtility.RectDummyToggle(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), ToggleWidth, _useRightTriggerText);
+                }
 
-            yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+                yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+            }
 
             // Warning
+            var yWaring = yCurrent;
+            if (IsSimplified) { yWaring += EditorGUIUtility.singleLineHeight + VerticalMargin; }
             if (!branch.IsReachable)
             {
-                GUI.Label(new Rect(xCurrent, yCurrent, PropertiesWidth, EditorGUIUtility.singleLineHeight), "⚠ " + _notReachableBranchText, _warningStyle);
+                GUI.Label(new Rect(xCurrent, yWaring, PropertiesWidth, EditorGUIUtility.singleLineHeight), "⚠ " + _notReachableBranchText, _warningStyle);
             }
 
             xCurrent += PropertiesWidth + upperHorizontalMargin;
             yCurrent = yBegin;
 
-            // Base animation
             var thumbnailWidth = _thumbnailSetting.Main_Width;
             var thumbnailHeight = _thumbnailSetting.Main_Height;
-            _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
-                guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Base)); }, _modeNameProvider.Provide(mode));
 
-            xCurrent = xBegin;
-            yCurrent += _animationElement.GetHeight() + VerticalMargin;
+            // Base animation
+            if (!IsSimplified)
+            {
+                _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
+                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Base)); }, _modeNameProvider.Provide(mode));
+
+                xCurrent = xBegin;
+                yCurrent += _animationElement.GetHeight() + VerticalMargin;
+            }
+            else
+            {
+                var x = xCurrent - PropertiesWidth - upperHorizontalMargin;
+                var width = thumbnailWidth + PropertiesWidth + upperHorizontalMargin;
+
+                var path = AssetDatabase.GUIDToAssetPath(branch.BaseAnimation?.GUID);
+                var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+                var newClip = EditorGUI.ObjectField(new Rect(x, yCurrent, width, EditorGUIUtility.singleLineHeight), clip, typeof(AnimationClip), false);
+                if (!ReferenceEquals(clip, newClip))
+                {
+                    var newPath = AssetDatabase.GetAssetPath(newClip);
+                    var newGUID = AssetDatabase.AssetPathToGUID(newPath);
+                    _onAnimationChanged.OnNext((newGUID, _selectedModeId, index, BranchAnimationType.Base));
+                }
+            }
 
             // Left trigger animation
-            if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
+            if (!IsSimplified)
             {
-                _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
-                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Left)); }, _modeNameProvider.Provide(mode));
-                GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _leftTriggerAnimationText, _centerStyle);
-            }
+                if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
+                {
+                    _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
+                        guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Left)); }, _modeNameProvider.Provide(mode));
+                    GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _leftTriggerAnimationText, _centerStyle);
+                }
 
-            xCurrent += _animationElement.GetWidth() + lowerHorizontalMargin;
+                xCurrent += _animationElement.GetWidth() + lowerHorizontalMargin;
+            }
 
             // Right trigger animation
-            if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
+            if (!IsSimplified)
             {
-                _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
-                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Right)); }, _modeNameProvider.Provide(mode));
-                GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _rightTriggerAnimationText, _centerStyle);
+                if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
+                {
+                    _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
+                        guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Right)); }, _modeNameProvider.Provide(mode));
+                    GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _rightTriggerAnimationText, _centerStyle);
+                }
+
+                xCurrent += _animationElement.GetWidth() + lowerHorizontalMargin;
             }
 
-            xCurrent += _animationElement.GetWidth() + lowerHorizontalMargin;
-
             // Both triggers animations
-            if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
+            if (!IsSimplified)
             {
-                _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
-                    guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Both)); }, _modeNameProvider.Provide(mode));
-                GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
+                if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
+                {
+                    _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
+                        guid => { _onAnimationChanged.OnNext((guid, _selectedModeId, index, BranchAnimationType.Both)); }, _modeNameProvider.Provide(mode));
+                    GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
+                }
             }
         }
 

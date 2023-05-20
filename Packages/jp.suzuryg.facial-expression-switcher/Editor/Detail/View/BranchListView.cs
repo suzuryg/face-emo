@@ -44,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private MainThumbnailDrawer _thumbnailDrawer;
 
         private Label _titleLabel;
+        private Toggle _simplifyToggle;
         private Button _openGestureTableWindowButton;
         private IMGUIContainer _branchListContainer;
 
@@ -128,7 +129,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _addBranchPresenter.Observable.Synchronize().Subscribe(OnAddBranchPresenterCompleted).AddTo(_disposables);
         }
 
-        public void Dispose() => _disposables.Dispose();
+        public void Dispose()
+        {
+            _simplifyToggle.UnregisterValueChangedCallback(OnSimplifyValueChanged);
+            _disposables.Dispose();
+        }
 
         public void Initialize(VisualElement root)
         {
@@ -142,11 +147,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Query elements
             _titleLabel = root.Q<Label>("TitleLabel");
+            _simplifyToggle = root.Q<Toggle>("SimplifyToggle");
             _openGestureTableWindowButton = root.Q<Button>("OpenGestureTableWindowButton");
             _branchListContainer = root.Q<IMGUIContainer>("BranchListContainer");
             NullChecker.Check(_titleLabel, _openGestureTableWindowButton, _branchListContainer);
 
+            // Initialize elements
+            _simplifyToggle.value = _branchListElement.IsSimplified;
+
             // Add event handlers
+            _simplifyToggle.RegisterValueChangedCallback(OnSimplifyValueChanged);
             Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnOpenGestureTableWindowButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _branchListContainer.onGUIHandler += x, x => _branchListContainer.onGUIHandler -= x)
@@ -174,8 +184,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void SetText(LocalizationTable localizationTable)
         {
             _localizationTable = localizationTable;
+            _simplifyToggle.text = localizationTable.BranchListView_Simplify;
             _openGestureTableWindowButton.text = localizationTable.BranchListView_OpenGestureTable;
             _titleLabel.text = localizationTable.BranchListView_Title;
+        }
+
+        private void OnSimplifyValueChanged(ChangeEvent<bool> changeEvent)
+        {
+            _branchListElement.IsSimplified = changeEvent.newValue;
         }
 
         private void OnOpenGestureTableWindowButtonClicked()

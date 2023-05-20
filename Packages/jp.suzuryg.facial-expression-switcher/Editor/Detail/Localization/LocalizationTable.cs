@@ -56,6 +56,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string MenuItemListView_Empty = "This group is empty.";
 
         public string BranchListView_Title = "Branches";
+        public string BranchListView_Simplify = "Simplify";
         public string BranchListView_OpenGestureTable = "Open Gesture Table";
         public string BranchListView_UseLeftTrigger = "Use Left Trigger";
         public string BranchListView_UseRightTrigger = "Use Right Trigger";
