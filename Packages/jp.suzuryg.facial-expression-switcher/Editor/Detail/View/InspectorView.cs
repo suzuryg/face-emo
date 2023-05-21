@@ -49,6 +49,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private LocalizationTable _localizationTable;
 
         private GUIStyle _warningLabelStyle = new GUIStyle();
+        private GUIStyle _helpBoxStyle = new GUIStyle();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -58,6 +59,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             AV3Setting av3Setting,
             ThumbnailSetting thumbnailSetting)
         {
+            // Dependencies
             _localizationSetting = localizationSetting;
             _thumbnailDrawer = exMenuThumbnailDrawer;
             _av3Setting = new SerializedObject(av3Setting);
@@ -91,7 +93,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             };
 
             // Styles
-            _warningLabelStyle = new GUIStyle(GUI.skin.label);
+            try
+            {
+                _warningLabelStyle = new GUIStyle(EditorStyles.label);
+                _helpBoxStyle = new GUIStyle(EditorStyles.helpBox);
+                _helpBoxStyle.fontSize = EditorStyles.label.fontSize;
+            }
+            catch (NullReferenceException)
+            {
+                // Workaround for play mode
+                _warningLabelStyle = new GUIStyle();
+                _helpBoxStyle = new GUIStyle();
+            }
             _warningLabelStyle.normal.textColor = Color.red;
 
             // Set text
@@ -107,6 +120,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _av3Setting.Update();
             _thumbnailSetting.Update();
+
+            Field_CheckVersion();
 
             // Launch button
             var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
@@ -217,6 +232,25 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void SetText(LocalizationTable localizationTable)
         {
             _localizationTable = localizationTable;
+        }
+
+        private void Field_CheckVersion()
+        {
+            if (!PackageVersionChecker.IsCompleted) { return; }
+
+            if (string.IsNullOrEmpty(PackageVersionChecker.ModularAvatar))
+            {
+                HelpBoxWithErrorIcon(_localizationTable.InspectorView_Message_MAVersionError_NotFound);
+            }
+            else if (PackageVersionChecker.ModularAvatar == "1.5.0-beta-4" || PackageVersionChecker.ModularAvatar == "1.5.0")
+            {
+                HelpBoxWithErrorIcon(_localizationTable.InspectorView_Message_MAVersionError_1_5_0);
+            }
+        }
+
+        private void HelpBoxWithErrorIcon(string message)
+        {
+            GUILayout.Label(new GUIContent(message, EditorGUIUtility.IconContent("console.erroricon").image), _helpBoxStyle);
         }
 
         private void Field_Locale()

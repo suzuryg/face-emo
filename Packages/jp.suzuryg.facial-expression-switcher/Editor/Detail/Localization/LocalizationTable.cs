@@ -109,6 +109,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_GenerateModeThumbnails = "Generate Expression Mode Thumbnails";
         public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
+        public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
+        public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
 
         public string InspectorView_Thumbnail = "Thumbnail Setting";
         public string InspectorView_Thumbnail_Distance = "Distance";
