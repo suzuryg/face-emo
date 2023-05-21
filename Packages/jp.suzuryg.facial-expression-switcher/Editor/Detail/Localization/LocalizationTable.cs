@@ -101,6 +101,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string ModeNameProvider_NoExpression = "NoExpression";
 
+        public string InspectorView_TargetAvatarIsNotSpecified = "Please specify the target avatar.";
         public string InspectorView_Launch = "Launch FacialExpressionSwitcher";
         public string InspectorView_TargetAvatar = "Target Avatar";
         public string InspectorView_GenerateModeThumbnails = "Generate Expression Mode Thumbnails";

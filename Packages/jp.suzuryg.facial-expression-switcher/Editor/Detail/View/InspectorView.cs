@@ -108,9 +108,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailSetting.Update();
 
             // Launch button
-            if (GUILayout.Button(_localizationTable.InspectorView_Launch, GUILayout.Height(EditorGUIUtility.singleLineHeight * 3)))
+            var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
+            var canLaunch = avatarDescriptor != null;
+            using (new EditorGUI.DisabledScope(!canLaunch))
             {
-                _onLaunchButtonClicked.OnNext(Unit.Default);
+                var buttonText = canLaunch ? _localizationTable.InspectorView_Launch : _localizationTable.InspectorView_TargetAvatarIsNotSpecified;
+                if (GUILayout.Button(buttonText, GUILayout.Height(EditorGUIUtility.singleLineHeight * 3)))
+                {
+                    _onLaunchButtonClicked.OnNext(Unit.Default);
+                }
             }
             EditorGUILayout.Space(10);
 
