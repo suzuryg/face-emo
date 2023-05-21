@@ -271,7 +271,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         elementRect.y + ElementPadding,
                         contentWidth,
                         EditorGUIUtility.singleLineHeight),
-                        GetGestureText(leftHand) + " ▶ " + GetGestureText(rightHand), _gestureLabelStyle);
+                        GetGestureText(leftHand) + " - " + GetGestureText(rightHand), _gestureLabelStyle);
                     // Thumbnail
                     if (thumbnail != null)
                     {

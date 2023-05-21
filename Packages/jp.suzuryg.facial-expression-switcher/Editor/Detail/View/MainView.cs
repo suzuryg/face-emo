@@ -87,16 +87,26 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnGUI(EditorWindow mainWindow)
         {
-            var hierarchyViewWidth = _hierarchyView != null ? _hierarchyView.GetMinWidth() : 0;
-            var menuItemListViewWidth = _menuItemListView != null ? _menuItemListView.GetMinWidth() : 0;
-            var branchListViewWidth = _branchListView != null ? _branchListView.GetMinWidth() : 0;
+            var hierarchyViewWidth = _hierarchyView != null ? _hierarchyView.GetWidth() : 100;
+            var menuItemListViewWidth = _menuItemListView != null ? _menuItemListView.GetWidth() : 100;
+            var branchListViewWidth = _branchListView != null ? _branchListView.GetWidth() : 100;
 
-            if (_hierarchyArea != null) { _hierarchyArea.style.minWidth = hierarchyViewWidth; }
-            if (_menuItemListArea != null) { _menuItemListArea.style.minWidth = menuItemListViewWidth; }
-            if (_branchListArea != null) { _branchListArea.style.minWidth = branchListViewWidth; }
+            if (_hierarchyArea != null)
+            {
+                _hierarchyArea.style.minWidth = hierarchyViewWidth;
+                _hierarchyArea.style.maxWidth = hierarchyViewWidth;
+            }
+            if (_menuItemListArea != null)
+            {
+                _menuItemListArea.style.minWidth = menuItemListViewWidth;
+            }
+            if (_branchListArea != null)
+            {
+                _branchListArea.style.minWidth = branchListViewWidth;
+            }
 
-            var minWidth = Padding + hierarchyViewWidth + menuItemListViewWidth + branchListViewWidth + Padding;
-            mainWindow.minSize = new Vector2(minWidth, MinHeight);
+            var width = Padding + hierarchyViewWidth + menuItemListViewWidth + branchListViewWidth + Padding;
+            mainWindow.minSize = new Vector2(width, MinHeight);
         }
     }
 }

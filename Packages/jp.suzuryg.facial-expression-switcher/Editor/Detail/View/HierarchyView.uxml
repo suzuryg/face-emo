@@ -9,8 +9,8 @@
 						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
 >
 	<engine:VisualElement name="RootGrid">
+		<engine:Label name="TitleLabel"/>
 		<engine:VisualElement name="TopRow">
-			<engine:Label name="TitleLabel"/>
 			<engine:VisualElement name="TopRow_ButtonCol">
 				<engine:Button name="AddModeButton" class="Button"/>
 				<engine:Button name="AddGroupButton" class="Button"/>

@@ -61,6 +61,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private string _equalsText;
         private string _notEqualText;
 
+        private GUIStyle _centerStyle;
+
         private List<string> _handList = new List<string>();
         private List<string> _handGestureList = new List<string>();
         private List<string> _comparisonOperatorList = new List<string>();
@@ -87,6 +89,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             _reorderableList.onRemoveCallback = OnElementRemoved;
             _reorderableList.elementHeightCallback = GetElementHeight;
             _reorderableList.onReorderCallbackWithDetails = OnElementOrderChanged;
+
+            // Styles
+            try
+            {
+                _centerStyle = new GUIStyle(EditorStyles.label);
+            }
+            catch (NullReferenceException)
+            {
+                // Workaround for play mode
+                _centerStyle = new GUIStyle();
+            }
+            _centerStyle.alignment = TextAnchor.MiddleCenter;
 
             // Set text
             SetText(localizationSetting.Table);
@@ -235,7 +249,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void DrawEmpty(Rect rect)
         {
-            GUI.Label(rect, _emptyText);
+            GUI.Label(rect, _emptyText, _centerStyle);
         }
 
         private void OnElementAdded(ReorderableList reorderableList)

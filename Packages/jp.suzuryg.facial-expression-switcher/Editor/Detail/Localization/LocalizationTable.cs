@@ -26,23 +26,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of modes and groups.";
-        public string Common_Message_DeleteGroup = "Are you sure you want to delete the following group?";
-        public string Common_Message_DeleteMode = "Are you sure you want to delete the following mode?";
-        public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected branch?";
+        public string Common_Message_DeleteGroup = "Are you sure you want to delete the following expression group?";
+        public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression mode?";
+        public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected expression?";
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
 
-        public string HierarchyView_Title = "Hierarchy";
-        public string HierarchyView_RegisteredMenuItemList = "ItemsToRegister";
-        public string HierarchyView_UnregisteredMenuItemList = "ItemsNotToRegister";
+        public string HierarchyView_Title = "Expression Hierarchy";
+        public string HierarchyView_RegisteredMenuItemList = "Expression Menu";
+        public string HierarchyView_UnregisteredMenuItemList = "Archive";
         public string HierarchyView_Message_CanNotRename = "The \"Use animation name as mode name\" setting is enabled. Disable the setting if you want to change the mode name.";
         public string HierarchyView_Tooltip_AddMode = "Create a new expression mode in the selected hierarchy";
         public string HierarchyView_Tooltip_AddGroup = "Create a new expression group in the selected hierarchy";
         public string HierarchyView_Tooltip_Copy = "Copy the selected expression mode or expression group in the same hierarchy";
         public string HierarchyView_Tooltip_Delete = "Delete the selected expression mode or expression group";
 
-        public string MenuItemListView_Title = "MenuItems";
+        public string MenuItemListView_Title = "Expression Modes";
         public string MenuItemListView_UseAnimationNameAsDisplayName = "Use ClipName As ModeName";
         public string MenuItemListView_Tooltip_AddMode = "Create a new expression mode in the current hierarchy";
         public string MenuItemListView_Tooltip_AddGroup = "Create a new expression group in the current hierarchy";
@@ -53,19 +53,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string MenuItemListView_MouthTracking = "Enable Lip Sync";
         public string MenuItemListView_Blink = "Enable Blink";
         public string MenuItemListView_MouthMorphCanceler = "Mouth Morph Canceler";
-        public string MenuItemListView_Empty = "This group is empty.";
+        public string MenuItemListView_Empty = "You can add an expression mode by pressing the button\nat the top of the view.";
 
-        public string BranchListView_Title = "Branches";
+        public string BranchListView_Title = "Expressions";
         public string BranchListView_Simplify = "Simplify";
         public string BranchListView_OpenGestureTable = "Open Gesture Table";
+        public string BranchListView_ModeIsNotSelected = "You can select an expression mode to add a facial expression.";
         public string BranchListView_UseLeftTrigger = "Use Left Trigger";
         public string BranchListView_UseRightTrigger = "Use Right Trigger";
-        public string BranchListView_NotReachableBranch = "This branch is not used.";
+        public string BranchListView_NotReachableBranch = "This expression is not used.";
+        public string BranchListView_NotReachableBranchAction = "Modify the conditions or order of the expression.";
         public string BranchListView_LeftTriggerAnimation = "Left Trigger";
         public string BranchListView_RightTriggerAnimation = "Right Trigger";
         public string BranchListView_BothTriggersAnimation = "Both Triggers";
-        public string BranchListView_EmptyBranch = "There are no branches.";
-        public string BranchListView_EmptyCondition = "There are no conditions.";
+        public string BranchListView_EmptyBranch = "Press the + button to add a facial expression.";
+        public string BranchListView_EmptyCondition = "Press the + button to add a condition.";
         public string BranchListView_Condition = "Conditions";
         public string BranchListView_Left = "LeftHand";
         public string BranchListView_Right = "RightHand";
@@ -89,7 +91,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!";
 
-        public string GestureTableView_AddBranch = "Add Branch";
+        public string GestureTableView_AddBranch = "Add Expression";
 
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
         public string AnimationElement_Tooltip_Create = "Create a new animation clip";
@@ -138,7 +140,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_EditorSetting = "Editor Setting";
         public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Group";
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Mode";
-        public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Branch";
+        public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
 
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From Default";
         public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect In Preview On Mouse Over";

@@ -10,6 +10,12 @@
     justify-content: flex-start;
 }
 
+#TitleLabel
+{
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
 #TopRow
 {
     flex-direction: row;
@@ -23,7 +29,9 @@
     flex-basis: auto;
     align-self: auto;
 
-    margin: 10px;
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 #TopRow_ButtonCol

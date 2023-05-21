@@ -89,6 +89,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private AV3Setting _aV3Setting;
         private ThumbnailSetting _thumbnailSetting;
         private IReadOnlyLocalizationSetting _localizationSetting;
+        private LocalizationTable _localizationTable;
 
         private ReorderableList _reorderableList;
         private List<ConditionListElement> _conditionListElements = new List<ConditionListElement>();
@@ -110,6 +111,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private Texture2D _redTexture; // Store to avoid destruction
         private GUIStyle _centerStyle;
+        private GUIStyle _centerUpperStyle;
         private GUIStyle _warningStyle;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -147,15 +149,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             try
             {
                 _centerStyle = new GUIStyle(EditorStyles.label);
+                _centerUpperStyle = new GUIStyle(EditorStyles.label);
                 _warningStyle = new GUIStyle(EditorStyles.label);
             }
             catch (NullReferenceException)
             {
                 // Workaround for play mode
                 _centerStyle = new GUIStyle();
+                _centerUpperStyle = new GUIStyle();
                 _warningStyle = new GUIStyle();
             }
             _centerStyle.alignment = TextAnchor.MiddleCenter;
+            _centerUpperStyle.alignment = TextAnchor.UpperCenter;
 
             if (EditorGUIUtility.isProSkin)
             {
@@ -204,6 +209,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             // Draw list
             if (Menu is null || !Menu.ContainsMode(SelectedModeId))
             {
+                GUI.Label(new Rect(rect.x + Padding, rect.y + Padding + EditorGUIUtility.singleLineHeight * 2,
+                    rect.width - Padding * 2 , rect.height - Padding * 2),
+                    _localizationTable.BranchListView_ModeIsNotSelected, _centerUpperStyle);
                 return;
             }
 
@@ -272,6 +280,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
             _eyeTrackingText = localizationTable.MenuItemListView_EyeTracking;
             _mouthTrackingText = localizationTable.MenuItemListView_MouthTracking;
             _blinkText = localizationTable.MenuItemListView_Blink;
@@ -396,6 +405,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             var xCurrent = xBegin;
             var yCurrent = yBegin;
 
+            var thumbnailWidth = _thumbnailSetting.Main_Width;
+            var thumbnailHeight = _thumbnailSetting.Main_Height;
+
             var upperHorizontalMargin = GetUpperHorizontalMargin();
             var lowerHorizontalMargin = GetLowerHorizontalMargin();
 
@@ -404,10 +416,40 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
             // Conditions
             var conditionHeight = Math.Max(ConditionListElement.GetMinHeight(), _animationElement.GetHeight());
-            if (IsSimplified) { conditionHeight = SimplifiedHeight; }
+            if (!IsSimplified)
+            {
+                conditionHeight -= EditorGUIUtility.singleLineHeight * 2 + VerticalMargin;
+            }
+            else
+            {
+                conditionHeight = SimplifiedHeight;
+            }
             condition.OnGUI(new Rect(xCurrent, yCurrent, ConditionListElement.GetWidth(), conditionHeight));
 
+            // Warning
+            float xWarning, yWarning, widthWarning, heightWarning;
+            if (!IsSimplified)
+            {
+                xWarning = xBegin;
+                yWarning = yBegin + conditionHeight + VerticalMargin;
+                widthWarning = ConditionListElement.GetWidth();
+                heightWarning = EditorGUIUtility.singleLineHeight * 2;
+            }
+            else
+            {
+                xWarning = xBegin + ConditionListElement.GetWidth() + upperHorizontalMargin;
+                yWarning = yBegin + EditorGUIUtility.singleLineHeight + 2;
+                widthWarning = PropertiesWidth + upperHorizontalMargin + thumbnailWidth;
+                heightWarning = EditorGUIUtility.singleLineHeight * 2;
+            }
+            if (!branch.IsReachable)
+            {
+                GUI.Label(new Rect(xWarning, yWarning, widthWarning, heightWarning),
+                    "⚠ " + _notReachableBranchText + "\n" + _localizationTable.BranchListView_NotReachableBranchAction, _warningStyle);
+            }
+
             xCurrent += ConditionListElement.GetWidth() + upperHorizontalMargin;
+            yCurrent = yBegin;
 
             // Eye tracking
             if (!IsSimplified)
@@ -515,19 +557,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
             }
 
-            // Warning
-            var yWaring = yCurrent;
-            if (IsSimplified) { yWaring += EditorGUIUtility.singleLineHeight + VerticalMargin; }
-            if (!branch.IsReachable)
-            {
-                GUI.Label(new Rect(xCurrent, yWaring, PropertiesWidth, EditorGUIUtility.singleLineHeight), "⚠ " + _notReachableBranchText, _warningStyle);
-            }
-
             xCurrent += PropertiesWidth + upperHorizontalMargin;
             yCurrent = yBegin;
-
-            var thumbnailWidth = _thumbnailSetting.Main_Width;
-            var thumbnailHeight = _thumbnailSetting.Main_Height;
 
             // Base animation
             if (!IsSimplified)
@@ -606,7 +637,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void DrawEmpty(Rect rect)
         {
-            GUI.Label(rect, _emptyText);
+            GUI.Label(rect, _emptyText, _centerStyle);
         }
 
         private void OnElementAdded(ReorderableList reorderableList)

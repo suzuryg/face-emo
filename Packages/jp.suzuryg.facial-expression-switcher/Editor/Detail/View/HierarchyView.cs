@@ -135,7 +135,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             SetText(_localizationSetting.Table);
         }
 
-        public float GetMinWidth() => 240;
+        public float GetWidth() => 195;
 
         private void InitializeTreeElement()
         {
