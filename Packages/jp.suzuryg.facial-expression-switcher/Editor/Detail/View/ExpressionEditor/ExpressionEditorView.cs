@@ -183,12 +183,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             const float minWindowHeight = 300;
             window.minSize = new Vector2(minWindowWidth, minWindowHeight);
 
-            // Update property values when finished moving the Slider.
-            if (Event.current.type == EventType.MouseUp)
-            {
-                _expressionEditor.CheckBuffer();
-            }
-
             // Root scope
             using (new EditorGUILayout.HorizontalScope())
             {
@@ -363,7 +357,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             }
 
             // Check buffer
-            if (fieldInputPerformed || removed.Any())
+            if (fieldInputPerformed || changed.Any() || removed.Any())
             {
                 _expressionEditor.CheckBuffer();
             }
@@ -489,7 +483,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             }
 
             // Check buffer
-            if (fieldInputPerformed || removed.Any())
+            if (fieldInputPerformed || changed.Any() || removed.Any())
             {
                 _expressionEditor.CheckBuffer();
             }
