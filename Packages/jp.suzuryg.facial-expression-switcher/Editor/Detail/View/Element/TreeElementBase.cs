@@ -56,7 +56,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public IReadOnlyList<string> GetSelectedMenuItemIds() => GetSelection().Select(x => GetMenuItemId(x)).ToList();
 
-        public bool SelectMenuItems(IReadOnlyList<string> menuItemIds)
+        public void SelectMenuItems(IReadOnlyList<string> menuItemIds)
         {
             var elements = new List<TreeViewItem>();
             foreach (var menuItemId in menuItemIds)
@@ -72,11 +72,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             if (elements.Count > 0)
             {
                 SetSelection(elements.Select(x => x.id).ToList());
-                return true;
             }
             else
             {
-                return false;
+                SetSelection(new int[0]);
             }
         }
 
