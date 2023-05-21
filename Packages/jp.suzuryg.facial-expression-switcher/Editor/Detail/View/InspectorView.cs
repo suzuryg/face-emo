@@ -44,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private bool _isExpressionsMenuItemsOpened = false;
         private bool _isAvatarApplicationOpened = false;
         private bool _isEditorSettingOpened = false;
+        private bool _isHelpOpened = false;
 
         private LocalizationTable _localizationTable;
 
@@ -198,6 +199,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (_isEditorSettingOpened)
             {
                 Field_EditorSetting();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Help
+            _isHelpOpened = EditorGUILayout.Foldout(_isHelpOpened, _localizationTable.InspectorView_Help);
+            if (_isHelpOpened)
+            {
+                Field_Help();
             }
 
             _av3Setting.ApplyModifiedProperties();
@@ -500,6 +510,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             ToggleEditorPrefsField(DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation, _localizationTable.InspectorView_GroupDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyModeDeleteConfirmation, DetailConstants.DefaultModeDeleteConfirmation, _localizationTable.InspectorView_ModeDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, _localizationTable.InspectorView_BranchDeleteConfirmation);
+        }
+
+        private void Field_Help()
+        {
+            var rect = EditorGUILayout.GetControlRect();
+            EditorGUI.LabelField(rect, _localizationTable.InspectorView_Help_Manual, EditorStyles.linkLabel);
+
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+
+            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+            {
+                var url = "https://suzuryg.github.io/facial-expression-switcher/";
+                if (_localizationSetting.Locale == Locale.ja_JP)
+                {
+                    url += "jp/";
+                }
+                Application.OpenURL(url);
+            }
         }
 
         private static void TogglePropertyField(SerializedProperty serializedProperty, string label)

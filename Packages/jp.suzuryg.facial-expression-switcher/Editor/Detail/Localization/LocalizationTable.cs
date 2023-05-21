@@ -145,6 +145,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Mode";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
 
+        public string InspectorView_Help = "Help";
+        public string InspectorView_Help_Manual = "FacialExpressionSwitcher Manual";
+
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From Default";
         public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect In Preview On Mouse Over";
         public string ExpressionEditorView_Delimiter = "Delimiter";
