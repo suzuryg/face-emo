@@ -306,11 +306,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
                 if (addMenuItemType == AddMenuItemType.Group)
                 {
-                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType);
+                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType, _localizationTable.ModeNameProvider_NewGroup);
                 }
                 else
                 {
-                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType, _localizationTable.ModeNameProvider_NoExpression);
+                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType, _localizationTable.ModeNameProvider_NewMode);
                 }
             }
         }

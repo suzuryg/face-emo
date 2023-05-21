@@ -27,7 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
         public static readonly IReadOnlyList<HandGesture> GestureList = Enum.GetValues(typeof(HandGesture)).Cast<HandGesture>().ToList();
 
         public string DisplayName { get; set; }
-        public bool UseAnimationNameAsDisplayName { get; set; } = true;
+        public bool UseAnimationNameAsDisplayName { get; set; } = false;
         public EyeTrackingControl EyeTrackingControl { get; set; } = EyeTrackingControl.Tracking;
         public MouthTrackingControl MouthTrackingControl { get; set; } = MouthTrackingControl.Tracking;
         public bool BlinkEnabled { get; set; } = true;

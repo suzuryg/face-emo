@@ -99,6 +99,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string AnimationElement_Tooltip_Copy = "Copy the attached animation clip";
         public string AnimationElement_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip";
 
+        public string ModeNameProvider_NewMode = "NewMode";
+        public string ModeNameProvider_NewGroup = "NewGroup";
         public string ModeNameProvider_NoExpression = "NoExpression";
 
         public string InspectorView_TargetAvatarIsNotSpecified = "Please specify the target avatar.";

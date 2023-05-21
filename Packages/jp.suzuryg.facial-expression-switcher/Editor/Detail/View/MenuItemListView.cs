@@ -405,11 +405,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 if (addMenuItemType == AddMenuItemType.Group)
                 {
-                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType);
+                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType, _localizationTable.ModeNameProvider_NewGroup);
                 }
                 else
                 {
-                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType, _localizationTable.ModeNameProvider_NoExpression);
+                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType, _localizationTable.ModeNameProvider_NewMode);
                 }
             }
         }
