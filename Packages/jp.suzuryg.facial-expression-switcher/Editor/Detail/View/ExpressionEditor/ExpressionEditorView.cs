@@ -323,7 +323,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                     const float increment = 0.1f;
                     Rect sliderRect = GUILayoutUtility.GetRect(labelRect.x, labelRect.y, GUILayout.ExpandWidth(true), GUILayout.MinWidth(100));
                     var sliderValue = GUI.HorizontalSlider(sliderRect, blendShape.Value, minValue, maxValue);
+
+                    var scrollWheelSensitivity = (maxValue - minValue) / 100;
+                    var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
+                    if (wheelRect.Contains(Event.current.mousePosition))
+                    {
+                        sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
+                        sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
+                    }
+
                     sliderValue = Mathf.Round(sliderValue / increment) * increment;
+
                     if (!Mathf.Approximately(sliderValue, blendShape.Value))
                     {
                         changed[blendShape.Key] = sliderValue;
@@ -504,7 +514,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 // Slider
                 Rect sliderRect = GUILayoutUtility.GetRect(labelRect.x, labelRect.y, GUILayout.ExpandWidth(true), GUILayout.MinWidth(100));
                 var sliderValue = GUI.HorizontalSlider(sliderRect, value, minValue, maxValue);
+
+                var scrollWheelSensitivity = (maxValue - minValue) / 100;
+                var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
+                if (wheelRect.Contains(Event.current.mousePosition))
+                {
+                    sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
+                    sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
+                }
+
                 sliderValue = Mathf.Round(sliderValue / increment) * increment;
+
                 if (!Mathf.Approximately(sliderValue, value))
                 {
                     changed(sliderValue);
