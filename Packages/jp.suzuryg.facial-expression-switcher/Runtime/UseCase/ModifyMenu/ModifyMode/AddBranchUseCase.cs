@@ -1,7 +1,6 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UniRx;
 
 namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
@@ -74,11 +73,6 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
                 {
                     _addBranchPresenter.Complete(AddBranchResult.InvalidDestination, menu);
                     return;
-                }
-
-                if (conditions is null || conditions.Count() == 0)
-                {
-                    conditions = new[] { new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals) };
                 }
 
                 menu.AddBranch(modeId, conditions);

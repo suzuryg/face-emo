@@ -244,7 +244,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void OnAddBranchButtonClicked(string modeId)
         {
-            _addBranchUseCase.Handle("", modeId);
+            var conditions = new[]
+            {
+                new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals),
+            };
+            _addBranchUseCase.Handle("", modeId, conditions);
         }
 
         private void OnRemoveBranchButtonClicked((string modeId, int branchIndex) args)
