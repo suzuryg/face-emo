@@ -7,3 +7,6 @@
 [submodule "External/UniRx"]
 	path = External/UniRx
 	url = git@github.com:suzuryg/UniRx.git
+[submodule "External/Extenject"]
+	path = External/Extenject
+	url = git@github.com:suzuryg/Extenject.git

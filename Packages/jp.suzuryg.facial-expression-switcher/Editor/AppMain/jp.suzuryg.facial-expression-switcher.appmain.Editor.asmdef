@@ -7,7 +7,7 @@
         "GUID:79c0d231dad4cc84e8226bd51341a07b",
         "GUID:4e1b1d566b16d6f4badfcca6c103e9c6",
         "GUID:f68081a78616c494b81567c8b81d43c9",
-        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+        "GUID:f597f459d3af4524ab11c9bedb00b17f"
     ],
     "includePlatforms": [
         "Editor"
@@ -15,9 +15,7 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "Zenject-usage.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],

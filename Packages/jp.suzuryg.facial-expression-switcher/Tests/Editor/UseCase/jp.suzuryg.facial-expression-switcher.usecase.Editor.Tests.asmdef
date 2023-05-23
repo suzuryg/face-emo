@@ -5,7 +5,7 @@
         "GUID:df45ab4f3bbb8394987fc80e55e039ef",
         "GUID:3a369c7d7783a1740996446681282216",
         "GUID:79c0d231dad4cc84e8226bd51341a07b",
-        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+        "GUID:f597f459d3af4524ab11c9bedb00b17f"
     ],
     "includePlatforms": [
         "Editor"
@@ -14,8 +14,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
-        "Zenject-usage.dll"
+        "nunit.framework.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],
