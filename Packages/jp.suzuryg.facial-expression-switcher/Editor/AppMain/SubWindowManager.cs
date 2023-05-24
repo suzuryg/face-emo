@@ -18,6 +18,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         private FESInstaller _installer;
         private SceneView _lastActiveSceneView;
 
+        private object _lockFindObjects = new object();
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public void Dispose()
@@ -77,9 +79,13 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         public T ProvideIfOpenedAlready<T>() where T : EditorWindow
         {
-            var existingWindows = Resources.FindObjectsOfTypeAll<T>().Where(x => x.titleContent.text == _windowTitle);
-            if (existingWindows.Any()) { return existingWindows.First(); }
-            else { return null; }
+            // SIGSEGV occurred during execution of FindObjectsOfTypeAll(). Occurred due to concurrent access? Exclusion control it to be safe.
+            lock (_lockFindObjects)
+            {
+                var existingWindows = Resources.FindObjectsOfTypeAll<T>().Where(x => x.titleContent.text == _windowTitle);
+                if (existingWindows.Any()) { return existingWindows.First(); }
+                else { return null; }
+            }
         }
 
         public void CloseAllSubWinodows()
