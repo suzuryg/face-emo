@@ -25,40 +25,40 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_ThumbnailHeight = "Thumbnail Height";
         public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
-        public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of modes and groups.";
-        public string Common_Message_DeleteGroup = "Are you sure you want to delete the following expression group?";
-        public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression mode?";
+        public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of expression patterns and folders.";
+        public string Common_Message_DeleteGroup = "Are you sure you want to delete the following folder?";
+        public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression pattern?";
         public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected expression?";
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
 
-        public string HierarchyView_Title = "Expression Hierarchy";
+        public string HierarchyView_Title = "Tree View";
         public string HierarchyView_RegisteredMenuItemList = "Expression Menu";
         public string HierarchyView_UnregisteredMenuItemList = "Archive";
-        public string HierarchyView_Message_CanNotRename = "The \"Use animation name as mode name\" setting is enabled. Disable the setting if you want to change the mode name.";
-        public string HierarchyView_Tooltip_AddMode = "Create a new expression mode in the selected hierarchy";
-        public string HierarchyView_Tooltip_AddGroup = "Create a new expression group in the selected hierarchy";
-        public string HierarchyView_Tooltip_Copy = "Copy the selected expression mode or expression group in the same hierarchy";
-        public string HierarchyView_Tooltip_Delete = "Delete the selected expression mode or expression group";
+        public string HierarchyView_Message_CanNotRename = "The \"Use animation name as pattern name\" setting is enabled. Disable the setting if you want to change the pattern name.";
+        public string HierarchyView_Tooltip_AddMode = "Create a new expression pattern in the selected hierarchy";
+        public string HierarchyView_Tooltip_AddGroup = "Create a new folder in the selected hierarchy";
+        public string HierarchyView_Tooltip_Copy = "Copy the selected expression pattern or folder in the same hierarchy";
+        public string HierarchyView_Tooltip_Delete = "Delete the selected expression pattern or folder";
 
-        public string MenuItemListView_Title = "Expression Modes";
-        public string MenuItemListView_UseAnimationNameAsDisplayName = "Use ClipName As ModeName";
-        public string MenuItemListView_Tooltip_AddMode = "Create a new expression mode in the current hierarchy";
-        public string MenuItemListView_Tooltip_AddGroup = "Create a new expression group in the current hierarchy";
-        public string MenuItemListView_Tooltip_Copy = "Copy the selected expression mode or expression group in the same hierarchy";
-        public string MenuItemListView_Tooltip_Delete = "Delete the selected expression mode or expression group";
+        public string MenuItemListView_Title = "Expression Patterns";
+        public string MenuItemListView_UseAnimationNameAsDisplayName = "Use ClipName As PatternName";
+        public string MenuItemListView_Tooltip_AddMode = "Create a new expression pattern in the current hierarchy";
+        public string MenuItemListView_Tooltip_AddGroup = "Create a new folder in the current hierarchy";
+        public string MenuItemListView_Tooltip_Copy = "Copy the selected expression pattern or folder in the same hierarchy";
+        public string MenuItemListView_Tooltip_Delete = "Delete the selected expression pattern or folder";
 
         public string MenuItemListView_EyeTracking = "Enable Eye Tracking";
         public string MenuItemListView_MouthTracking = "Enable Lip Sync";
         public string MenuItemListView_Blink = "Enable Blink";
         public string MenuItemListView_MouthMorphCanceler = "Mouth Morph Canceler";
-        public string MenuItemListView_Empty = "You can add an expression mode by pressing the button\nat the top of the view.";
+        public string MenuItemListView_Empty = "You can add an expression pattern by pressing the button\nat the top of the view.";
 
         public string BranchListView_Title = "Expressions";
         public string BranchListView_Simplify = "Simplify";
         public string BranchListView_OpenGestureTable = "Open Gesture Table";
-        public string BranchListView_ModeIsNotSelected = "You can select an expression mode to add a facial expression.";
+        public string BranchListView_ModeIsNotSelected = "Please select an expression pattern on the left panel.";
         public string BranchListView_UseLeftTrigger = "Use Left Trigger";
         public string BranchListView_UseRightTrigger = "Use Right Trigger";
         public string BranchListView_NotReachableBranch = "This expression is not used.";
@@ -84,12 +84,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string BranchListView_Preset_Combination = "Combination (63 Patterns)";
         public string BranchListView_Message_AddPreset = "Are you sure you want to add the following facial expression preset?";
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
+        public string BranchListView_Tooltip_AddPreset = "Several facial expressions can be added at once by selecting a preset.";
+        public string BranchListView_Tooltip_OpenGestureTable = "You can confirm which expression corresponds to each combination of gestures.";
 
         public string SettingView_UpdateThumbnails = "Update Thumbnails";
-        public string SettingView_DefaultSelectedMode = "Default Selected Mode";
+        public string SettingView_DefaultSelectedMode = "Default Selected Pattern";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
         public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
-        public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!";
+        public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
 
         public string GestureTableView_AddBranch = "Add Expression";
 
@@ -99,20 +101,20 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string AnimationElement_Tooltip_Copy = "Copy the attached animation clip";
         public string AnimationElement_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip";
 
-        public string ModeNameProvider_NewMode = "NewMode";
-        public string ModeNameProvider_NewGroup = "NewGroup";
+        public string ModeNameProvider_NewMode = "NewExpressionPattern";
+        public string ModeNameProvider_NewGroup = "NewFolder";
         public string ModeNameProvider_NoExpression = "NoExpression";
 
         public string InspectorView_TargetAvatarIsNotSpecified = "Please specify the target avatar.";
         public string InspectorView_Launch = "Launch FacialExpressionSwitcher";
         public string InspectorView_TargetAvatar = "Target Avatar";
-        public string InspectorView_GenerateModeThumbnails = "Generate Expression Mode Thumbnails";
+        public string InspectorView_GenerateModeThumbnails = "Generate Expression Pattern Thumbnails";
         public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
         public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
 
-        public string InspectorView_Thumbnail = "Thumbnail Setting";
+        public string InspectorView_Thumbnail = "Expression Thumbnail Setting";
         public string InspectorView_Thumbnail_Distance = "Distance";
         public string InspectorView_Thumbnail_HorizontalPosition = "Position (Horizontal)";
         public string InspectorView_Thumbnail_VerticalPosition = "Position (Vertical)";
@@ -132,7 +134,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock (1bit)";
         public string InspectorView_AddConfig_Override = "Emote Override (1bit)";
         public string InspectorView_AddConfig_Voice = "Do Not Transition When Speaking (1bit)";
-        public string InspectorView_AddConfig_HandPattern = "Hand Pattern (3bit)";
+        public string InspectorView_AddConfig_HandPattern = "Gesture Setting (3bit)";
         public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
 
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
@@ -143,8 +145,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
 
         public string InspectorView_EditorSetting = "Editor Setting";
-        public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Group";
-        public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Mode";
+        public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Folder";
+        public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
 
         public string InspectorView_Help = "Help";
@@ -175,7 +177,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExMenu_ContactLock = "Enable Contact Emote Lock";
         public string ExMenu_Override = "Enable Emote Override";
         public string ExMenu_Voice = "Do Not Transition When Speaking";
-        public string ExMenu_HandPattern = "Hand Pattern";
+        public string ExMenu_HandPattern = "Gesture Setting";
         public string ExMenu_HandPattern_SwapLR = "Swap LR";
         public string ExMenu_HandPattern_DisableLeft = "Disable Left";
         public string ExMenu_HandPattern_DisableRight = "Disable Right";

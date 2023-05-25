@@ -108,5 +108,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
                 return Locale.en_US;
             }
         }
+
+        public static string InsertLineBreak(string text)
+        {
+            return text.Replace("<br>", "\n");
+        }
     }
 }

@@ -227,7 +227,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             if (args.generateFxResult == GenerateFxResult.Succeeded)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.SettingView_Message_Succeeded, "OK");
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.InsertLineBreak(_localizationTable.SettingView_Message_Succeeded), "OK");
             }
         }
 
