@@ -24,5 +24,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         public static readonly bool DefaultGroupDeleteConfirmation = true;
         public static readonly bool DefaultModeDeleteConfirmation = true;
         public static readonly bool DefaultBranchDeleteConfirmation = false;
+
+        public static readonly string KeyShowHints = $"{DomainConstants.SystemName}_ShowHints";
+        public static readonly bool DefaultShowHints = true;
     }
 }

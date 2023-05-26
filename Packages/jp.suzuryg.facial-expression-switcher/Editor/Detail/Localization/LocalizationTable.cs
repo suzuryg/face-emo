@@ -145,6 +145,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
 
         public string InspectorView_EditorSetting = "Editor Setting";
+        public string InspectorView_ShowHints = "Show Hints";
         public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Folder";
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
@@ -184,5 +185,23 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExMenu_Controller = "Controller";
         public string ExMenu_Controller_Quest = "Quest Controller";
         public string ExMenu_Controller_Index = "Index Controller";
+
+        public string Hints_AddMode = "Create an expression pattern and set the correspondence between expressions and gestures. " +
+                                       "If there are multiple expression patterns, you can switch them in the ExpressionsMenu.";
+        public string Hints_SelectMode = "When you select an expression pattern, you can set the correspondence between expressions and gestures on the right screen.";
+        public string Hints_RegisteredFreeSpace1 = "In the expression menu, you can register up to 7 expression patterns or folders. " +
+                                                   "If you want to register more than 8 expression patterns, please create a folder.";
+        public string Hints_RegisteredFreeSpace0 = "You can no longer register any more expression patterns or folders in the expression menu. " +
+                                                   "Please move some expression patterns to another folder or archive to free up space.";
+        public string Hints_GroupFreeSpace1 = "You can register up to 8 expression patterns or folders in a folder.";
+        public string Hints_GroupFreeSpace0 = "You cannot register any more expression patterns or folders in this folder. " +
+                                              "Please move some expression patterns to another folder or archive to free up space.";
+        public string Hints_Archive = "Archived expression patterns are not added to the avatar. " +
+                                      "If you want to use an expression pattern, please drag it to the \"Expression Menu\" on the left screen.";
+        public string Hints_AddExpression = "You can set the correspondence between expressions and gestures for the currently selected expression pattern.";
+        public string Hints_Simplified = "Turning off the simplified display will show settings for each expression and thumbnails.";
+        public string Hints_AnimationMenu = "When you hover the mouse cursor over the thumbnail of an expression, a menu is displayed, and you can create or edit expression animations.";
+        public string Hints_ExpressionPriority = "If there are multiple expressions corresponding to the same gesture, the expression at the top is prioritized. " +
+                                                 "You can rearrange the order of expressions by drag & drop.";
     }
 }

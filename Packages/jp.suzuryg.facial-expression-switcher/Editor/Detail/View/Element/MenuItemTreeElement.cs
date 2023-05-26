@@ -155,6 +155,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
             _thumbnailDrawer.Update();
 
+            // Show Hints
+            var hintRect = ShowHints();
+            rect.y += hintRect.height;
+            rect.height -= hintRect.height;
+
             // Draw rows
             var rows = GetRows();
             if (rows is null || rows.Count == 0)
@@ -510,6 +515,81 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
 
             return animations;
+        }
+
+        private Rect ShowHints()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (!showHints) { return Rect.zero; }
+
+            // Root is Registered
+            if (_menuItemListViewState?.RootGroupId == Domain.Menu.RegisteredId)
+            {
+                // Free space
+                if (Menu?.Registered?.FreeSpace == 1)
+                {
+                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_RegisteredFreeSpace1);
+                }
+                else if (Menu?.Registered?.FreeSpace == 0)
+                {
+                    return HelpBoxDrawer.WarnLayout(_localizationTable.Hints_RegisteredFreeSpace0);
+                }
+
+                // Mode exists
+                var modeExists = Menu?.Registered?.Order?.Any(id => Menu?.ContainsMode(id) == true);
+                if (modeExists == true)
+                {
+                    // Mode is not selected
+                    if (GetSelectedMenuItemIds()?.Any(id => Menu?.ContainsMode(id) == true) != true)
+                    {
+                        return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_SelectMode);
+                    }
+                }
+                // Mode does not exist
+                else
+                {
+                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_AddMode);
+                }
+            }
+            // Root is Unregistered
+            else if (_menuItemListViewState?.RootGroupId == Domain.Menu.UnregisteredId)
+            {
+                return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_Archive);
+            }
+            // Root is Group
+            else if (Menu?.ContainsGroup(_menuItemListViewState?.RootGroupId) == true)
+            {
+                var group = Menu?.GetGroup(_menuItemListViewState?.RootGroupId);
+
+                // Free space
+                if (group?.FreeSpace == 1)
+                {
+                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_GroupFreeSpace1);
+                }
+                else if (group?.FreeSpace == 0)
+                {
+                    return HelpBoxDrawer.WarnLayout(_localizationTable.Hints_GroupFreeSpace0);
+                }
+
+                // Mode exists
+                var modeExists = group?.Order?.Any(id => Menu?.ContainsMode(id) == true);
+                if (modeExists == true)
+                {
+                    // Mode is not selected
+                    if (GetSelectedMenuItemIds()?.Any(id => Menu?.ContainsMode(id) == true) != true)
+                    {
+                        return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_SelectMode);
+                    }
+                }
+                // Mode does not exist
+                else
+                {
+                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_AddMode);
+                }
+            }
+
+            // No help
+            return Rect.zero;
         }
     }
 }

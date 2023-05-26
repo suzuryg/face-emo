@@ -206,6 +206,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 _thumbnailDrawer.Update();
             }
 
+            // Show Hints
+            var hintRect = ShowHints();
+            rect.y += hintRect.height;
+            rect.height -= hintRect.height;
+
             // Draw list
             if (Menu is null || !Menu.ContainsMode(SelectedModeId))
             {
@@ -679,6 +684,38 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }   
 
             return animations;
+        }
+
+        private Rect ShowHints()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (!showHints) { return Rect.zero; }
+
+            if (Menu?.ContainsMode(SelectedModeId) == true)
+            {
+                var mode = Menu?.GetMode(SelectedModeId);
+                if (mode?.Branches?.Count == 0)
+                {
+                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_AddExpression);
+                }
+                else if (mode?.Branches?.Count == 1)
+                {
+                    if (IsSimplified)
+                    {
+                        return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_Simplified);
+                    }
+                    else
+                    {
+                        return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_AnimationMenu);
+                    }
+                }
+                else if (mode?.Branches?.Count >= 2)
+                {
+                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_ExpressionPriority);
+                }
+            }
+
+            return Rect.zero;
         }
     }
 }
