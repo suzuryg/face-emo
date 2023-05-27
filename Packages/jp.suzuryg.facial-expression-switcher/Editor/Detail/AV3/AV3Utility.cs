@@ -356,7 +356,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 if (menuItemList.GetType(id) == MenuItemType.Mode)
                 {
                     var mode = menuItemList.GetMode(id);
-                    flattened.Add(new ModeEx() { PathToMode = pathToParent + modeNameProvider.Provide(mode), Mode = mode });
+                    flattened.Add(new ModeEx() { PathToMode = pathToParent + modeNameProvider.Provide(mode), Mode = new ModeExInner(mode) });
                 }
                 else
                 {

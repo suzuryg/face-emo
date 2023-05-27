@@ -109,7 +109,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_TargetAvatarIsNotSpecified = "Please specify the target avatar.";
         public string InspectorView_Launch = "Launch FacialExpressionSwitcher";
         public string InspectorView_TargetAvatar = "Target Avatar";
-        public string InspectorView_GenerateModeThumbnails = "Generate Expression Pattern Thumbnails";
+        public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionsMenu icons";
         public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";

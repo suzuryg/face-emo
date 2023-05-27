@@ -87,11 +87,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 }
                 var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, WriteDefaultsValue));
                 var modes = AV3Utility.FlattenMenuItemList(menu.Registered, _modeNameProvider);
+                var defaultModeIndex = GetDefaultModeIndex(modes, menu);
                 var emoteCount = GetEmoteCount(modes);
                 var useOverLimitMode = forceOverLimitMode || emoteCount > AV3Constants.MaxEmoteNum;
                 GenerateFaceEmoteSetControlLayer(modes, aac, animatorController, useOverLimitMode);
                 GenerateDefaultFaceLayer(aac, avatarDescriptor, animatorController);
-                GenerateFaceEmotePlayerLayer(modes, menu, _aV3Setting, aac, animatorController, useOverLimitMode);
+                GenerateFaceEmotePlayerLayer(modes, _aV3Setting, aac, animatorController, useOverLimitMode);
                 ModifyBlinkLayer(aac, avatarDescriptor, animatorController);
                 ModifyMouthMorphCancelerLayer(_aV3Setting, aac, avatarDescriptor, animatorController);
                 if (_aV3Setting.SmoothAnalogFist)
@@ -113,7 +114,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA components...", 0);
                 AddMergeAnimatorComponent(rootObject, animatorController);
                 AddMenuInstallerComponent(rootObject, exMenu);
-                AddParameterComponent(rootObject, modes, menu);
+                AddParameterComponent(rootObject, defaultModeIndex);
 
                 AddBlinkDisablerComponent(rootObject);
                 AddTrackingControlDisablerComponent(rootObject);
@@ -238,7 +239,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...", 1);
         }
 
-        private static void GenerateFaceEmotePlayerLayer(IReadOnlyList<ModeEx> modes, IMenu menu, AV3Setting aV3Setting, AacFlBase aac, AnimatorController animatorController, bool useOverLimitMode)
+        private static void GenerateFaceEmotePlayerLayer(IReadOnlyList<ModeEx> modes, AV3Setting aV3Setting, AacFlBase aac, AnimatorController animatorController, bool useOverLimitMode)
         {
             var layerName = AV3Constants.LayerName_FaceEmotePlayer;
 
@@ -553,19 +554,24 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 var type = menuItemList.GetType(id);
                 if (type == MenuItemType.Mode)
                 {
-                    var mode = menuItemList.GetMode(id);
+                    var mode = new ModeExInner(menuItemList.GetMode(id));
                     var control = CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id], icon: null);
 
-                    if (_aV3Setting.GenerateModeThumbnails)
+                    Texture2D icon = null;
+                    if (_aV3Setting.GenerateModeThumbnails && mode.ChangeDefaultFace)
                     {
-                        var thumbnail = _exMenuThumbnailDrawer.GetThumbnail(mode.Animation);
-                        if (!AssetDatabase.IsMainAsset(thumbnail) && !AssetDatabase.IsSubAsset(thumbnail)) // Do not save icons that have already been generated and error icons
+                        icon = _exMenuThumbnailDrawer.GetThumbnail(mode.Animation);
+                        if (!AssetDatabase.IsMainAsset(icon) && !AssetDatabase.IsSubAsset(icon)) // Do not save icons that have already been generated and error icons
                         {
-                            AssetDatabase.AddObjectToAsset(thumbnail, container);
+                            AssetDatabase.AddObjectToAsset(icon, container);
                             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(container));
                         }
-                        control.icon = thumbnail;
                     }
+                    else
+                    {
+                        icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("af1ba8919b0ccb94a99caf43ac36f97d")); // face smile
+                    }
+                    control.icon = icon;
 
                     parent.controls.Add(control);
                 }
@@ -780,25 +786,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             EditorUtility.SetDirty(modularAvatarMenuInstaller);
         }
 
-        private void AddParameterComponent(GameObject rootObject, IReadOnlyList<ModeEx> modes, IMenu menu)
+        private void AddParameterComponent(GameObject rootObject, int defaultModeIndex)
         {
             foreach (var component in rootObject.GetComponents<ModularAvatarParameters>())
             {
                 UnityEngine.Object.DestroyImmediate(component);
             }
             var modularAvatarParameters = rootObject.AddComponent<ModularAvatarParameters>();
-
-            int defaultModeIndex = 0;
-            for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
-            {
-                var mode = modes[modeIndex];
-                var id = mode.Mode.GetId();
-                if (id == menu.DefaultSelection)
-                {
-                    defaultModeIndex = modeIndex;
-                    break;
-                }
-            }
 
             // Config (Saved) (Bool)
             var contactLockEnabled = _aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock;
@@ -837,6 +831,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R, addPrefix: _aV3Setting.AddParameterPrefix));
 
             EditorUtility.SetDirty(modularAvatarParameters);
+        }
+
+        private int GetDefaultModeIndex(IReadOnlyList<ModeEx> modes, IMenu menu)
+        {
+            int defaultModeIndex = 0;
+            for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
+            {
+                var mode = modes[modeIndex];
+                var id = mode.Mode.GetId();
+                if (id == menu.DefaultSelection)
+                {
+                    defaultModeIndex = modeIndex;
+                    break;
+                }
+            }
+            return defaultModeIndex;
         }
 
         private static ParameterConfig MAParam(string name, ParameterSyncType type, float defaultValue, bool saved, bool addPrefix) 
