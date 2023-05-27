@@ -538,7 +538,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             GenerateSubMenuRecursive(rootMenu, menu.Registered, idToModeIndex, container);
             GenerateSettingMenu(rootMenu, container);
 
-            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("af1ba8919b0ccb94a99caf43ac36f97d")); // face smile
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("617fecc28d6cb5a459d1297801b9213e")); // FES
             container.controls.Add(CreateSubMenuControl(AV3Constants.RootMenuName, rootMenu, icon));
             AssetDatabase.AddObjectToAsset(rootMenu, container);
 
