@@ -31,6 +31,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public IObservable<(
             string modeId,
+            bool? changeDefaultFace,
             string displayName,
             bool? useAnimationNameAsDisplayName,
             EyeTrackingControl? eyeTrackingControl,
@@ -43,12 +44,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private Subject<(
             string modeId,
+            bool? changeDefaultFace,
             string displayName,
             bool? useAnimationNameAsDisplayName,
             EyeTrackingControl? eyeTrackingControl,
             MouthTrackingControl? mouthTrackingControl,
             bool? BlinkEnabled,
-            bool? MouthMorphCancelerEnabled)> _onModePropertiesModified = new Subject<(string modeId, string displayName, bool? useAnimationNameAsDisplayName, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? BlinkEnabled, bool? MouthMorphCancelerEnabled)>();
+            bool? MouthMorphCancelerEnabled)> _onModePropertiesModified = new Subject<(string modeId, bool? changeDefaultFace, string displayName, bool? useAnimationNameAsDisplayName, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? BlinkEnabled, bool? MouthMorphCancelerEnabled)>();
 
         private Subject<(string groupId, string displayName)> _onGroupPropertiesModified = new Subject<(string groupId, string displayName)>();
         private Subject<string> _onEnteredIntoGroup = new Subject<string>();
@@ -352,7 +354,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         var displayName = EditorGUILayout.DelayedTextField(mode.DisplayName);
                         if (displayName != mode.DisplayName)
                         {
-                            _onModePropertiesModified.OnNext((menuItemId, displayName, null, null, null, null, null));
+                            _onModePropertiesModified.OnNext((
+                                modeId: menuItemId,
+                                changeDefaultFace: null,
+                                displayName: displayName,
+                                useAnimationNameAsDisplayName: null,
+                                eyeTrackingControl: null,
+                                mouthTrackingControl: null,
+                                BlinkEnabled: null,
+                                MouthMorphCancelerEnabled: null));
                         }
                     }
 
@@ -362,7 +372,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         var useAnimationName = EditorGUILayout.Toggle(string.Empty, mode.UseAnimationNameAsDisplayName, GUILayout.Width(ToggleWidth));
                         if (useAnimationName != mode.UseAnimationNameAsDisplayName)
                         {
-                            _onModePropertiesModified.OnNext((menuItemId, null, useAnimationName, null, null, null, null));
+                            _onModePropertiesModified.OnNext((
+                                modeId: menuItemId,
+                                changeDefaultFace: null,
+                                displayName: null,
+                                useAnimationNameAsDisplayName: useAnimationName,
+                                eyeTrackingControl: null,
+                                mouthTrackingControl: null,
+                                BlinkEnabled: null,
+                                MouthMorphCancelerEnabled: null));
                         }
                         GUILayout.Label(_useAnimationNameText);
                     }
@@ -377,7 +395,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         var eyeTracking = EditorGUILayout.Toggle(string.Empty, eyeToBool(mode.EyeTrackingControl), GUILayout.Width(ToggleWidth));
                         if (eyeTracking != eyeToBool(mode.EyeTrackingControl))
                         {
-                            _onModePropertiesModified.OnNext((menuItemId, null, null, boolToEye(eyeTracking), null, null, null));
+                            _onModePropertiesModified.OnNext((
+                                modeId: menuItemId,
+                                changeDefaultFace: null,
+                                displayName: null,
+                                useAnimationNameAsDisplayName: null,
+                                eyeTrackingControl: boolToEye(eyeTracking),
+                                mouthTrackingControl: null,
+                                BlinkEnabled: null,
+                                MouthMorphCancelerEnabled: null));
                         }
                         GUILayout.Label(_eyeTrackingText);
                     }
@@ -390,7 +416,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                             var blink = EditorGUILayout.Toggle(string.Empty, mode.BlinkEnabled, GUILayout.Width(ToggleWidth));
                             if (blink != mode.BlinkEnabled)
                             {
-                                _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, blink, null));
+                                _onModePropertiesModified.OnNext((
+                                    modeId: menuItemId,
+                                    changeDefaultFace: null,
+                                    displayName: null,
+                                    useAnimationNameAsDisplayName: null,
+                                    eyeTrackingControl: null,
+                                    mouthTrackingControl: null,
+                                    BlinkEnabled: blink,
+                                    MouthMorphCancelerEnabled: null));
                             }
                             GUILayout.Label(_blinkText);
                         }
@@ -408,7 +442,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         var mouthTracking = EditorGUILayout.Toggle(string.Empty, mouthToBool(mode.MouthTrackingControl), GUILayout.Width(ToggleWidth));
                         if (mouthTracking != mouthToBool(mode.MouthTrackingControl))
                         {
-                            _onModePropertiesModified.OnNext((menuItemId, null, null, null, boolToMouth(mouthTracking), null, null));
+                            _onModePropertiesModified.OnNext((
+                                modeId: menuItemId,
+                                changeDefaultFace: null,
+                                displayName: null,
+                                useAnimationNameAsDisplayName: null,
+                                eyeTrackingControl: null,
+                                mouthTrackingControl: boolToMouth(mouthTracking),
+                                BlinkEnabled: null,
+                                MouthMorphCancelerEnabled: null));
                         }
                         GUILayout.Label(_mouthTrackingText);
                     }
@@ -421,7 +463,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                             var mouthMorphCancel = EditorGUILayout.Toggle(string.Empty, mode.MouthMorphCancelerEnabled, GUILayout.Width(ToggleWidth));
                             if (mouthMorphCancel != mode.MouthMorphCancelerEnabled)
                             {
-                                _onModePropertiesModified.OnNext((menuItemId, null, null, null, null, null, mouthMorphCancel));
+                                _onModePropertiesModified.OnNext((
+                                    modeId: menuItemId,
+                                    changeDefaultFace: null,
+                                    displayName: null,
+                                    useAnimationNameAsDisplayName: null,
+                                    eyeTrackingControl: null,
+                                    mouthTrackingControl: null,
+                                    BlinkEnabled: null,
+                                    MouthMorphCancelerEnabled: mouthMorphCancel));
                             }
                             GUILayout.Label(_mouthMorphCancelerText);
                         }

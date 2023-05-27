@@ -147,19 +147,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             var u4 = menu.AddMode(u0);
             var u5 = menu.AddMode(u3);
 
-            menu.ModifyModeProperties(r0, "r0", true, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking);
+            menu.ModifyModeProperties(r0, true, "r0", true, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking);
             menu.ModifyGroupProperties(r1, "r1");
-            menu.ModifyModeProperties(r2, "r2", false, EyeTrackingControl.Animation, MouthTrackingControl.Animation);
-            menu.ModifyModeProperties(r3, "r3", true, EyeTrackingControl.Animation, MouthTrackingControl.Tracking);
-            menu.ModifyModeProperties(r4, "r4", false, EyeTrackingControl.Tracking, MouthTrackingControl.Animation);
-            menu.ModifyModeProperties(r5, "r5", true, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking);
+            menu.ModifyModeProperties(r2, true, "r2", false, EyeTrackingControl.Animation, MouthTrackingControl.Animation);
+            menu.ModifyModeProperties(r3, true, "r3", true, EyeTrackingControl.Animation, MouthTrackingControl.Tracking);
+            menu.ModifyModeProperties(r4, false, "r4", false, EyeTrackingControl.Tracking, MouthTrackingControl.Animation);
+            menu.ModifyModeProperties(r5, false, "r5", true, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking);
 
             menu.ModifyGroupProperties(u0, "u0");
-            menu.ModifyModeProperties(u1, "u1", true, EyeTrackingControl.Tracking, MouthTrackingControl.Animation);
-            menu.ModifyModeProperties(u2, "u2", false, EyeTrackingControl.Animation, MouthTrackingControl.Tracking);
+            menu.ModifyModeProperties(u1, false, "u1", true, EyeTrackingControl.Tracking, MouthTrackingControl.Animation);
+            menu.ModifyModeProperties(u2, true, "u2", false, EyeTrackingControl.Animation, MouthTrackingControl.Tracking);
             menu.ModifyGroupProperties(u3, "u3");
-            menu.ModifyModeProperties(u4, "u4", true, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking);
-            menu.ModifyModeProperties(u5, "u5", false, EyeTrackingControl.Tracking, MouthTrackingControl.Animation);
+            menu.ModifyModeProperties(u4, false, "u4", true, EyeTrackingControl.Tracking, MouthTrackingControl.Tracking);
+            menu.ModifyModeProperties(u5, true, "u5", false, EyeTrackingControl.Tracking, MouthTrackingControl.Animation);
 
             menu.AddBranch(r0, new List<Condition>() { new Condition(Hand.Left, HandGesture.Fingerpoint, ComparisonOperator.Equals) });
             menu.AddBranch(r0, new List<Condition>() { new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.NotEqual) });
@@ -275,6 +275,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             Assert.That(menu.Registered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("r4"));
             Assert.That(menu.Registered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("r5"));
 
+            Assert.That(menu.Registered.GetModeAt(0).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(menu.Registered.GetModeAt(2).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(menu.Registered.GetModeAt(3).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(menu.Registered.GetGroupAt(1).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(menu.Registered.GetGroupAt(1).GetModeAt(1).ChangeDefaultFace, Is.EqualTo(false));
+
             Assert.That(menu.Registered.GetModeAt(0).UseAnimationNameAsDisplayName, Is.EqualTo(true));
             Assert.That(menu.Registered.GetModeAt(2).UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(menu.Registered.GetModeAt(3).UseAnimationNameAsDisplayName, Is.EqualTo(true));
@@ -360,6 +366,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             Assert.That(menu.Unregistered.GetGroupAt(3).DisplayName, Is.EqualTo("u3"));
             Assert.That(menu.Unregistered.GetGroupAt(0).GetModeAt(0).DisplayName, Is.EqualTo("u4"));
             Assert.That(menu.Unregistered.GetGroupAt(3).GetModeAt(0).DisplayName, Is.EqualTo("u5"));
+
+            Assert.That(menu.Unregistered.GetModeAt(1).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(menu.Unregistered.GetModeAt(2).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(menu.Unregistered.GetGroupAt(0).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(menu.Unregistered.GetGroupAt(3).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(true));
 
             Assert.That(menu.Unregistered.GetModeAt(1).UseAnimationNameAsDisplayName, Is.EqualTo(true));
             Assert.That(menu.Unregistered.GetModeAt(2).UseAnimationNameAsDisplayName, Is.EqualTo(false));

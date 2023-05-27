@@ -152,7 +152,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _hierarchyTreeElement = new HierarchyTreeElement(_localizationSetting, _modeNameProvider, _hierarchyViewState.TreeViewState).AddTo(_treeElementDisposables);
 
             // Tree element event handlers
-            _hierarchyTreeElement.OnModeRenamed.Synchronize().Subscribe(x => _modifyModePropertiesUseCase.Handle("", x.menuItemId, x.displayName)).AddTo(_treeElementDisposables);
+            _hierarchyTreeElement.OnModeRenamed.Synchronize().Subscribe(x => _modifyModePropertiesUseCase.Handle(menuId: "", modeId: x.menuItemId, displayName: x.displayName)).AddTo(_treeElementDisposables);
             _hierarchyTreeElement.OnGroupRenamed.Synchronize().Subscribe(x => _modifyGroupPropertiesUseCase.Handle("", x.menuItemId, x.displayName)).AddTo(_treeElementDisposables);
             _hierarchyTreeElement.OnSelectionChanged.Synchronize().Subscribe(x => OnSelectionChanged(x.menu, x.menuItemIds)).AddTo(_treeElementDisposables);
             _hierarchyTreeElement.OnDropped.Synchronize().Subscribe(OnDropped).AddTo(_treeElementDisposables);

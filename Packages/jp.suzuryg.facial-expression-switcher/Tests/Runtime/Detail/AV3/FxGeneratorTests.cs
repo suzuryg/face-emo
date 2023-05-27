@@ -595,7 +595,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         public void PlayExpression()
         {
             var normal = _menu.AddMode(Domain.Menu.RegisteredId);
-            _menu.ModifyModeProperties(normal, "Normal");
+            _menu.ModifyModeProperties(id: normal, displayName: "Normal");
             _menu.AddBranch(normal, new[] { new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals ) });
             _menu.SetAnimation(NewAnimation("Expression"), normal, 0, BranchAnimationType.Base);
 

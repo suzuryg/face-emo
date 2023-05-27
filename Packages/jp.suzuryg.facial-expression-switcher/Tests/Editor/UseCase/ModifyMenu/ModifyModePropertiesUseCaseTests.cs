@@ -56,12 +56,14 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
 
             var mode0Id = loadMenu().Registered.Order[0];
+            Assert.That(loadMenu().GetMode(mode0Id).ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(loadMenu().GetMode(mode0Id).DisplayName, Is.EqualTo("NewMode"));
             Assert.That(loadMenu().GetMode(mode0Id).UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(loadMenu().GetMode(mode0Id).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
             Assert.That(loadMenu().GetMode(mode0Id).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
 
             var mode1Id = loadMenu().Registered.Order[1];
+            Assert.That(loadMenu().GetMode(mode1Id).ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(loadMenu().GetMode(mode1Id).DisplayName, Is.EqualTo("NewMode"));
             Assert.That(loadMenu().GetMode(mode1Id).UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(loadMenu().GetMode(mode1Id).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
@@ -74,17 +76,20 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             // Change mode properties
             modifyModePropertiesUseCase.Handle(menuId, 
                 mode0Id,
+                changeDefaultFace: true,
                 displayName: "Changed",
                 useAnimationNameAsDisplayName: true,
                 eyeTrackingControl: EyeTrackingControl.Animation,
                 mouthTrackingControl: MouthTrackingControl.Animation);
             Assert.That(mockModifyModePropertiesPresenter.Result, Is.EqualTo(ModifyModePropertiesResult.Succeeded));
 
+            Assert.That(loadMenu().GetMode(mode0Id).ChangeDefaultFace, Is.EqualTo(true));
             Assert.That(loadMenu().GetMode(mode0Id).DisplayName, Is.EqualTo("Changed"));
             Assert.That(loadMenu().GetMode(mode0Id).UseAnimationNameAsDisplayName, Is.EqualTo(true));
             Assert.That(loadMenu().GetMode(mode0Id).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(loadMenu().GetMode(mode0Id).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
 
+            Assert.That(loadMenu().GetMode(mode1Id).ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(loadMenu().GetMode(mode1Id).DisplayName, Is.EqualTo("NewMode"));
             Assert.That(loadMenu().GetMode(mode1Id).UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(loadMenu().GetMode(mode1Id).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));

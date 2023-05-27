@@ -6,6 +6,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 {
     public interface IMode
     {
+        bool ChangeDefaultFace { get; }
         string DisplayName { get; }
         bool UseAnimationNameAsDisplayName { get; }
         EyeTrackingControl EyeTrackingControl { get; }
@@ -26,6 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
     {
         public static readonly IReadOnlyList<HandGesture> GestureList = Enum.GetValues(typeof(HandGesture)).Cast<HandGesture>().ToList();
 
+        public bool ChangeDefaultFace { get; set; } = false;
         public string DisplayName { get; set; }
         public bool UseAnimationNameAsDisplayName { get; set; } = false;
         public EyeTrackingControl EyeTrackingControl { get; set; } = EyeTrackingControl.Tracking;

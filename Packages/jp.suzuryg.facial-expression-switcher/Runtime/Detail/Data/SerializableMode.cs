@@ -6,6 +6,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
     public class SerializableMode : ScriptableObject
     {
+        public bool ChangeDefaultFace;
+
         public string DisplayName;
 
         public bool UseAnimationNameAsDisplayName;
@@ -20,6 +22,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 
         public void Save(IMode mode, bool isAsset)
         {
+            ChangeDefaultFace = mode.ChangeDefaultFace;
+
             DisplayName = mode.DisplayName;
 
             UseAnimationNameAsDisplayName = mode.UseAnimationNameAsDisplayName;
@@ -57,7 +61,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 
         public void Load(Domain.Menu menu, string id)
         {
-            menu.ModifyModeProperties(id,
+            menu.ModifyModeProperties(
+                id: id,
+                changeDefaultFace: ChangeDefaultFace,
                 displayName: DisplayName,
                 useAnimationNameAsDisplayName: UseAnimationNameAsDisplayName,
                 eyeTrackingControl: EyeTrackingControl,

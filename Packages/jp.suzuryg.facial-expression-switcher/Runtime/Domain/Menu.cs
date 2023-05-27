@@ -41,6 +41,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public void ModifyModeProperties(
             string id,
+            bool? changeDefaultFace = null,
             string displayName = null,
             bool? useAnimationNameAsDisplayName = null,
             EyeTrackingControl? eyeTrackingControl = null,
@@ -49,6 +50,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             bool? mouthMorphCancelerEnabled = null)
         {
             var mode = _modes[id];
+            mode.ChangeDefaultFace = changeDefaultFace ?? mode.ChangeDefaultFace;
             mode.DisplayName = displayName ?? mode.DisplayName;
             mode.UseAnimationNameAsDisplayName = useAnimationNameAsDisplayName ?? mode.UseAnimationNameAsDisplayName;
             mode.EyeTrackingControl = eyeTrackingControl ?? mode.EyeTrackingControl;
