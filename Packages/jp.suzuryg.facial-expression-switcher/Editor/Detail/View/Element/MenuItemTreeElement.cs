@@ -319,7 +319,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             var menuItemId = GetMenuItemId(item.id);
             if (Menu.ContainsMode(menuItemId))
             {
-                return Math.Max(GetMinHeight(), _animationElement.GetHeight()) + TopMargin + BottomMargin + Padding * 2;
+                var mode = Menu.GetMode(menuItemId);
+                if (mode.ChangeDefaultFace)
+                {
+                    return Math.Max(GetMinHeight(), _animationElement.GetHeight()) + TopMargin + BottomMargin + Padding * 2;
+                }
+                else
+                {
+                    return 80;
+                }
             }
             else if (Menu.ContainsGroup(menuItemId))
             {
@@ -333,8 +341,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private float GetMinHeight()
         {
+            const float additionalMargin = 2;
             var line = EditorGUIUtility.singleLineHeight;
-            return line + 10 + line + 10 + line + line;
+            return TopMargin + line + 5 + line + 5 + line + 10 + line * 4 + BottomMargin + additionalMargin;
         }
 
         private void DrawMode(string menuItemId, IMode mode, Rect rect)
@@ -345,7 +354,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 using (new EditorGUILayout.VerticalScope())
                 {
                     // Display name
-                    if (mode.UseAnimationNameAsDisplayName)
+                    if (mode.ChangeDefaultFace && mode.UseAnimationNameAsDisplayName)
                     {
                         EditorGUILayout.LabelField(_modeNameProvider.Provide(mode));
                     }
@@ -365,6 +374,35 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                                 MouthMorphCancelerEnabled: null));
                         }
                     }
+
+                    GUILayout.Space(5);
+
+                    // Change default face
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        var changeDefaultFace = EditorGUILayout.Toggle(string.Empty, mode.ChangeDefaultFace, GUILayout.Width(ToggleWidth));
+                        if (changeDefaultFace != mode.ChangeDefaultFace)
+                        {
+                            _onModePropertiesModified.OnNext((
+                                modeId: menuItemId,
+                                changeDefaultFace: changeDefaultFace,
+                                displayName: null,
+                                useAnimationNameAsDisplayName: null,
+                                eyeTrackingControl: null,
+                                mouthTrackingControl: null,
+                                BlinkEnabled: null,
+                                MouthMorphCancelerEnabled: null));
+                        }
+                        GUILayout.Label(_localizationTable.MenuItemListView_ChangeDefaultFace);
+                    }
+
+                    if (!mode.ChangeDefaultFace)
+                    {
+                        GUILayout.FlexibleSpace();
+                        return;
+                    }
+
+                    GUILayout.Space(5);
 
                     // Use animation name
                     using (new EditorGUILayout.HorizontalScope())

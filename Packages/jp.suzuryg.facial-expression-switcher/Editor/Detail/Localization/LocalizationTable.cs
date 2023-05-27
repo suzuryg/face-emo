@@ -43,6 +43,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string HierarchyView_Tooltip_Delete = "Delete the selected expression pattern or folder";
 
         public string MenuItemListView_Title = "Expression Patterns";
+        public string MenuItemListView_ChangeDefaultFace = "Change Default Face";
         public string MenuItemListView_UseAnimationNameAsDisplayName = "Use ClipName As PatternName";
         public string MenuItemListView_Tooltip_AddMode = "Create a new expression pattern in the current hierarchy";
         public string MenuItemListView_Tooltip_AddGroup = "Create a new folder in the current hierarchy";

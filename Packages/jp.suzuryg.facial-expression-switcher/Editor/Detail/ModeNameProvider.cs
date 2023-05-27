@@ -42,7 +42,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
 
         public string Provide(IMode mode)
         {
-            if (mode.UseAnimationNameAsDisplayName)
+            if (mode.ChangeDefaultFace && mode.UseAnimationNameAsDisplayName)
             {
                 var clip = AV3Utility.GetAnimationClipWithName(mode.Animation);
                 if (clip.clip != null)
