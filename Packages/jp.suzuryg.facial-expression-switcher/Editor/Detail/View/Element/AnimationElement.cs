@@ -130,7 +130,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, modeDisplayName);
                     if (!string.IsNullOrEmpty(guid))
                     {
-                        _expressionEditor.OpenIfOpenedAlready(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
+                        _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
                         setAnimationClipAction(guid);
                     }
                 }
@@ -160,7 +160,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, modeDisplayName);
                         if (!string.IsNullOrEmpty(guid))
                         {
-                            _expressionEditor.OpenIfOpenedAlready(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
+                            _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
                             setAnimationClipAction(guid);
                         }
                     }
