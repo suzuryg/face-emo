@@ -458,8 +458,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 Func<EyeTrackingControl, bool> eyeToBool = (EyeTrackingControl eyeTrackingControl) => eyeTrackingControl == EyeTrackingControl.Tracking;
                 Func<bool, EyeTrackingControl> boolToEye = (bool value) => value ? EyeTrackingControl.Tracking : EyeTrackingControl.Animation;
-                var eyeTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), eyeToBool(branch.EyeTrackingControl), string.Empty);
-                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _eyeTrackingText);
+
+                var toggleRect = new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight);
+                // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_EyeTracking));
+
+                var eyeTracking = GUI.Toggle(toggleRect, eyeToBool(branch.EyeTrackingControl), string.Empty);
+                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight),
+                    new GUIContent(_eyeTrackingText, _localizationTable.Common_Tooltip_EyeTracking));
                 if (eyeTracking != eyeToBool(branch.EyeTrackingControl))
                 {
                     _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null));
@@ -473,8 +478,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 using (new EditorGUI.DisabledScope(!_aV3Setting.ReplaceBlink))
                 {
-                    var blink = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.BlinkEnabled, string.Empty);
-                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _blinkText);
+                    var toggleRect = new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight);
+                    // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_Blink));
+
+                    var blink = GUI.Toggle(toggleRect, branch.BlinkEnabled, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight),
+                        new GUIContent(_blinkText, _localizationTable.Common_Tooltip_Blink));
                     if (blink != branch.BlinkEnabled)
                     {
                         _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, blink, null, null, null));
@@ -489,8 +498,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             Func<bool, MouthTrackingControl> boolToMouth = (bool value) => value ? MouthTrackingControl.Tracking : MouthTrackingControl.Animation;
             if (!IsSimplified)
             {
-                var mouthTracking = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), mouthToBool(branch.MouthTrackingControl), string.Empty);
-                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthTrackingText);
+                var toggleRect = new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight);
+                // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_LipSync));
+
+                var mouthTracking = GUI.Toggle(toggleRect, mouthToBool(branch.MouthTrackingControl), string.Empty);
+                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight),
+                    new GUIContent(_mouthTrackingText, _localizationTable.Common_Tooltip_LipSync));
                 if (mouthTracking != mouthToBool(branch.MouthTrackingControl))
                 {
                     _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null));
@@ -504,8 +517,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 if (mouthToBool(branch.MouthTrackingControl))
                 {
-                    var mouthMorphCancel = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.MouthMorphCancelerEnabled, string.Empty);
-                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _mouthMorphCancelerText);
+                    var toggleRect = new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight);
+                    // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_MouthMorphCanceler));
+
+                    var mouthMorphCancel = GUI.Toggle(toggleRect, branch.MouthMorphCancelerEnabled, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight),
+                        new GUIContent(_mouthMorphCancelerText, _localizationTable.Common_Tooltip_MouthMorphCanceler));
                     if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
                     {
                         _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, mouthMorphCancel, null, null));
@@ -524,8 +541,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 if (branch.CanLeftTriggerUsed)
                 {
-                    var useLeftTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsLeftTriggerUsed, string.Empty);
-                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useLeftTriggerText);
+                    var toggleRect = new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight);
+                    // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_LeftTrigger));
+
+                    var useLeftTrigger = GUI.Toggle(toggleRect, branch.IsLeftTriggerUsed, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight),
+                        new GUIContent(_useLeftTriggerText, _localizationTable.Common_Tooltip_LeftTrigger));
                     if (useLeftTrigger != branch.IsLeftTriggerUsed)
                     {
                         _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, useLeftTrigger, null));
@@ -544,8 +565,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 if (branch.CanRightTriggerUsed)
                 {
-                    var useRightTrigger = GUI.Toggle(new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight), branch.IsRightTriggerUsed, string.Empty);
-                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight), _useRightTriggerText);
+                    var toggleRect = new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight);
+                    // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_RightTrigger));
+
+                    var useRightTrigger = GUI.Toggle(toggleRect, branch.IsRightTriggerUsed, string.Empty);
+                    GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight),
+                        new GUIContent(_useRightTriggerText, _localizationTable.Common_Tooltip_RightTrigger));
                     if (useRightTrigger != branch.IsRightTriggerUsed)
                     {
                         _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, null, useRightTrigger));

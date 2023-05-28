@@ -159,7 +159,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (_thumbnailHeightLabel != null) { _thumbnailHeightLabel.text = localizationTable.Common_ThumbnailHeight; }
             if (_updateThumbnailButton != null) { _updateThumbnailButton.text = localizationTable.SettingView_UpdateThumbnails; }
 
-            if (_defaultSelectionLabel != null) { _defaultSelectionLabel.text = localizationTable.SettingView_DefaultSelectedMode; }
+            if (_defaultSelectionLabel != null)
+            {
+                _defaultSelectionLabel.text = localizationTable.SettingView_DefaultSelectedMode;
+                _defaultSelectionLabel.tooltip = localizationTable.SettingView_Tooltip_DefaultSelectedMode;
+            }
 
             if (_showHintsToggle != null) { _showHintsToggle.text = localizationTable.SettingView_ShowHints; }
 

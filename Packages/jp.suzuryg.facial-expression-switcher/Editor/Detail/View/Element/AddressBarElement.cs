@@ -21,6 +21,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private Subject<string> _onAddressClicked = new Subject<string>();
 
+        private LocalizationTable _localizationTable;
+
         private List<(string id, string displayName)> _path = new List<(string id, string displayName)>();
 
         private string _registeredText;
@@ -52,6 +54,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         private void SetText(LocalizationTable localizationTable)
         {
+            _localizationTable = localizationTable;
+
             _registeredText = localizationTable.HierarchyView_RegisteredMenuItemList;
             _unregisteredText = localizationTable.HierarchyView_UnregisteredMenuItemList;
 
@@ -117,7 +121,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
                 for (int i = 0; i < path.Count; i++)
                 {
-                    if (GUILayout.Button(path[i].displayName, _buttonStyle))
+                    if (GUILayout.Button(new GUIContent(path[i].displayName, _localizationTable.MenuItemListView_Tooltip_ClickAddressBar), _buttonStyle))
                     {
                         _onAddressClicked.OnNext(path[i].id);
                     }

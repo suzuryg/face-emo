@@ -197,6 +197,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _localizationTable = localizationTable;
             _simplifyToggle.text = localizationTable.BranchListView_Simplify;
+            _simplifyToggle.tooltip = localizationTable.BranchListView_Tooltip_Simplify;
             _openGestureTableWindowButton.text = localizationTable.BranchListView_OpenGestureTable;
             _openGestureTableWindowButton.tooltip = localizationTable.BranchListView_Tooltip_OpenGestureTable;
             _titleLabel.text = localizationTable.BranchListView_Title;
@@ -337,7 +338,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             using (new EditorGUILayout.HorizontalScope())
             {
                 // Select preset
-                GUILayout.Label(_localizationTable.BranchListView_Preset);
+                GUILayout.Label(new GUIContent(_localizationTable.BranchListView_Preset, _localizationTable.BranchListView_Tooltip_AddPreset));
                 _selectedPresetIndex = EditorGUILayout.Popup(_selectedPresetIndex, presets);
                 if (GUILayout.Button(new GUIContent(_localizationTable.Common_Add, _localizationTable.BranchListView_Tooltip_AddPreset), GUILayout.Width(50)))
                 {

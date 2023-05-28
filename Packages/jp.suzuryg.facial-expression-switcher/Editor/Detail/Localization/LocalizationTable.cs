@@ -32,6 +32,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
+        public string Common_Tooltip_EyeTracking = "You can set whether to use pseudo eye-tracking. This setting can be configured independently of the blinking setting.";
+        public string Common_Tooltip_Blink = "You can set whether to blink. Please disable blinking for expressions where the eyes are closed.";
+        public string Common_Tooltip_LipSync = "You can set whether to use lip-syncing. " +
+            "To prevent disruption of the expression during speech, please disable lip-syncing or use mouth deformation cancellation.";
+        public string Common_Tooltip_MouthMorphCanceler = "During speech, you can prevent disruptions by resetting certain shape key values to their default values (the values set on the scene). " +
+            "Please specify the shape keys to be reset to their default values in the \"MouthMorphBlendShapes\" in the Inspector.";
+        public string Common_Tooltip_LeftTrigger = "Expressions change according to the pressure level of the left hand trigger. " +
+            "Please set an additional expression for when the trigger is pressed. " +
+            "Trigger pressing is only valid when the left hand is in Fist.";
+        public string Common_Tooltip_RightTrigger = "Expressions change according to the pressure level of the right hand trigger. " +
+            "Please set an additional expression for when the trigger is pressed. " +
+            "Trigger pressing is only valid when the right hand is in Fist.";
 
         public string HierarchyView_Title = "Tree View";
         public string HierarchyView_RegisteredMenuItemList = "Expression Menu";
@@ -49,6 +61,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string MenuItemListView_Tooltip_AddGroup = "Create a new folder in the current hierarchy";
         public string MenuItemListView_Tooltip_Copy = "Copy the selected expression pattern or folder in the same hierarchy";
         public string MenuItemListView_Tooltip_Delete = "Delete the selected expression pattern or folder";
+        public string MenuItemListView_Tooltip_ClickAddressBar = "You can click here to change the level of detail being displayed.";
+        public string MenuItemListView_Tooltip_DoubleClickFolder = "You can display the contents of a folder by double-clicking it.";
+        public string MenuItemListView_Tooltip_ChangeDefaultFace = "You can change the default face (the expression when there's no expression change made by gestures).";
+        public string MenuItemListView_Tooltip_UseAnimationNameAsDisplayName = "The name of the set animation clip is used as the name of the expression pattern.";
 
         public string MenuItemListView_EyeTracking = "Enable Eye Tracking";
         public string MenuItemListView_MouthTracking = "Enable Lip Sync";
@@ -87,6 +103,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
         public string BranchListView_Tooltip_AddPreset = "Several facial expressions can be added at once by selecting a preset.";
         public string BranchListView_Tooltip_OpenGestureTable = "You can confirm which expression corresponds to each combination of gestures.";
+        public string BranchListView_Tooltip_Simplify = "Switches to a simple display of only the expression conditions and animation name. " +
+            "Use this when you want to check the list of expressions.";
 
         public string SettingView_UpdateThumbnails = "Update Thumbnails";
         public string SettingView_DefaultSelectedMode = "Default Selected Pattern";
@@ -94,6 +112,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
         public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
+        public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
 
         public string GestureTableView_AddBranch = "Add Expression";
 
@@ -158,7 +177,38 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_Help = "Help";
         public string InspectorView_Help_Manual = "FacialExpressionSwitcher Manual";
 
-        public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From Default";
+        public string InspectorView_Tooltip_MouthMorphCanceler = "This is used in expressions where Mouth Morph Canceler is enabled. " +
+            "During speech, you can prevent disruptions by resetting certain shape key values to their default values (the values set on the scene).";
+        public string InspectorView_Tooltip_AddMouthMorphBlendShape = "When selecting blend shapes, you can select multiple blend shapes at once by using Shift + Directional keys and add them all at once.";
+        public string InspectorView_Tooltip_AdditionalToggle = "In conjunction with expressions, you can control the ON/OFF of specific objects (such as expression particles). " +
+            "Objects specified here can be used in the expression editor.";
+        public string InspectorView_Tooltip_AdditionalTransform = "In conjunction with expressions, you can control the position, rotation, and scale of specific objects (such as beast ears and ahoge). " +
+            "Objects specified here can be used in the expression editor.";
+        public string InspectorView_Tooltip_AFK = "You can set expressions for when you are AFK or for when you start/end AFK.";
+        public string InspectorView_Tooltip_Thumbnail = "You can set the camera position and angle for the thumbnails displayed in the Expressions Menu.";
+        public string InspectorView_Tooltip_ExMenu = "You can specify which settings to add to the Expressions Menu. " +
+            "You can reduce the usage of Expression Parameter by reducing the settings.";
+        public string InspectorView_Tooltip_ExMenu_EmoteLock = "While this is ON, you can fix the expression.";
+        public string InspectorView_Tooltip_ExMenu_BlinkOff = "While this is ON, you can disable blinking.";
+        public string InspectorView_Tooltip_ExMenu_Dance = "While this is ON, your expression will move in sync with the dance gimmick. " +
+            "Since the FX Layer's functions will be disabled, it will return to the default state if you're using costume switches, etc.";
+        public string InspectorView_Tooltip_ExMenu_ContactLock = "While this is ON, you can use the facial fixation function by Contact. " +
+            "If you put both hands on your head for 2 seconds, a sound effect will play and your expression will be fixed. " +
+            "If you perform the same action when your expression is fixed, the facial fixation will be canceled.";
+        public string InspectorView_Tooltip_ExMenu_Override = "While this is ON, you can use the facial overwrite function by Contact. " +
+            "Please use it with the FES_EmoteOverrideExample integrated into the avatar (refer to the manual).";
+        public string InspectorView_Tooltip_ExMenu_Voice = "While this is ON, your expression will not change during speech. " +
+            "If you have an expression with lip-syncing disabled, turning this ON will prevent the mouth from remaining open.";
+        public string InspectorView_Tooltip_ExMenu_Gesture = "You can change the settings for the gestures used for specifying expressions. " +
+            "You can swap the left and right, or disable each side.";
+        public string InspectorView_Tooltip_ExMenu_Controller = "You can disable gestures that are easily input by mistake on each controller. " +
+            "Selecting Quest controller will disable 'Open', selecting Index controller will disable 'Fist'.";
+        public string InspectorView_Tooltip_Application = "You can change the settings when applying the expression menu to the avatar.";
+        public string InspectorView_Tooltip_Defaults = "You can change the settings values right after creating expression patterns or expressions.";
+        public string InspectorView_Tooltip_Editor = "You can configure the behavior of this tool's UI. These settings are shared across all projects.";
+        public string InspectorView_Tooltip_Help = "You can read the manual for this tool.";
+
+        public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From the Scene";
         public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect In Preview On Mouse Over";
         public string ExpressionEditorView_Delimiter = "Delimiter";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
@@ -166,6 +216,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExpressionEditorView_NoObjects = "No Objects";
         public string ExpressionEditorView_Message_BlinkBlendShapeExists = "Blend shapes for blink are included!";
         public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lipsync are included!";
+        public string ExpressionEditorView_Tooltip_Delimiter = "By entering the delimiter for the blend shapes, you can display the blend shapes by category. " +
+            "For example, if the category name is \"=====Eye=====\", please enter \"=====\".";
 
         public string FESBackupper_Message_FailedToFindTargetAvatar = "Failed to find tareget avatar. Make sure the avatar is active.";
         public string FESBackupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";
@@ -208,5 +260,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Hints_AnimationMenu = "When you hover the mouse cursor over the thumbnail of an expression, a menu is displayed, and you can create or edit expression animations.";
         public string Hints_ExpressionPriority = "If there are multiple expressions corresponding to the same gesture, the expression at the top is prioritized. " +
                                                  "You can rearrange the order of expressions by drag & drop.";
+        public string Hints_BlinkBlendShapeIncluded = "If the expression contains blend shapes for blinking, there's a possibility that your expression may be overwritten by the blinking animation and not play correctly.";
+        public string Hints_LipSyncBlendShapeIncluded = "If your expression contains blend shapes for lip-syncing, there's a possibility that the lip-sync may not function correctly.";
+        public string Hints_ExpressionPreview = "The expression preview screen can be moved, rotated, and zoomed in and out in the same way as the scene view. " +
+            "The camera settings (like FOV) of the expression preview screen inherit the settings from the scene view.";
+        public string Hints_ControlWidthWheel = "The sliders for the shape key values can also be controlled with the mouse wheel.";
     }
 }

@@ -380,7 +380,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     // Change default face
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var changeDefaultFace = EditorGUILayout.Toggle(string.Empty, mode.ChangeDefaultFace, GUILayout.Width(ToggleWidth));
+                        var toggleRect = GUILayoutUtility.GetRect(new GUIContent(string.Empty), EditorStyles.toggle, GUILayout.Width(ToggleWidth));
+                        // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.MenuItemListView_Tooltip_ChangeDefaultFace));
+
+                        var changeDefaultFace = EditorGUI.Toggle(toggleRect, string.Empty, mode.ChangeDefaultFace);
                         if (changeDefaultFace != mode.ChangeDefaultFace)
                         {
                             _onModePropertiesModified.OnNext((
@@ -393,7 +396,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                                 BlinkEnabled: null,
                                 MouthMorphCancelerEnabled: null));
                         }
-                        GUILayout.Label(_localizationTable.MenuItemListView_ChangeDefaultFace);
+                        GUILayout.Label(new GUIContent(_localizationTable.MenuItemListView_ChangeDefaultFace, _localizationTable.MenuItemListView_Tooltip_ChangeDefaultFace));
                     }
 
                     if (!mode.ChangeDefaultFace)
@@ -407,7 +410,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     // Use animation name
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var useAnimationName = EditorGUILayout.Toggle(string.Empty, mode.UseAnimationNameAsDisplayName, GUILayout.Width(ToggleWidth));
+                        var toggleRect = GUILayoutUtility.GetRect(new GUIContent(string.Empty), EditorStyles.toggle, GUILayout.Width(ToggleWidth));
+                        // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.MenuItemListView_Tooltip_UseAnimationNameAsDisplayName));
+
+                        var useAnimationName = EditorGUI.Toggle(toggleRect, string.Empty, mode.UseAnimationNameAsDisplayName);
                         if (useAnimationName != mode.UseAnimationNameAsDisplayName)
                         {
                             _onModePropertiesModified.OnNext((
@@ -420,7 +426,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                                 BlinkEnabled: null,
                                 MouthMorphCancelerEnabled: null));
                         }
-                        GUILayout.Label(_useAnimationNameText);
+                        GUILayout.Label(new GUIContent(_useAnimationNameText, _localizationTable.MenuItemListView_Tooltip_UseAnimationNameAsDisplayName));
                     }
 
                     GUILayout.Space(10);
@@ -430,7 +436,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     Func<bool, EyeTrackingControl> boolToEye = (bool value) => value ? EyeTrackingControl.Tracking : EyeTrackingControl.Animation;
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var eyeTracking = EditorGUILayout.Toggle(string.Empty, eyeToBool(mode.EyeTrackingControl), GUILayout.Width(ToggleWidth));
+                        var toggleRect = GUILayoutUtility.GetRect(new GUIContent(string.Empty), EditorStyles.toggle, GUILayout.Width(ToggleWidth));
+                        // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_EyeTracking));
+
+                        var eyeTracking = EditorGUI.Toggle(toggleRect, string.Empty, eyeToBool(mode.EyeTrackingControl));
                         if (eyeTracking != eyeToBool(mode.EyeTrackingControl))
                         {
                             _onModePropertiesModified.OnNext((
@@ -443,7 +452,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                                 BlinkEnabled: null,
                                 MouthMorphCancelerEnabled: null));
                         }
-                        GUILayout.Label(_eyeTrackingText);
+                        GUILayout.Label(new GUIContent(_eyeTrackingText, _localizationTable.Common_Tooltip_EyeTracking));
                     }
 
                     // Blink
@@ -451,7 +460,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     {
                         using (new EditorGUILayout.HorizontalScope())
                         {
-                            var blink = EditorGUILayout.Toggle(string.Empty, mode.BlinkEnabled, GUILayout.Width(ToggleWidth));
+                            var toggleRect = GUILayoutUtility.GetRect(new GUIContent(string.Empty), EditorStyles.toggle, GUILayout.Width(ToggleWidth));
+                            //EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_Blink));
+
+                            var blink = EditorGUI.Toggle(toggleRect, string.Empty, mode.BlinkEnabled);
                             if (blink != mode.BlinkEnabled)
                             {
                                 _onModePropertiesModified.OnNext((
@@ -464,7 +476,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                                     BlinkEnabled: blink,
                                     MouthMorphCancelerEnabled: null));
                             }
-                            GUILayout.Label(_blinkText);
+                            GUILayout.Label(new GUIContent(_blinkText, _localizationTable.Common_Tooltip_Blink));
                         }
                     }
                     else
@@ -477,7 +489,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     Func<bool, MouthTrackingControl> boolToMouth = (bool value) => value ? MouthTrackingControl.Tracking : MouthTrackingControl.Animation;
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        var mouthTracking = EditorGUILayout.Toggle(string.Empty, mouthToBool(mode.MouthTrackingControl), GUILayout.Width(ToggleWidth));
+                        var toggleRect = GUILayoutUtility.GetRect(new GUIContent(string.Empty), EditorStyles.toggle, GUILayout.Width(ToggleWidth));
+                        // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_LipSync));
+
+                        var mouthTracking = EditorGUI.Toggle(toggleRect, string.Empty, mouthToBool(mode.MouthTrackingControl));
                         if (mouthTracking != mouthToBool(mode.MouthTrackingControl))
                         {
                             _onModePropertiesModified.OnNext((
@@ -490,7 +505,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                                 BlinkEnabled: null,
                                 MouthMorphCancelerEnabled: null));
                         }
-                        GUILayout.Label(_mouthTrackingText);
+                        GUILayout.Label(new GUIContent(_mouthTrackingText, _localizationTable.Common_Tooltip_LipSync));
                     }
 
                     // Mouth morph cancel
@@ -498,7 +513,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     {
                         using (new EditorGUILayout.HorizontalScope())
                         {
-                            var mouthMorphCancel = EditorGUILayout.Toggle(string.Empty, mode.MouthMorphCancelerEnabled, GUILayout.Width(ToggleWidth));
+                            var toggleRect = GUILayoutUtility.GetRect(new GUIContent(string.Empty), EditorStyles.toggle, GUILayout.Width(ToggleWidth));
+                            // EditorGUI.LabelField(toggleRect, new GUIContent(string.Empty, _localizationTable.Common_Tooltip_MouthMorphCanceler));
+
+                            var mouthMorphCancel = EditorGUI.Toggle(toggleRect, string.Empty, mode.MouthMorphCancelerEnabled);
                             if (mouthMorphCancel != mode.MouthMorphCancelerEnabled)
                             {
                                 _onModePropertiesModified.OnNext((
@@ -511,7 +529,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                                     BlinkEnabled: null,
                                     MouthMorphCancelerEnabled: mouthMorphCancel));
                             }
-                            GUILayout.Label(_mouthMorphCancelerText);
+                            GUILayout.Label(new GUIContent(_mouthMorphCancelerText, _localizationTable.Common_Tooltip_MouthMorphCanceler));
                         }
                     }
                     else
@@ -538,6 +556,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             {
                 // Icon
                 var iconRect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle(), GUILayout.Width(48), GUILayout.Height(48));
+                EditorGUI.LabelField(iconRect, new GUIContent(string.Empty, _localizationTable.MenuItemListView_Tooltip_DoubleClickFolder));
                 GUI.DrawTexture(iconRect, _folderIcon);
 
                 GUILayout.Space(10);

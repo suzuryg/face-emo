@@ -145,7 +145,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Mouth Morph Blend Shapes
-            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened, _localizationTable.InspectorView_MouthMorphBlendShapes);
+            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened,
+                new GUIContent(_localizationTable.InspectorView_MouthMorphBlendShapes));
             if (_isMouthMorphBlendShapesOpened)
             {
                 Field_MouthMorphBlendShape();
@@ -154,7 +155,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Additional Toggle Objects
-            _isAddtionalToggleOpened = EditorGUILayout.Foldout(_isAddtionalToggleOpened, _localizationTable.Common_AddtionalToggleObjects);
+            _isAddtionalToggleOpened = EditorGUILayout.Foldout(_isAddtionalToggleOpened,
+                new GUIContent(_localizationTable.Common_AddtionalToggleObjects));
             if (_isAddtionalToggleOpened)
             {
                 Field_AdditionalToggleObjects();
@@ -163,7 +165,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Additional Transform Objects
-            _isAddtionalTransformOpened = EditorGUILayout.Foldout(_isAddtionalTransformOpened, _localizationTable.Common_AddtionalTransformObjects);
+            _isAddtionalTransformOpened = EditorGUILayout.Foldout(_isAddtionalTransformOpened,
+                new GUIContent(_localizationTable.Common_AddtionalTransformObjects));
             if (_isAddtionalTransformOpened)
             {
                 Field_AdditionalTransformObjects();
@@ -172,7 +175,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // AFK face setting
-            _isAFKOpened = EditorGUILayout.Foldout(_isAFKOpened, _localizationTable.InspectorView_AFK);
+            _isAFKOpened = EditorGUILayout.Foldout(_isAFKOpened, 
+                new GUIContent(_localizationTable.InspectorView_AFK));
             if (_isAFKOpened)
             {
                 Field_AFKFace();
@@ -181,7 +185,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Thumbnail Setting
-            _isThumbnailOpened = EditorGUILayout.Foldout(_isThumbnailOpened, _localizationTable.InspectorView_Thumbnail);
+            _isThumbnailOpened = EditorGUILayout.Foldout(_isThumbnailOpened,
+                new GUIContent(_localizationTable.InspectorView_Thumbnail));
             if (_isThumbnailOpened)
             {
                 Field_ThumbnailSetting();
@@ -190,7 +195,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Expressions Menu Setting Items
-            _isExpressionsMenuItemsOpened = EditorGUILayout.Foldout(_isExpressionsMenuItemsOpened, _localizationTable.InspectorView_ExpressionsMenuSettingItems);
+            _isExpressionsMenuItemsOpened = EditorGUILayout.Foldout(_isExpressionsMenuItemsOpened,
+                new GUIContent(_localizationTable.InspectorView_ExpressionsMenuSettingItems));
             if (_isExpressionsMenuItemsOpened)
             {
                 Field_ExpressionsMenuSettingItems();
@@ -199,7 +205,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Avatar application setting
-            _isAvatarApplicationOpened = EditorGUILayout.Foldout(_isAvatarApplicationOpened, _localizationTable.InspectorView_AvatarApplicationSetting);
+            _isAvatarApplicationOpened = EditorGUILayout.Foldout(_isAvatarApplicationOpened,
+                new GUIContent(_localizationTable.InspectorView_AvatarApplicationSetting));
             if (_isAvatarApplicationOpened)
             {
                 Field_AvatarApplicationSetting();
@@ -208,7 +215,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Defaults
-            _isDefaultsOpened = EditorGUILayout.Foldout(_isDefaultsOpened, _localizationTable.InspectorView_Defaults);
+            _isDefaultsOpened = EditorGUILayout.Foldout(_isDefaultsOpened,
+                new GUIContent(_localizationTable.InspectorView_Defaults));
             if (_isDefaultsOpened)
             {
                 Field_Defaults();
@@ -217,7 +225,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Editor setting
-            _isEditorSettingOpened = EditorGUILayout.Foldout(_isEditorSettingOpened, _localizationTable.InspectorView_EditorSetting);
+            _isEditorSettingOpened = EditorGUILayout.Foldout(_isEditorSettingOpened,
+                new GUIContent(_localizationTable.InspectorView_EditorSetting));
             if (_isEditorSettingOpened)
             {
                 Field_EditorSetting();
@@ -226,7 +235,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Help
-            _isHelpOpened = EditorGUILayout.Foldout(_isHelpOpened, _localizationTable.InspectorView_Help);
+            _isHelpOpened = EditorGUILayout.Foldout(_isHelpOpened,
+                new GUIContent(_localizationTable.InspectorView_Help));
             if (_isHelpOpened)
             {
                 Field_Help();
@@ -347,6 +357,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_MouthMorphBlendShape()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_MouthMorphCanceler);
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AddMouthMorphBlendShape);
+            }
+
             _mouthMorphBlendShapes.list = GetMouthMorphBlendShapes(); // Is it necessary to get every frame?
             _mouthMorphBlendShapes.DoLayoutList();
 
@@ -364,6 +381,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_AdditionalToggleObjects()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalToggle);
+            }
+
             var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
 
             _additionalToggleObjects.drawHeaderCallback = (Rect rect) =>
@@ -386,6 +409,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_AdditionalTransformObjects()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalTransform);
+            }
+
             var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
 
             _additionalTransformObjects.drawHeaderCallback = (Rect rect) =>
@@ -408,6 +437,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_AFKFace()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AFK);
+            }
+
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AfkEnterFace)), new GUIContent(_localizationTable.InspectorView_AFK_EnterFace));
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AfkFace)), new GUIContent(_localizationTable.InspectorView_AFK_Face));
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AfkExitFace)), new GUIContent(_localizationTable.InspectorView_AFK_ExitFace));
@@ -415,6 +450,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_ThumbnailSetting()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_Thumbnail);
+            }
+
             // Draw thumbnail
             float aspectRatio = 1;
             float inspectorWidth = EditorGUIUtility.currentViewWidth;
@@ -514,25 +555,37 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_ExpressionsMenuSettingItems()
         {
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       _localizationTable.InspectorView_AddConfig_EmoteLock);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick);
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ExMenu);
+            }
+
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       _localizationTable.InspectorView_AddConfig_EmoteLock, _localizationTable.InspectorView_Tooltip_ExMenu_EmoteLock);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff, _localizationTable.InspectorView_Tooltip_ExMenu_BlinkOff);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick, _localizationTable.InspectorView_Tooltip_ExMenu_Dance);
             if (_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)).boolValue)
             {
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock);
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock, _localizationTable.InspectorView_Tooltip_ExMenu_ContactLock);
             }
             else
             {
                 ViewUtility.LayoutDummyToggle(_localizationTable.InspectorView_AddConfig_ContactLock);
             }
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Voice)),        _localizationTable.InspectorView_AddConfig_Voice);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern)),    _localizationTable.InspectorView_AddConfig_HandPattern);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override, _localizationTable.InspectorView_Tooltip_ExMenu_Override);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Voice)),        _localizationTable.InspectorView_AddConfig_Voice, _localizationTable.InspectorView_Tooltip_ExMenu_Voice);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern)),    _localizationTable.InspectorView_AddConfig_HandPattern, _localizationTable.InspectorView_Tooltip_ExMenu_Gesture);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller, _localizationTable.InspectorView_Tooltip_ExMenu_Controller);
         }
 
         private void Field_AvatarApplicationSetting()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_Application);
+            }
+
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_localizationTable.InspectorView_TransitionDuration));
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GenerateModeThumbnails)), _localizationTable.InspectorView_GenerateModeThumbnails);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _localizationTable.InspectorView_SmoothAnalogFist);
@@ -543,16 +596,28 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_Defaults()
         {
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_ChangeDefaultFace)), _localizationTable.MenuItemListView_ChangeDefaultFace);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_UseAnimationNameAsDisplayName)), _localizationTable.MenuItemListView_UseAnimationNameAsDisplayName);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_EyeTrackingEnabled)), _localizationTable.MenuItemListView_EyeTracking);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_BlinkEnabled)), _localizationTable.MenuItemListView_Blink);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_MouthTrackingEnabled)), _localizationTable.MenuItemListView_MouthTracking);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_MouthMorphCancelerEnabled)), _localizationTable.MenuItemListView_MouthMorphCanceler);
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_Defaults);
+            }
+
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_ChangeDefaultFace)), _localizationTable.MenuItemListView_ChangeDefaultFace, _localizationTable.MenuItemListView_Tooltip_ChangeDefaultFace);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_UseAnimationNameAsDisplayName)), _localizationTable.MenuItemListView_UseAnimationNameAsDisplayName, _localizationTable.MenuItemListView_Tooltip_UseAnimationNameAsDisplayName);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_EyeTrackingEnabled)), _localizationTable.MenuItemListView_EyeTracking, _localizationTable.Common_Tooltip_EyeTracking);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_BlinkEnabled)), _localizationTable.MenuItemListView_Blink, _localizationTable.Common_Tooltip_Blink);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_MouthTrackingEnabled)), _localizationTable.MenuItemListView_MouthTracking, _localizationTable.Common_Tooltip_LipSync);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_MouthMorphCancelerEnabled)), _localizationTable.MenuItemListView_MouthMorphCanceler, _localizationTable.Common_Tooltip_MouthMorphCanceler);
         }
 
         private void Field_EditorSetting()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_Editor);
+            }
+
             // Need to resolve some issues
             // ToggleEditorPrefsField(DetailConstants.KeyAutoSave, DetailConstants.DefaultAutoSave, _localizationTable.InspectorView_AutoSave);
             ToggleEditorPrefsField(DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation, _localizationTable.InspectorView_GroupDeleteConfirmation);
@@ -562,6 +627,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_Help()
         {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_Help);
+            }
+
             var rect = EditorGUILayout.GetControlRect();
             EditorGUI.LabelField(rect, _localizationTable.InspectorView_Help_Manual, EditorStyles.linkLabel);
 
@@ -578,7 +649,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
         }
 
-        private static void TogglePropertyField(SerializedProperty serializedProperty, string label)
+        private static void TogglePropertyField(SerializedProperty serializedProperty, string label, string tooltip = null)
         {
             using (new EditorGUILayout.HorizontalScope())
             {
@@ -587,7 +658,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 {
                     serializedProperty.boolValue = value;
                 }
-                GUILayout.Label(label);
+                GUILayout.Label(new GUIContent(label, tooltip));
             }
         }
 

@@ -22,10 +22,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
         private static Rect LabelLayout(string message, Texture icon)
         {
             var content = new GUIContent(message, icon);
-            GUILayout.Label(content, GetStyle());
-            return GUILayoutUtility.GetRect(content, GetStyle());
+            var rect = GUILayoutUtility.GetRect(content, GetStyle());
+            GUI.Label(rect, content, GetStyle());
+            return rect;
         }
-        
+
         private static GUIStyle GetStyle()
         {
             if (_helpBoxStyle == null)

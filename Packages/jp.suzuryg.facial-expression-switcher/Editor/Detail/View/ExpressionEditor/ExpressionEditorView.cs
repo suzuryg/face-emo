@@ -197,6 +197,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                         Field_AnimatedBlendShapes();
                         Field_AnimatedToggles();
                         Field_AnimatedTransforms();
+
+                        ShowHints();
+
                         _leftScrollPosition = scope.scrollPosition;
                     }
                 }
@@ -270,7 +273,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             using (var check = new EditorGUI.ChangeCheckScope())
             {
                 EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)),
-                    new GUIContent(_localizationTable.ExpressionEditorView_Delimiter));
+                    new GUIContent(_localizationTable.ExpressionEditorView_Delimiter, _localizationTable.ExpressionEditorView_Tooltip_Delimiter));
 
                 if (check.changed)
                 {
@@ -753,6 +756,26 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             {
                 _expressionEditor.CheckBuffer();
             }
+        }
+
+        private void ShowHints()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (!showHints) { return; }
+
+            GUILayout.FlexibleSpace();
+
+            if (_expressionEditor.AnimatedBlendShapesBuffer.Any(blendShape => _expressionEditor.BlinkBlendShapes.Contains(blendShape.Key)))
+            {
+                HelpBoxDrawer.WarnLayout(_localizationTable.Hints_BlinkBlendShapeIncluded);
+            }
+            if (_expressionEditor.AnimatedBlendShapesBuffer.Any(blendShape => _expressionEditor.LipSyncBlendShapes.Contains(blendShape.Key)))
+            {
+                HelpBoxDrawer.WarnLayout(_localizationTable.Hints_LipSyncBlendShapeIncluded);
+            }
+
+            HelpBoxDrawer.InfoLayout(_localizationTable.Hints_ExpressionPreview);
+            HelpBoxDrawer.InfoLayout(_localizationTable.Hints_ControlWidthWheel);
         }
     }
 }
