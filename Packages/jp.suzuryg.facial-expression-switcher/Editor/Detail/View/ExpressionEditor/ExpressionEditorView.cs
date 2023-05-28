@@ -562,8 +562,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                 }
             }
 
-            // Update foldout states
+            // Immediately after opening ExpressionEditor and if it has not been categorized, open the first category.
             var previousStates = new Dictionary<string, bool>(_faceBlendShapeFoldoutStates);
+            if (!previousStates.Any() && categorized.Count == 1)
+            {
+                previousStates[categorized.First().Key] = true;
+            }
+
+            // Update foldout states
             _faceBlendShapeFoldoutStates.Clear();
             foreach (var key in categorized.Keys)
             {
