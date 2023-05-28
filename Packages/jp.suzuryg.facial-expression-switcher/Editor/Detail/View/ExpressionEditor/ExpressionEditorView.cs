@@ -326,7 +326,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
                     var scrollWheelSensitivity = (maxValue - minValue) / 100;
                     var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
-                    if (wheelRect.Contains(Event.current.mousePosition))
+                    if (wheelRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.ScrollWheel)
                     {
                         sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
                         sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
@@ -517,7 +517,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
                 var scrollWheelSensitivity = (maxValue - minValue) / 100;
                 var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
-                if (wheelRect.Contains(Event.current.mousePosition))
+                if (wheelRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.ScrollWheel)
                 {
                     sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
                     sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
