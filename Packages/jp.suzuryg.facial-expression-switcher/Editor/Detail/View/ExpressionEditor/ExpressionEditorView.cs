@@ -269,7 +269,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
         {
             using (var check = new EditorGUI.ChangeCheckScope())
             {
-                EditorGUILayout.DelayedTextField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)),
+                EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)),
                     new GUIContent(_localizationTable.ExpressionEditorView_Delimiter));
 
                 if (check.changed)
@@ -339,8 +339,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                         changed[blendShape.Key] = sliderValue;
                     }
 
-                    // DelayedFloatField
-                    var fieldValue = EditorGUILayout.DelayedFloatField(blendShape.Value, GUILayout.Width(40));
+                    // FloatField
+                    var fieldValue = EditorGUILayout.FloatField(blendShape.Value, GUILayout.Width(40));
                     fieldValue = Math.Max(Math.Min(fieldValue, maxValue), minValue);
                     if (!Mathf.Approximately(fieldValue, blendShape.Value))
                     {
@@ -369,6 +369,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
             // Check buffer
             if (fieldInputPerformed || changed.Any() || removed.Any())
             {
+                // CheckBuffer processing load is small (confirmed by profiler).
                 _expressionEditor.CheckBuffer();
             }
         }
@@ -530,8 +531,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
                     changed(sliderValue);
                 }
 
-                // DelayedFloatField
-                var fieldValue = EditorGUILayout.DelayedFloatField(value, GUILayout.Width(60));
+                // FloatField
+                var fieldValue = EditorGUILayout.FloatField(value, GUILayout.Width(60));
                 if (!Mathf.Approximately(fieldValue, value))
                 {
                     changed(fieldValue);
