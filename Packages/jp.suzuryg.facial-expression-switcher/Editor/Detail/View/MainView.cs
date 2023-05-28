@@ -94,15 +94,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (_hierarchyArea != null)
             {
                 _hierarchyArea.style.minWidth = hierarchyViewWidth;
-                _hierarchyArea.style.maxWidth = hierarchyViewWidth;
             }
             if (_menuItemListArea != null)
             {
                 _menuItemListArea.style.minWidth = menuItemListViewWidth;
+                _menuItemListArea.style.maxWidth = menuItemListViewWidth;
             }
             if (_branchListArea != null)
             {
                 _branchListArea.style.minWidth = branchListViewWidth;
+                _branchListArea.style.maxWidth = branchListViewWidth;
             }
 
             var width = Padding + hierarchyViewWidth + menuItemListViewWidth + branchListViewWidth + Padding;
