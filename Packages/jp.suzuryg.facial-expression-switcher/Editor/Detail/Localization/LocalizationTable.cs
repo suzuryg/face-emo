@@ -96,6 +96,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string GestureTableView_AddBranch = "Add Expression";
 
+        public string AnimationElement_NewClipName = "NewExpression";
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
         public string AnimationElement_Tooltip_Create = "Create a new animation clip";
         public string AnimationElement_Tooltip_Open = "Open an animation clip";

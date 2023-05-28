@@ -83,7 +83,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Subject<(string modeId, int branchIndex, int conditionIndex)> _onRemoveConditionButtonClicked = new Subject<(string modeId, int branchIndex, int conditionIndex)>();
         private Subject<int> _onBranchSelectionChanged = new Subject<int>();
 
-        private ModeNameProvider _modeNameProvider;
         private AnimationElement _animationElement;
         private MainThumbnailDrawer _thumbnailDrawer;
         private AV3Setting _aV3Setting;
@@ -121,13 +120,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             IReadOnlyLocalizationSetting localizationSetting,
             AV3Setting aV3Setting,
             ThumbnailSetting thumbnailSetting,
-            ModeNameProvider modeNameProvider,
             AnimationElement animationElement,
             MainThumbnailDrawer thumbnailDrawer)
         {
             // Dependencies
             _localizationSetting = localizationSetting;
-            _modeNameProvider = modeNameProvider;
             _animationElement = animationElement;
             _thumbnailDrawer = thumbnailDrawer;
             _aV3Setting = aV3Setting;
@@ -569,7 +566,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             if (!IsSimplified)
             {
                 _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BaseAnimation, _thumbnailDrawer,
-                    guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Base)); }, _modeNameProvider.Provide(mode));
+                    guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Base)); });
 
                 xCurrent = xBegin;
                 yCurrent += _animationElement.GetHeight() + VerticalMargin;
@@ -596,7 +593,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed)
                 {
                     _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.LeftHandAnimation, _thumbnailDrawer,
-                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Left)); }, _modeNameProvider.Provide(mode));
+                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Left)); });
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _leftTriggerAnimationText, _centerStyle);
                 }
 
@@ -609,7 +606,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
                 {
                     _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.RightHandAnimation, _thumbnailDrawer,
-                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Right)); }, _modeNameProvider.Provide(mode));
+                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Right)); });
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _rightTriggerAnimationText, _centerStyle);
                 }
 
@@ -622,7 +619,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
                 {
                     _animationElement.Draw(new Rect(xCurrent, yCurrent, thumbnailWidth, thumbnailHeight + EditorGUIUtility.singleLineHeight), branch.BothHandsAnimation, _thumbnailDrawer,
-                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Both)); }, _modeNameProvider.Provide(mode));
+                        guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Both)); });
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
                 }
             }

@@ -76,8 +76,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         // TODO: Specify up-left point, not a rect.
         public void Draw(Rect rect, Domain.Animation animation, MainThumbnailDrawer thumbnailDrawer,
-            Action<string> setAnimationClipAction, // The argument is new animation's GUID.
-            string modeDisplayName)
+            Action<string> setAnimationClipAction) // The argument is new animation's GUID.
         {
             // Thumbnail
             var thumbnailWidth = _thumbnailSetting.Main_Width;
@@ -127,7 +126,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-                    var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, modeDisplayName);
+                    var guid = GetAnimationGuidWithDialog(DialogMode.Create, path);
                     if (!string.IsNullOrEmpty(guid))
                     {
                         _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
@@ -141,7 +140,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 {
                     if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-                    var guid = GetAnimationGuidWithDialog(DialogMode.Open, path, modeDisplayName);
+                    var guid = GetAnimationGuidWithDialog(DialogMode.Open, path);
                     if (!string.IsNullOrEmpty(guid))
                     {
                         _expressionEditor.OpenIfOpenedAlready(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
@@ -157,7 +156,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                     {
                         if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-                        var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, modeDisplayName);
+                        var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path);
                         if (!string.IsNullOrEmpty(guid))
                         {
                             _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
@@ -201,7 +200,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             return thumbnailHeight + EditorGUIUtility.singleLineHeight;
         }
 
-        private string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath, string modeDisplayName)
+        private string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath)
         {
             // Open dialog and get the path of the AnimationClip
             var defaultDir = GetDefaultDir(existingAnimationPath);
@@ -212,7 +211,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
             else if (dialogMode == DialogMode.Create)
             {
-                var baseAnimationName = modeDisplayName.Replace(" ", "_");
+                var baseAnimationName = _localizationTable.AnimationElement_NewClipName;
                 selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: GetNewAnimationName(defaultDir, baseAnimationName), extension: "anim", message: null, path: defaultDir);
             }
             else if (dialogMode == DialogMode.Copy)

@@ -527,7 +527,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                 var thumbnailHeight = _thumbnailSetting.Main_Height;
                 var animationRect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle(), GUILayout.Width(thumbnailWidth), GUILayout.Height(thumbnailHeight + EditorGUIUtility.singleLineHeight));
                 _animationElement.Draw(animationRect, mode.Animation, _thumbnailDrawer,
-                    guid => _onAnimationChanged.OnNext((menuItemId, guid)), _modeNameProvider.Provide(mode));
+                    guid => _onAnimationChanged.OnNext((menuItemId, guid)));
             }
         }
 
