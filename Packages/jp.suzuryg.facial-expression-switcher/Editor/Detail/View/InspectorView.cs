@@ -553,7 +553,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private void Field_EditorSetting()
         {
-            ToggleEditorPrefsField(DetailConstants.KeyShowHints, DetailConstants.DefaultShowHints, _localizationTable.InspectorView_ShowHints);
             // Need to resolve some issues
             // ToggleEditorPrefsField(DetailConstants.KeyAutoSave, DetailConstants.DefaultAutoSave, _localizationTable.InspectorView_AutoSave);
             ToggleEditorPrefsField(DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation, _localizationTable.InspectorView_GroupDeleteConfirmation);

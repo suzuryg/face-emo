@@ -48,7 +48,14 @@
 {
     margin-left: 10px;
     margin-top: -5px;
-    width: 667px;
+    width: 445px;
+    height: 20px;
+}
+
+#ShowHintsToggle
+{
+    margin-left: 12px;
+    margin-top: -5px;
     height: 20px;
 }
 

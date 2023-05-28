@@ -21,6 +21,7 @@
 			<engine:VisualElement name="DefaultSelectionRow">
 				<engine:Label name="DefaultSelectionLabel" class="Label"/>
 				<engine:IMGUIContainer name="DefaultSelectionComboBox"/>
+				<engine:Toggle name="ShowHintsToggle"/>
 			</engine:VisualElement>
 		</engine:VisualElement>
 

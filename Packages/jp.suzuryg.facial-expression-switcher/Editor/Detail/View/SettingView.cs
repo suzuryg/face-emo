@@ -40,6 +40,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private Button _updateThumbnailButton;
         private Label _defaultSelectionLabel;
         private IMGUIContainer _defaultSelectionComboBoxArea;
+        private Toggle _showHintsToggle;
         private Button _applyButton;
 
         private List<ModeEx> _flattendModes = new List<ModeEx>();
@@ -88,6 +89,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
             _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _showHintsToggle.UnregisterValueChangedCallback(OnShowHintsValueChanged);
 
             _disposables.Dispose();
         }
@@ -110,9 +112,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _updateThumbnailButton = root.Q<Button>("UpdateThumbnailButton");
             _defaultSelectionLabel = root.Q<Label>("DefaultSelectionLabel");
             _defaultSelectionComboBoxArea = root.Q<IMGUIContainer>("DefaultSelectionComboBox");
+            _showHintsToggle = root.Q<Toggle>("ShowHintsToggle");
             _applyButton = root.Q<Button>("ApplyButton");
             NullChecker.Check(_thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _updateThumbnailButton,
-               _defaultSelectionLabel, _defaultSelectionComboBoxArea,  _applyButton);
+               _defaultSelectionLabel, _defaultSelectionComboBoxArea, _showHintsToggle, _applyButton);
 
             // Initialize fields
             _thumbnailSetting.Update();
@@ -129,9 +132,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _thumbnailHeightSlider.highValue = ThumbnailSetting.Main_MaxHeight;
             _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Height)).intValue;
 
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            _showHintsToggle.value = showHints;
+
             // Add event handlers
             _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
             _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            _showHintsToggle.RegisterValueChangedCallback(OnShowHintsValueChanged);
 
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnUpdateThumbnailButtonClicked()).AddTo(_disposables);
@@ -153,6 +160,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (_updateThumbnailButton != null) { _updateThumbnailButton.text = localizationTable.SettingView_UpdateThumbnails; }
 
             if (_defaultSelectionLabel != null) { _defaultSelectionLabel.text = localizationTable.SettingView_DefaultSelectedMode; }
+
+            if (_showHintsToggle != null) { _showHintsToggle.text = localizationTable.SettingView_ShowHints; }
 
             if (_applyButton != null) { _applyButton.text = localizationTable.SettingView_ApplyToAvatar; }
         }
@@ -208,6 +217,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         {
             _thumbnailDrawer.ClearCache();
             _gestureTableThumbnailDrawer.ClearCache();
+        }
+
+        private void OnShowHintsValueChanged(ChangeEvent<bool> changeEvent)
+        {
+            EditorPrefs.SetBool(DetailConstants.KeyShowHints, changeEvent.newValue);
         }
 
         private void OnApplyButtonClicked()

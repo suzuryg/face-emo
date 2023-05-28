@@ -90,6 +90,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string SettingView_UpdateThumbnails = "Update Thumbnails";
         public string SettingView_DefaultSelectedMode = "Default Selected Pattern";
+        public string SettingView_ShowHints = "Show Hints";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
         public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
@@ -149,7 +150,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_Defaults = "Default Value for Expression Setting";
 
         public string InspectorView_EditorSetting = "Editor Setting";
-        public string InspectorView_ShowHints = "Show Hints";
         public string InspectorView_AutoSave = "Autosave Scene When Modifying Expression Menu";
         public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Folder";
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
