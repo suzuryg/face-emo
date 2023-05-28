@@ -64,7 +64,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             return GetTable(locale);
         }
 
-        [MenuItem("Tools/Suzuryg/FacialExpressionSwitcher/Debug/ResetLocale")]
+        [MenuItem("Tools/suzuryg/FacialExpressionSwitcher/Debug/ResetLocale")]
         public static void ResetLocale()
         {
             EditorPrefs.DeleteKey(LocalePrefKey);

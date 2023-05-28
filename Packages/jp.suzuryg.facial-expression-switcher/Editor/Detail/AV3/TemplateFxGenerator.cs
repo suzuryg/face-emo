@@ -28,7 +28,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         }
 
         // After importing CustomAnimatorControllers, deep copy with CopyAssetsWithDependency (to change GUID).
-        [MenuItem( "Tools/Suzuryg/FacialExpressionSwitcher/GenerateTemplateFx" )]
+        [MenuItem( "Tools/suzuryg/FacialExpressionSwitcher/Debug/GenerateTemplateFx" )]
         public static void Generate()
         {
             try

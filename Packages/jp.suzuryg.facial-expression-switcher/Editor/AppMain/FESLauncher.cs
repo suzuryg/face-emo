@@ -115,7 +115,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             }
         }
 
-        [MenuItem("GameObject/FacialExpressionSwitcher/Create", false, 20)]
+        [MenuItem("FacialExpressionSwitcher/New Menu", false, 0)]
+        [MenuItem("GameObject/FacialExpressionSwitcher/New Menu", false, 20)]
         public static void Create(MenuCommand menuCommand)
         {
             var gameObject = GetLauncherObject(menuCommand);
@@ -132,7 +133,8 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             gameObject.name = objectName;
         }
 
-        [MenuItem("GameObject/FacialExpressionSwitcher/Open", false, 21)]
+        [MenuItem("FacialExpressionSwitcher/Open Menu", false, 1)]
+        [MenuItem("GameObject/FacialExpressionSwitcher/Open Menu", false, 21)]
         public static void Open(MenuCommand menuCommand)
         {
             var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: null, filters: new[] { "FESProject" , "asset" });
