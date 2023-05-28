@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FacialExpressionSwitcher.Domain;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SceneManagement;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
 {
@@ -43,6 +44,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Data
             Undo.RegisterCompleteObjectUndo(_component, comment);
             _component.SerializableMenu = ScriptableObject.CreateInstance<SerializableMenu>();
             _component.SerializableMenu.Save(menu, isAsset: false);
+
+            // Need to resolve the following issues
+            // - UI updates are delayed
+            // - Exclusive control of data access
+            //var autoSave = EditorPrefs.HasKey(DetailConstants.KeyAutoSave) ? EditorPrefs.GetBool(DetailConstants.KeyAutoSave) : DetailConstants.DefaultAutoSave;
+            //if (autoSave) { EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene()); }
         }
 
         public void Export(SerializableMenu rootAsset)

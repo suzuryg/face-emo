@@ -147,6 +147,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string InspectorView_EditorSetting = "Editor Setting";
         public string InspectorView_ShowHints = "Show Hints";
+        public string InspectorView_AutoSave = "Autosave Scene When Modifying Expression Menu";
         public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Folder";
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";

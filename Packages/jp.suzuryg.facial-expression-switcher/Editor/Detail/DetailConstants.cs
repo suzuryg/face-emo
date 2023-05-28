@@ -27,5 +27,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
 
         public static readonly string KeyShowHints = $"{DomainConstants.SystemName}_ShowHints";
         public static readonly bool DefaultShowHints = true;
+
+        public static readonly string KeyAutoSave = $"{DomainConstants.SystemName}_AutoSave";
+        public static readonly bool DefaultAutoSave = true;
     }
 }
