@@ -30,6 +30,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IReadOnlyLocalizationSetting _localizationSetting;
         private LocalizationTable _localizationTable;
 
+        private DefaultsProviderGenerator _defaultProviderGenerator;
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
@@ -56,6 +57,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IMoveMenuItemUseCase moveMenuItemUseCase,
 
             IReadOnlyLocalizationSetting localizationSetting,
+            DefaultsProviderGenerator defaultProviderGenerator,
             ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
@@ -71,6 +73,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Others
             _localizationSetting = localizationSetting;
+            _defaultProviderGenerator = defaultProviderGenerator;
             _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
@@ -306,11 +309,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
                 if (addMenuItemType == AddMenuItemType.Group)
                 {
-                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType, _localizationTable.ModeNameProvider_NewGroup);
+                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType,
+                        displayName: _localizationTable.ModeNameProvider_NewGroup,
+                        defaultsProvider: _defaultProviderGenerator.Generate());
                 }
                 else
                 {
-                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType, _localizationTable.ModeNameProvider_NewMode);
+                    _addMenuItemUseCase.Handle("", parentId, addMenuItemType,
+                        displayName: _localizationTable.ModeNameProvider_NewMode,
+                        defaultsProvider: _defaultProviderGenerator.Generate());
                 }
             }
         }

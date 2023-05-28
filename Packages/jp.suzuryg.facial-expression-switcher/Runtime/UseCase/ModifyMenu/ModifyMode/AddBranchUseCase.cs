@@ -7,7 +7,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
 {
     public interface IAddBranchUseCase
     {
-        void Handle(string menuId, string modeId, IEnumerable<Condition> conditions = null);
+        void Handle(string menuId, string modeId, IEnumerable<Condition> conditions = null, DefaultsProvider defaultsProvider = null);
     }
 
     public interface IAddBranchPresenter
@@ -51,7 +51,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
             _addBranchPresenter = addBranchPresenter;
         }
 
-        public void Handle(string menuId, string modeId, IEnumerable<Condition> conditions = null)
+        public void Handle(string menuId, string modeId, IEnumerable<Condition> conditions = null, DefaultsProvider defaultsProvider = null)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
                     return;
                 }
 
-                menu.AddBranch(modeId, conditions);
+                menu.AddBranch(modeId, conditions, defaultsProvider);
 
                 _menuRepository.Save(menuId, menu, "AddBranch");
                 _addBranchPresenter.Complete(AddBranchResult.Succeeded, menu);

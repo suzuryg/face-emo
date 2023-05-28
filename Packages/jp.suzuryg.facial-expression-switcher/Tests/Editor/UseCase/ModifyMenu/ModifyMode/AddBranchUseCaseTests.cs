@@ -93,6 +93,92 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu.ModifyMode
             Assert.That(loadMenu().Registered.GetModeAt(0).Branches[1].Conditions[1], Is.EqualTo(new Condition(Hand.Both, HandGesture.RockNRoll, ComparisonOperator.NotEqual)));
             Assert.That(loadMenu().Registered.GetModeAt(1).Branches.Count, Is.EqualTo(1));
             Assert.That(loadMenu().Registered.GetModeAt(1).Branches[0].Conditions.Count, Is.EqualTo(0));
+
+            // Defaults provider
+            createMenuUseCase.Handle(menuId);
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: null);
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(1));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches.Count, Is.EqualTo(0));
+
+            // No change
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], conditions: null, defaultsProvider: null);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[0].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[0].IsRightTriggerUsed, Is.EqualTo(false));
+
+            // EyeTrackingControl
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], conditions: null, defaultsProvider: new DefaultsProvider()
+            {
+                EyeTrackingControl = EyeTrackingControl.Animation,
+            });
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[1].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[1].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[1].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[1].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[1].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[1].IsRightTriggerUsed, Is.EqualTo(false));
+
+            // MouthTrackingControl
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], conditions: null, defaultsProvider: new DefaultsProvider()
+            {
+                MouthTrackingControl = MouthTrackingControl.Animation,
+            });
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[2].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[2].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[2].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[2].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[2].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[2].IsRightTriggerUsed, Is.EqualTo(false));
+
+            // BlinkEnabled
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], conditions: null, defaultsProvider: new DefaultsProvider()
+            {
+                BlinkEnabled = false,
+            });
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[3].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[3].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[3].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[3].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[3].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[3].IsRightTriggerUsed, Is.EqualTo(false));
+
+            // MouthMorphCancelerEnabled
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], conditions: null, defaultsProvider: new DefaultsProvider()
+            {
+                MouthMorphCancelerEnabled = false,
+            });
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[4].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[4].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[4].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[4].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[4].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[4].IsRightTriggerUsed, Is.EqualTo(false));
+
+            // All
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[0], conditions: null, defaultsProvider: new DefaultsProvider()
+            {
+                ChangeDefaultFace = true,
+                UseAnimationNameAsDisplayName = true,
+                EyeTrackingControl = EyeTrackingControl.Animation,
+                MouthTrackingControl = MouthTrackingControl.Animation,
+                BlinkEnabled = false,
+                MouthMorphCancelerEnabled = false,
+            });
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].IsRightTriggerUsed, Is.EqualTo(false));
         }
     }
 }

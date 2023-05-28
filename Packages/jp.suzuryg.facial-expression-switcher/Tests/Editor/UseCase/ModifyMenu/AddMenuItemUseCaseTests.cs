@@ -149,6 +149,127 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             Assert.That(group.GetMode(group.Order[5]).DisplayName, Is.EqualTo("NewMode"));
             Assert.That(group.GetMode(group.Order[6]).DisplayName, Is.EqualTo("NewMode"));
             Assert.That(group.GetMode(group.Order[7]).DisplayName, Is.EqualTo("NewMode"));
+
+            // Defaults provider
+            createMenuUseCase.Handle(menuId);
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(0));
+
+            // No change
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: null);
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).MouthMorphCancelerEnabled, Is.EqualTo(true));
+
+            // ChangeDefaultFace
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: new DefaultsProvider()
+            {
+                ChangeDefaultFace = true,
+            });
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).MouthMorphCancelerEnabled, Is.EqualTo(true));
+
+            // UseAnimationNameAsDisplayName
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: new DefaultsProvider()
+            {
+                UseAnimationNameAsDisplayName = true,
+            });
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[2]).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[2]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[2]).UseAnimationNameAsDisplayName, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[2]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[2]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[2]).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[2]).MouthMorphCancelerEnabled, Is.EqualTo(true));
+
+            // EyeTrackingControl
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: new DefaultsProvider()
+            {
+                EyeTrackingControl = EyeTrackingControl.Animation,
+            });
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[3]).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[3]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[3]).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[3]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[3]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[3]).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[3]).MouthMorphCancelerEnabled, Is.EqualTo(true));
+
+            // MouthTrackingControl
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: new DefaultsProvider()
+            {
+                MouthTrackingControl = MouthTrackingControl.Animation,
+            });
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[4]).MouthMorphCancelerEnabled, Is.EqualTo(true));
+
+            // BlinkEnabled
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: new DefaultsProvider()
+            {
+                BlinkEnabled = false,
+            });
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[5]).MouthMorphCancelerEnabled, Is.EqualTo(true));
+
+            // MouthMorphCancelerEnabled
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: new DefaultsProvider()
+            {
+                MouthMorphCancelerEnabled = false,
+            });
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[6]).MouthMorphCancelerEnabled, Is.EqualTo(false));
+
+            // All
+            createMenuUseCase.Handle(menuId);
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(0));
+
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode, displayName: null, defaultsProvider: new DefaultsProvider()
+            {
+                ChangeDefaultFace = true,
+                UseAnimationNameAsDisplayName = true,
+                EyeTrackingControl = EyeTrackingControl.Animation,
+                MouthTrackingControl = MouthTrackingControl.Animation,
+                BlinkEnabled = false,
+                MouthMorphCancelerEnabled = false,
+            });
+            Assert.That(mockAddMenuItemPresenter.Result, Is.EqualTo(AddMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).DisplayName, Is.EqualTo("NewMode"));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).UseAnimationNameAsDisplayName, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).MouthMorphCancelerEnabled, Is.EqualTo(false));
         }
     }
 }

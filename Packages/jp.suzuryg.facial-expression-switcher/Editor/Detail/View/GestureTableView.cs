@@ -23,6 +23,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private IReadOnlyLocalizationSetting _localizationSetting;
         private ISubWindowProvider _subWindowProvider;
+        private DefaultsProviderGenerator _defaultProviderGenerator;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
         private GestureTableThumbnailDrawer _thumbnailDrawer;
@@ -48,6 +49,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             IAddBranchUseCase addBranchUseCase,
             IReadOnlyLocalizationSetting localizationSetting,
             ISubWindowProvider subWindowProvider,
+            DefaultsProviderGenerator defaultProviderGenerator,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
             GestureTableThumbnailDrawer thumbnailDrawer,
@@ -60,6 +62,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Others
             _localizationSetting = localizationSetting;
             _subWindowProvider = subWindowProvider;
+            _defaultProviderGenerator = defaultProviderGenerator;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
             _thumbnailDrawer = thumbnailDrawer;
@@ -229,7 +232,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 new Condition(Hand.Left, target.left, ComparisonOperator.Equals),
                 new Condition(Hand.Right, target.right, ComparisonOperator.Equals),
             };
-            _addBranchUseCase.Handle("", _gestureTableElement.SelectedModeId, conditions);
+            _addBranchUseCase.Handle("", _gestureTableElement.SelectedModeId,
+                conditions: conditions,
+                defaultsProvider: _defaultProviderGenerator.Generate());
         }
 
         private (bool canAddBranch, HandGesture left, HandGesture right) GetTarget()

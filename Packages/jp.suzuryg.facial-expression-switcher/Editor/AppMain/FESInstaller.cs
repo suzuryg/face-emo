@@ -143,6 +143,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
             Container.Bind<BranchListElement>().AsTransient();
             Container.Bind<GestureTableElement>().AsTransient();
+            Container.Bind<DefaultsProviderGenerator>().AsTransient();
 
             Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
 

@@ -38,6 +38,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private LocalizationTable _localizationTable;
 
         private ISubWindowProvider _subWindowProvider;
+        private DefaultsProviderGenerator _defaultProviderGenerator;
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
@@ -73,6 +74,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             IReadOnlyLocalizationSetting localizationSetting,
             ISubWindowProvider subWindowProvider,
+            DefaultsProviderGenerator defaultProviderGenerator,
             ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
@@ -99,6 +101,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Others
             _localizationSetting = localizationSetting;
             _subWindowProvider = subWindowProvider;
+            _defaultProviderGenerator = defaultProviderGenerator;
             _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
@@ -249,7 +252,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals),
             };
-            _addBranchUseCase.Handle("", modeId, conditions);
+            _addBranchUseCase.Handle("", modeId,
+                conditions: conditions,
+                defaultsProvider: _defaultProviderGenerator.Generate());
         }
 
         private void OnRemoveBranchButtonClicked((string modeId, int branchIndex) args)

@@ -6,8 +6,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
 {
     public interface IAddMenuItemUseCase
     {
-        void Handle(string menuId, string menuItemListId, AddMenuItemType type);
-        void Handle(string menuId, string menuItemListId, AddMenuItemType type, string displayName);
+        void Handle(string menuId, string menuItemListId, AddMenuItemType type, string displayName = null, DefaultsProvider defaultsProvider = null);
     }
 
     public interface IAddMenuItemPresenter
@@ -57,9 +56,7 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
             _addMenuItemPresenter = addMenuItemPresenter;
         }
 
-        public void Handle(string menuId, string menuItemListId, AddMenuItemType type) => Handle(menuId, menuItemListId, type, null);
-
-        public void Handle(string menuId, string menuItemListId, AddMenuItemType type, string displayName)
+        public void Handle(string menuId, string menuItemListId, AddMenuItemType type, string displayName = null, DefaultsProvider defaultsProvider = null)
         {
             try
             {
@@ -87,6 +84,18 @@ namespace Suzuryg.FacialExpressionSwitcher.UseCase.ModifyMenu
                         if (!string.IsNullOrEmpty(displayName))
                         {
                             menu.ModifyModeProperties(id: addedItemId, displayName: displayName);
+                        }
+
+                        if (defaultsProvider is DefaultsProvider)
+                        {
+                            menu.ModifyModeProperties(
+                                id: addedItemId,
+                                changeDefaultFace: defaultsProvider.ChangeDefaultFace,
+                                useAnimationNameAsDisplayName: defaultsProvider.UseAnimationNameAsDisplayName,
+                                eyeTrackingControl: defaultsProvider.EyeTrackingControl,
+                                mouthTrackingControl: defaultsProvider.MouthTrackingControl,
+                                blinkEnabled: defaultsProvider.BlinkEnabled,
+                                mouthMorphCancelerEnabled: defaultsProvider.MouthMorphCancelerEnabled);
                         }
                     }
                     else

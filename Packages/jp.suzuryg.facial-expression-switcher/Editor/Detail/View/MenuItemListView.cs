@@ -48,6 +48,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private IMGUIContainer _addressBarContainer;
         private IMGUIContainer _treeViewContainer;
 
+        private DefaultsProviderGenerator _defaultProviderGenerator;
         private ModeNameProvider _modeNameProvider;
         private AnimationElement _animationElement;
         private AddressBarElement _addressBarElement;
@@ -72,6 +73,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             AV3Setting aV3Setting,
             ThumbnailSetting thumbnailSetting,
             MenuItemListViewState menuItemListViewState,
+            DefaultsProviderGenerator defaultProviderGenerator,
             ModeNameProvider modeNameProvider,
             AnimationElement animationElement)
         {
@@ -92,6 +94,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _aV3Setting = aV3Setting;
             _thumbnailSetting = thumbnailSetting;
             _menuItemListViewState = menuItemListViewState;
+            _defaultProviderGenerator = defaultProviderGenerator;
             _modeNameProvider = modeNameProvider;
             _animationElement = animationElement;
 
@@ -406,11 +409,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 if (addMenuItemType == AddMenuItemType.Group)
                 {
-                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType, _localizationTable.ModeNameProvider_NewGroup);
+                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType,
+                        displayName: _localizationTable.ModeNameProvider_NewGroup,
+                        defaultsProvider: _defaultProviderGenerator.Generate());
                 }
                 else
                 {
-                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType, _localizationTable.ModeNameProvider_NewMode);
+                    _addMenuItemUseCase.Handle("", _menuItemListViewState.RootGroupId, addMenuItemType,
+                        displayName: _localizationTable.ModeNameProvider_NewMode,
+                        defaultsProvider: _defaultProviderGenerator.Generate());
                 }
             }
         }

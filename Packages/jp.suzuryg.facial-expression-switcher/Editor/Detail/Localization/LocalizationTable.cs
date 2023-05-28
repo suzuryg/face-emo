@@ -146,6 +146,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
 
+        public string InspectorView_Defaults = "Default Value for Expression Setting";
+
         public string InspectorView_EditorSetting = "Editor Setting";
         public string InspectorView_ShowHints = "Show Hints";
         public string InspectorView_AutoSave = "Autosave Scene When Modifying Expression Menu";

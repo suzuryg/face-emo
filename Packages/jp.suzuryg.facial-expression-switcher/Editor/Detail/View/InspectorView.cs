@@ -44,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private bool _isThumbnailOpened = false;
         private bool _isExpressionsMenuItemsOpened = false;
         private bool _isAvatarApplicationOpened = false;
+        private bool _isDefaultsOpened = false;
         private bool _isEditorSettingOpened = false;
         private bool _isHelpOpened = false;
 
@@ -202,6 +203,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             if (_isAvatarApplicationOpened)
             {
                 Field_AvatarApplicationSetting();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Defaults
+            _isDefaultsOpened = EditorGUILayout.Foldout(_isDefaultsOpened, _localizationTable.InspectorView_Defaults);
+            if (_isDefaultsOpened)
+            {
+                Field_Defaults();
             }
 
             EditorGUILayout.Space(10);
@@ -529,6 +539,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddParameterPrefix)), _localizationTable.InspectorView_AddExpressionParameterPrefix);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _localizationTable.InspectorView_ReplaceBlink);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _localizationTable.InspectorView_DisableTrackingControls);
+        }
+
+        private void Field_Defaults()
+        {
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_ChangeDefaultFace)), _localizationTable.MenuItemListView_ChangeDefaultFace);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_UseAnimationNameAsDisplayName)), _localizationTable.MenuItemListView_UseAnimationNameAsDisplayName);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_EyeTrackingEnabled)), _localizationTable.MenuItemListView_EyeTracking);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_BlinkEnabled)), _localizationTable.MenuItemListView_Blink);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_MouthTrackingEnabled)), _localizationTable.MenuItemListView_MouthTracking);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ExpressionDefaults_MouthMorphCancelerEnabled)), _localizationTable.MenuItemListView_MouthMorphCanceler);
         }
 
         private void Field_EditorSetting()

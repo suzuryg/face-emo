@@ -440,10 +440,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
 
         public bool CanAddBranchTo(string destination) => ContainsMode(destination);
 
-        public void AddBranch(string destination, IEnumerable<Condition> conditions = null)
+        public void AddBranch(string destination, IEnumerable<Condition> conditions = null, DefaultsProvider defaultsProvider = null)
         {
             NullChecker.Check(destination);
-            _modes[destination].AddBranch(conditions);
+            _modes[destination].AddBranch(conditions, defaultsProvider);
         }
 
         public bool ContainsBranch(string modeId, int index) => ContainsMode(modeId) && index >= 0 && index < _modes[modeId].Branches.Count;

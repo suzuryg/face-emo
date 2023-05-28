@@ -78,9 +78,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             throw new FacialExpressionSwitcherException("The parent does not have this mode.");
         }
         
-        public void AddBranch(IEnumerable<Condition> conditions = null)
+        public void AddBranch(IEnumerable<Condition> conditions = null, DefaultsProvider defaultsProvider = null)
         {
             _branches.Add(new Branch(conditions));
+
+            if (defaultsProvider is DefaultsProvider)
+            {
+                var branchIndex = _branches.Count - 1;
+                ModifyBranchProperties(
+                    branchIndex: branchIndex,
+                    eyeTrackingControl: defaultsProvider.EyeTrackingControl,
+                    mouthTrackingControl: defaultsProvider.MouthTrackingControl,
+                    blinkEnabled: defaultsProvider.BlinkEnabled,
+                    mouthMorphCancelerEnabled: defaultsProvider.MouthMorphCancelerEnabled);
+            }
+
             UpdateTable();
         }
 

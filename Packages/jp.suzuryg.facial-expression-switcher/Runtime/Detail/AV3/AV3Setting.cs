@@ -35,6 +35,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public bool AddConfig_HandPattern = true;
         public bool AddConfig_Controller = true;
 
+        public bool ExpressionDefaults_ChangeDefaultFace = false;
+        public bool ExpressionDefaults_UseAnimationNameAsDisplayName = false;
+        public bool ExpressionDefaults_EyeTrackingEnabled = true;
+        public bool ExpressionDefaults_MouthTrackingEnabled = true;
+        public bool ExpressionDefaults_BlinkEnabled = true;
+        public bool ExpressionDefaults_MouthMorphCancelerEnabled = true;
+
         public string LastOpendOrSavedAnimationPath;
     }
 }
