@@ -362,6 +362,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_MouthMorphCanceler);
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AddMouthMorphBlendShape);
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ConfirmMouthMorphBlendShape);
             }
 
             _mouthMorphBlendShapes.list = GetMouthMorphBlendShapes(); // Is it necessary to get every frame?

@@ -130,7 +130,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_TargetAvatarIsNotSpecified = "Please specify the target avatar.";
         public string InspectorView_Launch = "Launch FacialExpressionSwitcher";
         public string InspectorView_TargetAvatar = "Target Avatar";
-        public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionsMenu icons";
+        public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionMenu icons";
         public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
@@ -149,7 +149,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AFK_Face = "AFK Face";
         public string InspectorView_AFK_ExitFace = "AFK Exit Face";
 
-        public string InspectorView_ExpressionsMenuSettingItems = "Expressions Menu Setting Items";
+        public string InspectorView_ExpressionsMenuSettingItems = "ExpressionMenu Setting Items";
         public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
         public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";
         public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick (1bit)";
@@ -179,14 +179,18 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string InspectorView_Tooltip_MouthMorphCanceler = "This is used in expressions where Mouth Morph Canceler is enabled. " +
             "During speech, you can prevent disruptions by resetting certain shape key values to their default values (the values set on the scene).";
-        public string InspectorView_Tooltip_AddMouthMorphBlendShape = "When selecting blend shapes, you can select multiple blend shapes at once by using Shift + Directional keys and add them all at once.";
+        public string InspectorView_Tooltip_AddMouthMorphBlendShape = "When selecting blend shapes, you can make multiple selections by \"Ctrl + Click\". " +
+            "Also, you can select a range by \"Shift + Click\" or \"Shift + Arrow key\". " +
+            "If you make multiple selections or select a range and press \"Add\", you can add blend shapes all at once.";
+        public string InspectorView_Tooltip_ConfirmMouthMorphBlendShape = "If Mouth Morph Canceler is not working properly, please make sure that all mouth morph blend shapes have been added. " +
+            "If you are morphing the mouth with blend shapes for MMD, do not forget to add those as well.";
         public string InspectorView_Tooltip_AdditionalToggle = "In conjunction with expressions, you can control the ON/OFF of specific objects (such as expression particles). " +
             "Objects specified here can be used in the expression editor.";
         public string InspectorView_Tooltip_AdditionalTransform = "In conjunction with expressions, you can control the position, rotation, and scale of specific objects (such as beast ears and ahoge). " +
             "Objects specified here can be used in the expression editor.";
         public string InspectorView_Tooltip_AFK = "You can set expressions for when you are AFK or for when you start/end AFK.";
-        public string InspectorView_Tooltip_Thumbnail = "You can set the camera position and angle for the thumbnails displayed in the Expressions Menu.";
-        public string InspectorView_Tooltip_ExMenu = "You can specify which settings to add to the Expressions Menu. " +
+        public string InspectorView_Tooltip_Thumbnail = "You can set the camera position and angle for the thumbnails displayed in the ExpressionMenu.";
+        public string InspectorView_Tooltip_ExMenu = "You can specify which settings to add to the ExpressionMenu. " +
             "You can reduce the usage of Expression Parameter by reducing the settings.";
         public string InspectorView_Tooltip_ExMenu_EmoteLock = "While this is ON, you can fix the expression.";
         public string InspectorView_Tooltip_ExMenu_BlinkOff = "While this is ON, you can disable blinking.";
@@ -244,7 +248,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string ExMenu_Controller_Index = "Index Controller";
 
         public string Hints_AddMode = "Create an expression pattern and set the correspondence between expressions and gestures. " +
-                                       "If there are multiple expression patterns, you can switch them in the ExpressionsMenu.";
+                                       "If there are multiple expression patterns, you can switch them in the ExpressionMenu.";
         public string Hints_SelectMode = "When you select an expression pattern, you can set the correspondence between expressions and gestures on the right screen.";
         public string Hints_RegisteredFreeSpace1 = "In the expression menu, you can register up to 7 expression patterns or folders. " +
                                                    "If you want to register more than 8 expression patterns, please create a folder.";
