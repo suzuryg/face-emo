@@ -30,23 +30,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private ILocalizationSetting _localizationSetting;
         private ThumbnailDrawerBase _thumbnailDrawer;
+        private SerializedObject _inspectorViewState;
         private SerializedObject _av3Setting;
         private SerializedObject _thumbnailSetting;
 
         private ReorderableList _mouthMorphBlendShapes;
         private ReorderableList _additionalToggleObjects;
         private ReorderableList _additionalTransformObjects;
-
-        private bool _isMouthMorphBlendShapesOpened = false;
-        private bool _isAddtionalToggleOpened = false;
-        private bool _isAddtionalTransformOpened = false;
-        private bool _isAFKOpened = false;
-        private bool _isThumbnailOpened = false;
-        private bool _isExpressionsMenuItemsOpened = false;
-        private bool _isAvatarApplicationOpened = false;
-        private bool _isDefaultsOpened = false;
-        private bool _isEditorSettingOpened = false;
-        private bool _isHelpOpened = false;
 
         private LocalizationTable _localizationTable;
 
@@ -57,12 +47,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         public InspectorView(
             ILocalizationSetting localizationSetting,
             InspectorThumbnailDrawer exMenuThumbnailDrawer,
+            InspectorViewState inspectorViewState,
             AV3Setting av3Setting,
             ThumbnailSetting thumbnailSetting)
         {
             // Dependencies
             _localizationSetting = localizationSetting;
             _thumbnailDrawer = exMenuThumbnailDrawer;
+            _inspectorViewState = new SerializedObject(inspectorViewState);
             _av3Setting = new SerializedObject(av3Setting);
             _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
@@ -116,6 +108,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         public void OnGUI()
         {
+            _inspectorViewState.Update();
             _av3Setting.Update();
             _thumbnailSetting.Update();
 
@@ -145,9 +138,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Mouth Morph Blend Shapes
-            _isMouthMorphBlendShapesOpened = EditorGUILayout.Foldout(_isMouthMorphBlendShapesOpened,
+            var isMouthMorphBlendShapesOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsMouthMorphBlendShapesOpened));
+            isMouthMorphBlendShapesOpened.boolValue = EditorGUILayout.Foldout(isMouthMorphBlendShapesOpened.boolValue,
                 new GUIContent(_localizationTable.InspectorView_MouthMorphBlendShapes));
-            if (_isMouthMorphBlendShapesOpened)
+            if (isMouthMorphBlendShapesOpened.boolValue)
             {
                 Field_MouthMorphBlendShape();
             }
@@ -155,9 +149,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Additional Toggle Objects
-            _isAddtionalToggleOpened = EditorGUILayout.Foldout(_isAddtionalToggleOpened,
+            var isAddtionalToggleOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAddtionalToggleOpened));
+            isAddtionalToggleOpened.boolValue = EditorGUILayout.Foldout(isAddtionalToggleOpened.boolValue,
                 new GUIContent(_localizationTable.Common_AddtionalToggleObjects));
-            if (_isAddtionalToggleOpened)
+            if (isAddtionalToggleOpened.boolValue)
             {
                 Field_AdditionalToggleObjects();
             }
@@ -165,9 +160,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Additional Transform Objects
-            _isAddtionalTransformOpened = EditorGUILayout.Foldout(_isAddtionalTransformOpened,
+            var isAddtionalTransformOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAddtionalTransformOpened));
+            isAddtionalTransformOpened.boolValue = EditorGUILayout.Foldout(isAddtionalTransformOpened.boolValue,
                 new GUIContent(_localizationTable.Common_AddtionalTransformObjects));
-            if (_isAddtionalTransformOpened)
+            if (isAddtionalTransformOpened.boolValue)
             {
                 Field_AdditionalTransformObjects();
             }
@@ -175,9 +171,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // AFK face setting
-            _isAFKOpened = EditorGUILayout.Foldout(_isAFKOpened, 
+            var isAFKOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAFKOpened));
+            isAFKOpened.boolValue = EditorGUILayout.Foldout(isAFKOpened.boolValue, 
                 new GUIContent(_localizationTable.InspectorView_AFK));
-            if (_isAFKOpened)
+            if (isAFKOpened.boolValue)
             {
                 Field_AFKFace();
             }
@@ -185,9 +182,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Thumbnail Setting
-            _isThumbnailOpened = EditorGUILayout.Foldout(_isThumbnailOpened,
+            var isThumbnailOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsThumbnailOpened));
+
+            isThumbnailOpened.boolValue = EditorGUILayout.Foldout(isThumbnailOpened.boolValue,
                 new GUIContent(_localizationTable.InspectorView_Thumbnail));
-            if (_isThumbnailOpened)
+            if (isThumbnailOpened.boolValue)
             {
                 Field_ThumbnailSetting();
             }
@@ -195,9 +194,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Expressions Menu Setting Items
-            _isExpressionsMenuItemsOpened = EditorGUILayout.Foldout(_isExpressionsMenuItemsOpened,
+            var isExpressionsMenuItemsOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsExpressionsMenuItemsOpened));
+            isExpressionsMenuItemsOpened.boolValue = EditorGUILayout.Foldout(isExpressionsMenuItemsOpened.boolValue,
                 new GUIContent(_localizationTable.InspectorView_ExpressionsMenuSettingItems));
-            if (_isExpressionsMenuItemsOpened)
+            if (isExpressionsMenuItemsOpened.boolValue)
             {
                 Field_ExpressionsMenuSettingItems();
             }
@@ -205,9 +205,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Avatar application setting
-            _isAvatarApplicationOpened = EditorGUILayout.Foldout(_isAvatarApplicationOpened,
+            var isAvatarApplicationOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAvatarApplicationOpened));
+            isAvatarApplicationOpened.boolValue = EditorGUILayout.Foldout(isAvatarApplicationOpened.boolValue,
                 new GUIContent(_localizationTable.InspectorView_AvatarApplicationSetting));
-            if (_isAvatarApplicationOpened)
+            if (isAvatarApplicationOpened.boolValue)
             {
                 Field_AvatarApplicationSetting();
             }
@@ -215,9 +216,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Defaults
-            _isDefaultsOpened = EditorGUILayout.Foldout(_isDefaultsOpened,
+            var isDefaultsOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsDefaultsOpened));
+            isDefaultsOpened.boolValue = EditorGUILayout.Foldout(isDefaultsOpened.boolValue,
                 new GUIContent(_localizationTable.InspectorView_Defaults));
-            if (_isDefaultsOpened)
+            if (isDefaultsOpened.boolValue)
             {
                 Field_Defaults();
             }
@@ -225,9 +227,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Editor setting
-            _isEditorSettingOpened = EditorGUILayout.Foldout(_isEditorSettingOpened,
+            var isEditorSettingOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsEditorSettingOpened));
+            isEditorSettingOpened.boolValue = EditorGUILayout.Foldout(isEditorSettingOpened.boolValue,
                 new GUIContent(_localizationTable.InspectorView_EditorSetting));
-            if (_isEditorSettingOpened)
+            if (isEditorSettingOpened.boolValue)
             {
                 Field_EditorSetting();
             }
@@ -235,13 +238,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.Space(10);
 
             // Help
-            _isHelpOpened = EditorGUILayout.Foldout(_isHelpOpened,
+            var isHelpOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsHelpOpened));
+            isHelpOpened.boolValue = EditorGUILayout.Foldout(isHelpOpened.boolValue,
                 new GUIContent(_localizationTable.InspectorView_Help));
-            if (_isHelpOpened)
+            if (isHelpOpened.boolValue)
             {
                 Field_Help();
             }
 
+            _inspectorViewState.ApplyModifiedProperties();
             _av3Setting.ApplyModifiedProperties();
             _thumbnailSetting.ApplyModifiedProperties();
         }

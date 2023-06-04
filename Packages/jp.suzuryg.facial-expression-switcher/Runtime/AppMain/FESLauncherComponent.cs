@@ -14,5 +14,6 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
         [HideInInspector] public HierarchyViewState HierarchyViewState;
         [HideInInspector] public MenuItemListViewState MenuItemListViewState;
         [HideInInspector] public ViewSelection ViewSelection;
+        [HideInInspector] public InspectorViewState InspectorViewState;
     }
 }

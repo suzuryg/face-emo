@@ -44,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             if (launcher.HierarchyViewState == null) { launcher.HierarchyViewState = ScriptableObject.CreateInstance<HierarchyViewState>(); }
             if (launcher.MenuItemListViewState == null) { launcher.MenuItemListViewState = ScriptableObject.CreateInstance<MenuItemListViewState>(); }
             if (launcher.ViewSelection == null) { launcher.ViewSelection = ScriptableObject.CreateInstance<ViewSelection>(); }
+            if (launcher.InspectorViewState == null) { launcher.InspectorViewState = ScriptableObject.CreateInstance<InspectorViewState>(); }
 
             // Avoid binding the same reference when the component is copied.
             var instanceId = launcherObject.GetInstanceID();
@@ -73,6 +74,10 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 EditorUtility.CopySerialized(launcher.ViewSelection, ViewSelection);
                 launcher.ViewSelection = ViewSelection;
 
+                var InspectorViewState = ScriptableObject.CreateInstance<InspectorViewState>();
+                EditorUtility.CopySerialized(launcher.InspectorViewState, InspectorViewState);
+                launcher.InspectorViewState = InspectorViewState;
+
                 launcher.InstanceId = instanceId;
             }
 
@@ -82,6 +87,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Container.Bind<HierarchyViewState>().FromInstance(launcher.HierarchyViewState).AsSingle();
             Container.Bind<MenuItemListViewState>().FromInstance(launcher.MenuItemListViewState).AsSingle();
             Container.Bind<ViewSelection>().FromInstance(launcher.ViewSelection).AsSingle();
+            Container.Bind<InspectorViewState>().FromInstance(launcher.InspectorViewState).AsSingle();
 
             // Bind non-serialized classes
             Container.BindInterfacesTo<SubWindowManager>().AsSingle();
@@ -165,6 +171,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             EditorUtility.SetDirty(Container.Resolve<HierarchyViewState>());
             EditorUtility.SetDirty(Container.Resolve<MenuItemListViewState>());
             EditorUtility.SetDirty(Container.Resolve<ViewSelection>());
+            EditorUtility.SetDirty(Container.Resolve<InspectorViewState>());
         }
 
         public static FESInstaller GetInstaller(string rootObjectPath)
