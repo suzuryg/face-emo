@@ -40,6 +40,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private LocalizationTable _localizationTable;
 
+        private GUIStyle _centerStyle;
         private GUIStyle _versionLabelStyle = new GUIStyle();
         private GUIStyle _warningLabelStyle = new GUIStyle();
 
@@ -62,12 +63,37 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
 
+            // Styles
+            try
+            {
+                _centerStyle = new GUIStyle(EditorStyles.label);
+                _versionLabelStyle = new  GUIStyle(EditorStyles.label);
+                _warningLabelStyle = new GUIStyle(EditorStyles.label);
+            }
+            catch (NullReferenceException)
+            {
+                // Workaround for play mode
+                _centerStyle = new GUIStyle();
+                _versionLabelStyle = new GUIStyle();
+                _warningLabelStyle = new GUIStyle();
+            }
+            _centerStyle.alignment = TextAnchor.MiddleCenter;
+            _versionLabelStyle.fontSize = 15;
+            _versionLabelStyle.fontStyle = FontStyle.Bold;
+            _versionLabelStyle.alignment = TextAnchor.UpperCenter;
+            _versionLabelStyle.padding = new RectOffset(10, 10, 10, 10);
+            _warningLabelStyle.normal.textColor = Color.red;
+
             // Mouth morph blendshapes
             _mouthMorphBlendShapes = new ReorderableList(null, typeof(string));
             _mouthMorphBlendShapes.onAddCallback = AddMouthMorphBlendShape;
             _mouthMorphBlendShapes.onRemoveCallback = RemoveMouthMorphBlendShape;
             _mouthMorphBlendShapes.draggable = false;
             _mouthMorphBlendShapes.headerHeight = 0;
+            _mouthMorphBlendShapes.drawNoneElementCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyBlendShapes, _centerStyle);
+            };
 
             // Additional expression objects
             _additionalToggleObjects = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalToggleObjects)));
@@ -77,6 +103,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 var element = _additionalToggleObjects.serializedProperty.GetArrayElementAtIndex(index);
                 EditorGUI.PropertyField(rect, element, GUIContent.none);
             };
+            _additionalToggleObjects.drawNoneElementCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyObjects, _centerStyle);
+            };
 
             _additionalTransformObjects = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalTransformObjects)));
             _additionalTransformObjects.headerHeight = 0;
@@ -85,24 +115,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 var element = _additionalTransformObjects.serializedProperty.GetArrayElementAtIndex(index);
                 EditorGUI.PropertyField(rect, element, GUIContent.none);
             };
-
-            // Styles
-            try
+            _additionalTransformObjects.drawNoneElementCallback = (Rect rect) =>
             {
-                _versionLabelStyle = new  GUIStyle(EditorStyles.label);
-                _warningLabelStyle = new GUIStyle(EditorStyles.label);
-            }
-            catch (NullReferenceException)
-            {
-                // Workaround for play mode
-                _versionLabelStyle = new GUIStyle();
-                _warningLabelStyle = new GUIStyle();
-            }
-            _versionLabelStyle.fontSize = 15;
-            _versionLabelStyle.fontStyle = FontStyle.Bold;
-            _versionLabelStyle.alignment = TextAnchor.UpperCenter;
-            _versionLabelStyle.padding = new RectOffset(10, 10, 10, 10);
-            _warningLabelStyle.normal.textColor = Color.red;
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyObjects, _centerStyle);
+            };
 
             // Set text
             SetText(_localizationSetting.Table);
