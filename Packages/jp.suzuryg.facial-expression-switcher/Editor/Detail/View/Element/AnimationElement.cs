@@ -211,8 +211,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             }
             else if (dialogMode == DialogMode.Create)
             {
-                var baseAnimationName = _localizationTable.AnimationElement_NewClipName;
-                selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: GetNewAnimationName(defaultDir, baseAnimationName), extension: "anim", message: null, path: defaultDir);
+                var defaultName = _localizationTable.AnimationElement_NewClipName + DateTime.Now.ToString("_yyyyMMdd_HHmmss_fff");
+                selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: defaultName, extension: "anim", message: null, path: defaultDir);
             }
             else if (dialogMode == DialogMode.Copy)
             {

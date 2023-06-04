@@ -27,6 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
         private IMGUIContainer _rootContainer;
 
+        private bool _isRenamingClip = false;
         private Dictionary<string, bool> _faceBlendShapeFoldoutStates = new Dictionary<string, bool>();
         private bool _toggleFoldoutState = false;
         private bool _transformFoldoutState = false;
@@ -224,10 +225,61 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.ExpressionEditor
 
         private void Field_AnimationClip()
         {
-            var ret = EditorGUILayout.ObjectField(_expressionEditor.Clip, typeof(AnimationClip), allowSceneObjects: false);
-            if (ret is AnimationClip animationClip && animationClip != null && !ReferenceEquals(animationClip, _expressionEditor.Clip))
+            var clipExists = _expressionEditor.Clip != null;
+
+            if (_isRenamingClip && clipExists)
             {
-                _expressionEditor.Open(animationClip);
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    // Text field
+                    var path = AssetDatabase.GetAssetPath(_expressionEditor.Clip);
+                    var oldName = Path.GetFileName(path).Replace(".anim", "");
+                    var newName = EditorGUILayout.DelayedTextField(oldName);
+                    if (newName != oldName)
+                    {
+                        var ret = AssetDatabase.RenameAsset(path, newName);
+                        if (string.IsNullOrEmpty(ret))
+                        {
+                            _isRenamingClip = false;
+                        }
+                        else
+                        {
+                            EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ExpressionEditorView_Message_FailedToRename, "OK");
+                            Debug.LogError(_localizationTable.ExpressionEditorView_Message_FailedToRename + "\n" + ret);
+                        }
+                    }
+
+                    // Enter key
+                    var e = Event.current;
+                    if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return)
+                    {
+                        if (newName == oldName)
+                        {
+                            _isRenamingClip = false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    // Object field
+                    var ret = EditorGUILayout.ObjectField(_expressionEditor.Clip, typeof(AnimationClip), allowSceneObjects: false);
+                    if (ret is AnimationClip animationClip && animationClip != null && !ReferenceEquals(animationClip, _expressionEditor.Clip))
+                    {
+                        _expressionEditor.Open(animationClip);
+                    }
+
+                    // Rename button
+                    using (new EditorGUI.DisabledScope(!clipExists))
+                    {
+                        if (GUILayout.Button(_localizationTable.ExpressionEditorView_Rename, GUILayout.Width(60)))
+                        {
+                            _isRenamingClip = true;
+                        }
+                    }
+                }
             }
         }
 
