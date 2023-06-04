@@ -11,6 +11,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Checker
     public static class PackageVersionChecker
     {
         public static bool IsCompleted { get; private set; } = false;
+        public static string FacialExpressionSwitcher { get; private set; } = string.Empty;
         public static string ModularAvatar { get; private set; } = string.Empty;
 
         #if UNITY_EDITOR
@@ -34,7 +35,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Checker
                 {
                     foreach (var package in _request.Result)
                     {
-                        if (package.name == "nadena.dev.modular-avatar")
+                        if (package.name == "jp.suzuryg.facial-expression-switcher")
+                        {
+                            FacialExpressionSwitcher = package.version;
+                        }
+                        else if (package.name == "nadena.dev.modular-avatar")
                         {
                             ModularAvatar = package.version;
                         }

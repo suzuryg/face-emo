@@ -40,6 +40,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
         private LocalizationTable _localizationTable;
 
+        private GUIStyle _versionLabelStyle = new GUIStyle();
         private GUIStyle _warningLabelStyle = new GUIStyle();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -88,13 +89,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Styles
             try
             {
+                _versionLabelStyle = new  GUIStyle(EditorStyles.label);
                 _warningLabelStyle = new GUIStyle(EditorStyles.label);
             }
             catch (NullReferenceException)
             {
                 // Workaround for play mode
+                _versionLabelStyle = new GUIStyle();
                 _warningLabelStyle = new GUIStyle();
             }
+            _versionLabelStyle.fontSize = 15;
+            _versionLabelStyle.fontStyle = FontStyle.Bold;
+            _versionLabelStyle.alignment = TextAnchor.UpperCenter;
+            _versionLabelStyle.padding = new RectOffset(10, 10, 10, 10);
             _warningLabelStyle.normal.textColor = Color.red;
 
             // Set text
@@ -259,6 +266,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private void Field_CheckVersion()
         {
             if (!PackageVersionChecker.IsCompleted) { return; }
+
+            GUILayout.Label($"{DomainConstants.SystemName} {PackageVersionChecker.FacialExpressionSwitcher}", _versionLabelStyle);
 
             if (string.IsNullOrEmpty(PackageVersionChecker.ModularAvatar))
             {

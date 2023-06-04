@@ -13,7 +13,7 @@ using UniRx;
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
     [CustomEditor(typeof(FESLauncherComponent))]
-    public class FESLauncher : Editor
+    public class FESLauncher : ScriptlessEditor
     {
         GameObject _rootObject;
         InspectorView _inspectorView;
