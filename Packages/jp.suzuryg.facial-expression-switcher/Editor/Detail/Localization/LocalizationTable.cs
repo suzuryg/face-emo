@@ -137,6 +137,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
 
         public string InspectorView_Thumbnail = "Expression Thumbnail Setting";
+        public string InspectorView_Thumbnail_FOV = "FOV";
         public string InspectorView_Thumbnail_Distance = "Distance";
         public string InspectorView_Thumbnail_HorizontalPosition = "Position (Horizontal)";
         public string InspectorView_Thumbnail_VerticalPosition = "Position (Vertical)";

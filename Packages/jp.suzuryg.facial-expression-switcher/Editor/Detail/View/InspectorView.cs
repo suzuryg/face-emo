@@ -482,6 +482,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Draw sliders
             var labelTexts = new []
             {
+                _localizationTable.InspectorView_Thumbnail_FOV,
                 _localizationTable.InspectorView_Thumbnail_Distance,
                 _localizationTable.InspectorView_Thumbnail_HorizontalPosition,
                 _localizationTable.InspectorView_Thumbnail_VerticalPosition,
@@ -494,8 +495,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 .Max();
             labelWidth += 10;
 
-            var distance = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_OrthoSize));
-            Field_Slider(_localizationTable.InspectorView_Thumbnail_Distance, distance.floatValue, ThumbnailSetting.MinOrthoSize, ThumbnailSetting.MaxOrthoSize,
+            var fov = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_FOV));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_FOV, fov.floatValue, ThumbnailSetting.MinFOV, ThumbnailSetting.MaxFOV,
+                value => { fov.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+
+            var distance = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Distance));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_Distance, distance.floatValue, ThumbnailSetting.MinDistance, ThumbnailSetting.MaxDistance,
                 value => { distance.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
 
             var hPosition = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraPosX));
@@ -519,11 +524,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             // Draw reset button
             if (GUILayout.Button(_localizationTable.InspectorView_Thumbnail_Reset))
             {
-                distance.floatValue = 0.1f;
-                hPosition.floatValue = 0.5f;
-                vPosition.floatValue = 0.5f;
-                hAngle.floatValue = 0;
-                vAngle.floatValue = 0;
+                fov.floatValue = ThumbnailSetting.DefaultFOV;
+                distance.floatValue = ThumbnailSetting.DefaultDistance;
+                hPosition.floatValue = ThumbnailSetting.DefaultCameraPosX;
+                vPosition.floatValue = ThumbnailSetting.DefaultCameraPosY;
+                hAngle.floatValue = ThumbnailSetting.DefaultCameraAngleH;
+                vAngle.floatValue = ThumbnailSetting.DefaultCameraAngleV;
                 _thumbnailDrawer.ClearCache();
             }
         }
@@ -545,8 +551,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                     onValueChanged(sliderValue);
                 }
 
-                // DelayedFloatField
-                var fieldValue = EditorGUILayout.DelayedFloatField(value, GUILayout.Width(80));
+                // FloatField
+                var fieldValue = EditorGUILayout.FloatField(value, GUILayout.Width(80));
                 if (!Mathf.Approximately(fieldValue, value))
                 {
                     onValueChanged(fieldValue);

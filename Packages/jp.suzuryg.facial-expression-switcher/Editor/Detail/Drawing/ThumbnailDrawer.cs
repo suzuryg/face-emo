@@ -18,7 +18,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         protected override int Width => _thumbnailSetting.Main_Width;
         protected override int Height => _thumbnailSetting.Main_Height;
-        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float FOV => _thumbnailSetting.Main_FOV;
+        protected override float Distance => _thumbnailSetting.Main_Distance;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
@@ -30,7 +31,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         protected override int Width => _thumbnailSetting.GestureTable_Width;
         protected override int Height => _thumbnailSetting.GestureTable_Height;
-        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float FOV => _thumbnailSetting.Main_FOV;
+        protected override float Distance => _thumbnailSetting.Main_Distance;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
@@ -42,7 +44,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         protected override int Width => ThumbnailSetting.ExMenu_InnerWidth;
         protected override int Height => ThumbnailSetting.ExMenu_InnerHeight;
-        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float FOV => _thumbnailSetting.Main_FOV;
+        protected override float Distance => _thumbnailSetting.Main_Distance;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
@@ -54,7 +57,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
     {
         protected override int Width => _thumbnailSetting.Inspector_Width;
         protected override int Height => _thumbnailSetting.Inspector_Height;
-        protected override float OrthoSize => _thumbnailSetting.Main_OrthoSize;
+        protected override float FOV => _thumbnailSetting.Main_FOV;
+        protected override float Distance => _thumbnailSetting.Main_Distance;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
@@ -70,7 +74,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
         // Properties
         protected abstract int Width { get; }
         protected abstract int Height { get; }
-        protected abstract float OrthoSize { get; }
+        protected abstract float FOV { get; }
+        protected abstract float Distance { get; }
         protected abstract float CameraPosX { get; }
         protected abstract float CameraPosY { get; }
         protected abstract float CameraAngleX { get; }
@@ -228,9 +233,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                     }
                 }
 
-                camera.orthographic = true;
-                camera.orthographicSize = OrthoSize;
-                camera.transform.position = new Vector3(x, _aV3Setting.TargetAvatar.ViewPosition.y + y, 1);
+                camera.orthographic = false;
+                camera.nearClipPlane = 0.01f;
+                camera.fieldOfView = FOV;
+                camera.transform.position = new Vector3(x, _aV3Setting.TargetAvatar.ViewPosition.y + y, Distance);
                 cameraRoot.transform.rotation = Quaternion.Euler(0, 180, 0);
                 camera.transform.RotateAround(_aV3Setting.TargetAvatar.ViewPosition, Vector3.left, CameraAngleX);
                 camera.transform.RotateAround(clonedAvatar.transform.position, Vector3.down, CameraAngleY);
