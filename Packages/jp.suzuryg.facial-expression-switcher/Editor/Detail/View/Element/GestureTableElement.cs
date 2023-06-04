@@ -50,6 +50,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private Texture2D _selectedElementTexture;
 
         private GUIStyle _gestureLabelStyle;
+        private GUIStyle _centerUpperStyle;
         private Color _gestureLabelColor;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -69,14 +70,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             try
             {
                 _gestureLabelStyle = new GUIStyle(EditorStyles.label);
+                _centerUpperStyle = new GUIStyle(EditorStyles.label);
             }
             catch (NullReferenceException)
             {
                 // Workaround for play mode
                 _gestureLabelStyle = new GUIStyle();
+                _centerUpperStyle = new GUIStyle();
             }
             _gestureLabelStyle.alignment = TextAnchor.MiddleCenter;
             _gestureLabelColor = _gestureLabelStyle.normal.textColor;
+            _centerUpperStyle.alignment = TextAnchor.UpperCenter;
 
             // Textures
             _elementBorderTexture = new Texture2D(1, 1);
@@ -185,6 +189,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         {
             if (Menu is null || !Menu.ContainsMode(SelectedModeId))
             {
+                GUI.Label(new Rect(rect.x + Padding, rect.y + Padding + EditorGUIUtility.singleLineHeight * 2,
+                    rect.width - Padding * 2 , rect.height - Padding * 2),
+                    _localizationTable.GestureTableView_ModeIsNotSelected, _centerUpperStyle);
                 return;
             }
 
