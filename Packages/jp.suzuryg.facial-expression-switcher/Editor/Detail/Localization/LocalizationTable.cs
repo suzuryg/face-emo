@@ -239,6 +239,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
 
         public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please check the console.";
 
+        public string ExMenu_EmoteSelect = "Emote Select";
         public string ExMenu_Setting = "Setting";
         public string ExMenu_EmoteLock = "Emote Lock ON [NOT Saved]";
         public string ExMenu_BlinkOff = "Blink OFF [NOT Saved]";

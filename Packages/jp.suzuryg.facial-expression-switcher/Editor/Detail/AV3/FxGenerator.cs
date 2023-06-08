@@ -102,7 +102,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
                 // Generate MA Object
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating ExMenu...", 0);
-                var exMenu = GenerateExMenu(modes, menu, exMenuPath);
+                var exMenu = GenerateExMenu(modes, menu, exMenuPath, useOverLimitMode);
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA root object...", 0);
                 var rootObject = GetMARootObject(avatarDescriptor);
@@ -507,39 +507,72 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 1);
         }
 
-        private VRCExpressionsMenu GenerateExMenu(IReadOnlyList<ModeEx> modes, IMenu menu, string exMenuPath)
+        private VRCExpressionsMenu GenerateExMenu(IReadOnlyList<ModeEx> modes, IMenu menu, string exMenuPath, bool useOverLimitMode)
         {
+            var loc = _localizationSetting.GetCurrentLocaleTable();
+
             AssetDatabase.DeleteAsset(exMenuPath);
             var container = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             AssetDatabase.CreateAsset(container, exMenuPath);
 
             var idToModeIndex = new Dictionary<string, int>();
+            var idToModeEx = new Dictionary<string, ModeEx>();
             for (int modeIndex = 0; modeIndex < modes.Count; modeIndex++)
             {
                 var mode = modes[modeIndex];
                 var id = mode.Mode.GetId();
+
                 idToModeIndex[id] = modeIndex;
+                idToModeEx[id] = mode;
             }
 
             var rootMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             rootMenu.name = AV3Constants.RootMenuName;
 
             // Re-generate thumbnails
-            if (_aV3Setting.GenerateModeThumbnails)
+            if (_aV3Setting.GenerateExMenuThumbnails)
             {
                 _exMenuThumbnailDrawer.ClearCache();
                 foreach (var mode in modes)
                 {
                     _exMenuThumbnailDrawer.GetThumbnail(mode.Mode.Animation);
+                    if (_aV3Setting.AddConfig_EmoteSelect)
+                    {
+                        foreach (var branch in mode.Mode.Branches)
+                        {
+                            _exMenuThumbnailDrawer.GetThumbnail(branch.BaseAnimation);
+                        }
+                    }
                 }
                 _exMenuThumbnailDrawer.Update();
             }
 
+            // Get icons
+            var folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
+            var logo = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("617fecc28d6cb5a459d1297801b9213e")); // logo
+
+            // Mode select
             GenerateSubMenuRecursive(rootMenu, menu.Registered, idToModeIndex, container);
+
+            // Emote select
+            if (_aV3Setting.AddConfig_EmoteSelect)
+            {
+                var emoteSelectMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                emoteSelectMenu.name = loc.ExMenu_EmoteSelect;
+                GenerateEmoteSelectMenuRecursive(emoteSelectMenu, menu.Registered, idToModeIndex, container, idToModeEx, useOverLimitMode);
+
+                var emoteSelectControl = CreateSubMenuControl(loc.ExMenu_EmoteSelect, emoteSelectMenu, folderIcon);
+                emoteSelectControl.parameter = new VRCExpressionsMenu.Control.Parameter() { name = AV3Constants.ParamName_CN_EMOTE_PRELOCK_ENABLE };
+                emoteSelectControl.value = 1;
+                rootMenu.controls.Add(emoteSelectControl);
+
+                AssetDatabase.AddObjectToAsset(emoteSelectMenu, container);
+            }
+
+            // Setting
             GenerateSettingMenu(rootMenu, container);
 
-            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("617fecc28d6cb5a459d1297801b9213e")); // FES
-            container.controls.Add(CreateSubMenuControl(AV3Constants.RootMenuName, rootMenu, icon));
+            container.controls.Add(CreateSubMenuControl(AV3Constants.RootMenuName, rootMenu, logo));
             AssetDatabase.AddObjectToAsset(rootMenu, container);
 
             EditorUtility.SetDirty(container);
@@ -554,18 +587,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 var type = menuItemList.GetType(id);
                 if (type == MenuItemType.Mode)
                 {
+                    EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating pattern selection controls...", (float)idToModeIndex[id] / idToModeIndex.Count);
+
                     var mode = new ModeExInner(menuItemList.GetMode(id));
                     var control = CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id], icon: null);
 
                     Texture2D icon = null;
-                    if (_aV3Setting.GenerateModeThumbnails && mode.ChangeDefaultFace)
+                    if (_aV3Setting.GenerateExMenuThumbnails && mode.ChangeDefaultFace)
                     {
-                        icon = _exMenuThumbnailDrawer.GetThumbnail(mode.Animation);
-                        if (!AssetDatabase.IsMainAsset(icon) && !AssetDatabase.IsSubAsset(icon)) // Do not save icons that have already been generated and error icons
-                        {
-                            AssetDatabase.AddObjectToAsset(icon, container);
-                            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(container));
-                        }
+                        icon = GetExpressionThumbnail(mode.Animation, container);
                     }
                     else
                     {
@@ -590,8 +620,130 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
         }
 
+        private Texture2D GetExpressionThumbnail(Domain.Animation animation, VRCExpressionsMenu container)
+        {
+            var icon = _exMenuThumbnailDrawer.GetThumbnail(animation);
+            if (!AssetDatabase.IsMainAsset(icon) && !AssetDatabase.IsSubAsset(icon)) // Do not save icons that have already been generated and error icons
+            {
+                AssetDatabase.AddObjectToAsset(icon, container);
+                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(container));
+            }
+            return icon;
+        }
+
+        private void GenerateEmoteSelectMenuRecursive(VRCExpressionsMenu parent, IMenuItemList menuItemList, Dictionary<string, int> idToModeIndex, VRCExpressionsMenu container,
+            Dictionary<string, ModeEx> idToModeEx, bool useOverLimitMode)
+        {
+            var loc = _localizationSetting.GetCurrentLocaleTable();
+
+            foreach (var id in menuItemList.Order)
+            {
+                var type = menuItemList.GetType(id);
+                if (type == MenuItemType.Mode)
+                {
+                    EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating emote selection controls...", (float)idToModeIndex[id] / idToModeIndex.Count);
+
+                    // Get branches
+                    var mode = new ModeExInner(menuItemList.GetMode(id));
+                    var numOfBranches = mode.Branches.Count;
+                    if (mode.ChangeDefaultFace) { numOfBranches++; }
+                    if (numOfBranches <= 0) { continue; }
+
+                    // Create mode folder
+                    var modeFolder = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                    modeFolder.name = _modeNameProvider.Provide(mode);
+                    var folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
+                    var modeControl = CreateSubMenuControl(_modeNameProvider.Provide(mode), modeFolder, folderIcon);
+                    if (useOverLimitMode)
+                    {
+                        modeControl.parameter = new VRCExpressionsMenu.Control.Parameter() { name = AV3Constants.ParamName_EM_EMOTE_PATTERN };
+                        modeControl.value = idToModeIndex[id];
+                    }
+                    parent.controls.Add(modeControl);
+
+                    // Calculate num of branch folders
+                    const int itemLimit = 8;
+                    var numOfBranchFolders = numOfBranches / itemLimit;
+                    if (numOfBranches % itemLimit != 0) { numOfBranchFolders++; }
+                    numOfBranchFolders = Math.Min(numOfBranchFolders, itemLimit);
+
+                    for (int folderIndex = 0; folderIndex < numOfBranchFolders; folderIndex++)
+                    {
+                        var startBranchIndex = folderIndex * itemLimit;
+                        var endBranchIndex = (folderIndex + 1) * itemLimit - 1;
+
+                        // Create branch folder
+                        var branchFolder = modeFolder;
+                        var createFolder = numOfBranchFolders > 1;
+                        if (createFolder)
+                        {
+                            var branchFolderName = $"{startBranchIndex + 1} - {Math.Min(endBranchIndex + 1, numOfBranches)}";
+                            branchFolder = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                            branchFolder.name = branchFolderName;
+                            modeFolder.controls.Add(CreateSubMenuControl(branchFolderName, branchFolder, folderIcon));
+                        }
+
+                        // Create branch controls
+                        if (mode.ChangeDefaultFace)
+                        {
+                            startBranchIndex--;
+                            endBranchIndex--;
+                        }
+                        for (int branchIndex = startBranchIndex; branchIndex <= endBranchIndex; branchIndex++)
+                        {
+                            Domain.Animation guid;
+                            // Mode
+                            if (branchIndex < 0)
+                            {
+                                guid = mode.Animation;
+                            }
+                            // Branch
+                            else
+                            {
+                                if (branchIndex >= mode.Branches.Count) { continue; }
+                                guid = mode.Branches[branchIndex].BaseAnimation;
+                            }
+                            var emoteIndex = GetEmoteIndex(branchIndex, idToModeEx[id], useOverLimitMode);
+                            var animation = AV3Utility.GetAnimationClipWithName(guid);
+                            var animationName = !string.IsNullOrEmpty(animation.name) ? animation.name : loc.ModeNameProvider_NoExpression;
+
+                            Texture2D emoteIcon = null;
+                            if (_aV3Setting.GenerateExMenuThumbnails)
+                            {
+                                emoteIcon = GetExpressionThumbnail(guid, container);
+                            }
+                            else
+                            {
+                                emoteIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("af1ba8919b0ccb94a99caf43ac36f97d")); // face smile
+                            }
+
+                            var control = CreateIntToggleControl(animationName, AV3Constants.ParamName_SYNC_EM_EMOTE, emoteIndex, icon: emoteIcon);
+                            branchFolder.controls.Add(control);
+                        }
+
+                        if (createFolder) { AssetDatabase.AddObjectToAsset(branchFolder, container); }
+                    }
+                    AssetDatabase.AddObjectToAsset(modeFolder, container);
+                }
+                else
+                {
+                    var group = menuItemList.GetGroup(id);
+
+                    var subMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                    subMenu.name = group.DisplayName;
+                    var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
+                    parent.controls.Add(CreateSubMenuControl(group.DisplayName, subMenu, icon));
+
+                    GenerateEmoteSelectMenuRecursive(subMenu, group, idToModeIndex, container, idToModeEx, useOverLimitMode);
+                    AssetDatabase.AddObjectToAsset(subMenu, container);
+                }
+            }
+        }
+
         private void GenerateSettingMenu(VRCExpressionsMenu parent, VRCExpressionsMenu container)
         {
+            EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating setting menu...", 0);
+
             var loc = _localizationSetting.GetCurrentLocaleTable();
 
             var settingRoot = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
