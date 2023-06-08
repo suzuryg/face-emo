@@ -229,6 +229,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Domain
             var copiedId = AddMode(destination);
             var copiedMode = _modes[copiedId];
 
+            copiedMode.ChangeDefaultFace = mode.ChangeDefaultFace;
             copiedMode.DisplayName = mode.DisplayName;
             copiedMode.UseAnimationNameAsDisplayName = mode.UseAnimationNameAsDisplayName;
             copiedMode.EyeTrackingControl = mode.EyeTrackingControl;
