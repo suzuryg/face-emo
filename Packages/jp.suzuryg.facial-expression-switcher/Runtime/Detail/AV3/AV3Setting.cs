@@ -27,6 +27,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public bool AddParameterPrefix = true;
 
         public bool AddConfig_EmoteLock = true;
+        public bool AddConfig_EmoteSelect = true;
         public bool AddConfig_BlinkOff = true;
         public bool AddConfig_DanceGimmick = true;
         public bool AddConfig_ContactLock = true;
