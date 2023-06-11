@@ -236,12 +236,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _addressBarElement?.SetPath(menu, _menuItemListViewState.RootGroupId);
 
             // Add button
+            var registeredFreeSpace = AV3Utility.GetActualRegisteredListFreeSpace(menu, _aV3Setting);
             if (_menuItemListViewState?.RootGroupId is null)
             {
                 _addModeButton?.SetEnabled(false);
                 _addGroupButton?.SetEnabled(false);
             }
-            else if (_menuItemListViewState?.RootGroupId == Domain.Menu.RegisteredId && !menu.Registered.IsFull)
+            else if (_menuItemListViewState?.RootGroupId == Domain.Menu.RegisteredId && registeredFreeSpace > 0)
             {
                 _addModeButton?.SetEnabled(true);
                 _addGroupButton?.SetEnabled(true);

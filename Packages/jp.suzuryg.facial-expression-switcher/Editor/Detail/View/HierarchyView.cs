@@ -15,6 +15,7 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UnityEditor.IMGUI.Controls;
 using UniRx;
+using Suzuryg.FacialExpressionSwitcher.Detail.AV3;
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
@@ -34,6 +35,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
+        private AV3Setting _aV3Setting;
         private HierarchyViewState _hierarchyViewState;
 
         private Label _titleLabel;
@@ -61,6 +63,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             ModeNameProvider modeNameProvider,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
+            AV3Setting aV3Setting,
             HierarchyViewState hierarchyViewState)
         {
             // Usecases
@@ -77,6 +80,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
+            _aV3Setting = aV3Setting;
             _hierarchyViewState = hierarchyViewState;
 
             // Localization table changed event handler
@@ -203,10 +207,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             var parentId = GetParentId(menu, id);
 
             // Add button
+            var registeredFreeSpace = AV3Utility.GetActualRegisteredListFreeSpace(menu, _aV3Setting);
             if (parentId == Domain.Menu.RegisteredId)
             {
-                _addModeButton?.SetEnabled(!menu.Registered.IsFull);
-                _addGroupButton?.SetEnabled(!menu.Registered.IsFull);
+                _addModeButton?.SetEnabled(registeredFreeSpace > 0);
+                _addGroupButton?.SetEnabled(registeredFreeSpace > 0);
             }
             else if (parentId == Domain.Menu.UnregisteredId)
             {

@@ -365,5 +365,21 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 }
             }
         }
+
+        public static int? GetActualRegisteredListFreeSpace(IMenu menu, AV3Setting av3Setting)
+        {
+            var freeSpace = menu?.Registered?.FreeSpace;
+            if (!freeSpace.HasValue) { return null; }
+
+            if (av3Setting.AddConfig_EmoteSelect) { freeSpace--; }
+            return freeSpace;
+        }
+
+        public static int GetActualRegisteredListCapacity(AV3Setting av3Setting)
+        {
+            var capacity = Domain.RegisteredMenuItemList.Capacity;
+            if (av3Setting.AddConfig_EmoteSelect) { capacity--; }
+            return capacity;
+        }
     }
 }

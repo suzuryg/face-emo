@@ -633,13 +633,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
             if (_menuItemListViewState?.RootGroupId == Domain.Menu.RegisteredId)
             {
                 // Free space
-                if (Menu?.Registered?.FreeSpace == 1)
+                var freeSpace = AV3Utility.GetActualRegisteredListFreeSpace(Menu, _aV3Setting);
+                var capacity = AV3Utility.GetActualRegisteredListCapacity(_aV3Setting);
+                if (freeSpace == 1)
                 {
-                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_RegisteredFreeSpace1);
+                    return HelpBoxDrawer.InfoLayout(_localizationTable.Hints_RegisteredFreeSpace1.Replace("<0>", capacity.ToString()).Replace("<1>", (capacity + 1).ToString()));
                 }
-                else if (Menu?.Registered?.FreeSpace == 0)
+                else if (freeSpace == 0)
                 {
                     return HelpBoxDrawer.WarnLayout(_localizationTable.Hints_RegisteredFreeSpace0);
+                }
+                else if (freeSpace < 0)
+                {
+                    return HelpBoxDrawer.ErrorLayout(_localizationTable.Hints_RegisteredFreeSpaceMinus);
                 }
 
                 // Mode exists

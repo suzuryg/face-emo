@@ -165,6 +165,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
 
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
+        public string InspectorView_EmoteSelect = "Generate Emote Select Menu";
         public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
         public string InspectorView_TransitionDuration = "Transition Duration (sec)";
         public string InspectorView_AddExpressionParameterPrefix = "Add Expression Parameter Prefix (FES_)";
@@ -213,6 +214,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_Tooltip_ExMenu_Controller = "You can disable gestures that are easily input by mistake on each controller. " +
             "Selecting Quest controller will disable 'Open', selecting Index controller will disable 'Fist'.";
         public string InspectorView_Tooltip_Application = "You can change the settings when applying the expression menu to the avatar.";
+        public string InspectorView_Tooltip_Application_EmoteSelect = "If disabled, the number of expression patterns that can be registered in the Expression Menu is increased by one.";
         public string InspectorView_Tooltip_Defaults = "You can change the settings values right after creating expression patterns or expressions.";
         public string InspectorView_Tooltip_Editor = "You can configure the behavior of this tool's UI. These settings are shared across all projects.";
         public string InspectorView_Tooltip_Help = "You can read the manual for this tool.";
@@ -258,10 +260,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Hints_AddMode = "Create an expression pattern and set the correspondence between expressions and gestures. " +
                                        "If there are multiple expression patterns, you can switch them in the ExpressionMenu.";
         public string Hints_SelectMode = "When you select an expression pattern, you can set the correspondence between expressions and gestures on the right screen.";
-        public string Hints_RegisteredFreeSpace1 = "In the expression menu, you can register up to 7 expression patterns or folders. " +
-                                                   "If you want to register more than 8 expression patterns, please create a folder.";
+        public string Hints_RegisteredFreeSpace1 = "In the expression menu, you can register up to <0> expression patterns or folders. " +
+                                                   "If you want to register more than <1> expression patterns, please create a folder.";
         public string Hints_RegisteredFreeSpace0 = "You can no longer register any more expression patterns or folders in the expression menu. " +
                                                    "Please move some expression patterns to another folder or archive to free up space.";
+        public string Hints_RegisteredFreeSpaceMinus = "The number of expression patterns and folders registered in the expression menu has exceeded the limit. " +
+                                                       "Please move the expression patterns to a different folder or archive.";
         public string Hints_GroupFreeSpace1 = "You can register up to 8 expression patterns or folders in a folder.";
         public string Hints_GroupFreeSpace0 = "You cannot register any more expression patterns or folders in this folder. " +
                                               "Please move some expression patterns to another folder or archive to free up space.";
