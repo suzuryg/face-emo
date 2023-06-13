@@ -30,6 +30,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
         private static readonly int MinHeight = 100;
         private static readonly int SimplifiedHeight = 65;
         private static readonly int ReorderableListDragHandleWidth = 50;
+        private static readonly int RightMargin = 20;
         private static readonly Color ActiveElementColor = new Color(0f, 0.5f, 1f, 0.4f);
         private static readonly Color FocusedElementColor = new Color(0f, 0.5f, 1f, 0.4f);
 
@@ -352,7 +353,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
 
         public float GetWidth()
         {
-            return ReorderableListDragHandleWidth + Padding + Math.Max(GetUpperContentWidth(), GetLowerContentWidth()) + MinHorizontalMargin * 2 + Padding;
+            return ReorderableListDragHandleWidth + Padding + Math.Max(GetUpperContentWidth(), GetLowerContentWidth()) + MinHorizontalMargin * 2 + RightMargin + Padding;
         }
 
         private float GetElementHeight(int index)
@@ -647,6 +648,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View.Element
                         guid => { _onAnimationChanged.OnNext((guid, SelectedModeId, index, BranchAnimationType.Both)); });
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
                 }
+            }
+
+            // Remove button
+            const float removeButtonSize = 20;
+            const float scrollBarAdjustment = 5;
+            var removeButtonRect = new Rect(rect.x + rect.width - removeButtonSize - scrollBarAdjustment, rect.y, removeButtonSize, removeButtonSize);
+            if (GUI.Button(removeButtonRect, new GUIContent("x", _localizationTable.Common_Tooltip_DeleteBranch)))
+            {
+                _onRemoveBranchButtonClicked.OnNext((SelectedModeId, index));
             }
         }
 

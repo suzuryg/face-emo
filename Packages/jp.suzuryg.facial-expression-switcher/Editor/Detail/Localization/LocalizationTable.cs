@@ -28,10 +28,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of expression patterns and folders.";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following folder?";
         public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression pattern?";
-        public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected expression?";
+        public string Common_Message_DeleteBranch = "Are you sure you want to delete the expression?";
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
+        public string Common_Tooltip_DeleteBranch = "Deletes this expression.";
         public string Common_Tooltip_EyeTracking = "You can set whether to use pseudo eye-tracking. This setting can be configured independently of the blinking setting.";
         public string Common_Tooltip_Blink = "You can set whether to blink. Please disable blinking for expressions where the eyes are closed.";
         public string Common_Tooltip_LipSync = "You can set whether to use lip-syncing. " +
