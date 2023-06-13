@@ -115,6 +115,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
 
         public string GestureTableView_AddBranch = "Add Expression";
+        public string GestureTableView_Separator = " & ";
 
         public string AnimationElement_NewClipName = "NewExpression";
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
