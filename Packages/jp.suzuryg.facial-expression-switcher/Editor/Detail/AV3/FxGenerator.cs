@@ -550,6 +550,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             // Get icons
             var folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
             var logo = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("617fecc28d6cb5a459d1297801b9213e")); // logo
+            var lockIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Lock.png");
 
             // Mode select
             GenerateSubMenuRecursive(rootMenu, menu.Registered, idToModeIndex, container);
@@ -559,6 +560,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             {
                 var emoteSelectMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
                 emoteSelectMenu.name = loc.ExMenu_EmoteSelect;
+
+                emoteSelectMenu.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE, lockIcon));
+
                 GenerateEmoteSelectMenuRecursive(emoteSelectMenu, menu.Registered, idToModeIndex, container, idToModeEx, useOverLimitMode);
 
                 var emoteSelectControl = CreateSubMenuControl(loc.ExMenu_EmoteSelect, emoteSelectMenu, folderIcon);
@@ -567,6 +571,10 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 rootMenu.controls.Add(emoteSelectControl);
 
                 AssetDatabase.AddObjectToAsset(emoteSelectMenu, container);
+            }
+            else
+            {
+                rootMenu.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE, lockIcon));
             }
 
             // Setting
@@ -749,13 +757,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var settingRoot = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             settingRoot.name = loc.ExMenu_Setting;
 
-            // Emote lock setting
-            if (_aV3Setting.AddConfig_EmoteLock)
-            {
-                var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Lock.png");
-                settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE, icon));
-            }
-
             // Blink off setting
             if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink)
             {
@@ -771,7 +772,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             }
 
             // Contact emote lock setting
-            if (_aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock)
+            if (_aV3Setting.AddConfig_ContactLock)
             {
                 var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/ContactLock.png");
                 settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_ContactLock, AV3Constants.ParamName_CN_CONTACT_EMOTE_LOCK_ENABLE, icon));
@@ -947,7 +948,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             var modularAvatarParameters = rootObject.AddComponent<ModularAvatarParameters>();
 
             // Config (Saved) (Bool)
-            var contactLockEnabled = _aV3Setting.AddConfig_ContactLock && _aV3Setting.AddConfig_EmoteLock;
+            var contactLockEnabled = _aV3Setting.AddConfig_ContactLock;
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_QUEST,         _aV3Setting.AddConfig_Controller ? Sync.Bool : Sync.NotSynced,      defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_CONTROLLER_TYPE_INDEX,         _aV3Setting.AddConfig_Controller ? Sync.Bool : Sync.NotSynced,      defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_SELECT_SWAP_LR,          _aV3Setting.AddConfig_HandPattern ? Sync.Bool : Sync.NotSynced,     defaultValue: 0, saved: true, addPrefix: _aV3Setting.AddParameterPrefix));
@@ -962,7 +963,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
             // Config (Not saved) (Bool)
             var blinkOffEnabled = _aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink;
-            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,         _aV3Setting.AddConfig_EmoteLock ? Sync.Bool : Sync.NotSynced,       defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE,         Sync.Bool,       defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_CN_EMOTE_PRELOCK_ENABLE,      _aV3Setting.AddConfig_EmoteSelect ? Sync.Bool : Sync.NotSynced,     defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_FORCE_BLINK_DISABLE,  blinkOffEnabled ? Sync.Bool : Sync.NotSynced,                       defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(MAParam(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE, _aV3Setting.AddConfig_DanceGimmick ? Sync.Bool : Sync.NotSynced,    defaultValue: 0, saved: false, addPrefix: _aV3Setting.AddParameterPrefix));

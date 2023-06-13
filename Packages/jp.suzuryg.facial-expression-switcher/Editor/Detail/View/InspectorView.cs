@@ -598,17 +598,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ExMenu);
             }
 
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       _localizationTable.InspectorView_AddConfig_EmoteLock, _localizationTable.InspectorView_Tooltip_ExMenu_EmoteLock);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff, _localizationTable.InspectorView_Tooltip_ExMenu_BlinkOff);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick, _localizationTable.InspectorView_Tooltip_ExMenu_Dance);
-            if (_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)).boolValue)
-            {
-                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock, _localizationTable.InspectorView_Tooltip_ExMenu_ContactLock);
-            }
-            else
-            {
-                ViewUtility.LayoutDummyToggle(_localizationTable.InspectorView_AddConfig_ContactLock);
-            }
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock, _localizationTable.InspectorView_Tooltip_ExMenu_ContactLock);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override, _localizationTable.InspectorView_Tooltip_ExMenu_Override);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Voice)),        _localizationTable.InspectorView_AddConfig_Voice, _localizationTable.InspectorView_Tooltip_ExMenu_Voice);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern)),    _localizationTable.InspectorView_AddConfig_HandPattern, _localizationTable.InspectorView_Tooltip_ExMenu_Gesture);
