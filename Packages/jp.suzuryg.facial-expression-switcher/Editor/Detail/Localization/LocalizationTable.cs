@@ -155,14 +155,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_AFK_ExitFace = "AFK Exit Face";
 
         public string InspectorView_ExpressionsMenuSettingItems = "ExpressionMenu Setting Items";
-        public string InspectorView_AddConfig_EmoteLock = "Emote Lock (1bit)";
-        public string InspectorView_AddConfig_BlinkOff = "Blink OFF (1bit)";
-        public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick (1bit)";
-        public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock (1bit)";
-        public string InspectorView_AddConfig_Override = "Emote Override (1bit)";
-        public string InspectorView_AddConfig_Voice = "Do Not Transition When Speaking (1bit)";
-        public string InspectorView_AddConfig_HandPattern = "Gesture Setting (3bit)";
-        public string InspectorView_AddConfig_Controller = "Controller Type (2bit)";
+        public string InspectorView_AddConfig_Add = "Add";
+        public string InspectorView_AddConfig_Default = "Default Value";
+        public string InspectorView_AddConfig_BlinkOff = "Blink OFF";
+        public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick";
+        public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock";
+        public string InspectorView_AddConfig_Override = "Emote Override";
+        public string InspectorView_AddConfig_Voice = "Do Not Transition When Speaking";
+        public string InspectorView_AddConfig_HandPattern = "Gesture Setting";
+        public string InspectorView_AddConfig_Controller = "Controller Type";
 
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
         public string InspectorView_EmoteSelect = "Generate Emote Select Menu";
@@ -209,10 +210,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             "Please use it with the FES_EmoteOverrideExample integrated into the avatar (refer to the manual).";
         public string InspectorView_Tooltip_ExMenu_Voice = "While this is ON, your expression will not change during speech. " +
             "If you have an expression with lip-syncing disabled, turning this ON will prevent the mouth from remaining open.";
-        public string InspectorView_Tooltip_ExMenu_Gesture = "You can change the settings for the gestures used for specifying expressions. " +
-            "You can swap the left and right, or disable each side.";
-        public string InspectorView_Tooltip_ExMenu_Controller = "You can disable gestures that are easily input by mistake on each controller. " +
-            "Selecting Quest controller will disable 'Open', selecting Index controller will disable 'Fist'.";
+        public string InspectorView_Tooltip_ExMenu_Gesture = "You can change the settings for the gestures used for specifying expressions.";
+        public string InspectorView_Tooltip_ExMenu_Gesture_Swap = "Swap the left and right gestures to change expressions.";
+        public string InspectorView_Tooltip_ExMenu_Gesture_DisableLeft = "Disable expression changes by the left-hand gesture (treated as Neutral).";
+        public string InspectorView_Tooltip_ExMenu_Gesture_DisableRight = "Disable expression changes by the right-hand gesture (treated as Neutral).";
+        public string InspectorView_Tooltip_ExMenu_Controller = "You can disable gestures that are easily input by mistake on each controller.";
+        public string InspectorView_Tooltip_ExMenu_Controller_Quest = "Disable expression changes by the 'Open' gesture (treated as Neutral).";
+        public string InspectorView_Tooltip_ExMenu_Controller_Index = "Disable expression changes by the 'Fist' gesture (treated as Neutral).";
         public string InspectorView_Tooltip_Application = "You can change the settings when applying the expression menu to the avatar.";
         public string InspectorView_Tooltip_Application_EmoteSelect = "If disabled, the number of expression patterns that can be registered in the Expression Menu is increased by one.";
         public string InspectorView_Tooltip_Defaults = "You can change the settings values right after creating expression patterns or expressions.";

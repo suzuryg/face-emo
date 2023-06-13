@@ -41,6 +41,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private LocalizationTable _localizationTable;
 
         private GUIStyle _centerStyle;
+        private GUIStyle _boldStyle;
         private GUIStyle _versionLabelStyle = new GUIStyle();
         private GUIStyle _warningLabelStyle = new GUIStyle();
 
@@ -67,6 +68,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             try
             {
                 _centerStyle = new GUIStyle(EditorStyles.label);
+                _boldStyle = new GUIStyle(EditorStyles.label);
                 _versionLabelStyle = new  GUIStyle(EditorStyles.label);
                 _warningLabelStyle = new GUIStyle(EditorStyles.label);
             }
@@ -74,10 +76,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             {
                 // Workaround for play mode
                 _centerStyle = new GUIStyle();
+                _boldStyle = new GUIStyle();
                 _versionLabelStyle = new GUIStyle();
                 _warningLabelStyle = new GUIStyle();
             }
             _centerStyle.alignment = TextAnchor.MiddleCenter;
+            _boldStyle.fontStyle = FontStyle.Bold;
             _versionLabelStyle.fontSize = 15;
             _versionLabelStyle.fontStyle = FontStyle.Bold;
             _versionLabelStyle.alignment = TextAnchor.UpperCenter;
@@ -598,13 +602,68 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ExMenu);
             }
 
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        _localizationTable.InspectorView_AddConfig_BlinkOff, _localizationTable.InspectorView_Tooltip_ExMenu_BlinkOff);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    _localizationTable.InspectorView_AddConfig_DanceGimmick, _localizationTable.InspectorView_Tooltip_ExMenu_Dance);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)), _localizationTable.InspectorView_AddConfig_ContactLock, _localizationTable.InspectorView_Tooltip_ExMenu_ContactLock);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _localizationTable.InspectorView_AddConfig_Override, _localizationTable.InspectorView_Tooltip_ExMenu_Override);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Voice)),        _localizationTable.InspectorView_AddConfig_Voice, _localizationTable.InspectorView_Tooltip_ExMenu_Voice);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern)),    _localizationTable.InspectorView_AddConfig_HandPattern, _localizationTable.InspectorView_Tooltip_ExMenu_Gesture);
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller)),      _localizationTable.InspectorView_AddConfig_Controller, _localizationTable.InspectorView_Tooltip_ExMenu_Controller);
+            var labelTexts = new []
+            {
+                _localizationTable.InspectorView_AddConfig_BlinkOff,
+                _localizationTable.InspectorView_AddConfig_DanceGimmick,
+                _localizationTable.InspectorView_AddConfig_ContactLock,
+                _localizationTable.InspectorView_AddConfig_Override,
+                _localizationTable.InspectorView_AddConfig_Voice,
+                _localizationTable.InspectorView_AddConfig_HandPattern,
+                _localizationTable.InspectorView_AddConfig_Controller,
+                _localizationTable.ExMenu_HandPattern_SwapLR,
+                _localizationTable.ExMenu_HandPattern_DisableLeft,
+                _localizationTable.ExMenu_HandPattern_DisableRight,
+                _localizationTable.ExMenu_Controller_Quest,
+                _localizationTable.ExMenu_Controller_Index,
+            };
+            var labelWidth = labelTexts
+                .Select(text => GUI.skin.label.CalcSize(new GUIContent(text)).x)
+                .DefaultIfEmpty()
+                .Max();
+            labelWidth += 10;
+
+            Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_BlinkOff,      _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        null,                                                                   _localizationTable.InspectorView_Tooltip_ExMenu_BlinkOff,       labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_DanceGimmick,  _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    null,                                                                   _localizationTable.InspectorView_Tooltip_ExMenu_Dance,          labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_ContactLock,   _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)),     _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_ContactLock)),  _localizationTable.InspectorView_Tooltip_ExMenu_ContactLock,    labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_Override,      _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_Override)),     _localizationTable.InspectorView_Tooltip_ExMenu_Override,       labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_Voice,         _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Voice)),           _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_Voice)),        _localizationTable.InspectorView_Tooltip_ExMenu_Voice,          labelWidth);
+
+            GUILayout.Label(new GUIContent(_localizationTable.InspectorView_AddConfig_HandPattern, _localizationTable.InspectorView_Tooltip_ExMenu_Gesture), _boldStyle);
+            Field_ExpressionsMenuItem(_localizationTable.ExMenu_HandPattern_SwapLR,         _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern_Swap)),            _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_HandPattern_Swap)),         _localizationTable.InspectorView_Tooltip_ExMenu_Gesture_Swap,           labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.ExMenu_HandPattern_DisableLeft,    _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern_DisableLeft)),     _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_HandPattern_DisableLeft)),  _localizationTable.InspectorView_Tooltip_ExMenu_Gesture_DisableLeft,    labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.ExMenu_HandPattern_DisableRight,   _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_HandPattern_DisableRight)),    _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_HandPattern_DisableRight)), _localizationTable.InspectorView_Tooltip_ExMenu_Gesture_DisableRight,   labelWidth);
+
+            GUILayout.Label(new GUIContent(_localizationTable.InspectorView_AddConfig_Controller, _localizationTable.InspectorView_Tooltip_ExMenu_Controller), _boldStyle);
+            Field_ExpressionsMenuItem(_localizationTable.ExMenu_Controller_Quest,         _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller_Quest)),            _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_Controller_Quest)),         _localizationTable.InspectorView_Tooltip_ExMenu_Controller_Quest,   labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.ExMenu_Controller_Index,         _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Controller_Index)),            _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_Controller_Index)),         _localizationTable.InspectorView_Tooltip_ExMenu_Controller_Index,   labelWidth);
+        }
+
+        private void Field_ExpressionsMenuItem(string labelText, SerializedProperty enableProperty, SerializedProperty defaultValueProperty, string toolTip, float labelWidth)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                // Label
+                GUIContent labelContent = new GUIContent(labelText, toolTip);
+                Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
+                GUI.Label(labelRect, labelContent);
+
+                // Enable toggle
+                const float margin = 10;
+                var value = EditorGUILayout.Toggle(string.Empty, enableProperty.boolValue, GUILayout.Width(ToggleWidth));
+                if (value != enableProperty.boolValue)
+                {
+                    enableProperty.boolValue = value;
+                }
+                var enableLabelContent = new GUIContent(_localizationTable.InspectorView_AddConfig_Add);
+                GUILayout.Label(enableLabelContent, GUILayout.Width(GUI.skin.label.CalcSize(enableLabelContent).x + margin));
+
+                // Default value toggle
+                if (defaultValueProperty != null)
+                {
+                    TogglePropertyField(defaultValueProperty, _localizationTable.InspectorView_AddConfig_Default);
+                }
+            }
         }
 
         private void Field_AvatarApplicationSetting()
