@@ -4,6 +4,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 {
     public class InspectorViewState : ScriptableObject
     {
+        public bool IsApplyingToMultipleAvatarsOpened = false;
         public bool IsMouthMorphBlendShapesOpened = false;
         public bool IsAddtionalToggleOpened = false;
         public bool IsAddtionalTransformOpened = false;

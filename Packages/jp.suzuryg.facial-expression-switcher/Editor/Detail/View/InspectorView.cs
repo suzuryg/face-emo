@@ -34,6 +34,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
         private SerializedObject _av3Setting;
         private SerializedObject _thumbnailSetting;
 
+        private ReorderableList _subTargetAvatars;
         private ReorderableList _mouthMorphBlendShapes;
         private ReorderableList _additionalToggleObjects;
         private ReorderableList _additionalTransformObjects;
@@ -87,6 +88,19 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             _versionLabelStyle.alignment = TextAnchor.UpperCenter;
             _versionLabelStyle.padding = new RectOffset(10, 10, 10, 10);
             _warningLabelStyle.normal.textColor = Color.red;
+            
+            // Sub avatars
+            _subTargetAvatars = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.SubTargetAvatars)));
+            _subTargetAvatars.headerHeight = 0;
+            _subTargetAvatars.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                var element = _subTargetAvatars.serializedProperty.GetArrayElementAtIndex(index);
+                EditorGUI.PropertyField(rect, element, GUIContent.none);
+            };
+            _subTargetAvatars.drawNoneElementCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyAvatars, _centerStyle);
+            };
 
             // Mouth morph blendshapes
             _mouthMorphBlendShapes = new ReorderableList(null, typeof(string));
@@ -161,6 +175,17 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             // Locale
             Field_Locale();
+
+            EditorGUILayout.Space(10);
+
+            // Applying to multiple avatars
+            var isApplyingToMultipleAvatarsOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsApplyingToMultipleAvatarsOpened));
+            isApplyingToMultipleAvatarsOpened.boolValue = EditorGUILayout.Foldout(isApplyingToMultipleAvatarsOpened.boolValue,
+                new GUIContent(_localizationTable.InspectorView_ApplyingToMultipleAvatars));
+            if (isApplyingToMultipleAvatarsOpened.boolValue)
+            {
+                Field_ApplyingToMultipleAvatars();
+            }
 
             EditorGUILayout.Space(10);
 
@@ -314,6 +339,44 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             }
         }
 
+        private void Field_ApplyingToMultipleAvatars()
+        {
+            // Sub avatars
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Help_ApplyingToMultipleAvatars);
+            }
+
+            _subTargetAvatars.DoLayoutList();
+
+            var mainAvatar = _av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
+            var subAvatars = _av3Setting?.FindProperty(nameof(AV3Setting.SubTargetAvatars));
+            for (int i = 0; i < subAvatars?.arraySize; i++)
+            {
+                var avatar = subAvatars?.GetArrayElementAtIndex(i)?.objectReferenceValue as VRCAvatarDescriptor;
+                if (avatar == null) { continue; }
+                if (mainAvatar != null && ReferenceEquals(mainAvatar, avatar))
+                {
+                    EditorGUILayout.LabelField($"{_localizationTable.InspectorView_Message_TargetAvatarIsInSubAvatars} ({avatar.gameObject.name})", _warningLabelStyle);
+                }
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Menu prefab
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Help_MenuPrefab);
+            }
+
+            var prefab = _av3Setting.FindProperty(nameof(AV3Setting.MARootObjectPrefab))?.objectReferenceValue;
+            using (new EditorGUI.DisabledScope(prefab == null))
+            {
+                EditorGUILayout.ObjectField(new GUIContent(_localizationTable.InspectorView_MenuPrefab), prefab, typeof(VRCAvatarDescriptor), allowSceneObjects: false);
+            }
+        }
+
         private List<string> GetMouthMorphBlendShapes()
         {
             _av3Setting.Update();
@@ -424,10 +487,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
 
-            _additionalToggleObjects.drawHeaderCallback = (Rect rect) =>
-            {
-                EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalToggleObjects);
-            };
             _additionalToggleObjects.DoLayoutList();
 
             var toggleProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalToggleObjects));
@@ -452,10 +511,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
 
             var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
 
-            _additionalTransformObjects.drawHeaderCallback = (Rect rect) =>
-            {
-                EditorGUI.LabelField(rect, _localizationTable.Common_AddtionalTransformObjects);
-            };
             _additionalTransformObjects.DoLayoutList();
 
             var transformProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalTransformObjects));

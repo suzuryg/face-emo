@@ -7,11 +7,16 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
     public class AV3Setting : ScriptableObject
     {
         public VRCAvatarDescriptor TargetAvatar;
+
+        public List<VRCAvatarDescriptor> SubTargetAvatars = new List<VRCAvatarDescriptor>();
+        public GameObject MARootObjectPrefab;
+
         public List<string> MouthMorphBlendShapes = new List<string>();
         public List<GameObject> AdditionalToggleObjects = new List<GameObject>();
         public List<GameObject> AdditionalTransformObjects = new List<GameObject>();
 
         public string TargetAvatarPath;
+        public List<string> SubTargetAvatarPaths = new List<string>();
         public List<string> AdditionalToggleObjectPaths = new List<string>();
         public List<string> AdditionalTransformObjectPaths = new List<string>();
 

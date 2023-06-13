@@ -127,6 +127,13 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             // Avatar
             _aV3Setting.TargetAvatarPath = _aV3Setting.TargetAvatar?.gameObject?.GetFullPath();
 
+            // Sub avatars
+            _aV3Setting.SubTargetAvatarPaths.Clear();
+            foreach (var subAvatar in _aV3Setting.SubTargetAvatars)
+            {
+                if (subAvatar != null) { _aV3Setting.SubTargetAvatarPaths.Add(subAvatar?.gameObject?.GetFullPath()); }
+            }
+
             // Toggles
             _aV3Setting.AdditionalToggleObjectPaths.Clear();
             foreach (var toggle in _aV3Setting.AdditionalToggleObjects)
@@ -154,6 +161,22 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
             else
             {
                 Debug.LogError($"{_localizationTable.FESBackupper_Message_FailedToFindTargetAvatar}\n{_aV3Setting.TargetAvatarPath}");
+            }
+
+            // Sub avatars
+            _aV3Setting.SubTargetAvatars.Clear();
+            foreach (var path in _aV3Setting.SubTargetAvatarPaths)
+            {
+                if (path.StartsWith("/") &&
+                    GameObject.Find(path) is GameObject gameObject && gameObject != null &&
+                    gameObject.GetComponent<VRCAvatarDescriptor>() is VRCAvatarDescriptor subAvatar && subAvatar != null)
+                {
+                    _aV3Setting.SubTargetAvatars.Add(subAvatar);
+                }
+                else
+                {
+                    Debug.LogError($"{_localizationTable.FESBackupper_Message_FailedToFindSubTargetAvatar}\n{path}");
+                }
             }
 
             // Toggles

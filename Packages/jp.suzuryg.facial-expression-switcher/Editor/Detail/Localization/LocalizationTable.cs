@@ -143,6 +143,15 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
         public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
 
+        public string InspectorView_ApplyingToMultipleAvatars = "Applying Facial Expression Menu to Multiple Avatars";
+        public string InspectorView_MenuPrefab = "Facial Expression Menu Prefab";
+        public string InspectorView_EmptyAvatars = "Press the + button to add an target avatar.";
+        public string InspectorView_Help_ApplyingToMultipleAvatars = "You can apply the facial expression menu to multiple avatars at the same time. " +
+            "The facial expression menu will be copied to the avatar specified here.";
+        public string InspectorView_Help_MenuPrefab = "If you want to apply the facial expression menu to an avatar in another scene, please place the facial expression menu prefab inside the avatar in the other scene. " +
+            "The facial expression menu prefab will be created or overwritten when applying the expression menu to an avatar.";
+        public string InspectorView_Message_TargetAvatarIsInSubAvatars = "It includes the main target avatar.";
+
         public string InspectorView_Thumbnail = "Expression Thumbnail Setting";
         public string InspectorView_Thumbnail_FOV = "FOV";
         public string InspectorView_Thumbnail_Distance = "Distance";
@@ -240,6 +249,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             "For example, if the category name is \"=====Eye=====\", please enter \"=====\".";
 
         public string FESBackupper_Message_FailedToFindTargetAvatar = "Failed to find tareget avatar. Make sure the avatar is active.";
+        public string FESBackupper_Message_FailedToFindSubTargetAvatar = "Failed to find sub tareget avatar. Make sure the avatar is active.";
         public string FESBackupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";
         public string FESBackupper_Message_FailedToFindTransformObject = "Failed to find transform object.";
 

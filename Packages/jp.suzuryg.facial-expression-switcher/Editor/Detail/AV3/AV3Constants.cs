@@ -68,7 +68,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly string ParameterPrefix = "FES_";
 
         public static readonly string RootMenuName = DomainConstants.SystemName;
-        public static readonly string MARootObjectName = DomainConstants.SystemName + "Object";
+        public static readonly string MARootObjectName = DomainConstants.SystemName + "Prefab";
 
         public static readonly int MaxEmoteNum = 256;
         public static readonly float VoiceThreshold = 0.01f;
@@ -84,6 +84,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         public static readonly string Path_EmoteOverridePrefab = $"{DetailConstants.DetailDirectory}/AV3/Template/FES_EmoteOverrideExample.prefab";
         public static readonly string Path_EmoteOverrideController = $"{DetailConstants.DetailDirectory}/AV3/Template/FES_EmoteOverrideExample.controller";
         public static readonly string Path_GeneratedDir = $"Assets/Suzuryg/{DomainConstants.SystemName}/Generated";
+        public static readonly string Path_PrefabDir = $"Assets/Suzuryg/{DomainConstants.SystemName}/Prefabs";
 
         public static readonly string GUID_TPoseClip = "645a7092829eff9478fb3a29f959a6fa";
 

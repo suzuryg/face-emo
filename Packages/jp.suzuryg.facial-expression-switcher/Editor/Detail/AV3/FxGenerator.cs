@@ -123,6 +123,43 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Instantiating prefabs...", 0);
                 InstantiatePrefabs(rootObject);
 
+                // Update MA object prefab
+                string rootObjectPrefabPath = AssetDatabase.GetAssetPath(_aV3Setting.MARootObjectPrefab);
+                if (string.IsNullOrEmpty(rootObjectPrefabPath))
+                {
+                    var parent = AV3Constants.Path_PrefabDir + "/" + _aV3Setting.TargetAvatar.name + "_";
+
+                    var folderPath = parent + Guid.NewGuid().ToString("N");
+                    while (AssetDatabase.IsValidFolder(folderPath))
+                    {
+                        folderPath = parent + Guid.NewGuid().ToString("N");
+                    }
+                    AV3Utility.CreateFolderRecursively(folderPath);
+
+                    rootObjectPrefabPath = folderPath + "/" + AV3Constants.MARootObjectName + ".prefab";
+                }
+                _aV3Setting.MARootObjectPrefab = PrefabUtility.SaveAsPrefabAssetAndConnect(rootObject, rootObjectPrefabPath, InteractionMode.AutomatedAction);
+
+                // Replace sub-avatar's MA objects
+                foreach (var subAvatar in _aV3Setting.SubTargetAvatars)
+                {
+                    if (subAvatar == null ||
+                        subAvatar.gameObject == null ||
+                        ReferenceEquals(_aV3Setting.TargetAvatar, subAvatar))
+                    {
+                        continue;
+                    }
+
+                    var existing = subAvatar.gameObject.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
+                    if (existing != null)
+                    {
+                        UnityEngine.Object.DestroyImmediate(existing);
+                    }
+
+                    var instantiated = PrefabUtility.InstantiatePrefab(_aV3Setting.MARootObjectPrefab) as GameObject;
+                    instantiated.transform.parent = subAvatar.gameObject.transform;
+                }
+
                 // Clean assets
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Cleaning assets...", 0);
                 CleanAssets();
@@ -878,6 +915,11 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             {
                 rootObject = new GameObject(AV3Constants.MARootObjectName);
                 rootObject.transform.parent = avatarRoot.transform;
+            }
+
+            if (PrefabUtility.IsOutermostPrefabInstanceRoot(rootObject))
+            {
+                PrefabUtility.UnpackPrefabInstance(rootObject, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
             }
 
             return rootObject;
