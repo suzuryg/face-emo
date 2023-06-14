@@ -70,7 +70,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             EditorPrefs.DeleteKey(LocalePrefKey);
         }
 
-        private Locale GetLocale()
+        public static Locale GetLocale()
         {
             var localeString = EditorPrefs.GetString(LocalePrefKey);
             if (localeString is string && Enum.TryParse<Locale>(localeString, out var locale) && Enum.IsDefined(typeof(Locale), locale))
@@ -83,7 +83,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             }
         }
 
-        private LocalizationTable GetTable(Locale locale)
+        public static LocalizationTable GetTable(Locale locale)
         {
             if (locale == Locale.ja_JP)
             {
@@ -96,7 +96,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
             }
         }
 
-        private Locale GetDefaultLocale()
+        private static Locale GetDefaultLocale()
         {
             var currentCulture = CultureInfo.CurrentCulture;
             if (currentCulture.Name == "ja-JP")
