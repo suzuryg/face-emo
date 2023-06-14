@@ -30,5 +30,8 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail
 
         public static readonly string KeyAutoSave = $"{DomainConstants.SystemName}_AutoSave";
         public static readonly bool DefaultAutoSave = true;
+
+        public static readonly string KeyHideHierarchyIcon = $"{DomainConstants.SystemName}_HideHierarchyIcon";
+        public static readonly bool DefaultHideHierarchyIcon = false;
     }
 }

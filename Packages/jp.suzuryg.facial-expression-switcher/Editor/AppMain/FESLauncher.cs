@@ -9,6 +9,8 @@ using UnityEngine;
 using UnityEditor;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using UniRx;
+using VRC.SDK3.Avatars.Components;
+using System.Linq;
 
 namespace Suzuryg.FacialExpressionSwitcher.AppMain
 {
@@ -38,7 +40,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
                 // Inspector view
                 _inspectorView = installer.Container.Resolve<InspectorView>().AddTo(_disposables);
-                _inspectorView.OnLaunchButtonClicked.Synchronize().Subscribe(_ => Launch()).AddTo(_disposables);
+                _inspectorView.OnLaunchButtonClicked.Synchronize().Subscribe(_ => Launch(target as FESLauncherComponent)).AddTo(_disposables);
                 _inspectorView.OnLocaleChanged.Synchronize().Subscribe(ChangeLocale).AddTo(_disposables);
 
                 // Disposables
@@ -51,16 +53,11 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             }
         }
 
-        private void Launch()
+        public static void Launch(FESLauncherComponent launcher)
         {
             try
             {
-                if (!UnpackPrefab())
-                {
-                    return;
-                }
-
-                var rootObject = (target as FESLauncherComponent).gameObject;
+                var rootObject = launcher.gameObject;
 
                 var windowTitle = rootObject.name;
                 foreach (var window in Resources.FindObjectsOfTypeAll<MainWindow>())
@@ -93,31 +90,9 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             }
         }
 
-        private bool UnpackPrefab()
-        {
-            var rootObject = (target as FESLauncherComponent).gameObject;
-
-            if (PrefabUtility.IsAnyPrefabInstanceRoot(rootObject))
-            {
-                if (EditorUtility.DisplayDialog(DomainConstants.SystemName, "You need to unpack prefab. Continue?", "OK", "Cancel"))
-                {
-                    PrefabUtility.UnpackPrefabInstance(rootObject, PrefabUnpackMode.Completely, InteractionMode.UserAction);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
-
         [MenuItem("FacialExpressionSwitcher/New Menu", false, 0)]
         [MenuItem("GameObject/FacialExpressionSwitcher/New Menu", false, 20)]
-        public static void Create(MenuCommand menuCommand)
+        public static GameObject Create(MenuCommand menuCommand)
         {
             var gameObject = GetLauncherObject(menuCommand);
 
@@ -131,11 +106,12 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 cnt++;
             }
             gameObject.name = objectName;
+
+            return gameObject;
         }
 
-        [MenuItem("FacialExpressionSwitcher/Open Menu", false, 1)]
-        [MenuItem("GameObject/FacialExpressionSwitcher/Open Menu", false, 21)]
-        public static void Open(MenuCommand menuCommand)
+        [MenuItem("GameObject/FacialExpressionSwitcher/Restore Menu", false, 21)]
+        public static void Restore(MenuCommand menuCommand)
         {
             var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: null, filters: new[] { "FESProject" , "asset" });
             if (string.IsNullOrEmpty(selectedPath)) { return; }
@@ -171,6 +147,80 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
             Selection.activeObject = gameObject;
             UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(gameObject.GetComponent<FESLauncherComponent>(), true);
             return gameObject;
+        }
+
+        [InitializeOnLoadMethod]
+        private static void AddHierarchyItemOnGUI()
+        {
+            EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;
+        }
+
+        private static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
+        {
+            if (EditorPrefs.GetBool(DetailConstants.KeyHideHierarchyIcon, DetailConstants.DefaultHideHierarchyIcon))
+            {
+                return;
+            }
+
+            var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (gameObject == null)
+            {
+                return;
+            }
+
+            var avatarDescriptor = gameObject.GetComponent<VRCAvatarDescriptor>();
+            if (avatarDescriptor == null)
+            {
+                return;
+            }
+
+            var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+
+            const float buttonWidth = 30;
+            selectionRect.xMin += selectionRect.width - buttonWidth;
+            selectionRect.yMin += 1;
+            selectionRect.yMax -= 1;
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("b8710db71cc992745987c4e92d53fcd1")); // logo
+            if (GUI.Button(selectionRect, new GUIContent(string.Empty, loc.Common_Tooltip_LaunchFromHierarchy)))
+            {
+                var exists = false;
+                foreach (var launcher in FindObjectsOfType<FESLauncherComponent>()?.OrderBy(x => x.name))
+                {
+                    if (ReferenceEquals(launcher?.AV3Setting?.TargetAvatar, avatarDescriptor))
+                    {
+                        Launch(launcher);
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists)
+                {
+                    var launcherObject = Create(new MenuCommand(null, 0));
+                    new FESInstaller(launcherObject);
+
+                    var launcher = launcherObject.GetComponent<FESLauncherComponent>();
+                    launcher.AV3Setting.TargetAvatar = avatarDescriptor;
+                    Launch(launcher);
+                }
+            }
+            GUI.DrawTexture(selectionRect, icon, ScaleMode.ScaleToFit, alphaBlend: true);
+        }
+
+        private const string HideHierarchyIconPath = "FacialExpressionSwitcher/Hide Hierarchy Icon";
+        private const int HideHierarchyIconOrder = 99;
+
+        [MenuItem(HideHierarchyIconPath, false, HideHierarchyIconOrder)]
+        private static void HideHierarchyIcon()
+        {
+            EditorPrefs.SetBool(DetailConstants.KeyHideHierarchyIcon, !EditorPrefs.GetBool(DetailConstants.KeyHideHierarchyIcon, DetailConstants.DefaultHideHierarchyIcon));
+        }
+
+        [MenuItem(HideHierarchyIconPath, true, HideHierarchyIconOrder)]
+        private static bool HideHierarchyIconValidate()
+        {
+            UnityEditor.Menu.SetChecked(HideHierarchyIconPath, EditorPrefs.GetBool(DetailConstants.KeyHideHierarchyIcon, DetailConstants.DefaultHideHierarchyIcon));
+            return true;
         }
     }
 }

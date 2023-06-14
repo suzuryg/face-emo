@@ -15,7 +15,10 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "VRCSDKBase.dll",
+        "VRCSDK3A.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],

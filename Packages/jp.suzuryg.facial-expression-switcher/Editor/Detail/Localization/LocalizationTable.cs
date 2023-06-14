@@ -44,6 +44,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string Common_Tooltip_RightTrigger = "Expressions change according to the pressure level of the right hand trigger. " +
             "Please set an additional expression for when the trigger is pressed. " +
             "Trigger pressing is only valid when the right hand is in Fist.";
+        public string Common_Tooltip_LaunchFromHierarchy = "Launch FacialExpressionSwitcher";
 
         public string HierarchyView_Title = "Tree View";
         public string HierarchyView_RegisteredMenuItemList = "Expression Menu";
