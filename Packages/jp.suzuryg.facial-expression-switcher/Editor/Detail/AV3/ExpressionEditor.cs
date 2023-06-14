@@ -538,7 +538,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             foreach (var binding in bindings)
             {
                 var curve = AnimationUtility.GetEditorCurve(animationClip, binding.Value);
-                if (curve != null && curve.keys.Length > 0) { blendShapes[binding.Key] = curve.keys[0].value; }
+                if (curve != null && curve.keys.Length > 0) { blendShapes[binding.Key] = curve.keys.Last().value; }
             }
             return blendShapes;
         }
