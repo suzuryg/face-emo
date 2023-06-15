@@ -677,6 +677,12 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.View
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), new GUIContent(_localizationTable.InspectorView_TransitionDuration));
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteSelect)), _localizationTable.InspectorView_EmoteSelect, tooltip: _localizationTable.InspectorView_Tooltip_Application_EmoteSelect);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GenerateExMenuThumbnails)), _localizationTable.InspectorView_GenerateModeThumbnails);
+            using (new EditorGUI.DisabledScope(!_av3Setting.FindProperty(nameof(AV3Setting.GenerateExMenuThumbnails)).boolValue))
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.Label(string.Empty, GUILayout.Width(ToggleWidth));
+                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GammaCorrectionValueForExMenuThumbnails)), new GUIContent(_localizationTable.InspectorView_GammaCorrectionValue));
+            }
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _localizationTable.InspectorView_SmoothAnalogFist);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddParameterPrefix)), _localizationTable.InspectorView_AddExpressionParameterPrefix);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _localizationTable.InspectorView_ReplaceBlink);

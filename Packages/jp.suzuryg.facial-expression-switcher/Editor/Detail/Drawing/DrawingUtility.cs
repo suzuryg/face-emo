@@ -80,5 +80,54 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
             result.Apply();
             return result;
         }
+
+        /// <summary>
+        /// Gamma correction
+        /// </summary>
+        public static void ApplyGammaCorrectionCPU(Texture2D texture, float gamma)
+        {
+            // Loop through each pixel.
+            for (int y = 0; y < texture.height; y++)
+            {
+                for (int x = 0; x < texture.width; x++)
+                {
+                    // Get the color of the pixel.
+                    Color color = texture.GetPixel(x, y);
+
+                    // Apply gamma correction.
+                    color.r = Mathf.Pow(color.r, gamma);
+                    color.g = Mathf.Pow(color.g, gamma);
+                    color.b = Mathf.Pow(color.b, gamma);
+
+                    // Set the new color.
+                    texture.SetPixel(x, y, color);
+                }
+            }
+
+            // Apply the changes to the texture.
+            texture.Apply();
+        }
+
+        private static Material GammaCorrectionMaterial;
+
+        /// <summary>
+        /// Gamma correction
+        /// Execution of this method may stall the drawing thread
+        /// </summary>
+        public static void ApplyGammaCorrectionGPU(Texture2D texture, float gamma)
+        {
+            if (GammaCorrectionMaterial == null)
+            {
+                GammaCorrectionMaterial = new Material(Shader.Find("Suzuryg/GammaCorrection"));
+            }
+            GammaCorrectionMaterial.SetFloat("_Gamma", gamma);
+
+            RenderTexture renderTexture = RenderTexture.GetTemporary(texture.width, texture.height);
+            Graphics.Blit(texture, renderTexture, GammaCorrectionMaterial);
+
+            RenderTexture.active = renderTexture;
+            texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+            texture.Apply();
+        }
     }
 }

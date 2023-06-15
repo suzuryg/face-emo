@@ -252,6 +252,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Drawing
                 {
                     _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera);
 
+
+                    // Apply gamma correction if necessary
+                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
+                        !Mathf.Approximately(_aV3Setting.GammaCorrectionValueForExMenuThumbnails, 1.0f))
+                    {
+                        DrawingUtility.ApplyGammaCorrectionGPU(_cache[guid], _aV3Setting.GammaCorrectionValueForExMenuThumbnails);
+                    }
+
                     // Padding if necessary
                     if (this is ExMenuThumbnailDrawer && _cache[guid] != null)
                     {

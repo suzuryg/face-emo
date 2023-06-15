@@ -135,6 +135,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Localization
         public string InspectorView_Launch = "Launch FacialExpressionSwitcher";
         public string InspectorView_TargetAvatar = "Target Avatar";
         public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionMenu icons";
+        public string InspectorView_GammaCorrectionValue = "Gamma correction value for expression thumbnails";
         public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
         public string InspectorView_EmptyBlendShapes = "Press the + button to add blend shapes.";
         public string InspectorView_EmptyObjects = "Press the + button to add an object.";
