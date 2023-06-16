@@ -3,8 +3,11 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
 using Suzuryg.FacialExpressionSwitcher.Domain;
-using nadena.dev.modular_avatar.core;
 using VRC.SDK3.Avatars.Components;
+
+#if USE_MODULAR_AVATAR
+using nadena.dev.modular_avatar.core;
+#endif
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
@@ -13,6 +16,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         [MenuItem("Assets/Create/FES_EmoteOverrideExample")]
         public static void Generate()
         {
+#if USE_MODULAR_AVATAR
             var dirPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             var prefabPath = dirPath + "/" + Path.GetFileName(AV3Constants.Path_EmoteOverridePrefab);
             var controllerPath = dirPath + "/" + Path.GetFileName(AV3Constants.Path_EmoteOverrideController);
@@ -52,6 +56,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             {
                 throw new FacialExpressionSwitcherException($"Failed to create asset to {prefabPath}");
             }
+#else
+            Debug.LogError("Please install Modular Avatar!");
+#endif
         }
     }
 }

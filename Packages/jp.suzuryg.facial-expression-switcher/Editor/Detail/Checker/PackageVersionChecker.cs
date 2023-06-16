@@ -46,16 +46,6 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.Checker
                     }
                 }
 
-                if (string.IsNullOrEmpty(ModularAvatar))
-                {
-                    const string line0 = "FacialExpressionSwitcherを使用するためには、";
-                    const string line1 = "Modular Avatarをインストールする必要があります！";
-                    const string line2 = "Modular Avatar must be installed in order to use FacialExpressionSwitcher!";
-
-                    EditorUtility.DisplayDialog("FacialExpressionSwitcher", line0 + "\n" + line1 + "\n\n" + line2, "OK");
-                    Debug.LogError(line0 +  line1 + "\n" + line2);
-                }
-
                 IsCompleted = true;
                 EditorApplication.update -= Progress;
             }

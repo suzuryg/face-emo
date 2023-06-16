@@ -55,6 +55,7 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
 
         public static void Launch(FESLauncherComponent launcher)
         {
+#if USE_MODULAR_AVATAR
             try
             {
                 var rootObject = launcher.gameObject;
@@ -79,6 +80,9 @@ namespace Suzuryg.FacialExpressionSwitcher.AppMain
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Failed to launch. Please see the console.", "OK");
                 Debug.LogError(ex.ToString());
             }
+#else
+            EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.GetTable(LocalizationSetting.GetLocale()).Common_Message_MAIsNotInstalled, "OK");
+#endif
         }
 
         private void ChangeLocale(Locale locale)

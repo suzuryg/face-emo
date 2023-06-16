@@ -1,6 +1,5 @@
 ﻿using AnimatorAsCode.V0;
 using AnimatorAsCode.V0.Extensions.VRChat;
-using nadena.dev.modular_avatar.core;
 using Suzuryg.FacialExpressionSwitcher.Domain;
 using Suzuryg.FacialExpressionSwitcher.UseCase;
 using Suzuryg.FacialExpressionSwitcher.Detail.Drawing;
@@ -22,7 +21,11 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 using Suzuryg.FacialExpressionSwitcher.Detail.Localization;
 using ExParam = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.Parameter;
 using ExType = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.ValueType;
+
+#if USE_MODULAR_AVATAR
+using nadena.dev.modular_avatar.core;
 using Sync = nadena.dev.modular_avatar.core.ParameterSyncType;
+#endif
 
 namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 {
@@ -959,6 +962,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private static void AddMergeAnimatorComponent(GameObject rootObject, AnimatorController animatorController)
         {
+#if USE_MODULAR_AVATAR
             foreach (var component in rootObject.GetComponents<ModularAvatarMergeAnimator>())
             {
                 UnityEngine.Object.DestroyImmediate(component);
@@ -972,10 +976,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             modularAvatarMergeAnimator.matchAvatarWriteDefaults = false;
 
             EditorUtility.SetDirty(modularAvatarMergeAnimator);
+#else
+            Debug.LogError("Please install Modular Avatar!");
+#endif
         }
 
         private static void AddMenuInstallerComponent(GameObject rootObject, VRCExpressionsMenu expressionsMenu)
         {
+#if USE_MODULAR_AVATAR
             foreach (var component in rootObject.GetComponents<ModularAvatarMenuInstaller>())
             {
                 UnityEngine.Object.DestroyImmediate(component);
@@ -985,10 +993,14 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             modularAvatarMenuInstaller.menuToAppend = expressionsMenu;
 
             EditorUtility.SetDirty(modularAvatarMenuInstaller);
+#else
+            Debug.LogError("Please install Modular Avatar!");
+#endif
         }
 
         private void AddParameterComponent(GameObject rootObject, int defaultModeIndex)
         {
+#if USE_MODULAR_AVATAR
             foreach (var component in rootObject.GetComponents<ModularAvatarParameters>())
             {
                 UnityEngine.Object.DestroyImmediate(component);
@@ -1032,6 +1044,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R, addPrefix: _aV3Setting.AddParameterPrefix));
 
             EditorUtility.SetDirty(modularAvatarParameters);
+#else
+            Debug.LogError("Please install Modular Avatar!");
+#endif
         }
 
         private int GetDefaultModeIndex(IReadOnlyList<ModeEx> modes, IMenu menu)
@@ -1050,6 +1065,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
             return defaultModeIndex;
         }
 
+#if USE_MODULAR_AVATAR
         private static ParameterConfig MAParam(string name, ParameterSyncType type, float defaultValue, bool saved, bool addPrefix) 
         {
             var parameterConfig = new ParameterConfig();
@@ -1067,6 +1083,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
         }
 
         private static ParameterConfig NotSyncedMAParam(string name, bool addPrefix) => MAParam(name, Sync.NotSynced, defaultValue: 0, saved: false, addPrefix: addPrefix);
+#endif
 
         private void AddBlinkDisablerComponent(GameObject rootObject)
         {
@@ -1278,6 +1295,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
 
         private static void CleanAssets()
         {
+#if USE_MODULAR_AVATAR
             // To include inactive objects, Resources.FindObjectsOfTypeAll<T>() must be used in Unity 2019.
             var referencedFxGUIDs = new HashSet<string>();
             foreach (var anim in Resources.FindObjectsOfTypeAll<ModularAvatarMergeAnimator>())
@@ -1306,6 +1324,9 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     }
                 }
             }
+#else
+            Debug.LogError("Please install Modular Avatar!");
+#endif
         }
     }
 }
