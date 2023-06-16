@@ -3,6 +3,6 @@ slug: /
 sidebar_position: 1
 ---
 
-# FacialExpressionSwitcher
+# FaceEmo
 
 TBD

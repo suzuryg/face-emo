@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:engine="UnityEngine.UIElements"
+	xmlns:editor="UnityEditor.UIElements"
+	xmlns:local="Suzuryg.FaceEmo.Detail.View"
+	xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+	xsi:schemaLocation="UnityEngine.UIElements ../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+						UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd"
+>
+	<engine:VisualElement name="RootGrid">
+		<engine:VisualElement name="LeftCol">
+			<engine:VisualElement name="ThumbnailRow">
+				<engine:Label name="ThumbnailWidthLabel" class="Label"/>
+				<engine:SliderInt name="ThumbnailWidthSlider" class="Slider"/>
+				<engine:Label name="ThumbnailHeightLabel" class="Label"/>
+				<engine:SliderInt name="ThumbnailHeightSlider" class="Slider"/>
+				<engine:Button name="UpdateThumbnailButton"/>
+			</engine:VisualElement>
+
+			<engine:VisualElement name="DefaultSelectionRow">
+				<engine:Label name="DefaultSelectionLabel" class="Label"/>
+				<engine:IMGUIContainer name="DefaultSelectionComboBox"/>
+				<engine:Toggle name="ShowHintsToggle"/>
+			</engine:VisualElement>
+		</engine:VisualElement>
+
+		<engine:Button name="ApplyButton"/>
+	</engine:VisualElement>
+</engine:UXML>

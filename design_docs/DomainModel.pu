@@ -1,4 +1,4 @@
-@startuml FacialExpressionSwitcherDomainModel
+@startuml FaceEmoDomainModel
 
 rectangle "表情メニュー集約" as MenuAggregation {
     object "表情メニュー\n(Menu)" as Menu

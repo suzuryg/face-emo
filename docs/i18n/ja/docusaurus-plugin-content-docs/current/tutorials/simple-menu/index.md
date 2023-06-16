@@ -9,17 +9,17 @@ sidebar_label: 簡単な表情メニューを作る
 
 ## 表情メニューを新規作成する
 
-ヒエラルキー上で右クリックし、「FacialExpressionSwitcher」→「Create」をクリックします。
+ヒエラルキー上で右クリックし、「FaceEmo」→「Create」をクリックします。
 
 ![メニュー作成](create_menu.png)
 
-「FacialExpressionSwitcher」という名前のオブジェクトが作成されるので、そのオブジェクトをクリックし、「対象アバター」にアバターのオブジェクトを指定します。
+「FaceEmo」という名前のオブジェクトが作成されるので、そのオブジェクトをクリックし、「対象アバター」にアバターのオブジェクトを指定します。
 
 ![対象アバター選択](set_target_avatar.png)
 
-「FacialExpressionSwitcher 起動」ボタンをクリックすると、本ツールのウインドウが開きます。
+「FaceEmo 起動」ボタンをクリックすると、本ツールのウインドウが開きます。
 
-![FES起動](launch_fes.png)
+![FaceEmo起動](launch_face_emo.png)
 
 ## 表情モードを追加する
 
@@ -113,10 +113,10 @@ sidebar_label: 簡単な表情メニューを作る
 「表情メニューの生成が完了しました！」と表示されれば表情メニューの作成は完了です。
 
 - この状態でアバターをアップロードすると、Modular Avatarによって表情メニューがアバターに合成されます
-- ヒエラルキーでアバターの中身を確認すると、「FacialExpressionSwitcherObject」というオブジェクトが追加されています
+- ヒエラルキーでアバターの中身を確認すると、「FaceEmoPrefab」というオブジェクトが追加されています
 
 ![適用完了](application_completed.png)
-![FESObject](fes_object.png)
+![FaceEmoPrefab](face_emo_prefab.png)
 
 :::caution
 ### アップロードできない場合

@@ -1,4 +1,4 @@
-@startuml FacialExpressionSwitcherObjects
+@startuml FaceEmoObjects
 
 object "表情メニュー" as facialExpressionMenu1
 facialExpressionMenu1 : メニュー表示名: 表情
@@ -89,6 +89,6 @@ facialExpressionMode3 : 口トラッキング状態 : 有効
 
 facialExpressionMode3 --> facialExpressionGroup1
 
-object "表情メニュー共通設定" as facialExpressionSwitcherCommonSetting
+object "表情メニュー共通設定" as faceEmoCommonSetting
 
 @enduml

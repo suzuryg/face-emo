@@ -149,8 +149,8 @@
         "com.unity.nuget.newtonsoft-json": "2.0.2"
       }
     },
-    "jp.suzuryg.facial-expression-switcher": {
-      "version": "file:jp.suzuryg.facial-expression-switcher",
+    "jp.suzuryg.face-emo": {
+      "version": "file:jp.suzuryg.face-emo",
       "depth": 0,
       "source": "embedded",
       "dependencies": {

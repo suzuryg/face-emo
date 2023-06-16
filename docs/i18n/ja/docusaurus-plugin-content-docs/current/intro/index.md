@@ -3,9 +3,9 @@ slug: /
 sidebar_position: 1
 ---
 
-# FacialExpressionSwitcherについて
+# FaceEmoについて
 
-FacialExpressionSwitcherはVRChat Avatars 3.0用の表情作成・設定ツールです。  
+FaceEmoはVRChat Avatars 3.0用の表情作成・設定ツールです。  
 ハンドジェスチャーとExpression Menuを組み合わせた表情切り替えを簡単に設定できます！
 
 下記の動画を挿入

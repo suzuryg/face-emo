@@ -6,20 +6,20 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'FacialExpressionSwitcher',
-  tagline: 'Facial expression configuration tool for VRChat Avatars 3.0',
+  title: 'FaceEmo',
+  tagline: 'Face emote configuration tool for VRChat Avatars 3.0',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
   url: 'https://suzuryg.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/facial-expression-switcher/',
+  baseUrl: '/face-emo/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'suzuryg', // Usually your GitHub org/user name.
-  projectName: 'facial-expression-switcher', // Usually your repo name.
+  projectName: 'face-emo', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -43,7 +43,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/suzuryg/facial-expression-switcher/tree/main/docs/',
+            'https://github.com/suzuryg/face-emo/tree/main/docs/',
         },
         blog: false,
         theme: {
@@ -57,7 +57,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'FacialExpressionSwitcher',
+        title: 'FaceEmo',
         items: [
           {
               type: 'localeDropdown',
@@ -69,7 +69,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/suzuryg/facial-expression-switcher',
+            href: 'https://github.com/suzuryg/face-emo',
             label: 'GitHub',
             position: 'right',
           },

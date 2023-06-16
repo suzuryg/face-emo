@@ -1,4 +1,4 @@
-FacialExpressionSwitcher is licensed under the MIT license, as described below, with some exceptions:
+FaceEmo is licensed under the MIT license, as described below, with some exceptions:
 
 * Packages/com.vrchat.core.bootstrap is distributed under the VRChat Distro license.
   See [the associated License.md file](Packages/com.vrchat.core.bootstrap/License.md) for details.

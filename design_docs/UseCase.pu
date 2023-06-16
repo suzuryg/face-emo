@@ -1,7 +1,7 @@
-@startuml FacialExpressionSwitcherUseCase
+@startuml FaceEmoUseCase
 left to right direction
 :AvatarEditor:
-rectangle FacialExpressionSwitcher {
+rectangle FaceEmo {
     (表情メニューを新規作成する) as createMenu
     AvatarEditor --> createMenu
     (表情メニューを変更する) as modifyMenu

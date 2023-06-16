@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches: main
-    paths: Packages/jp.suzuryg.facial-expression-switcher/**
+    paths: Packages/jp.suzuryg.face-emo/**
 
 env:
-  packageName: "jp.suzuryg.facial-expression-switcher"
+  packageName: "jp.suzuryg.face-emo"
 
 jobs:
   build:
