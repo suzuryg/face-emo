@@ -198,7 +198,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     1f / modes.Count * modeIndex);
 
                 var mode = modes[modeIndex];
-                var modeStateMachine = layer.NewSubStateMachine(mode.PathToMode, 2, modeIndex)
+                var modeStateMachine = layer.NewSubStateMachine(mode.PathToMode.Replace('.', '_'), 2, modeIndex)
                     .WithEntryPosition(0, 0).WithAnyStatePosition(0, -1).WithParentStateMachinePosition(0, -2).WithExitPosition(2, 0);
                 gate.TransitionsTo(modeStateMachine)
                     .When(layer.IntParameter(AV3Constants.ParamName_EM_EMOTE_PATTERN).IsEqualTo(modeIndex));
@@ -331,7 +331,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                     if (branchIndex < 0)
                     {
                         var animation = AV3Utility.GetAnimationClipWithName(mode.Mode.Animation);
-                        emoteState = stateMachine.NewState(animation.name ?? emptyName, 1, emoteIndex)
+                        emoteState = stateMachine.NewState(animation.name?.Replace('.', '_') ?? emptyName, 1, emoteIndex)
                             .WithAnimation(animation.clip ?? emptyClip.Clip);
 
                         emoteState
@@ -394,7 +394,7 @@ namespace Suzuryg.FacialExpressionSwitcher.Detail.AV3
                             motion = (baseAnimation.clip ?? emptyClip.Clip, baseAnimation.name ?? emptyName);
                         }
 
-                        emoteState = stateMachine.NewState(motion.name, 1, emoteIndex)
+                        emoteState = stateMachine.NewState(motion.name?.Replace('.', '_'), 1, emoteIndex)
                             .WithAnimation(motion.motion)
                             .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), branch.BlinkEnabled)
                             .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE), branch.MouthMorphCancelerEnabled && branch.MouthTrackingControl == MouthTrackingControl.Tracking)
