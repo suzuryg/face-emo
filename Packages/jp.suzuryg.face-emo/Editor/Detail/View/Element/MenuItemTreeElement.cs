@@ -360,7 +360,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                     }
                     else
                     {
-                        var displayName = EditorGUILayout.DelayedTextField(mode.DisplayName);
+                        var displayName = EditorGUILayout.TextField(mode.DisplayName);
                         if (displayName != mode.DisplayName)
                         {
                             _onModePropertiesModified.OnNext((
@@ -562,7 +562,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 GUILayout.Space(10);
 
                 // Display name
-                var displayName = EditorGUILayout.DelayedTextField(group.DisplayName);
+                var displayName = EditorGUILayout.TextField(group.DisplayName);
                 if (displayName != group.DisplayName)
                 {
                     _onGroupPropertiesModified.OnNext((menuItemId, displayName));
