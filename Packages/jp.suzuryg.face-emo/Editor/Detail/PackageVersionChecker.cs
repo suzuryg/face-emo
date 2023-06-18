@@ -5,7 +5,7 @@ using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 #endif
 
-namespace Suzuryg.FaceEmo.Detail.Checker
+namespace Suzuryg.FaceEmo.Detail
 {
     [InitializeOnLoad]
     public static class PackageVersionChecker
