@@ -234,6 +234,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Tooltip_Editor = "You can configure the behavior of this tool's UI. These settings are shared across all projects.";
 
         public string ExpressionEditorView_Rename = "Rename";
+        public string ExpressionEditorView_Confirm = "Confirm";
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From the Scene";
         public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect In Preview On Mouse Over";
         public string ExpressionEditorView_Delimiter = "Delimiter";

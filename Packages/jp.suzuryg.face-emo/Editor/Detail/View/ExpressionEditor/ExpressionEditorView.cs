@@ -18,6 +18,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
     {
         private static readonly float IndentWidth = 20;
         private static readonly float ToggleWidth = 15;
+        private static readonly string ClipNameFieldName = "ClipNameField";
 
         private ISubWindowProvider _subWindowProvider;
         private ILocalizationSetting _localizationSetting;
@@ -28,6 +29,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         private IMGUIContainer _rootContainer;
 
         private bool _isRenamingClip = false;
+        private string _newClipName = string.Empty;
+
         private Dictionary<string, bool> _faceBlendShapeFoldoutStates = new Dictionary<string, bool>();
         private bool _toggleFoldoutState = false;
         private bool _transformFoldoutState = false;
@@ -225,45 +228,39 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
 
         private void Field_AnimationClip()
         {
-            var clipExists = _expressionEditor.Clip != null;
-
-            if (_isRenamingClip && clipExists)
+            using (new EditorGUILayout.HorizontalScope())
             {
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    // Text field
-                    var path = AssetDatabase.GetAssetPath(_expressionEditor.Clip);
-                    var oldName = Path.GetFileName(path).Replace(".anim", "");
-                    var newName = EditorGUILayout.DelayedTextField(oldName);
-                    if (newName != oldName)
-                    {
-                        var ret = AssetDatabase.RenameAsset(path, newName);
-                        if (string.IsNullOrEmpty(ret))
-                        {
-                            _isRenamingClip = false;
-                        }
-                        else
-                        {
-                            EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ExpressionEditorView_Message_FailedToRename, "OK");
-                            Debug.LogError(_localizationTable.ExpressionEditorView_Message_FailedToRename + "\n" + ret);
-                        }
-                    }
+                const float buttonWidth = 60;
+                var clipExists = _expressionEditor.Clip != null;
 
-                    // Enter key
+                if (_isRenamingClip && clipExists)
+                {
+                    // Enter key event
                     var e = Event.current;
                     if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return)
                     {
-                        if (newName == oldName)
-                        {
-                            _isRenamingClip = false;
-                        }
+                        RenameClip();
+                    }
+
+                    // Text field
+                    GUI.SetNextControlName(ClipNameFieldName);
+                    _newClipName = EditorGUILayout.TextField(_newClipName);
+
+                    // Confirm button
+                    if (GUILayout.Button(_localizationTable.ExpressionEditorView_Confirm, GUILayout.Width(buttonWidth)))
+                    {
+                        RenameClip();
                     }
                 }
-            }
-            else
-            {
-                using (new EditorGUILayout.HorizontalScope())
+                else
                 {
+                    // Update clip name
+                    if (clipExists)
+                    {
+                        var path = AssetDatabase.GetAssetPath(_expressionEditor.Clip);
+                        _newClipName = Path.GetFileName(path).Replace(".anim", "");
+                    }
+
                     // Object field
                     var ret = EditorGUILayout.ObjectField(_expressionEditor.Clip, typeof(AnimationClip), allowSceneObjects: false);
                     if (ret is AnimationClip animationClip && animationClip != null && !ReferenceEquals(animationClip, _expressionEditor.Clip))
@@ -274,12 +271,40 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     // Rename button
                     using (new EditorGUI.DisabledScope(!clipExists))
                     {
-                        if (GUILayout.Button(_localizationTable.ExpressionEditorView_Rename, GUILayout.Width(60)))
+                        if (GUILayout.Button(_localizationTable.ExpressionEditorView_Rename, GUILayout.Width(buttonWidth)))
                         {
                             _isRenamingClip = true;
+                            EditorGUI.FocusTextInControl(ClipNameFieldName);
                         }
                     }
                 }
+
+                // Place a dummy because the input value of TextField will be entered into other fields when the rename is completed.
+                _ = EditorGUILayout.TextField(string.Empty, GUILayout.Width(0));
+            }
+        }
+
+        private void RenameClip()
+        {
+            var path = AssetDatabase.GetAssetPath(_expressionEditor.Clip);
+            var oldName = Path.GetFileName(path).Replace(".anim", "");
+            if (_newClipName != oldName)
+            {
+                var ret = AssetDatabase.RenameAsset(path, _newClipName);
+                if (string.IsNullOrEmpty(ret))
+                {
+                    _isRenamingClip = false;
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ExpressionEditorView_Message_FailedToRename, "OK");
+                    Debug.LogError(_localizationTable.ExpressionEditorView_Message_FailedToRename + "\n" + ret);
+                    // EditorGUI.FocusTextInControl(ClipNameFieldName); // not working
+                }
+            }
+            else
+            {
+                _isRenamingClip = false;
             }
         }
 
