@@ -180,7 +180,9 @@ namespace Suzuryg.FaceEmo.AppMain
             var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
 
             const float buttonWidth = 30;
-            selectionRect.xMin += selectionRect.width - buttonWidth;
+            const float xOffsetForOtherTools = 20;
+            selectionRect.xMin += selectionRect.width - buttonWidth - xOffsetForOtherTools;
+            selectionRect.xMax -= xOffsetForOtherTools;
             selectionRect.yMin += 1;
             selectionRect.yMax -= 1;
             var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("b8710db71cc992745987c4e92d53fcd1")); // logo
