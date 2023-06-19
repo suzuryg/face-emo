@@ -22,6 +22,7 @@
 				<engine:Label name="DefaultSelectionLabel" class="Label"/>
 				<engine:IMGUIContainer name="DefaultSelectionComboBox"/>
 				<engine:Toggle name="ShowHintsToggle"/>
+				<engine:IMGUIContainer name="OpenManualField"/>
 			</engine:VisualElement>
 		</engine:VisualElement>
 

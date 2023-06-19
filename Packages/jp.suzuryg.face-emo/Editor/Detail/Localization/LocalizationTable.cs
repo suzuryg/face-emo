@@ -112,6 +112,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string SettingView_UpdateThumbnails = "Update Thumbnails";
         public string SettingView_DefaultSelectedMode = "Default Selected Pattern";
         public string SettingView_ShowHints = "Show Hints";
+        public string SettingView_Manual = "FaceEmo Manual";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
         public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
@@ -194,9 +195,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
 
-        public string InspectorView_Help = "Help";
-        public string InspectorView_Help_Manual = "FaceEmo Manual";
-
         public string InspectorView_Tooltip_MouthMorphCanceler = "This is used in expressions where Mouth Morph Canceler is enabled. " +
             "During speech, you can prevent disruptions by resetting certain shape key values to their default values (the values set on the scene).";
         public string InspectorView_Tooltip_AddMouthMorphBlendShape = "When selecting blend shapes, you can make multiple selections by \"Ctrl + Click\". " +
@@ -234,7 +232,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Tooltip_Application_EmoteSelect = "If disabled, the number of expression patterns that can be registered in the Expression Menu is increased by one.";
         public string InspectorView_Tooltip_Defaults = "You can change the settings values right after creating expression patterns or expressions.";
         public string InspectorView_Tooltip_Editor = "You can configure the behavior of this tool's UI. These settings are shared across all projects.";
-        public string InspectorView_Tooltip_Help = "You can read the manual for this tool.";
 
         public string ExpressionEditorView_Rename = "Rename";
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From the Scene";

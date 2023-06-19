@@ -288,15 +288,6 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             EditorGUILayout.Space(10);
 
-            // Help
-            var isHelpOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsHelpOpened));
-            isHelpOpened.boolValue = EditorGUILayout.Foldout(isHelpOpened.boolValue,
-                new GUIContent(_localizationTable.InspectorView_Help));
-            if (isHelpOpened.boolValue)
-            {
-                Field_Help();
-            }
-
             _inspectorViewState.ApplyModifiedProperties();
             _av3Setting.ApplyModifiedProperties();
             _thumbnailSetting.ApplyModifiedProperties();
@@ -783,30 +774,6 @@ namespace Suzuryg.FaceEmo.Detail.View
             ToggleEditorPrefsField(DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation, _localizationTable.InspectorView_GroupDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyModeDeleteConfirmation, DetailConstants.DefaultModeDeleteConfirmation, _localizationTable.InspectorView_ModeDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, _localizationTable.InspectorView_BranchDeleteConfirmation);
-        }
-
-        private void Field_Help()
-        {
-            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
-            if (showHints)
-            {
-                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_Help);
-            }
-
-            var rect = EditorGUILayout.GetControlRect();
-            EditorGUI.LabelField(rect, _localizationTable.InspectorView_Help_Manual, EditorStyles.linkLabel);
-
-            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
-
-            if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
-            {
-                var url = "https://suzuryg.github.io/face-emo/";
-                if (_localizationSetting.Locale == Locale.ja_JP)
-                {
-                    url += "jp/";
-                }
-                Application.OpenURL(url);
-            }
         }
 
         private static void TogglePropertyField(SerializedProperty serializedProperty, string label, string tooltip = null)

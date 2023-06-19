@@ -41,7 +41,10 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Label _defaultSelectionLabel;
         private IMGUIContainer _defaultSelectionComboBoxArea;
         private Toggle _showHintsToggle;
+        private IMGUIContainer _openManualField;
         private Button _applyButton;
+
+        private Texture2D _publicIcon;
 
         private List<ModeEx> _flattendModes = new List<ModeEx>();
         private string[] _modePaths = new string[0];
@@ -83,6 +86,9 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Presenter event handlers
             _generateFxPresenter.Observable.Synchronize().Subscribe(OnGenerateFxPresenterCompleted).AddTo(_disposables);
+
+            // Initialization
+            _publicIcon = ViewUtility.GetIconTexture("public_FILL0_wght400_GRAD200_opsz48.png");
         }
 
         public void Dispose()
@@ -113,9 +119,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             _defaultSelectionLabel = root.Q<Label>("DefaultSelectionLabel");
             _defaultSelectionComboBoxArea = root.Q<IMGUIContainer>("DefaultSelectionComboBox");
             _showHintsToggle = root.Q<Toggle>("ShowHintsToggle");
+            _openManualField = root.Q<IMGUIContainer>("OpenManualField");
             _applyButton = root.Q<Button>("ApplyButton");
             NullChecker.Check(_thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _updateThumbnailButton,
-               _defaultSelectionLabel, _defaultSelectionComboBoxArea, _showHintsToggle, _applyButton);
+               _defaultSelectionLabel, _defaultSelectionComboBoxArea, _showHintsToggle, _openManualField, _applyButton);
 
             // Initialize fields
             _thumbnailSetting.Update();
@@ -146,6 +153,8 @@ namespace Suzuryg.FaceEmo.Detail.View
                 .Synchronize().Subscribe(_ => OnApplyButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _defaultSelectionComboBoxArea.onGUIHandler += x, x => _defaultSelectionComboBoxArea.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ => DefaultSelectionComboBoxOnGUI()).AddTo(_disposables);
+            Observable.FromEvent(x => _openManualField.onGUIHandler += x, x => _openManualField.onGUIHandler -= x)
+                .Synchronize().Subscribe(_ => OpenManualField()).AddTo(_disposables);
 
             // Set text
             SetText(_localizationSetting.Table);
@@ -256,6 +265,36 @@ namespace Suzuryg.FaceEmo.Detail.View
                 selected < _flattendModes.Count)
             {
                 _modifyMenuPropertiesUseCase.Handle(string.Empty, _flattendModes[selected].Mode.GetId());
+            }
+        }
+
+        private void OpenManualField()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var labelContent = new GUIContent(_localizationTable.SettingView_Manual);
+                var labelSize = GUI.skin.label.CalcSize(labelContent);
+
+                var iconContent = new GUIContent(_publicIcon);
+                var iconRect = GUILayoutUtility.GetRect(iconContent, GUI.skin.label, GUILayout.Width(labelSize.y), GUILayout.Height(labelSize.y));
+                EditorGUI.LabelField(iconRect, iconContent);
+
+                var linkRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelSize.x));
+                linkRect.x -= 3.5f; // offset
+                linkRect.y -= 2.5f; // offset
+                EditorGUI.LabelField(linkRect, labelContent, EditorStyles.linkLabel);
+
+                EditorGUIUtility.AddCursorRect(linkRect, MouseCursor.Link);
+
+                if (Event.current.type == EventType.MouseDown && linkRect.Contains(Event.current.mousePosition))
+                {
+                    var url = "https://suzuryg.github.io/face-emo/";
+                    if (_localizationSetting.Locale == Locale.ja_JP)
+                    {
+                        url += "jp/";
+                    }
+                    Application.OpenURL(url);
+                }
             }
         }
     }

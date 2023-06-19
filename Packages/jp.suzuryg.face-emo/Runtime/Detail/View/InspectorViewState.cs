@@ -14,6 +14,5 @@ namespace Suzuryg.FaceEmo.Detail.View
         public bool IsAvatarApplicationOpened = false;
         public bool IsDefaultsOpened = false;
         public bool IsEditorSettingOpened = false;
-        public bool IsHelpOpened = false;
     }
 }

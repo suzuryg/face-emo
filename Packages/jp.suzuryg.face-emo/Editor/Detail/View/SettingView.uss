@@ -59,6 +59,13 @@
     height: 20px;
 }
 
+#OpenManualField
+{
+    margin-left: 12px;
+    margin-top: -5px;
+    height: 20px;
+}
+
 #ApplyButton
 {
     margin-left: auto;
