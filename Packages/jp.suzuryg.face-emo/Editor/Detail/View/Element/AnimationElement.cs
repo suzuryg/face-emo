@@ -76,7 +76,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         // TODO: Specify up-left point, not a rect.
         public void Draw(Rect rect, Domain.Animation animation, MainThumbnailDrawer thumbnailDrawer,
-            Action<string> setAnimationClipAction) // The argument is new animation's GUID.
+            Action<string> setAnimationClipAction, // The argument is new animation's GUID.
+            string defaultClipName = null)
         {
             // Thumbnail
             var thumbnailWidth = _thumbnailSetting.Main_Width;
@@ -126,7 +127,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 {
                     if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-                    var guid = GetAnimationGuidWithDialog(DialogMode.Create, path);
+                    var guid = GetAnimationGuidWithDialog(DialogMode.Create, path, defaultClipName);
                     if (!string.IsNullOrEmpty(guid))
                     {
                         _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
@@ -140,7 +141,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 {
                     if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-                    var guid = GetAnimationGuidWithDialog(DialogMode.Open, path);
+                    var guid = GetAnimationGuidWithDialog(DialogMode.Open, path, defaultClipName);
                     if (!string.IsNullOrEmpty(guid))
                     {
                         _expressionEditor.OpenIfOpenedAlready(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
@@ -156,7 +157,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                     {
                         if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-                        var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path);
+                        var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, defaultClipName);
                         if (!string.IsNullOrEmpty(guid))
                         {
                             _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
@@ -200,7 +201,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             return thumbnailHeight + EditorGUIUtility.singleLineHeight;
         }
 
-        private string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath)
+        private string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath, string defaultClipName)
         {
             // Open dialog and get the path of the AnimationClip
             var defaultDir = GetDefaultDir(existingAnimationPath);
@@ -211,7 +212,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             }
             else if (dialogMode == DialogMode.Create)
             {
-                var defaultName = _localizationTable.AnimationElement_NewClipName + DateTime.Now.ToString("_yyyyMMdd_HHmmss_fff");
+                var baseName = !string.IsNullOrEmpty(defaultClipName) ? defaultClipName : _localizationTable.AnimationElement_NewClipName;
+                var defaultName = baseName + DateTime.Now.ToString("_yyyyMMdd_HHmmss_fff");
                 selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: defaultName, extension: "anim", message: null, path: defaultDir);
             }
             else if (dialogMode == DialogMode.Copy)

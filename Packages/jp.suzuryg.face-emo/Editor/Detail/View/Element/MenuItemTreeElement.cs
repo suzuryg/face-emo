@@ -543,9 +543,13 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 // Animation
                 var thumbnailWidth = _thumbnailSetting.Main_Width;
                 var thumbnailHeight = _thumbnailSetting.Main_Height;
+
+                var modeName = _modeNameProvider.Provide(mode);
+                var defaultClipName = modeName != _localizationTable.ModeNameProvider_NewMode && !mode.UseAnimationNameAsDisplayName ? modeName : string.Empty;
+
                 var animationRect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle(), GUILayout.Width(thumbnailWidth), GUILayout.Height(thumbnailHeight + EditorGUIUtility.singleLineHeight));
                 _animationElement.Draw(animationRect, mode.Animation, _thumbnailDrawer,
-                    guid => _onAnimationChanged.OnNext((menuItemId, guid)));
+                    guid => _onAnimationChanged.OnNext((menuItemId, guid)), defaultClipName);
             }
         }
 
