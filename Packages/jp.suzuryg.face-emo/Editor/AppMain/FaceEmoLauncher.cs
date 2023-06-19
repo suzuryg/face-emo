@@ -95,7 +95,6 @@ namespace Suzuryg.FaceEmo.AppMain
         }
 
         [MenuItem("FaceEmo/New Menu", false, 0)]
-        [MenuItem("GameObject/FaceEmo/New Menu", false, 20)]
         public static GameObject Create(MenuCommand menuCommand)
         {
             var gameObject = GetLauncherObject(menuCommand);
@@ -114,7 +113,7 @@ namespace Suzuryg.FaceEmo.AppMain
             return gameObject;
         }
 
-        [MenuItem("GameObject/FaceEmo/Restore Menu", false, 21)]
+        [MenuItem("FaceEmo/Restore Menu", false, 1)]
         public static void Restore(MenuCommand menuCommand)
         {
             var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: null, filters: new[] { "FaceEmoProject" , "asset" });
