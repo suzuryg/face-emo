@@ -1,6 +1,8 @@
 ---
 sidebar_position: 3
-sidebar_label: 機能の詳細説明
+sidebar_label: リファレンス
 ---
 
-# 機能の詳細説明
+# リファレンス
+
+FaceEmoの機能や構成要素の詳細を説明します。
