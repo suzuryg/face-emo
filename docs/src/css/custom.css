@@ -28,3 +28,40 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/*  writen by attica, for intro/index  >>> */
+.docs-doc-id-intro\/index table, tbody, td, th {
+  border: none!important;
+  border-collapse: unset;
+}
+.docs-doc-id-intro\/index table tr:nth-child(2n) {
+  background-color: transparent;
+}
+
+.docs-doc-id-intro\/index table th > p > img {
+  width:200px;
+}
+
+.docs-doc-id-intro\/index table {
+/*  width: 100%;*/
+  padding-left: 5rem;
+  padding-right: 5rem;
+}
+
+.docs-doc-id-intro\/index table th > p {
+  text-align:left;
+  font-size: 1.5rem;
+  font-weight: normal;
+  padding-left: 2rem;
+}
+
+.docs-doc-id-intro\/index table th > header {
+  text-align:left;
+  font-size: 2rem;
+  margin-bottom : 10px;
+}
+
+.docs-doc-id-intro\/index header h1 {
+  display: none;
+}
+/* <<< writen by attica, for intro/index */
