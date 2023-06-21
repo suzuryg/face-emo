@@ -8,6 +8,7 @@ using VRC.SDK3.Avatars.Components;
 using Suzuryg.FaceEmo.Domain;
 using System.Linq;
 using Suzuryg.FaceEmo.Detail.Drawing;
+using Suzuryg.FaceEmo.Detail.Localization;
 
 namespace Suzuryg.FaceEmo.Detail.AV3
 {
@@ -29,6 +30,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public IObservable<Unit> OnClipUpdated => _onClipUpdated.AsObservable();
 
         private ISubWindowProvider _subWindowProvider;
+        private ILocalizationSetting _localizationSetting;
         private MainThumbnailDrawer _mainThumbnailDrawer;
         private GestureTableThumbnailDrawer _gestureTableThumbnailDrawer;
         private AV3Setting _aV3Setting;
@@ -52,6 +54,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         public ExpressionEditor(
             ISubWindowProvider subWindowProvider,
+            ILocalizationSetting localizationSetting,
             MainThumbnailDrawer mainThumbnailDrawer,
             GestureTableThumbnailDrawer gestureTableThumbnailDrawer,
             AV3Setting aV3Setting,
@@ -59,6 +62,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         {
             // Dependencies
             _subWindowProvider = subWindowProvider;
+            _localizationSetting = localizationSetting;
             _mainThumbnailDrawer = mainThumbnailDrawer;
             _gestureTableThumbnailDrawer = gestureTableThumbnailDrawer;
             _aV3Setting = aV3Setting;
@@ -336,6 +340,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         public void CheckBuffer()
         {
+            // Null check
+            if (Clip == null)
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationSetting.GetCurrentLocaleTable().ExpressionEditorView_Message_ClipIsNull, "OK");
+                return;
+            }
+
             // Check for updates
             // BlendShape
             var updatedBlendShapes = new List<string>();
