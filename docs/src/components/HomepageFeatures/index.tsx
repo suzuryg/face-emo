@@ -10,8 +10,9 @@ function Features() {
           <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
         </div>
         <div className="text--center padding-horiz--md">
-          <h3>難しいことはなにもなし</h3>
-          <p>  トリガーのウィンク設定もサクッと完了。<br/>
+          <h3>かんたん表情作成</h3>
+          <p>
+            トリガーウィンクもサクッと完了。<br/>
             リップシンクのオンオフもボタン一つ。<br/>
             もちろん、編集もらくちん。
           </p>
@@ -23,8 +24,10 @@ function Features() {
         </div>
         <div className="text--center padding-horiz--md">
           <h3>らくらく管理</h3>
-          <p>表情パターンをリスト表示。<br/>
-            ジェスチャー組み合わせだって表管理。</p>
+          <p>
+            表情パターンをリスト表示。<br/>
+            ジェスチャーの組み合わせも表管理。
+          </p>
         </div>
       </div>
       <div className={clsx('col col-4')}>
@@ -53,7 +56,7 @@ function Details ()  {
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/root_page/function01.png').default} className={styles.feature_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
@@ -65,60 +68,50 @@ function Details ()  {
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/root_page/function02.png').default} className={styles.feature_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
           <div className="text--left">
-            - 左右ジェスチャーを組み合わせた表情設定を簡単に作れる
+            左右ジェスチャーを組み合わせの一覧表
           </div>
         </div>
       </div>
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/root_page/function03.png').default} className={styles.feature_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
           <div className="text--left">
-            - ハンドジェスチャーとExpression Menuを組み合わせた表情切り替えを簡単に作れる
+            表情パターンごとにデフォルト表情を変えられる
           </div>
         </div>
       </div>
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/icon.png').default} className={styles.feature_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
           <div className="text--left">
-            - 表情エディタを内蔵していて、表情メニュー作成と表情作成をシームレスに行える
+            .........................................
+            .........................................
           </div>
         </div>
       </div>
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/icon.png').default} className={styles.feature_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
           <div className="text--left">
-            - シーン上のデフォルト表情を自動的に反映する
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className={clsx('col col--4')}>
-          <div className="text--right">
-            <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
-          </div>
-        </div>
-        <div className={clsx('col col-8')}>
-          <div className="text--left">
-            - 表情パターンごとにデフォルト表情を変えられる
+            .........................................
+            .........................................
           </div>
         </div>
       </div>
