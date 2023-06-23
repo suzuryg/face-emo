@@ -5,5 +5,9 @@
   width: 100%;
 }
 .feature_img {
+  width: 50%;
+}
+
+.feature_detail_img {
   width: 80%;
 }

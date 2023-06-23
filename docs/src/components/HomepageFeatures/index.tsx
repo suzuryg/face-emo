@@ -56,7 +56,7 @@ function Details ()  {
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/function01.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/root_page/function01.png').default} className={styles.feature_detail_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
@@ -68,7 +68,7 @@ function Details ()  {
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/function02.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/root_page/function02.png').default} className={styles.feature_detail_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
@@ -80,7 +80,7 @@ function Details ()  {
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/root_page/function03.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/root_page/function03.png').default} className={styles.feature_detail_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
@@ -92,7 +92,7 @@ function Details ()  {
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/icon.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/icon.png').default} className={styles.feature_detail_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
@@ -105,7 +105,7 @@ function Details ()  {
       <div className="row">
         <div className={clsx('col col--4')}>
           <div className="text--right">
-            <img src={require('@site/static/img/icon.png').default} className={styles.feature_img} />
+            <img src={require('@site/static/img/icon.png').default} className={styles.feature_detail_img} />
           </div>
         </div>
         <div className={clsx('col col-8')}>
