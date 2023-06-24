@@ -201,7 +201,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             return thumbnailHeight + EditorGUIUtility.singleLineHeight;
         }
 
-        private string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath, string defaultClipName)
+        public string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath, string defaultClipName)
         {
             // Open dialog and get the path of the AnimationClip
             var defaultDir = GetDefaultDir(existingAnimationPath);
@@ -272,7 +272,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             }
         }
 
-        private enum DialogMode
+        public enum DialogMode
         {
             Open,
             Create,

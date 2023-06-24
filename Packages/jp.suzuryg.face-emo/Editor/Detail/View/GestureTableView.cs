@@ -13,6 +13,7 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UniRx;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode;
+using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using System.Linq;
 
 namespace Suzuryg.FaceEmo.Detail.View
@@ -20,6 +21,7 @@ namespace Suzuryg.FaceEmo.Detail.View
     public class GestureTableView : IDisposable
     {
         private IAddBranchUseCase _addBranchUseCase;
+        private ISetExistingAnimationUseCase _setExistingAnimationUseCase;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
         private ISubWindowProvider _subWindowProvider;
@@ -30,13 +32,14 @@ namespace Suzuryg.FaceEmo.Detail.View
         private SerializedObject _thumbnailSetting;
 
         private GestureTableElement _gestureTableElement;
+        private AnimationElement _animationElement;
+        private AV3.ExpressionEditor _expressionEditor;
 
         private IMGUIContainer _gestureTableContainer;
         private Label _thumbnailWidthLabel;
         private Label _thumbnailHeightLabel;
         private SliderInt _thumbnailWidthSlider;
         private SliderInt _thumbnailHeightSlider;
-        private Button _addBranchButton;
 
         private StyleColor _canAddButtonColor = Color.black;
         private StyleColor _canAddButtonBackgroundColor = Color.yellow;
@@ -47,6 +50,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public GestureTableView(
             IAddBranchUseCase addBranchUseCase,
+            ISetExistingAnimationUseCase setExistingAnimationUseCase,
             IReadOnlyLocalizationSetting localizationSetting,
             ISubWindowProvider subWindowProvider,
             DefaultsProviderGenerator defaultProviderGenerator,
@@ -54,10 +58,13 @@ namespace Suzuryg.FaceEmo.Detail.View
             SelectionSynchronizer selectionSynchronizer,
             GestureTableThumbnailDrawer thumbnailDrawer,
             GestureTableElement gestureTableElement,
+            AnimationElement animationElement,
+            AV3.ExpressionEditor expressionEditor,
             ThumbnailSetting thumbnailSetting)
         {
             // Usecases
             _addBranchUseCase = addBranchUseCase;
+            _setExistingAnimationUseCase = setExistingAnimationUseCase;
 
             // Others
             _localizationSetting = localizationSetting;
@@ -67,12 +74,16 @@ namespace Suzuryg.FaceEmo.Detail.View
             _selectionSynchronizer = selectionSynchronizer;
             _thumbnailDrawer = thumbnailDrawer;
             _gestureTableElement = gestureTableElement;
+            _animationElement = animationElement;
+            _expressionEditor = expressionEditor;
             _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
             // Gesture table element
             _gestureTableElement.AddTo(_disposables);
             _gestureTableElement.OnSelectionChanged.Synchronize().Subscribe(OnSelectionChanged).AddTo(_disposables);
             _gestureTableElement.OnBranchIndexExceeded.Synchronize().Subscribe(_ => OnBranchIndexExceeded()).AddTo(_disposables);
+            _gestureTableElement.OnAddBrandchButtonClicked.Synchronize().Subscribe(OnAddBranchButtonClicked).AddTo(_disposables);
+            _gestureTableElement.OnEditClipButtonClicked.Synchronize().Subscribe(OnEditClipButtonClicked).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -107,12 +118,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             _thumbnailHeightLabel = root.Q<Label>("ThumbnailHeightLabel");
             _thumbnailWidthSlider = root.Q<SliderInt>("ThumbnailWidthSlider");
             _thumbnailHeightSlider = root.Q<SliderInt>("ThumbnailHeightSlider");
-            _addBranchButton = root.Q<Button>("AddBranchButton");
-            NullChecker.Check(_gestureTableContainer, _thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _addBranchButton);
+            NullChecker.Check(_gestureTableContainer, _thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider);
 
             // Add event handlers
-            Observable.FromEvent(x => _addBranchButton.clicked += x, x => _addBranchButton.clicked -= x)
-                .Synchronize().Subscribe(_ => OnAddBranchButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _gestureTableContainer.onGUIHandler += x, x => _gestureTableContainer.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ =>
                 {
@@ -140,10 +148,6 @@ namespace Suzuryg.FaceEmo.Detail.View
             _thumbnailHeightSlider.highValue = ThumbnailSetting.GestureTable_MaxHeight;
             _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Height)).intValue;
 
-            // Initialize styles
-            _canNotAddButtonColor = _addBranchButton.style.color;
-            _canNotAddButtonBackgroundColor = _addBranchButton.style.backgroundColor;
-
             // Add event handlers
             _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
             _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
@@ -154,7 +158,6 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void SetText(LocalizationTable localizationTable)
         {
-            if (_addBranchButton != null) { _addBranchButton.text = localizationTable.GestureTableView_AddBranch; }
             if (_thumbnailWidthLabel != null) { _thumbnailWidthLabel.text = localizationTable.Common_ThumbnailWidth; }
             if (_thumbnailHeightLabel != null) { _thumbnailHeightLabel.text = localizationTable.Common_ThumbnailHeight; }
         }
@@ -167,26 +170,6 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void UpdateDisplay()
         {
-            var target = GetTarget();
-            var canAddBranch = target.canAddBranch;
-
-            _addBranchButton?.SetEnabled(canAddBranch);
-
-            if (_addBranchButton != null)
-            {
-                if (canAddBranch)
-                {
-                    _addBranchButton.style.color = _canAddButtonColor;
-                    _addBranchButton.style.backgroundColor = _canAddButtonBackgroundColor;
-                }
-                else
-                {
-                    _addBranchButton.style.color = _canNotAddButtonColor;
-                    _addBranchButton.style.backgroundColor = _canNotAddButtonBackgroundColor;
-                }
-            }
-
-
             _gestureTableContainer?.MarkDirtyRepaint();
         }
 
@@ -223,49 +206,60 @@ namespace Suzuryg.FaceEmo.Detail.View
             _thumbnailDrawer.ClearCache();
         }
 
-        private void OnAddBranchButtonClicked()
+        private void OnAddBranchButtonClicked((HandGesture left, HandGesture right)? args)
         {
-            var target = GetTarget();
+            if (!args.HasValue) { return; }
 
             var conditions = new[]
             {
-                new Condition(Hand.Left, target.left, ComparisonOperator.Equals),
-                new Condition(Hand.Right, target.right, ComparisonOperator.Equals),
+                new Condition(Hand.Left, args.Value.left, ComparisonOperator.Equals),
+                new Condition(Hand.Right, args.Value.right, ComparisonOperator.Equals),
             };
             _addBranchUseCase.Handle("", _gestureTableElement.SelectedModeId,
                 conditions: conditions,
                 defaultsProvider: _defaultProviderGenerator.Generate());
         }
 
-        private (bool canAddBranch, HandGesture left, HandGesture right) GetTarget()
+        private void OnEditClipButtonClicked((HandGesture left, HandGesture right)? args)
         {
-            var canNot = (false, HandGesture.Neutral, HandGesture.Neutral);
+            if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationSetting.GetCurrentLocaleTable().Common_Message_NotPossibleInPlayMode, "OK"); return; }
+            else if (!args.HasValue) { return; }
+            else if (_gestureTableElement?.Menu?.ContainsMode(_gestureTableElement?.SelectedModeId) != true) { return; }
 
-            if (_gestureTableElement.SelectedCell is null)
+            var mode = _gestureTableElement.Menu.GetMode(_gestureTableElement.SelectedModeId);
+            var selectedBranch = mode.GetGestureCell(args.Value.left, args.Value.right);
+            if (selectedBranch == null) { return; }
+
+            for (int branchIndex = 0; branchIndex < mode.Branches.Count; branchIndex++)
             {
-                return canNot;
+                if (ReferenceEquals(selectedBranch, mode.Branches[branchIndex]))
+                {
+                    CreateAndOpenClip(branchIndex);
+                    break;
+                }
             }
-            (var left, var right) = _gestureTableElement.SelectedCell.Value;
+        }
 
-            var menu = _gestureTableElement.Menu;
-            if (menu is null)
+        private void CreateAndOpenClip(int branchIndex)
+        {
+            var modeId = _gestureTableElement.SelectedModeId;
+            var mode = _gestureTableElement.Menu.GetMode(modeId);
+            var animation = mode.Branches[branchIndex].BaseAnimation;
+            var path = AssetDatabase.GUIDToAssetPath(animation?.GUID);
+            var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+            var clipExists = clip != null;
+            if (clipExists)
             {
-                return canNot;
-            }
-
-            if (!menu.ContainsMode(_gestureTableElement.SelectedModeId))
-            {
-                return canNot;
-            }
-
-            var mode = menu.GetMode(_gestureTableElement.SelectedModeId);
-            if (mode.GetGestureCell(left, right) is IBranch)
-            {
-                return canNot;
+                _expressionEditor.Open(clip);
             }
             else
             {
-                return (true, left, right);
+                var guid = _animationElement.GetAnimationGuidWithDialog(AnimationElement.DialogMode.Create, path, defaultClipName: null);
+                if (!string.IsNullOrEmpty(guid))
+                {
+                    _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
+                    _setExistingAnimationUseCase.Handle(string.Empty, new Domain.Animation(guid), modeId, branchIndex, BranchAnimationType.Base);
+                }
             }
         }
     }
