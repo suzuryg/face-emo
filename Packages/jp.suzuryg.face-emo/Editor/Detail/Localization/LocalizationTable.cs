@@ -28,12 +28,11 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of expression patterns and folders.";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following folder?";
         public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression pattern?";
-        public string Common_Message_DeleteBranch = "Are you sure you want to delete the expression?";
+        public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected expression?";
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
         public string Common_Message_MAIsNotInstalled = "Modular Avatar must be installed in order to use FaceEmo!";
-        public string Common_Tooltip_DeleteBranch = "Deletes this expression.";
         public string Common_Tooltip_EyeTracking = "You can set whether to use pseudo eye-tracking. This setting can be configured independently of the blinking setting.";
         public string Common_Tooltip_Blink = "You can set whether to blink. Please disable blinking for expressions where the eyes are closed.";
         public string Common_Tooltip_LipSync = "You can set whether to use lip-syncing. " +
@@ -86,7 +85,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_LeftTriggerAnimation = "Left Trigger";
         public string BranchListView_RightTriggerAnimation = "Right Trigger";
         public string BranchListView_BothTriggersAnimation = "Both Triggers";
-        public string BranchListView_EmptyBranch = "Press the + button to add a facial expression.";
+        public string BranchListView_EmptyBranch = "You can add an expression by pressing the button at the top of the view.";
         public string BranchListView_EmptyCondition = "Press the + button to add a condition.";
         public string BranchListView_Condition = "Conditions";
         public string BranchListView_Left = "LeftHand";
@@ -105,6 +104,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_Preset_AllPatterns = "All Patterns (63 Patterns)";
         public string BranchListView_Message_AddPreset = "Are you sure you want to add the following facial expression preset?";
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
+        public string BranchListView_Tooltip_AddBranch = "Create a new expression";
+        public string BranchListView_Tooltip_DeleteBranch = "Delete the selected expression";
         public string BranchListView_Tooltip_AddPreset = "Several facial expressions can be added at once by selecting a preset.";
         public string BranchListView_Tooltip_OpenGestureTable = "You can confirm which expression corresponds to each combination of gestures.";
         public string BranchListView_Tooltip_Simplify = "Switches to a simple display of only the expression conditions and animation name. " +

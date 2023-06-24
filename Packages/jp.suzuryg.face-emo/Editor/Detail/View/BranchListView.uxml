@@ -11,9 +11,16 @@
 	<engine:VisualElement name="RootGrid">
 		<engine:VisualElement name="TopRow">
 			<engine:Label name="TitleLabel"/>
-			<engine:Toggle name="SimplifyToggle"/>
-			<engine:IMGUIContainer name="PresetContainer"/>
-			<engine:Button name="OpenGestureTableWindowButton"/>
+
+			<engine:VisualElement name="TopRow_Controls">
+				<engine:Toggle name="SimplifyToggle"/>
+				<engine:IMGUIContainer name="PresetContainer"/>
+				<engine:Button name="OpenGestureTableWindowButton"/>
+
+				<engine:Button name="AddBranchButton" class="Button"/>
+				<engine:Button name="CopyBranchButton" class="Button"/>
+				<engine:Button name="RemoveBranchButton" class="Button"/>
+			</engine:VisualElement>
 		</engine:VisualElement>
 		<engine:IMGUIContainer name="BranchListContainer"/>
 	</engine:VisualElement>

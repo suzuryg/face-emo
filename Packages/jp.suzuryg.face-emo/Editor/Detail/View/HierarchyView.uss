@@ -10,12 +10,6 @@
     justify-content: flex-start;
 }
 
-#TitleLabel
-{
-    margin-left: 5px;
-    margin-top: 5px;
-}
-
 #TopRow
 {
     flex-direction: row;
@@ -49,6 +43,13 @@
     flex-shrink: 0;
     flex-basis: auto;
     align-self: auto;
+}
+
+#TitleLabel
+{
+    margin-left: -3px;
+    margin-top: -3px;
+    font-size: 16px;
 }
 
 .Button

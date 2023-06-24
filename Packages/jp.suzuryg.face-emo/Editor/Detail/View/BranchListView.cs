@@ -49,6 +49,9 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Toggle _simplifyToggle;
         private IMGUIContainer _presetContainer;
         private Button _openGestureTableWindowButton;
+        private Button _addBranchButton;
+        private Button _copyBranchButton;
+        private Button _removeBranchButton;
         private IMGUIContainer _branchListContainer;
 
         private AnimationElement _animationElement;
@@ -114,10 +117,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             _branchListElement.AddTo(_disposables);
             _branchListElement.OnAnimationChanged.Synchronize().Subscribe(OnAnimationChanged).AddTo(_disposables);
 
-            _branchListElement.OnAddBranchButtonClicked.Synchronize().Subscribe(OnAddBranchButtonClicked).AddTo(_disposables);
             _branchListElement.OnModifyBranchPropertiesButtonClicked.Synchronize().Subscribe(OnModifyBranchPropertiesButtonClicked).AddTo(_disposables);
             _branchListElement.OnBranchOrderChanged.Synchronize().Subscribe(OnBranchOrderChanged).AddTo(_disposables);
-            _branchListElement.OnRemoveBranchButtonClicked.Synchronize().Subscribe(OnRemoveBranchButtonClicked).AddTo(_disposables);
 
             _branchListElement.OnAddConditionButtonClicked.Synchronize().Subscribe(OnAddConditionButtonClicked).AddTo(_disposables);
             _branchListElement.OnModifyConditionButtonClicked.Synchronize().Subscribe(OnModifyConditionButtonClicked).AddTo(_disposables);
@@ -159,14 +160,26 @@ namespace Suzuryg.FaceEmo.Detail.View
             _simplifyToggle = root.Q<Toggle>("SimplifyToggle");
             _presetContainer = root.Q<IMGUIContainer>("PresetContainer");
             _openGestureTableWindowButton = root.Q<Button>("OpenGestureTableWindowButton");
+            _addBranchButton = root.Q<Button>("AddBranchButton");
+            _copyBranchButton = root.Q<Button>("CopyBranchButton");
+            _removeBranchButton = root.Q<Button>("RemoveBranchButton");
             _branchListContainer = root.Q<IMGUIContainer>("BranchListContainer");
-            NullChecker.Check(_titleLabel, _simplifyToggle, _presetContainer, _openGestureTableWindowButton, _branchListContainer);
+            NullChecker.Check(_titleLabel, _simplifyToggle, _presetContainer, _openGestureTableWindowButton,
+                _addBranchButton, _copyBranchButton, _removeBranchButton, _branchListContainer);
 
             // Initialize elements
             _simplifyToggle.value = _branchListElement.IsSimplified;
 
             // Add event handlers
             _simplifyToggle.RegisterValueChangedCallback(OnSimplifyValueChanged);
+
+            Observable.FromEvent(x => _addBranchButton.clicked += x, x => _addBranchButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnAddBranchButtonClicked()).AddTo(_disposables);
+            Observable.FromEvent(x => _copyBranchButton.clicked += x, x => _copyBranchButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnCopyBranchButtonClicked()).AddTo(_disposables);
+            Observable.FromEvent(x => _removeBranchButton.clicked += x, x => _removeBranchButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnRemoveBranchButtonClicked()).AddTo(_disposables);
+
             Observable.FromEvent(x => _presetContainer.onGUIHandler += x, x => _presetContainer.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ => OnBranchPresetGUI(_presetContainer.contentRect)).AddTo(_disposables);
             Observable.FromEvent(x => _openGestureTableWindowButton.clicked += x, x => _openGestureTableWindowButton.clicked -= x)
@@ -183,8 +196,14 @@ namespace Suzuryg.FaceEmo.Detail.View
                     }
                 }).AddTo(_disposables);
 
+            // Set icon
+            SetIcon();
+
             // Set text
             SetText(_localizationSetting.Table);
+
+            // Update display
+            UpdateDisplay();
         }
 
         public float GetWidth()
@@ -201,6 +220,31 @@ namespace Suzuryg.FaceEmo.Detail.View
             _openGestureTableWindowButton.text = localizationTable.BranchListView_OpenGestureTable;
             _openGestureTableWindowButton.tooltip = localizationTable.BranchListView_Tooltip_OpenGestureTable;
             _titleLabel.text = localizationTable.BranchListView_Title;
+
+            if (_addBranchButton != null)       { _addBranchButton.tooltip = _localizationTable.BranchListView_Tooltip_AddBranch; }
+            if (_copyBranchButton != null)      { _copyBranchButton.tooltip = ""; }
+            if (_removeBranchButton != null)    { _removeBranchButton.tooltip = _localizationTable.BranchListView_Tooltip_DeleteBranch; }
+        }
+
+        private void SetIcon()
+        {
+            if (_addBranchButton != null)       { _addBranchButton.Add(ViewUtility.GetIconElement("note_add_FILL0_wght400_GRAD200_opsz48.png")); }
+            if (_copyBranchButton != null)      { _copyBranchButton.Add(ViewUtility.GetIconElement("content_copy_FILL0_wght400_GRAD200_opsz48.png")); }
+            if (_removeBranchButton != null)    { _removeBranchButton.Add(ViewUtility.GetIconElement("delete_FILL0_wght400_GRAD200_opsz48.png")); }
+        }
+
+        private void UpdateDisplay()
+        {
+            var menu = _branchListElement?.Menu;
+            var modeId = _branchListElement?.SelectedModeId;
+            var isModeSelected = menu?.ContainsMode(modeId);
+            var isBranchSelected = _branchListElement?.GetSelectedBranchIndex() >= 0;
+
+            _simplifyToggle?.SetEnabled(isModeSelected == true);
+            _openGestureTableWindowButton?.SetEnabled(isModeSelected == true);
+            _addBranchButton?.SetEnabled(isModeSelected == true);
+            _copyBranchButton?.SetEnabled(isModeSelected == true && isBranchSelected);
+            _removeBranchButton?.SetEnabled(isModeSelected == true && isBranchSelected);
         }
 
         private void OnSimplifyValueChanged(ChangeEvent<bool> changeEvent)
@@ -217,11 +261,13 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             _branchListElement.Setup(menu);
             _branchListContainer.MarkDirtyRepaint();
+            UpdateDisplay();
         }
 
         private void OnBranchListViewSelectionChanged(int branchIndex)
         {
             _selectionSynchronizer.ChangeBranchListViewSelection(branchIndex);
+            UpdateDisplay();
         }
 
         private void OnSynchronizeSelection(ViewSelection viewSelection)
@@ -229,6 +275,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _branchListElement?.ChangeModeSelection(viewSelection.MenuItemListView);
             _branchListElement?.ChangeBranchSelection(viewSelection.BranchListView);
             _branchListContainer?.MarkDirtyRepaint();
+            UpdateDisplay();
         }
 
         private void OnBranchOrderChanged((string modeId, int from, int to) args)
@@ -247,8 +294,12 @@ namespace Suzuryg.FaceEmo.Detail.View
             _modifyBranchPropertiesUseCase.Handle("", args.modeId, args.branchIndex, args.eyeTrackingControl, args.mouthTrackingControl, args.blinkEnabled, args.mouthMorphCancelerEnabled, args.isLeftTriggerUsed, args.isRightTriggerUsed);
         }
 
-        private void OnAddBranchButtonClicked(string modeId)
+        private void OnAddBranchButtonClicked()
         {
+            if (_branchListElement is null) { return; }
+
+            var modeId = _branchListElement.SelectedModeId;
+
             var conditions = new[]
             {
                 new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals),
@@ -258,8 +309,18 @@ namespace Suzuryg.FaceEmo.Detail.View
                 defaultsProvider: _defaultProviderGenerator.Generate());
         }
 
-        private void OnRemoveBranchButtonClicked((string modeId, int branchIndex) args)
+        private void OnCopyBranchButtonClicked()
         {
+            Debug.Log("Copy branch");
+        }
+
+        private void OnRemoveBranchButtonClicked()
+        {
+            if (_branchListElement is null) { return; }
+
+            var modeId = _branchListElement.SelectedModeId;
+            var branchIndex = _branchListElement.GetSelectedBranchIndex();
+
             var branchDeleteConfirmation = EditorPrefs.HasKey(DetailConstants.KeyBranchDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyBranchDeleteConfirmation) : DetailConstants.DefaultBranchDeleteConfirmation;
             if (branchDeleteConfirmation)
             {
@@ -269,7 +330,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 if (!ok) { return; }
             }
 
-            _removeBranchUseCase.Handle("", args.modeId, args.branchIndex);
+            _removeBranchUseCase.Handle("", modeId, branchIndex);
         }
 
         private void OnAddConditionButtonClicked((string modeId, int branchIndex, Condition condition) args)

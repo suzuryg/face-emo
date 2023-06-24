@@ -30,7 +30,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private static readonly int MinHeight = 100;
         private static readonly int SimplifiedHeight = 65;
         private static readonly int ReorderableListDragHandleWidth = 50;
-        private static readonly int RightMargin = 20;
         private static readonly Color ActiveElementColor = new Color(0f, 0.5f, 1f, 0.4f);
         private static readonly Color FocusedElementColor = new Color(0f, 0.5f, 1f, 0.4f);
 
@@ -44,7 +43,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             int branchIndex,
             BranchAnimationType branchAnimationType)> OnAnimationChanged => _onAnimationChanged.AsObservable();
 
-        public IObservable<string> OnAddBranchButtonClicked => _onAddBranchButtonClicked.AsObservable();
         public IObservable<(string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl,
             MouthTrackingControl? mouthTrackingControl,
@@ -53,7 +51,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             bool? isLeftTriggerUsed,
             bool? isRightTriggerUsed)> OnModifyBranchPropertiesButtonClicked => _onModifyBranchPropertiesButtonClicked.AsObservable();
         public IObservable<(string modeId, int from, int to)> OnBranchOrderChanged => _onBranchOrderChanged.AsObservable();
-        public IObservable<(string modeId, int branchIndex)> OnRemoveBranchButtonClicked => _onRemoveBranchButtonClicked.AsObservable();
 
         public IObservable<(string modeId, int branchIndex, Condition condition)> OnAddConditionButtonClicked => _onAddConditionButtonClicked.AsObservable();
         public IObservable<(string modeId, int branchIndex, int conditionIndex, Condition condition)> OnModifyConditionButtonClicked => _onModifyConditionButtonClicked.AsObservable();
@@ -67,7 +64,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             int branchIndex,
             BranchAnimationType branchAnimationType)> _onAnimationChanged = new Subject<(string clipGUID, string modeId, int branchIndex, BranchAnimationType branchAnimationType)>();
 
-        private Subject<string> _onAddBranchButtonClicked = new Subject<string>();
         private Subject<(string modeId, int branchIndex,
             EyeTrackingControl? eyeTrackingControl,
             MouthTrackingControl? mouthTrackingControl,
@@ -76,7 +72,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             bool? isLeftTriggerUsed,
             bool? isRightTriggerUsed)> _onModifyBranchPropertiesButtonClicked = new Subject<(string modeId, int branchIndex, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? blinkEnabled, bool? mouthMorphCancelerEnabled, bool? isLeftTriggerUsed, bool? isRightTriggerUsed)>();
         private Subject<(string modeId, int from, int to)> _onBranchOrderChanged = new Subject<(string modeId, int from, int to)>();
-        private Subject<(string modeId, int branchIndex)> _onRemoveBranchButtonClicked = new Subject<(string modeId, int branchIndex)>(); 
 
         private Subject<(string modeId, int branchIndex, Condition condition)> _onAddConditionButtonClicked = new Subject<(string modeId, int branchIndex, Condition condition)>();
         private Subject<(string modeId, int branchIndex, int conditionIndex, Condition condition)> _onModifyConditionButtonClicked = new Subject<(string modeId, int branchIndex, int conditionIndex, Condition condition)>();
@@ -134,11 +129,11 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             // Reorderable List
             _reorderableList = new ReorderableList(new List<IBranch>(), typeof(IBranch));
             _reorderableList.headerHeight = 0;
+            _reorderableList.displayAdd = false;
+            _reorderableList.displayRemove = false;
             _reorderableList.drawElementCallback = DrawElement;
             _reorderableList.drawElementBackgroundCallback = DrawBackground;
             _reorderableList.drawNoneElementCallback = DrawEmpty;
-            _reorderableList.onAddCallback = OnElementAdded;
-            _reorderableList.onRemoveCallback = OnElementRemoved;
             _reorderableList.elementHeightCallback = GetElementHeight;
             _reorderableList.onReorderCallbackWithDetails = OnElementOrderChanged;
             _reorderableList.onSelectCallback = OnElementSelectionChanged;
@@ -279,6 +274,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public void SelectNewestBranch() => ChangeBranchSelection(_reorderableList.count - 1);
 
+        public int GetSelectedBranchIndex() => _reorderableList.index;
+
         public int GetNumOfBranches() => _reorderableList.count;
 
         private void SetText(LocalizationTable localizationTable)
@@ -353,7 +350,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public float GetWidth()
         {
-            return ReorderableListDragHandleWidth + Padding + Math.Max(GetUpperContentWidth(), GetLowerContentWidth()) + MinHorizontalMargin * 2 + RightMargin + Padding;
+            return ReorderableListDragHandleWidth + Padding + Math.Max(GetUpperContentWidth(), GetLowerContentWidth()) + MinHorizontalMargin * 2 + Padding;
         }
 
         private float GetElementHeight(int index)
@@ -649,15 +646,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                     GUI.Label(new Rect(xCurrent, yCurrent + _animationElement.GetHeight(), _animationElement.GetWidth(), EditorGUIUtility.singleLineHeight), _bothTriggersAnimationText, _centerStyle);
                 }
             }
-
-            // Remove button
-            const float removeButtonSize = 20;
-            const float scrollBarAdjustment = 5;
-            var removeButtonRect = new Rect(rect.x + rect.width - removeButtonSize - scrollBarAdjustment, rect.y, removeButtonSize, removeButtonSize);
-            if (GUI.Button(removeButtonRect, new GUIContent("x", _localizationTable.Common_Tooltip_DeleteBranch)))
-            {
-                _onRemoveBranchButtonClicked.OnNext((SelectedModeId, index));
-            }
         }
 
         private void DrawBackground(Rect rect, int index, bool isActive, bool isFocused)
@@ -675,16 +663,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private void DrawEmpty(Rect rect)
         {
             GUI.Label(rect, _emptyText, _centerStyle);
-        }
-
-        private void OnElementAdded(ReorderableList reorderableList)
-        {
-            _onAddBranchButtonClicked.OnNext(SelectedModeId);
-        }
-
-        private void OnElementRemoved(ReorderableList reorderableList)
-        {
-            _onRemoveBranchButtonClicked.OnNext((SelectedModeId, _reorderableList.index));
         }
 
         private void OnElementOrderChanged(ReorderableList reorderableList, int oldIndex, int newIndex)
