@@ -310,7 +310,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private string GetNewAnimationName(string defaultDir, string baseAnimationName)
         {
             // Define a regex pattern to match the ending _(number)
-            string pattern = @"_\d+$";
+            string pattern = @"_\(\d+\)$";
             Regex regex = new Regex(pattern);
 
             // Replace the matched pattern with an empty string
@@ -318,11 +318,11 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
             // Decide animation name
             var animationName = $"{baseAnimationName}.anim";
-            for (int i = 0; i < int.MaxValue; i++)
+            for (int i = 2; i < int.MaxValue; i++)
             {
                 if (AssetDatabase.LoadAssetAtPath<AnimationClip>($"{defaultDir}/{animationName}") != null)
                 {
-                    animationName = $"{baseAnimationName}_{i}.anim";
+                    animationName = $"{baseAnimationName}_({i}).anim";
                 }
                 else
                 {
