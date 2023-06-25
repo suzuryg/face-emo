@@ -245,6 +245,13 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
                 // Retrieve GUID
                 var guid = AssetDatabase.AssetPathToGUID(unityPath);
+                if (string.IsNullOrEmpty(guid))
+                {
+                    // Refresh and retry
+                    AssetDatabase.Refresh();
+                    guid = AssetDatabase.AssetPathToGUID(unityPath);
+                }
+
                 if (!string.IsNullOrEmpty(guid))
                 {
                     _aV3Object.Update();
