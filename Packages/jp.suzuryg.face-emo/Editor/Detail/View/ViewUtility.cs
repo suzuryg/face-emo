@@ -7,6 +7,15 @@ namespace Suzuryg.FaceEmo.Detail.View
 {
     public class ViewUtility
     {
+        private static readonly Color SelectedColorDark = new Color(0.15f, 0.35f, 0.55f, 1f);
+        private static readonly Color SelectedColorLight = new Color(0.47f, 0.67f, 0.87f, 1f);
+
+        public static Color GetSelectedColor()
+        {
+            if (EditorGUIUtility.isProSkin) { return SelectedColorDark; }
+            else { return SelectedColorLight; }
+        }
+
         public static void LayoutDummyToggle(string label)
         {
             using (new EditorGUI.DisabledScope(true))

@@ -27,7 +27,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private static readonly float ThumbnailMargin = 10;
         private static readonly float AmountOfThumbnailShift = 30;
         private static readonly int Padding = 10;
-        private static readonly Color SelectedRowColor = new Color(0f, 0.5f, 1f, 0.4f);
 
         public IObservable<(
             string modeId,
@@ -129,7 +128,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
             // Textures
             _selectedBackgroundTexture = new Texture2D(1, 1);
-            _selectedBackgroundTexture.SetPixel(0, 0, SelectedRowColor);
+            _selectedBackgroundTexture.SetPixel(0, 0, ViewUtility.GetSelectedColor());
             _selectedBackgroundTexture.Apply();
         }
 
