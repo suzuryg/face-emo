@@ -213,7 +213,7 @@ namespace Suzuryg.FaceEmo.AppMain
         }
 
         private const string HideHierarchyIconPath = "FaceEmo/Hide Hierarchy Icon";
-        private const int HideHierarchyIconOrder = 99;
+        private const int HideHierarchyIconOrder = 100;
 
         [MenuItem(HideHierarchyIconPath, false, HideHierarchyIconOrder)]
         private static void HideHierarchyIcon()

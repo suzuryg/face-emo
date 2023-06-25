@@ -28,7 +28,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         }
 
         // After importing CustomAnimatorControllers, deep copy with CopyAssetsWithDependency (to change GUID).
-        [MenuItem( "Tools/suzuryg/FaceEmo/Debug/GenerateTemplateFx" )]
+        [MenuItem("FaceEmo/Debug/GenerateTemplateFx", false, 200)]
         public static void Generate()
         {
             try

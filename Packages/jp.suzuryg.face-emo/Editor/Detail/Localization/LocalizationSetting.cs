@@ -64,7 +64,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             return GetTable(locale);
         }
 
-        [MenuItem("Tools/suzuryg/FaceEmo/Debug/ResetLocale")]
+        [MenuItem("FaceEmo/Debug/ResetLocale", false, 200)]
         public static void ResetLocale()
         {
             EditorPrefs.DeleteKey(LocalePrefKey);
