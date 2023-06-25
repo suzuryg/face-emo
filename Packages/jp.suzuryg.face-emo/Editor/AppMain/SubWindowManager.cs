@@ -70,7 +70,7 @@ namespace Suzuryg.FaceEmo.AppMain
                     // Initialize display
                     var menuRepository = _installer.Container.Resolve<IMenuRepository>();
                     var updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
-                    updateMenuSubject.OnNext(menuRepository.Load(null));
+                    updateMenuSubject.OnNext(menuRepository.Load(null), isModified: false);
                 }
             };
 

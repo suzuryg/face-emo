@@ -32,7 +32,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _onSynchronizeSelection = new BehaviorSubject<ViewSelection>(_viewSelection);
 
             // Update menu event handler
-            _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
+            _updateMenuSubject.Observable.Synchronize().Subscribe(x => OnMenuUpdated(x.menu)).AddTo(_disposables);
         }
 
         public void Dispose()

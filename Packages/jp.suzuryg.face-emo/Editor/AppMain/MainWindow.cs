@@ -79,14 +79,14 @@ namespace Suzuryg.FaceEmo.AppMain
                 // Initialize menu display
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();
                 var updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
-                updateMenuSubject.OnNext(menuRepository.Load(null));
+                updateMenuSubject.OnNext(menuRepository.Load(null), isModified: false);
 
                 // Register undo/redo callback
                 _undoRedoCallback = () =>
                 {
                     if (menuRepository is MenuRepository && updateMenuSubject is UpdateMenuSubject)
                     {
-                        updateMenuSubject.OnNext(menuRepository.Load(null));
+                        updateMenuSubject.OnNext(menuRepository.Load(null), isModified: false); // Do not set the dirty flag of the apply button when undo is performed
                     }
                 };
                 Undo.undoRedoPerformed += _undoRedoCallback;

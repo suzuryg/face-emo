@@ -6,10 +6,10 @@ namespace Suzuryg.FaceEmo.UseCase
 {
     public class UpdateMenuSubject
     {
-        public IObservable<IMenu> Observable => _subject.AsObservable().Synchronize();
+        public IObservable<(IMenu menu, bool isModified)> Observable => _subject.AsObservable().Synchronize();
 
-        private Subject<IMenu> _subject = new Subject<IMenu>();
+        private Subject<(IMenu menu, bool isModified)> _subject = new Subject<(IMenu menu, bool isModified)>();
 
-        public void OnNext(IMenu menu) => _subject.OnNext(menu);
+        public void OnNext(IMenu menu, bool isModified = true) => _subject.OnNext((menu, isModified));
     }
 }

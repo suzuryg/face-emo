@@ -19,6 +19,8 @@ namespace Suzuryg.FaceEmo.Detail.View
 {
     public class SettingView : IDisposable
     {
+        private static readonly string DirtyMark = "*";
+
         private IModifyMenuPropertiesUseCase _modifyMenuPropertiesUseCase;
         private IGenerateFxUseCase _generateFxUseCase;
 
@@ -49,6 +51,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private List<ModeEx> _flattendModes = new List<ModeEx>();
         private string[] _modePaths = new string[0];
         private int _defaultSelection = 0;
+        private string _applyButtonText = string.Empty;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -79,7 +82,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
             // Update menu event handler
-            _updateMenuSubject.Observable.Synchronize().Subscribe(OnMenuUpdated).AddTo(_disposables);
+            _updateMenuSubject.Observable.Synchronize().Subscribe(x => OnMenuUpdated(x.menu, x.isModified)).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -176,13 +179,28 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             if (_showHintsToggle != null) { _showHintsToggle.text = localizationTable.SettingView_ShowHints; }
 
-            if (_applyButton != null) { _applyButton.text = localizationTable.SettingView_ApplyToAvatar; }
+            _applyButtonText = localizationTable.SettingView_ApplyToAvatar;
+            if (_applyButton != null)
+            {
+                var isDirty = _applyButton.text.Contains(DirtyMark);
+                _applyButton.text = _applyButtonText;
+                if (isDirty) { _applyButton.text += DirtyMark; }
+                _applyButton.MarkDirtyRepaint();
+            }
         }
 
-        private void OnMenuUpdated(IMenu menu)
+        private void OnMenuUpdated(IMenu menu, bool isModified)
         {
             _flattendModes = AV3Utility.FlattenMenuItemList(menu.Registered, _modeNameProvider);
             _modePaths = _flattendModes.Select(x => x.PathToMode).ToArray();
+
+            // Change apply button style
+            if (isModified && _applyButton != null)
+            {
+                _applyButton.text = _applyButtonText + DirtyMark;
+                _applyButton.style.unityFontStyleAndWeight = FontStyle.Bold;
+                _applyButton.MarkDirtyRepaint();
+            }
 
             // Rename to avoid name duplication (for Popup)
             var used = new HashSet<string>();
@@ -255,6 +273,14 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (args.generateFxResult == GenerateFxResult.Succeeded)
             {
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.InsertLineBreak(_localizationTable.SettingView_Message_Succeeded), "OK");
+
+                // Change apply button style
+                if (_applyButton != null)
+                {
+                    _applyButton.text = _applyButtonText;
+                    _applyButton.style.unityFontStyleAndWeight = FontStyle.Normal;
+                    _applyButton.MarkDirtyRepaint();
+                }
             }
         }
 
