@@ -101,7 +101,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_Preset_RightOnly = "Right Only (7 Patterns)";
         public string BranchListView_Preset_LeftPriority = "Left Priority (14 Patterns)";
         public string BranchListView_Preset_RightPriority = "Right Priority (14 Patterns)";
-        public string BranchListView_Preset_Combination = "Combination (63 Patterns)";
+        public string BranchListView_Preset_Combination = "Combination (35 Patterns)";
+        public string BranchListView_Preset_AllPatterns = "All Patterns (63 Patterns)";
         public string BranchListView_Message_AddPreset = "Are you sure you want to add the following facial expression preset?";
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
         public string BranchListView_Tooltip_AddPreset = "Several facial expressions can be added at once by selecting a preset.";

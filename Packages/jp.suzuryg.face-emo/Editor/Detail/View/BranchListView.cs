@@ -332,6 +332,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 _localizationTable.BranchListView_Preset_LeftPriority,
                 _localizationTable.BranchListView_Preset_RightPriority,
                 _localizationTable.BranchListView_Preset_Combination,
+                _localizationTable.BranchListView_Preset_AllPatterns,
             };
 
             using (new EditorGUI.DisabledScope(!enabled))
@@ -420,6 +421,34 @@ namespace Suzuryg.FaceEmo.Detail.View
                         }
                         // Combination
                         else if (preset == _localizationTable.BranchListView_Preset_Combination)
+                        {
+                            var branches = new List<Condition[]>();
+                            for (int row = 0; row < gestures.Length; row++)
+                            {
+                                for (int col = row; col < gestures.Length; col++)
+                                {
+                                    if (row == 0 && col == 0) { continue; }
+                                    else if (row == col)
+                                    {
+                                        branches.Add(new[]
+                                        {
+                                            new Condition(Hand.Both, gestures[row], ComparisonOperator.Equals),
+                                        });
+                                    }
+                                    else
+                                    {
+                                        branches.Add(new[]
+                                        {
+                                            new Condition(Hand.OneSide, gestures[row], ComparisonOperator.Equals),
+                                            new Condition(Hand.OneSide, gestures[col], ComparisonOperator.Equals),
+                                        });
+                                    }
+                                }
+                            }
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                        }
+                        // All patterns
+                        else if (preset == _localizationTable.BranchListView_Preset_AllPatterns)
                         {
                             var branches = new List<Condition[]>();
                             foreach (var left in gestures)
