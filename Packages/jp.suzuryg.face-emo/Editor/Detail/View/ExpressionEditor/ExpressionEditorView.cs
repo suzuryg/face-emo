@@ -39,7 +39,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         private Vector2 _rightScrollPosition = Vector2.zero;
 
         private Texture2D _redTexture; // Store to avoid destruction
-        private Texture2D _yellowTexture; // Store to avoid destruction
+        private Texture2D _emphasizedTexture; // Store to avoid destruction
         private GUIStyle _removeButtonStyle = new GUIStyle();
         private GUIStyle _addPropertyLabelStyle = new GUIStyle();
         private GUIStyle _addPropertyButtonStyle = new GUIStyle();
@@ -100,7 +100,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         {
             // Texture
             _redTexture = ViewUtility.MakeTexture(Color.red);
-            _yellowTexture = ViewUtility.MakeTexture(Color.yellow);
+            _emphasizedTexture = ViewUtility.MakeTexture(ViewUtility.GetEmphasizedBackgroundColor());
 
             // Remove button
             _removeButtonStyle = new GUIStyle(GUI.skin.button);
@@ -122,8 +122,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
 
             _addPropertyButtonMouseOverStyle = new GUIStyle(GUI.skin.button);
             _addPropertyButtonMouseOverStyle.alignment = TextAnchor.MiddleLeft;
-            _addPropertyButtonMouseOverStyle.normal.background = _yellowTexture;
-            _addPropertyButtonMouseOverStyle.normal.textColor = Color.black;
+            _addPropertyButtonMouseOverStyle.normal.background = _emphasizedTexture;
+            _addPropertyButtonMouseOverStyle.normal.textColor = ViewUtility.GetEmphasizedTextColor();
             _addPropertyButtonMouseOverStyle.fixedHeight = EditorGUIUtility.singleLineHeight * 1.5f;
 
             // Warning text

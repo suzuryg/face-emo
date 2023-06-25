@@ -10,10 +10,28 @@ namespace Suzuryg.FaceEmo.Detail.View
         private static readonly Color SelectedColorDark = new Color(0.15f, 0.35f, 0.55f, 1f);
         private static readonly Color SelectedColorLight = new Color(0.47f, 0.67f, 0.87f, 1f);
 
+        private static readonly Color EmphasizedBackgroundColorDark = new Color(0.85f, 0.85f, 0f, 1f);
+        private static readonly Color EmphasizedBackgroundColorLight = new Color(0.23f, 0.45f, 0.69f, 1f);
+
+        private static readonly Color EmphasizedTextColorDark = Color.black;
+        private static readonly Color EmphasizedTextColorLight = Color.white;
+
         public static Color GetSelectedColor()
         {
             if (EditorGUIUtility.isProSkin) { return SelectedColorDark; }
             else { return SelectedColorLight; }
+        }
+
+        public static Color GetEmphasizedBackgroundColor()
+        {
+            if (EditorGUIUtility.isProSkin) { return EmphasizedBackgroundColorDark; }
+            else { return EmphasizedBackgroundColorLight; }
+        }
+
+        public static Color GetEmphasizedTextColor()
+        {
+            if (EditorGUIUtility.isProSkin) { return EmphasizedTextColorDark; }
+            else { return EmphasizedTextColorLight; }
         }
 
         public static void LayoutDummyToggle(string label)

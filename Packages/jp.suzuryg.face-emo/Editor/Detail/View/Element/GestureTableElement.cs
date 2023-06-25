@@ -26,8 +26,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private static readonly int ElementBorderThickness = 2;
         private static readonly int MinLabelWidth = 110;
         private static readonly Color ElementBorderColor = Color.gray;
-        private static readonly Color SelectedElementTextColor = Color.black;
-        private static readonly Color SelectedElementBackgroudColor = Color.yellow;
 
         public IObservable<(HandGesture left, HandGesture right)?> OnSelectionChanged => _onSelectionChanged.AsObservable();
         public IObservable<Unit> OnBranchIndexExceeded => _onBranchIndexExceeded.AsObservable();
@@ -88,7 +86,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             _elementBorderTexture.Apply();
 
             _selectedElementTexture = new Texture2D(1, 1);
-            _selectedElementTexture.SetPixel(0, 0, SelectedElementBackgroudColor);
+            _selectedElementTexture.SetPixel(0, 0, ViewUtility.GetEmphasizedBackgroundColor());
             _selectedElementTexture.Apply();
 
             // Set text
@@ -258,7 +256,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                     if (isHighlighted)
                     {
                         GUI.DrawTexture(elementRect, _selectedElementTexture, ScaleMode.StretchToFill);
-                        _gestureLabelStyle.normal.textColor = SelectedElementTextColor;
+                        _gestureLabelStyle.normal.textColor = ViewUtility.GetEmphasizedTextColor();
                     }
                     else
                     {
