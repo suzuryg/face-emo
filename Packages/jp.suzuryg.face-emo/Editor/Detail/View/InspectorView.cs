@@ -168,7 +168,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             EditorGUILayout.Space(10);
 
             // Target avatar
-            EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)), new GUIContent(_localizationTable.InspectorView_TargetAvatar));
+            Field_TargetAvatar();
 
             EditorGUILayout.Space(10);
 
@@ -314,6 +314,18 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
+        private void Field_TargetAvatar()
+        {
+            var property = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar));
+            EditorGUILayout.PropertyField(property, new GUIContent(_localizationTable.InspectorView_TargetAvatar));
+
+            var avatar = property.objectReferenceValue as VRCAvatarDescriptor;
+            if (avatar != null && avatar.gameObject?.scene.name == null)
+            {
+                EditorGUILayout.LabelField(_localizationTable.InspectorView_Message_TargetAvatarNotInScene, _warningLabelStyle);
+            }
+        }
+
         private void Field_Locale()
         {
             using (new EditorGUILayout.HorizontalScope())
@@ -349,6 +361,10 @@ namespace Suzuryg.FaceEmo.Detail.View
                 if (mainAvatar != null && ReferenceEquals(mainAvatar, avatar))
                 {
                     EditorGUILayout.LabelField($"{_localizationTable.InspectorView_Message_TargetAvatarIsInSubAvatars} ({avatar.gameObject.name})", _warningLabelStyle);
+                }
+                if (avatar.gameObject?.scene.name == null)
+                {
+                    EditorGUILayout.LabelField($"{_localizationTable.InspectorView_Message_SubAvatarNotInScene} ({avatar.gameObject.name})", _warningLabelStyle);
                 }
             }
 

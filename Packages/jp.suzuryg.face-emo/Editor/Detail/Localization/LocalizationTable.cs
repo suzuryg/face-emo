@@ -154,7 +154,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "The facial expression menu will be copied to the avatar specified here.";
         public string InspectorView_Help_MenuPrefab = "If you want to apply the facial expression menu to an avatar in another scene, please place the facial expression menu prefab inside the avatar in the other scene. " +
             "The facial expression menu prefab will be created or overwritten when applying the expression menu to an avatar.";
+        public string InspectorView_Message_TargetAvatarNotInScene = "Please specify an avatar in the scene.";
         public string InspectorView_Message_TargetAvatarIsInSubAvatars = "It includes the main target avatar.";
+        public string InspectorView_Message_SubAvatarNotInScene = "It includes an avatar that is not in the scene.";
 
         public string InspectorView_Thumbnail = "Expression Thumbnail Setting";
         public string InspectorView_Thumbnail_FOV = "FOV";
