@@ -89,6 +89,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private ReorderableList _reorderableList;
         private List<ConditionListElement> _conditionListElements = new List<ConditionListElement>();
         private Vector2 _scrollPosition = Vector2.zero;
+        private Rect _scrollRect = new Rect();
         private Texture2D _activeBackgroundTexture;
         private Texture2D _focusedBackgroundTexture;
 
@@ -222,10 +223,11 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 rect.width - EditorGUIUtility.singleLineHeight,
                 totalHeight + EditorGUIUtility.singleLineHeight + ScrollBottomMargin);
 
+            _scrollRect = new Rect(rect);
             using (var scope = new GUI.ScrollViewScope(rect, _scrollPosition, viewRect))
             {
-                _reorderableList?.DoList(rect);
                 _scrollPosition = scope.scrollPosition;
+                _reorderableList?.DoList(rect);
             }
         }
 
@@ -252,12 +254,23 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 _reorderableList.index = branchIndex;
 
                 // Scroll to the selected branch.
-                var yPosition = 0f;
-                for (int i = 0; i < branchIndex; i++)
+                var yBottom = 0f;
+                var height = 0f;
+                for (int i = 0; i <= branchIndex; i++)
                 {
-                    yPosition += GetElementHeight(i);
+                    height = GetElementHeight(i);
+                    yBottom += height;
                 }
-                _scrollPosition = new Vector2() { x = 0 , y = yPosition };
+                var yTop = yBottom - height;
+
+                if (_scrollPosition.y > yTop)
+                {
+                    _scrollPosition.y = yTop;
+                }
+                else if (_scrollPosition.y + _scrollRect.height < yBottom)
+                {
+                    _scrollPosition.y = Math.Max(yBottom - _scrollRect.height, 0);
+                }
             }
             else
             {
