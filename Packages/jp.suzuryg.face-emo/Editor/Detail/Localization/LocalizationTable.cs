@@ -30,6 +30,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression pattern?";
         public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected expression?";
         public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
+        public string Common_Message_NotSavedInPlayMode = "Changes in play mode are not saved.";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
         public string Common_Message_MAIsNotInstalled = "Modular Avatar must be installed in order to use FaceEmo!";

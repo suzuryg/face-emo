@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
+using Suzuryg.FaceEmo.Detail.Localization;
 
 namespace Suzuryg.FaceEmo.Detail.Data
 {
@@ -36,7 +37,8 @@ namespace Suzuryg.FaceEmo.Detail.Data
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Changes in play mode are not saved.", "OK");
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_NotSavedInPlayMode, "OK");
             }
 
             // Re-create an instance of SerializableMenu when saving so that it is saved independently even if the Component is copied.
