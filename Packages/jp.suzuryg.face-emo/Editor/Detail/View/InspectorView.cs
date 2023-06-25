@@ -43,6 +43,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private GUIStyle _centerStyle;
         private GUIStyle _boldStyle;
         private GUIStyle _versionLabelStyle = new GUIStyle();
+        private GUIStyle _launchButtonStyle = new GUIStyle();
         private GUIStyle _warningLabelStyle = new GUIStyle();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -69,7 +70,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 _centerStyle = new GUIStyle(EditorStyles.label);
                 _boldStyle = new GUIStyle(EditorStyles.label);
-                _versionLabelStyle = new  GUIStyle(EditorStyles.label);
+                _versionLabelStyle = new GUIStyle(EditorStyles.label);
+                _launchButtonStyle = new GUIStyle(EditorStyles.miniButton);
                 _warningLabelStyle = new GUIStyle(EditorStyles.label);
             }
             catch (NullReferenceException)
@@ -78,6 +80,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 _centerStyle = new GUIStyle();
                 _boldStyle = new GUIStyle();
                 _versionLabelStyle = new GUIStyle();
+                _launchButtonStyle = new GUIStyle();
                 _warningLabelStyle = new GUIStyle();
             }
             _centerStyle.alignment = TextAnchor.MiddleCenter;
@@ -86,6 +89,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             _versionLabelStyle.fontStyle = FontStyle.Bold;
             _versionLabelStyle.alignment = TextAnchor.UpperCenter;
             _versionLabelStyle.padding = new RectOffset(10, 10, 10, 10);
+            _launchButtonStyle.fontSize = 15;
+            _launchButtonStyle.fixedHeight = EditorGUIUtility.singleLineHeight * 3;
             _warningLabelStyle.normal.textColor = Color.red;
             
             // Sub avatars
@@ -160,7 +165,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             using (new EditorGUI.DisabledScope(!canLaunch))
             {
                 var buttonText = canLaunch ? _localizationTable.InspectorView_Launch : _localizationTable.InspectorView_TargetAvatarIsNotSpecified;
-                if (GUILayout.Button(buttonText, GUILayout.Height(EditorGUIUtility.singleLineHeight * 3)))
+                if (GUILayout.Button(buttonText, _launchButtonStyle))
                 {
                     _onLaunchButtonClicked.OnNext(Unit.Default);
                 }
