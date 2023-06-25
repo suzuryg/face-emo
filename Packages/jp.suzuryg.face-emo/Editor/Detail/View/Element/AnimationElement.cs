@@ -213,7 +213,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             else if (dialogMode == DialogMode.Create)
             {
                 var baseName = !string.IsNullOrEmpty(defaultClipName) ? defaultClipName : _localizationTable.AnimationElement_NewClipName;
-                var defaultName = baseName + DateTime.Now.ToString("_yyyyMMdd_HHmmss_fff");
+                var defaultName = baseName + DateTime.Now.ToString("_yyyyMMdd_HHmmss");
                 selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: defaultName, extension: "anim", message: null, path: defaultDir);
             }
             else if (dialogMode == DialogMode.Copy)
