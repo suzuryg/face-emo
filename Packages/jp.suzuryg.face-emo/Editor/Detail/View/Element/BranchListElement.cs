@@ -285,8 +285,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             }
         }
 
-        public void SelectNewestBranch() => ChangeBranchSelection(_reorderableList.count - 1);
-
         public int GetSelectedBranchIndex() => _reorderableList.index;
 
         public int GetNumOfBranches() => _reorderableList.count;

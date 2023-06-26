@@ -217,6 +217,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             };
             _addBranchUseCase.Handle("", _gestureTableElement.SelectedModeId,
                 conditions: conditions,
+                order: 0,
                 defaultsProvider: _defaultProviderGenerator.Generate());
         }
 

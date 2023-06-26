@@ -179,6 +179,79 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
             Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].MouthMorphCancelerEnabled, Is.EqualTo(false));
             Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].IsLeftTriggerUsed, Is.EqualTo(false));
             Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[0]).Branches[5].IsRightTriggerUsed, Is.EqualTo(false));
+
+            // Specify order
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches.Count, Is.EqualTo(0));
+
+            var neutral = new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals);
+            var fist = new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals);
+            var open = new Condition(Hand.Left, HandGesture.HandOpen, ComparisonOperator.Equals);
+            var point = new Condition(Hand.Left, HandGesture.Fingerpoint, ComparisonOperator.Equals);
+            var victory = new Condition(Hand.Left, HandGesture.Victory, ComparisonOperator.Equals);
+            var gun = new Condition(Hand.Left, HandGesture.HandGun, ComparisonOperator.Equals);
+            var rock = new Condition(Hand.Left, HandGesture.RockNRoll, ComparisonOperator.Equals);
+            var thumbs = new Condition(Hand.Left, HandGesture.ThumbsUp, ComparisonOperator.Equals);
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { neutral }, order: 0);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(neutral));
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { fist }, order: 0);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[1].Conditions[0], Is.EqualTo(neutral));
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { open }, order: 0);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[1].Conditions[0], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[2].Conditions[0], Is.EqualTo(neutral));
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { point }, order: 1);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[1].Conditions[0], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[2].Conditions[0], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[3].Conditions[0], Is.EqualTo(neutral));
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { victory }, order: 3);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[1].Conditions[0], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[2].Conditions[0], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[3].Conditions[0], Is.EqualTo(victory));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[4].Conditions[0], Is.EqualTo(neutral));
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { gun }, order: 5);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[1].Conditions[0], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[2].Conditions[0], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[3].Conditions[0], Is.EqualTo(victory));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[4].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[5].Conditions[0], Is.EqualTo(gun));
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { rock }, order: 99);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[1].Conditions[0], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[2].Conditions[0], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[3].Conditions[0], Is.EqualTo(victory));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[4].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[5].Conditions[0], Is.EqualTo(gun));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[6].Conditions[0], Is.EqualTo(rock));
+
+            addBranchUseCase.Handle(menuId, loadMenu().Registered.Order[1], conditions: new[] { thumbs }, order: -99);
+            Assert.That(mockAddBranchPresenter.Result, Is.EqualTo(AddBranchResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[0].Conditions[0], Is.EqualTo(thumbs));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[1].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[2].Conditions[0], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[3].Conditions[0], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[4].Conditions[0], Is.EqualTo(victory));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[5].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[6].Conditions[0], Is.EqualTo(gun));
+            Assert.That(loadMenu().Registered.GetMode(loadMenu().Registered.Order[1]).Branches[7].Conditions[0], Is.EqualTo(rock));
         }
     }
 }

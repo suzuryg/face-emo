@@ -8,7 +8,7 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
 {
     public interface IAddMultipleBranchesUseCase
     {
-        void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches);
+        void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches, int? order = null);
     }
 
     public interface IAddMultipleBranchesPresenter
@@ -52,7 +52,7 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
             _addMultipleBranchesPresenter = addMultipleBranchesPresenter;
         }
 
-        public void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches)
+        public void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches, int? order = null)
         {
             try
             {
@@ -76,9 +76,20 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
                     return;
                 }
 
-                foreach (var conditions in branches)
+                var mode = menu.GetMode(modeId);
+
+                // Reverse order processing to insert a series of branches at specific locations.
+                var specifyOrder = order.HasValue && order.Value < mode.Branches.Count;
+                var sortedBranches = specifyOrder ? branches.Reverse() : branches;
+
+                foreach (var conditions in sortedBranches)
                 {
                     menu.AddBranch(modeId, conditions);
+
+                    if (specifyOrder)
+                    {
+                        menu.ChangeBranchOrder(modeId, from: mode.Branches.Count - 1, to: order.Value);
+                    }
                 }
 
                 _menuRepository.Save(menuId, menu, "AddMultipleBranches");

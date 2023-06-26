@@ -299,6 +299,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (_branchListElement is null) { return; }
 
             var modeId = _branchListElement.SelectedModeId;
+            var branchIndex = _branchListElement.GetSelectedBranchIndex();
 
             var conditions = new[]
             {
@@ -306,6 +307,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             };
             _addBranchUseCase.Handle("", modeId,
                 conditions: conditions,
+                order: branchIndex,
                 defaultsProvider: _defaultProviderGenerator.Generate());
         }
 
@@ -365,14 +367,16 @@ namespace Suzuryg.FaceEmo.Detail.View
         private void OnAddBranchPresenterCompleted(
             (AddBranchResult addBranchResult, IMenu menu, string errorMessage) args)
         {
-            if (args.addBranchResult == AddBranchResult.Succeeded)
-            {
-                // Make the created branch selected in this view
-                OnMenuUpdated(args.menu);
-                _branchListElement?.SelectNewestBranch();
+            var branchIndex = _branchListElement?.GetSelectedBranchIndex();
 
-                // Make the created branch selected in GestureTableView
-                _selectionSynchronizer.ChangeBranchListViewSelection(_branchListElement?.GetNumOfBranches() - 1 ?? -1);
+            if (args.addBranchResult == AddBranchResult.Succeeded && branchIndex < 0)
+            {
+                // Make the top branch selected in this view
+                OnMenuUpdated(args.menu);
+                _branchListElement?.ChangeBranchSelection(0);
+
+                // Make the top branch selected in GestureTableView
+                _selectionSynchronizer.ChangeBranchListViewSelection(0);
             }
         }
 
@@ -411,6 +415,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                     }
 
                     // Add preset
+                    var branchIndex = _branchListElement?.GetSelectedBranchIndex();
                     var preset = presets[_selectedPresetIndex];
                     if (EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.BranchListView_Message_AddPreset + "\n" + preset,
                         _localizationTable.Common_Yes, _localizationTable.Common_No))
@@ -435,7 +440,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                                 if (gesture == HandGesture.Neutral) { continue; }
                                 branches.Add(new[] { new Condition(Hand.Left, gesture, ComparisonOperator.Equals) });
                             }
-                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches, order: branchIndex);
                         }
                         // Right only
                         else if (preset == _localizationTable.BranchListView_Preset_RightOnly)
@@ -446,7 +451,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                                 if (gesture == HandGesture.Neutral) { continue; }
                                 branches.Add(new[] { new Condition(Hand.Right, gesture, ComparisonOperator.Equals) });
                             }
-                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches, order: branchIndex);
                         }
                         // Left priority
                         else if (preset == _localizationTable.BranchListView_Preset_LeftPriority)
@@ -462,7 +467,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                                 if (gesture == HandGesture.Neutral) { continue; }
                                 branches.Add(new[] { new Condition(Hand.Right, gesture, ComparisonOperator.Equals) });
                             }
-                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches, order: branchIndex);
                         }
                         // Right priority
                         else if (preset == _localizationTable.BranchListView_Preset_RightPriority)
@@ -478,7 +483,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                                 if (gesture == HandGesture.Neutral) { continue; }
                                 branches.Add(new[] { new Condition(Hand.Left, gesture, ComparisonOperator.Equals) });
                             }
-                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches, order: branchIndex);
                         }
                         // Combination
                         else if (preset == _localizationTable.BranchListView_Preset_Combination)
@@ -506,7 +511,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                                     }
                                 }
                             }
-                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches, order: branchIndex);
                         }
                         // All patterns
                         else if (preset == _localizationTable.BranchListView_Preset_AllPatterns)
@@ -524,7 +529,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                                     });
                                 }
                             }
-                            _addMultipleBranchesUseCase.Handle("", modeId, branches);
+                            _addMultipleBranchesUseCase.Handle("", modeId, branches, order: branchIndex);
                         }
                         // Invalid preset
                         else
