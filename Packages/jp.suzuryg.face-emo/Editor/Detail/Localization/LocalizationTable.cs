@@ -52,18 +52,18 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string HierarchyView_RegisteredMenuItemList = "Expression Menu";
         public string HierarchyView_UnregisteredMenuItemList = "Archive";
         public string HierarchyView_Message_CanNotRename = "The \"Use animation name as pattern name\" setting is enabled. Disable the setting if you want to change the pattern name.";
-        public string HierarchyView_Tooltip_AddMode = "Create a new expression pattern in the selected hierarchy";
-        public string HierarchyView_Tooltip_AddGroup = "Create a new folder in the selected hierarchy";
-        public string HierarchyView_Tooltip_Copy = "Copy the selected expression pattern or folder in the same hierarchy";
-        public string HierarchyView_Tooltip_Delete = "Delete the selected expression pattern or folder";
+        public string HierarchyView_Tooltip_AddMode = "Create a new expression pattern in the selected hierarchy.";
+        public string HierarchyView_Tooltip_AddGroup = "Create a new folder in the selected hierarchy.";
+        public string HierarchyView_Tooltip_Copy = "Copy the selected expression pattern or folder in the same hierarchy.";
+        public string HierarchyView_Tooltip_Delete = "Delete the selected expression pattern or folder.";
 
         public string MenuItemListView_Title = "Expression Patterns";
         public string MenuItemListView_ChangeDefaultFace = "Change Default Face";
         public string MenuItemListView_UseAnimationNameAsDisplayName = "Use ClipName As PatternName";
-        public string MenuItemListView_Tooltip_AddMode = "Create a new expression pattern in the current hierarchy";
-        public string MenuItemListView_Tooltip_AddGroup = "Create a new folder in the current hierarchy";
-        public string MenuItemListView_Tooltip_Copy = "Copy the selected expression pattern or folder in the same hierarchy";
-        public string MenuItemListView_Tooltip_Delete = "Delete the selected expression pattern or folder";
+        public string MenuItemListView_Tooltip_AddMode = "Create a new expression pattern in the current hierarchy.";
+        public string MenuItemListView_Tooltip_AddGroup = "Create a new folder in the current hierarchy.";
+        public string MenuItemListView_Tooltip_Copy = "Copy the selected expression pattern or folder in the same hierarchy.";
+        public string MenuItemListView_Tooltip_Delete = "Delete the selected expression pattern or folder.";
         public string MenuItemListView_Tooltip_ClickAddressBar = "You can click here to change the level of detail being displayed.";
         public string MenuItemListView_Tooltip_DoubleClickFolder = "You can display the contents of a folder by double-clicking it.";
         public string MenuItemListView_Tooltip_ChangeDefaultFace = "You can change the default face (the expression when there's no expression change made by gestures).";
@@ -107,7 +107,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
         public string BranchListView_Tooltip_AddBranch = "Adds a new expression above the currently selected expression. " +
             "If no expression is selected, it adds an expression at the top.";
-        public string BranchListView_Tooltip_DeleteBranch = "Delete the selected expression";
+        public string BranchListView_Tooltip_DeleteBranch = "Delete the selected expression.";
         public string BranchListView_Tooltip_AddPreset = "Several facial expressions can be added at once by selecting a preset.";
         public string BranchListView_Tooltip_OpenGestureTable = "You can confirm which expression corresponds to each combination of gestures.";
         public string BranchListView_Tooltip_Simplify = "Switches to a simple display of only the expression conditions and animation name. " +
@@ -129,10 +129,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
 
         public string AnimationElement_NewClipName = "NewExpression";
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
-        public string AnimationElement_Tooltip_Create = "Create a new animation clip";
-        public string AnimationElement_Tooltip_Open = "Open an animation clip";
-        public string AnimationElement_Tooltip_Copy = "Copy the attached animation clip";
-        public string AnimationElement_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip";
+        public string AnimationElement_Tooltip_Create = "Create a new animation clip.";
+        public string AnimationElement_Tooltip_Open = "Open an animation clip.";
+        public string AnimationElement_Tooltip_Copy = "Copy the attached animation clip.";
+        public string AnimationElement_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip.";
 
         public string ModeNameProvider_NewMode = "NewExpressionPattern";
         public string ModeNameProvider_NewGroup = "NewFolder";
