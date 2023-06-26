@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using System;
+using System.Linq;
 using UniRx;
 
 namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
@@ -74,6 +75,9 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
                     var copied = menu.CopyMode(menuItemId, parentId);
                     menu.ModifyModeProperties(copied, displayName: displayName);
+
+                    // Insert after the copy source
+                    menu.MoveMenuItem(new[] { copied }, parentId, mode.Parent.Order.ToList().FindIndex(x => x == menuItemId) + 1);
                 }
                 else if (menu.ContainsGroup(menuItemId))
                 {
@@ -88,6 +92,9 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
                     var copied = menu.CopyGroup(menuItemId, parentId);
                     menu.ModifyGroupProperties(copied, displayName: displayName);
+
+                    // Insert after the copy source
+                    menu.MoveMenuItem(new[] { copied }, parentId, group.Parent.Order.ToList().FindIndex(x => x == menuItemId) + 1);
                 }
                 else
                 {

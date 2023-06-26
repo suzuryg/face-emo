@@ -157,6 +157,27 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
             removeMenuItemUseCase.Handle(menuId, m5);
             copyMenuItemUseCase.Handle(m0, "m0_Copy");
             Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(7));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetModeAt(1).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m0_Copy"));
+            Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m1"));
+            Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m2"));
+            Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m3"));
+            Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m4"));
+
+            // Copy group
+            removeMenuItemUseCase.Handle(menuId, m4);
+            copyMenuItemUseCase.Handle(g0, "g0_Copy");
+            Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(7));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g0_Copy"));
+            Assert.That(loadMenu().Registered.GetModeAt(2).DisplayName, Is.EqualTo("m0"));
+            Assert.That(loadMenu().Registered.GetModeAt(3).DisplayName, Is.EqualTo("m0_Copy"));
+            Assert.That(loadMenu().Registered.GetModeAt(4).DisplayName, Is.EqualTo("m1"));
+            Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
+            Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
 
             // TODO: other tests
         }
