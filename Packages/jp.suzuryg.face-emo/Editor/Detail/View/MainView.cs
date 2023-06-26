@@ -71,6 +71,16 @@ namespace Suzuryg.FaceEmo.Detail.View
             root.styleSheets.Add(style);
             uxml.CloneTree(root);
 
+            // Set class
+            if (EditorGUIUtility.isProSkin)
+            {
+                root.AddToClassList("dark-theme");
+            }
+            else
+            {
+                root.AddToClassList("light-theme");
+            }
+
             // Query Elements
             _hierarchyArea = root.Q<VisualElement>("HierarchyView");
             _menuItemListArea = root.Q<VisualElement>("MenuItemListView");

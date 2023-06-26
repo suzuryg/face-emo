@@ -15,7 +15,7 @@
 				<engine:SliderInt name="ThumbnailWidthSlider" class="Slider"/>
 				<engine:Label name="ThumbnailHeightLabel" class="Label"/>
 				<engine:SliderInt name="ThumbnailHeightSlider" class="Slider"/>
-				<engine:Button name="UpdateThumbnailButton"/>
+				<engine:Button name="UpdateThumbnailButton" class="Button"/>
 			</engine:VisualElement>
 
 			<engine:VisualElement name="DefaultSelectionRow">
@@ -26,6 +26,6 @@
 			</engine:VisualElement>
 		</engine:VisualElement>
 
-		<engine:Button name="ApplyButton"/>
+		<engine:Button name="ApplyButton" class="Button"/>
 	</engine:VisualElement>
 </engine:UXML>

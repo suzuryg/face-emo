@@ -15,7 +15,7 @@
 			<engine:VisualElement name="TopRow_Controls">
 				<engine:Toggle name="SimplifyToggle"/>
 				<engine:IMGUIContainer name="PresetContainer"/>
-				<engine:Button name="OpenGestureTableWindowButton"/>
+				<engine:Button name="OpenGestureTableWindowButton" class="Button"/>
 
 				<engine:Button name="AddBranchButton" class="Button"/>
 				<engine:Button name="CopyBranchButton" class="Button"/>
