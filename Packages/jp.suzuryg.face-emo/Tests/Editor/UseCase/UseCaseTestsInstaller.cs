@@ -33,6 +33,7 @@ namespace Suzuryg.FaceEmo.UseCase
             Container.Bind<MoveMenuItemUseCase>().AsTransient();
             Container.Bind<RemoveMenuItemUseCase>().AsTransient();
             Container.Bind<AddBranchUseCase>().AsTransient();
+            Container.Bind<AddMultipleBranchesUseCase>().AsTransient();
             Container.Bind<ModifyBranchPropertiesUseCase>().AsTransient();
             Container.Bind<ChangeBranchOrderUseCase>().AsTransient();
             Container.Bind<RemoveBranchUseCase>().AsTransient();
@@ -51,6 +52,7 @@ namespace Suzuryg.FaceEmo.UseCase
             Container.Bind<IMoveMenuItemPresenter>().To<MockMoveMenuItemPresenter>().AsSingle();
             Container.Bind<IRemoveMenuItemPresenter>().To<MockRemoveMenuItemPresenter>().AsSingle();
             Container.Bind<IAddBranchPresenter>().To<MockAddBranchPresenter>().AsSingle();
+            Container.Bind<IAddMultipleBranchesPresenter>().To<MockAddMultipleBranchesPresenter>().AsSingle();
             Container.Bind<IModifyBranchPropertiesPresenter>().To<MockModifyBranchPropertiesPresenter>().AsSingle();
             Container.Bind<IChangeBranchOrderPresenter>().To<MockChangeBranchOrderPresenter>().AsSingle();
             Container.Bind<IRemoveBranchPresenter>().To<MockRemoveBranchPresenter>().AsSingle();
