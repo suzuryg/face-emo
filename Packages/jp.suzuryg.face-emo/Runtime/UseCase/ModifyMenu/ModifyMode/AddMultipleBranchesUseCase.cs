@@ -8,7 +8,7 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
 {
     public interface IAddMultipleBranchesUseCase
     {
-        void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches, int? order = null);
+        void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches, int? order = null, DefaultsProvider defaultsProvider = null);
     }
 
     public interface IAddMultipleBranchesPresenter
@@ -52,7 +52,7 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
             _addMultipleBranchesPresenter = addMultipleBranchesPresenter;
         }
 
-        public void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches, int? order = null)
+        public void Handle(string menuId, string modeId, IReadOnlyList<IEnumerable<Condition>> branches, int? order = null, DefaultsProvider defaultsProvider = null)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
 
                 foreach (var conditions in sortedBranches)
                 {
-                    menu.AddBranch(modeId, conditions);
+                    menu.AddBranch(modeId, conditions, defaultsProvider);
 
                     if (specifyOrder)
                     {
