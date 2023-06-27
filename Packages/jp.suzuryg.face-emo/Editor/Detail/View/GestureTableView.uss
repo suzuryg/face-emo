@@ -47,6 +47,11 @@
     margin-left: 10px;
 }
 
+#ShowClipFieldToggle
+{
+    margin-left: 10px;
+}
+
 .Button
 {
     margin-left: auto;

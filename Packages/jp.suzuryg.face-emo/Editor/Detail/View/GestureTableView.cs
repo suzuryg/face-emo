@@ -40,6 +40,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Label _thumbnailHeightLabel;
         private SliderInt _thumbnailWidthSlider;
         private SliderInt _thumbnailHeightSlider;
+        private Toggle _showClipFieldToggle;
 
         private StyleColor _canAddButtonColor = Color.black;
         private StyleColor _canAddButtonBackgroundColor = Color.yellow;
@@ -84,6 +85,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _gestureTableElement.OnBranchIndexExceeded.Synchronize().Subscribe(_ => OnBranchIndexExceeded()).AddTo(_disposables);
             _gestureTableElement.OnAddBrandchButtonClicked.Synchronize().Subscribe(OnAddBranchButtonClicked).AddTo(_disposables);
             _gestureTableElement.OnEditClipButtonClicked.Synchronize().Subscribe(OnEditClipButtonClicked).AddTo(_disposables);
+            _gestureTableElement.OnBaseAnimationChanged.Synchronize().Subscribe(OnBaseAnimationChanged).AddTo(_disposables);
 
             // Localization table changed event handler
             _localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -99,6 +101,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
             _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
+            _showClipFieldToggle.UnregisterValueChangedCallback(OnShowClipFieldValueChanged);
             _disposables.Dispose();
         }
 
@@ -118,7 +121,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             _thumbnailHeightLabel = root.Q<Label>("ThumbnailHeightLabel");
             _thumbnailWidthSlider = root.Q<SliderInt>("ThumbnailWidthSlider");
             _thumbnailHeightSlider = root.Q<SliderInt>("ThumbnailHeightSlider");
-            NullChecker.Check(_gestureTableContainer, _thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider);
+            _showClipFieldToggle = root.Q<Toggle>("ShowClipFieldToggle");
+            NullChecker.Check(_gestureTableContainer, _thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _showClipFieldToggle);
 
             // Add event handlers
             Observable.FromEvent(x => _gestureTableContainer.onGUIHandler += x, x => _gestureTableContainer.onGUIHandler -= x)
@@ -148,9 +152,12 @@ namespace Suzuryg.FaceEmo.Detail.View
             _thumbnailHeightSlider.highValue = ThumbnailSetting.GestureTable_MaxHeight;
             _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Height)).intValue;
 
+            _showClipFieldToggle.value = EditorPrefs.GetBool(DetailConstants.KeyShowClipFieldInGestureTable, DetailConstants.DefaultShowClipFieldInGestureTable);
+
             // Add event handlers
             _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
             _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+            _showClipFieldToggle.RegisterValueChangedCallback(OnShowClipFieldValueChanged);
 
             // Set text
             SetText(_localizationSetting.Table);
@@ -160,6 +167,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             if (_thumbnailWidthLabel != null) { _thumbnailWidthLabel.text = localizationTable.Common_ThumbnailWidth; }
             if (_thumbnailHeightLabel != null) { _thumbnailHeightLabel.text = localizationTable.Common_ThumbnailHeight; }
+            if (_showClipFieldToggle != null) { _showClipFieldToggle.text = localizationTable.GestureTableView_ShowClipField; }
         }
 
         private void OnMenuUpdated(IMenu menu)
@@ -204,6 +212,11 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             // TODO: Reduce unnecessary redrawing
             _thumbnailDrawer.ClearCache();
+        }
+
+        private void OnShowClipFieldValueChanged(ChangeEvent<bool> changeEvent)
+        {
+            EditorPrefs.SetBool(DetailConstants.KeyShowClipFieldInGestureTable, changeEvent.newValue);
         }
 
         private void OnAddBranchButtonClicked((HandGesture left, HandGesture right)? args)
@@ -260,6 +273,31 @@ namespace Suzuryg.FaceEmo.Detail.View
                 {
                     _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
                     _setExistingAnimationUseCase.Handle(string.Empty, new Domain.Animation(guid), modeId, branchIndex, BranchAnimationType.Base);
+                }
+            }
+        }
+
+        private void OnBaseAnimationChanged((string clipGUID, HandGesture left, HandGesture right)? args)
+        {
+            if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationSetting.GetCurrentLocaleTable().Common_Message_NotPossibleInPlayMode, "OK"); return; }
+            else if (!args.HasValue) { return; }
+            else if (_gestureTableElement?.Menu?.ContainsMode(_gestureTableElement?.SelectedModeId) != true) { return; }
+
+            var modeId = _gestureTableElement.SelectedModeId;
+            var mode = _gestureTableElement.Menu.GetMode(modeId);
+            var targetBranch = mode.GetGestureCell(args.Value.left, args.Value.right);
+            if (targetBranch == null) { return; }
+
+            for (int branchIndex = 0; branchIndex < mode.Branches.Count; branchIndex++)
+            {
+                if (ReferenceEquals(targetBranch, mode.Branches[branchIndex]))
+                {
+                    _setExistingAnimationUseCase.Handle(string.Empty, new Domain.Animation(args.Value.clipGUID), modeId, branchIndex, BranchAnimationType.Base);
+
+                    // Select target branch
+                    _selectionSynchronizer.ChangeGestureTableViewSelection(args.Value.left, args.Value.right);
+
+                    break;
                 }
             }
         }

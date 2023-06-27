@@ -122,6 +122,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
         public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
 
+        public string GestureTableView_ShowClipField = "Show Animation Selector";
         public string GestureTableView_Separator = " & ";
         public string GestureTableView_ModeIsNotSelected = "Please select an expression pattern in the main window.";
         public string GestureTableView_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip. " +

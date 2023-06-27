@@ -100,6 +100,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             var newClip = EditorGUI.ObjectField(new Rect(xCurrent, yCurrent, thumbnailWidth, EditorGUIUtility.singleLineHeight), clip, typeof(AnimationClip), false);
             if (!ReferenceEquals(clip, newClip))
             {
+                if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
                 var newPath = AssetDatabase.GetAssetPath(newClip);
                 var newGUID = AssetDatabase.AssetPathToGUID(newPath);
                 setAnimationClipAction(newGUID);

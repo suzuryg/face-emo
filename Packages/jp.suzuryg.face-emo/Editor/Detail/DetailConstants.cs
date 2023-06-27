@@ -33,5 +33,8 @@ namespace Suzuryg.FaceEmo.Detail
 
         public static readonly string KeyHideHierarchyIcon = $"{DomainConstants.SystemName}_HideHierarchyIcon";
         public static readonly bool DefaultHideHierarchyIcon = false;
+
+        public static readonly string KeyShowClipFieldInGestureTable = $"{DomainConstants.SystemName}_ShowClipFieldInGestureTable";
+        public static readonly bool DefaultShowClipFieldInGestureTable = false;
     }
 }

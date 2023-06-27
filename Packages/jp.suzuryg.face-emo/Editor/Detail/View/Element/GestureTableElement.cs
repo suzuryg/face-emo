@@ -32,6 +32,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         public IObservable<Unit> OnBranchIndexExceeded => _onBranchIndexExceeded.AsObservable();
         public IObservable<(HandGesture left, HandGesture right)?> OnAddBrandchButtonClicked => _onAddBranchButtonClicked.AsObservable();
         public IObservable<(HandGesture left, HandGesture right)?> OnEditClipButtonClicked => _onEditClipButtonClicked.AsObservable();
+        public IObservable<(string clipGUID, HandGesture left, HandGesture right)?> OnBaseAnimationChanged => _onBaseAnimationChanged.AsObservable();
 
         public IMenu Menu { get; private set; }
         public string SelectedModeId  { get; private set; }
@@ -42,6 +43,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private Subject<Unit> _onBranchIndexExceeded = new Subject<Unit>();
         private Subject<(HandGesture left, HandGesture right)?> _onAddBranchButtonClicked = new Subject<(HandGesture left, HandGesture right)?>();
         private Subject<(HandGesture left, HandGesture right)?> _onEditClipButtonClicked = new Subject<(HandGesture left, HandGesture right)?>();
+        private Subject<(string clipGUID, HandGesture left, HandGesture right)?> _onBaseAnimationChanged = new Subject<(string clipGUID, HandGesture left, HandGesture right)?>();
 
         private ISubWindowProvider _subWindowProvider;
         private GestureTableThumbnailDrawer _thumbnailDrawer;
@@ -170,7 +172,12 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         private float GetElementHeight()
         {
-            return ElementPadding + EditorGUIUtility.singleLineHeight + GetThumbnailHeight() + ElementPadding;
+            var height = ElementPadding + EditorGUIUtility.singleLineHeight + GetThumbnailHeight() + ElementPadding;
+            if (EditorPrefs.GetBool(DetailConstants.KeyShowClipFieldInGestureTable, DetailConstants.DefaultShowClipFieldInGestureTable))
+            {
+                height += EditorGUIUtility.singleLineHeight;
+            }
+            return height;
         }
 
         private float GetTableWidth()
@@ -312,6 +319,26 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                         else { _onAddBranchButtonClicked.OnNext((leftHand, rightHand)); }
                     }
                     GUI.DrawTexture(buttonRect, icon, ScaleMode.ScaleToFit, alphaBlend: true);
+
+                    // ObjectField
+                    if (branch is IBranch &&
+                        EditorPrefs.GetBool(DetailConstants.KeyShowClipFieldInGestureTable, DetailConstants.DefaultShowClipFieldInGestureTable))
+                    {
+                        var path = AssetDatabase.GUIDToAssetPath(branch.BaseAnimation?.GUID);
+                        var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+                        var objectFieldRect = new Rect(
+                            elementRect.x + ElementPadding,
+                            elementRect.y + ElementPadding + EditorGUIUtility.singleLineHeight + thumbnailHeight,
+                            contentWidth,
+                            EditorGUIUtility.singleLineHeight);
+                        var newClip = EditorGUI.ObjectField(objectFieldRect, clip, typeof(AnimationClip), false);
+                        if (!ReferenceEquals(clip, newClip))
+                        {
+                            var newPath = AssetDatabase.GetAssetPath(newClip);
+                            var newGUID = AssetDatabase.AssetPathToGUID(newPath);
+                            _onBaseAnimationChanged.OnNext((newGUID, leftHand, rightHand));
+                        }
+                    }
                 }
             }
         }
