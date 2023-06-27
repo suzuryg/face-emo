@@ -323,14 +323,11 @@ namespace Suzuryg.FaceEmo.Detail.View
             var modeId = _branchListElement.SelectedModeId;
             var branchIndex = _branchListElement.GetSelectedBranchIndex();
 
-            var branchDeleteConfirmation = EditorPrefs.HasKey(DetailConstants.KeyBranchDeleteConfirmation) ? EditorPrefs.GetBool(DetailConstants.KeyBranchDeleteConfirmation) : DetailConstants.DefaultBranchDeleteConfirmation;
-            if (branchDeleteConfirmation)
-            {
-                var ok = EditorUtility.DisplayDialog(DomainConstants.SystemName,
-                    _localizationTable.Common_Message_DeleteBranch,
-                    _localizationTable.Common_Delete, _localizationTable.Common_Cancel);
-                if (!ok) { return; }
-            }
+            var ok = OptoutableDialog.Show(DomainConstants.SystemName,
+                _localizationTable.Common_Message_DeleteBranch,
+                _localizationTable.Common_Delete, _localizationTable.Common_Cancel,
+                DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation);
+            if (!ok) { return; }
 
             _removeBranchUseCase.Handle("", modeId, branchIndex);
         }
@@ -417,7 +414,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                     // Add preset
                     var branchIndex = _branchListElement?.GetSelectedBranchIndex();
                     var preset = presets[_selectedPresetIndex];
-                    if (EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.BranchListView_Message_AddPreset + "\n" + preset,
+                    if (OptoutableDialog.Show(DomainConstants.SystemName, _localizationTable.BranchListView_Message_AddPreset + "\n" + preset,
                         _localizationTable.Common_Yes, _localizationTable.Common_No))
                     {
                         var gestures = new[]

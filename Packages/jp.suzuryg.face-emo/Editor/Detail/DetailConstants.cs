@@ -23,7 +23,7 @@ namespace Suzuryg.FaceEmo.Detail
         public static readonly string KeyBranchDeleteConfirmation = $"{DomainConstants.SystemName}_BranchDeleteConfirmation";
         public static readonly bool DefaultGroupDeleteConfirmation = true;
         public static readonly bool DefaultModeDeleteConfirmation = true;
-        public static readonly bool DefaultBranchDeleteConfirmation = false;
+        public static readonly bool DefaultBranchDeleteConfirmation = true;
 
         public static readonly string KeyShowHints = $"{DomainConstants.SystemName}_ShowHints";
         public static readonly bool DefaultShowHints = true;

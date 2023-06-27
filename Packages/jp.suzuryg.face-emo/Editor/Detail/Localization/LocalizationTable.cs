@@ -25,6 +25,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_ThumbnailHeight = "Thumbnail Height";
         public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
+        public string Common_DoNotShowAgain = "Don't show again";
         public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of expression patterns and folders.";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following folder?";
         public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression pattern?";

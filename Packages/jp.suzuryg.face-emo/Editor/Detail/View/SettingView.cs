@@ -52,6 +52,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private string[] _modePaths = new string[0];
         private int _defaultSelection = 0;
         private string _applyButtonText = string.Empty;
+        private EditorWindow _mainWindow;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -61,6 +62,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             IGenerateFxPresenter generateFxPresenter,
             ILocalizationSetting localizationSetting,
             ModeNameProvider modeNameProvider,
+            MainWindowProvider mainWindowProvider,
             UpdateMenuSubject updateMenuSubject,
             MainThumbnailDrawer thumbnailDrawer,
             GestureTableThumbnailDrawer gestureTableThumbnailDrawer,
@@ -89,6 +91,9 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Presenter event handlers
             _generateFxPresenter.Observable.Synchronize().Subscribe(OnGenerateFxPresenterCompleted).AddTo(_disposables);
+
+            // MainWindow OnGUI event handler
+            mainWindowProvider.OnGUI.Synchronize().ObserveOnMainThread().Subscribe(window => _mainWindow = window).AddTo(_disposables);
 
             // Initialization
             _publicIcon = ViewUtility.GetIconTexture("public_FILL0_wght400_GRAD200_opsz48.png");
@@ -259,10 +264,12 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-            if (EditorUtility.DisplayDialog(DomainConstants.SystemName,
+            if (OptoutableDialog.Show(DomainConstants.SystemName,
                 _localizationTable.SettingView_Message_ConfirmApplyToAvatar,
-                _localizationTable.Common_Yes, _localizationTable.Common_No))
+                _localizationTable.Common_Yes, _localizationTable.Common_No,
+                centerPosition: GetDialogCenterPosition()))
             {
+                _mainWindow?.Focus(); // DisplayProgressBar() is displayed in the center of the focused EditorWindow.
                 _generateFxUseCase.Handle("");
             }
         }
@@ -272,7 +279,8 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             if (args.generateFxResult == GenerateFxResult.Succeeded)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.InsertLineBreak(_localizationTable.SettingView_Message_Succeeded), "OK");
+                OptoutableDialog.Show(DomainConstants.SystemName, LocalizationSetting.InsertLineBreak(_localizationTable.SettingView_Message_Succeeded), "OK",
+                    centerPosition: GetDialogCenterPosition());
 
                 // Change apply button style
                 if (_applyButton != null)
@@ -291,6 +299,18 @@ namespace Suzuryg.FaceEmo.Detail.View
                 selected < _flattendModes.Count)
             {
                 _modifyMenuPropertiesUseCase.Handle(string.Empty, _flattendModes[selected].Mode.GetId());
+            }
+        }
+
+        private Vector2 GetDialogCenterPosition()
+        {
+            if (_mainWindow != null)
+            {
+                return GUIUtility.GUIToScreenPoint(new Vector2(_mainWindow.position.width / 2, _mainWindow.position.height / 2));
+            }
+            else
+            {
+                return GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
             }
         }
 

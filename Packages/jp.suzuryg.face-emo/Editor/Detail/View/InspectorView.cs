@@ -479,7 +479,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             EditorGUILayout.Space(10);
 
             if (GUILayout.Button(_localizationTable.Common_Clear) &&
-                EditorUtility.DisplayDialog(DomainConstants.SystemName,
+                OptoutableDialog.Show(DomainConstants.SystemName,
                     _localizationTable.Common_Message_ClearMouthMorphBlendShapes,
                     _localizationTable.Common_Yes, _localizationTable.Common_No))
             {
