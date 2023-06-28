@@ -49,6 +49,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         private Dictionary<int, TransformProxy> _animatedAdditionalTransforms = new Dictionary<int, TransformProxy>();
         private Dictionary<int, TransformProxy> _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>();
         private Subject<Unit> _onClipUpdated = new Subject<Unit>();
+        private bool _isRepaintOtherWindowsNeeded = false;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -70,6 +71,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             // Add event handlers
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
+
+            // Periodic repaint
+            Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(5)).ObserveOnMainThread().Subscribe(_ => RepaintOtherWindows()).AddTo(_disposables);
         }
 
         public void Dispose()
@@ -81,6 +85,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         public void Open(AnimationClip animationClip)
         {
+            RepaintOtherWindows();
+
             Clip = animationClip;
 
             // Focus the preview window last because the preview window is likely to be hidden
@@ -491,7 +497,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             // Repaint
             if (updatedBlendShapes.Any() || removedBlendShapes.Any() || updatedToggles.Any() || removedToggles.Any() || updatedTransforms.Any() || removedTransforms.Any())
             {
-                RepaintOtherWindows();
+                _isRepaintOtherWindowsNeeded = true;
             }
 
             // Initialize buffer
@@ -499,12 +505,17 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>(_animatedAdditionalTransforms);
         }
 
-        private void RepaintOtherWindows()
+        public void RepaintOtherWindows()
         {
-            _mainThumbnailDrawer.RequestUpdate(Clip);
-            _gestureTableThumbnailDrawer.RequestUpdate(Clip);
-            _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>()?.Repaint();
-            _onClipUpdated.OnNext(Unit.Default);
+            if (_isRepaintOtherWindowsNeeded)
+            {
+                _isRepaintOtherWindowsNeeded = false;
+
+                _mainThumbnailDrawer.RequestUpdate(Clip);
+                _gestureTableThumbnailDrawer.RequestUpdate(Clip);
+                _subWindowProvider.ProvideIfOpenedAlready<GestureTableWindow>()?.Repaint();
+                _onClipUpdated.OnNext(Unit.Default);
+            }
         }
 
         private void RenderPreviewClip()

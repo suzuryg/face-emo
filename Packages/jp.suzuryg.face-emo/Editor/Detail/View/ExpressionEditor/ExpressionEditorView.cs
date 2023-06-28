@@ -187,6 +187,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             const float minWindowHeight = 300;
             window.minSize = new Vector2(minWindowWidth, minWindowHeight);
 
+            // Repaint other window when finished moving the Slider.
+            if (Event.current.type == EventType.MouseUp)
+            {
+                _expressionEditor.RepaintOtherWindows();
+            }
+
             // Root scope
             using (new EditorGUILayout.HorizontalScope())
             {
