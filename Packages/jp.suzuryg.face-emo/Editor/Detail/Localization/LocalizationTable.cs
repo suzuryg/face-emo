@@ -23,8 +23,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
 
         public string Common_ThumbnailWidth = "Thumbnail Width";
         public string Common_ThumbnailHeight = "Thumbnail Height";
-        public string Common_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
-        public string Common_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string Common_DoNotShowAgain = "Don't show again";
         public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of expression patterns and folders.";
         public string Common_Message_DeleteGroup = "Are you sure you want to delete the following folder?";
@@ -143,6 +141,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_TargetAvatarIsNotSpecified = "Please specify the target avatar.";
         public string InspectorView_Launch = "Launch FaceEmo";
         public string InspectorView_TargetAvatar = "Target Avatar";
+        public string InspectorView_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
+        public string InspectorView_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionMenu icons";
         public string InspectorView_GammaCorrectionValue = "Gamma correction value for expression thumbnails";
         public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
@@ -249,6 +249,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_Delimiter = "Delimiter";
         public string ExpressionEditorView_AddAllBlendShapes = "Add All BlendShapes";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
+        public string ExpressionEditorView_AddtionalToggleObjects = "Addtional Objects (Toggle)";
+        public string ExpressionEditorView_AddtionalTransformObjects = "Addtional Objects (Transform)";
         public string ExpressionEditorView_NoBlendShapes = "No Blend Shapes";
         public string ExpressionEditorView_NoObjects = "No Objects";
         public string ExpressionEditorView_Message_ClipIsNull = "The animation clip has been deleted. Please open another animation clip.";

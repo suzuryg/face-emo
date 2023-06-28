@@ -207,7 +207,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Additional Toggle Objects
             var isAddtionalToggleOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAddtionalToggleOpened));
             isAddtionalToggleOpened.boolValue = EditorGUILayout.Foldout(isAddtionalToggleOpened.boolValue,
-                new GUIContent(_localizationTable.Common_AddtionalToggleObjects));
+                new GUIContent(_localizationTable.InspectorView_AddtionalToggleObjects));
             if (isAddtionalToggleOpened.boolValue)
             {
                 Field_AdditionalToggleObjects();
@@ -218,7 +218,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Additional Transform Objects
             var isAddtionalTransformOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAddtionalTransformOpened));
             isAddtionalTransformOpened.boolValue = EditorGUILayout.Foldout(isAddtionalTransformOpened.boolValue,
-                new GUIContent(_localizationTable.Common_AddtionalTransformObjects));
+                new GUIContent(_localizationTable.InspectorView_AddtionalTransformObjects));
             if (isAddtionalTransformOpened.boolValue)
             {
                 Field_AdditionalTransformObjects();

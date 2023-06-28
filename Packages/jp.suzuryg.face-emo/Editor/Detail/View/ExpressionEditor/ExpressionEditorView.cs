@@ -162,8 +162,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 .Concat(_expressionEditor.AdditionalTransforms.Select(transform => transform.Value?.GameObject?.name))
                 .Concat(new[] {
                     _localizationTable.ExpressionEditorView_UncategorizedBlendShapes,
-                    _localizationTable.Common_AddtionalToggleObjects,
-                    _localizationTable.Common_AddtionalTransformObjects});
+                    _localizationTable.ExpressionEditorView_AddtionalToggleObjects,
+                    _localizationTable.ExpressionEditorView_AddtionalTransformObjects});
             var labelWidth = propertyNames.Select(x => GUI.skin.label.CalcSize(new GUIContent(x)).x).DefaultIfEmpty().Max();
             var buttonWidth = propertyNames.Select(x => GUI.skin.button.CalcSize(new GUIContent(x)).x).DefaultIfEmpty().Max();
             var maxBlendShapeNameWidth = Math.Max(labelWidth, buttonWidth);
@@ -756,7 +756,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         {
             // Draw buttons
             var added = new List<int>();
-            _toggleFoldoutState = EditorGUILayout.Foldout(_toggleFoldoutState, _localizationTable.Common_AddtionalToggleObjects);
+            _toggleFoldoutState = EditorGUILayout.Foldout(_toggleFoldoutState, _localizationTable.ExpressionEditorView_AddtionalToggleObjects);
             if (_toggleFoldoutState)
             {
                 // If there is no object, display so.
@@ -808,7 +808,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         {
             // Draw buttons
             var added = new List<int>();
-            _transformFoldoutState = EditorGUILayout.Foldout(_transformFoldoutState, _localizationTable.Common_AddtionalTransformObjects);
+            _transformFoldoutState = EditorGUILayout.Foldout(_transformFoldoutState, _localizationTable.ExpressionEditorView_AddtionalTransformObjects);
             if (_transformFoldoutState)
             {
                 // If there is no object, display so.
