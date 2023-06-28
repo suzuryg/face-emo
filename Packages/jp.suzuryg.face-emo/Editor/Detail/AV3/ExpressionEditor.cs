@@ -273,6 +273,23 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>(_animatedAdditionalTransforms);
         }
 
+        public void AddAllFaceBlendShapes()
+        {
+            var animatedBlendShapes = GetBlendShapeValues(Clip, _faceBlendShapes.Keys);
+            foreach (var blendShape in _faceBlendShapes)
+            {
+                if (!animatedBlendShapes.ContainsKey(blendShape.Key) &&
+                    !BlinkBlendShapes.Contains(blendShape.Key) &&
+                    !LipSyncBlendShapes.Contains(blendShape.Key))
+                {
+                    _animatedBlendShapesBuffer[blendShape.Key] = blendShape.Value;
+                    SetBlendShapeValue(_previewClip, blendShape.Key, blendShape.Value);
+                }
+            }
+            RenderPreviewClip();
+            CheckBuffer();
+        }
+
         public void SetBlendShapeBuffer(string blendShapeName, float newValue)
         {
             // Set buffer

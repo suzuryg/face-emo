@@ -247,6 +247,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From the Scene";
         public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect In Preview On Mouse Over";
         public string ExpressionEditorView_Delimiter = "Delimiter";
+        public string ExpressionEditorView_AddAllBlendShapes = "Add All BlendShapes";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
         public string ExpressionEditorView_NoBlendShapes = "No Blend Shapes";
         public string ExpressionEditorView_NoObjects = "No Objects";
@@ -254,8 +255,11 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_Message_FailedToRename = "Failed to rename. Please enter a different name.";
         public string ExpressionEditorView_Message_BlinkBlendShapeExists = "Blend shapes for blink are included!";
         public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lipsync are included!";
+        public string ExpressionEditorView_Message_AddAllBlendShapes = "Are you sure you want to add all blend shapes to the animation clip?";
         public string ExpressionEditorView_Tooltip_Delimiter = "By entering the delimiter for the blend shapes, you can display the blend shapes by category. " +
             "For example, if the category name is \"=====Eye=====\", please enter \"=====\".";
+        public string ExpressionEditorView_Tooltip_AddAllBlendShapes = "All unadded blend shapes will be added to the animation clip. " +
+            "The values of the added blend shapes will be the default values (the values set on the scene).";
 
         public string Backupper_Message_FailedToFindTargetAvatar = "Failed to find tareget avatar. Make sure the avatar is active.";
         public string Backupper_Message_FailedToFindSubTargetAvatar = "Failed to find sub tareget avatar. Make sure the avatar is active.";

@@ -213,6 +213,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 // Right scope
                 using (new EditorGUILayout.VerticalScope(GUILayout.Width(rightContentWidth), GUILayout.Height(contentHeight)))
                 {
+                    Field_AddAllBlendShapes();
                     Field_FaceBlendShapeDelimiter();
                     Field_ReflectInPreviewOnMouseOver();
                     using (var scope = new EditorGUILayout.ScrollViewScope(_rightScrollPosition))
@@ -324,6 +325,27 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     }
                 }
                 GUILayout.Label(_localizationTable.ExpressionEditorView_ShowOnlyDifferFromDefaultValue);
+            }
+        }
+
+        private void Field_AddAllBlendShapes()
+        {
+            if (GUILayout.Button(new GUIContent(_localizationTable.ExpressionEditorView_AddAllBlendShapes, _localizationTable.ExpressionEditorView_Tooltip_AddAllBlendShapes)))
+            {
+                // Delay the execution of the following code because ShowModalUtility() interferes with LayoutGroup processing.
+                var centerPosition = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
+                EditorApplication.delayCall += () =>
+                {
+                    if (OptoutableDialog.Show(DomainConstants.SystemName, _localizationTable.ExpressionEditorView_Message_AddAllBlendShapes,
+                        _localizationTable.Common_Yes, _localizationTable.Common_No,
+                        centerPosition: centerPosition))
+                    {
+                        _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ShowOnlyDifferFromDefaultValue)).boolValue = false;
+                        _expressionEditorSetting.ApplyModifiedProperties();
+                        _expressionEditor.FetchProperties();
+                        _expressionEditor.AddAllFaceBlendShapes();
+                    }
+                };
             }
         }
 
