@@ -200,6 +200,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 using (new EditorGUILayout.VerticalScope(GUILayout.Width(leftContentWidth), GUILayout.Height(contentHeight)))
                 {
                     Field_AnimationClip();
+                    Field_UseMouseWheel();
                     Field_ShowOnlyDifferFromDefaultValue();
 
                     using (var scope = new EditorGUILayout.ScrollViewScope(_leftScrollPosition))
@@ -315,6 +316,19 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             }
         }
 
+        private void Field_UseMouseWheel()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var useMouseWheel = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_UseMouseWheel, DetailConstants.Default_ExpressionEditor_UseMouseWheel);
+                if (EditorGUILayout.Toggle(useMouseWheel, GUILayout.Width(ToggleWidth)) != useMouseWheel)
+                {
+                    EditorPrefs.SetBool(DetailConstants.Key_ExpressionEditor_UseMouseWheel, !useMouseWheel);
+                }
+                GUILayout.Label(_localizationTable.ExpressionEditorView_UseMouseWheel);
+            }
+        }
+
         private void Field_ShowOnlyDifferFromDefaultValue()
         {
             using (new EditorGUILayout.HorizontalScope())
@@ -423,12 +437,16 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     Rect sliderRect = GUILayoutUtility.GetRect(labelRect.x, labelRect.y, GUILayout.ExpandWidth(true), GUILayout.MinWidth(100));
                     var sliderValue = GUI.HorizontalSlider(sliderRect, blendShape.Value, minValue, maxValue);
 
-                    var scrollWheelSensitivity = (maxValue - minValue) / 100;
-                    var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
-                    if (wheelRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.ScrollWheel)
+                    var useMouseWheel = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_UseMouseWheel, DetailConstants.Default_ExpressionEditor_UseMouseWheel);
+                    if (useMouseWheel)
                     {
-                        sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
-                        sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
+                        var scrollWheelSensitivity = (maxValue - minValue) / 100;
+                        var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
+                        if (wheelRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.ScrollWheel)
+                        {
+                            sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
+                            sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
+                        }
                     }
 
                     sliderValue = Mathf.Round(sliderValue / increment) * increment;
@@ -615,12 +633,17 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 Rect sliderRect = GUILayoutUtility.GetRect(labelRect.x, labelRect.y, GUILayout.ExpandWidth(true), GUILayout.MinWidth(100));
                 var sliderValue = GUI.HorizontalSlider(sliderRect, value, minValue, maxValue);
 
-                var scrollWheelSensitivity = (maxValue - minValue) / 100;
-                var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
-                if (wheelRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.ScrollWheel)
+
+                var useMouseWheel = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_UseMouseWheel, DetailConstants.Default_ExpressionEditor_UseMouseWheel);
+                if (useMouseWheel)
                 {
-                    sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
-                    sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
+                    var scrollWheelSensitivity = (maxValue - minValue) / 100;
+                    var wheelRect = new Rect(sliderRect.x, labelRect.y, sliderRect.width, labelRect.height); // sliderRect.height is 0
+                    if (wheelRect.Contains(Event.current.mousePosition) && Event.current.type == EventType.ScrollWheel)
+                    {
+                        sliderValue -= Event.current.delta.y * scrollWheelSensitivity;
+                        sliderValue = Mathf.Clamp(sliderValue, minValue, maxValue);
+                    }
                 }
 
                 sliderValue = Mathf.Round(sliderValue / increment) * increment;
@@ -871,7 +894,6 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             }
 
             HelpBoxDrawer.InfoLayout(_localizationTable.Hints_ExpressionPreview);
-            HelpBoxDrawer.InfoLayout(_localizationTable.Hints_ControlWidthWheel);
         }
     }
 }

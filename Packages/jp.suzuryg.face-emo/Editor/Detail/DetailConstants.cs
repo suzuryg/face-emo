@@ -39,7 +39,9 @@ namespace Suzuryg.FaceEmo.Detail
 
         public static readonly string Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue = $"{DomainConstants.SystemName}_ExpressionEditor_ShowOnlyDifferFromDefaultValue";
         public static readonly string Key_ExpressionEditor_ReflectInPreviewOnMouseOver = $"{DomainConstants.SystemName}_ExpressionEditor_ReflectInPreviewOnMouseOver";
+        public static readonly string Key_ExpressionEditor_UseMouseWheel = $"{DomainConstants.SystemName}_ExpressionEditor_UseMouseWheel";
         public static readonly bool Default_ExpressionEditor_ShowOnlyDifferFromDefaultValue = true;
         public static readonly bool Default_ExpressionEditor_ReflectInPreviewOnMouseOver = true;
+        public static readonly bool Default_ExpressionEditor_UseMouseWheel = true;
     }
 }

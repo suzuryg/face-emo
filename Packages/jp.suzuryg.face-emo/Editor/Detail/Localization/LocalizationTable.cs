@@ -244,8 +244,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
 
         public string ExpressionEditorView_Rename = "Rename";
         public string ExpressionEditorView_Confirm = "Confirm";
-        public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different From the Scene";
-        public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect In Preview On Mouse Over";
+        public string ExpressionEditorView_UseMouseWheel = "Control Sliders with the Mouse Wheel";
+        public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different from the Scene";
+        public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect in Preview on Mouse Over";
         public string ExpressionEditorView_Delimiter = "Delimiter";
         public string ExpressionEditorView_AddAllBlendShapes = "Add All BlendShapes";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
@@ -312,6 +313,5 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Hints_LipSyncBlendShapeIncluded = "If your expression contains blend shapes for lip-syncing, there's a possibility that the lip-sync may not function correctly.";
         public string Hints_ExpressionPreview = "The expression preview screen can be moved, rotated, and zoomed in and out in the same way as the scene view. " +
             "The camera settings (like FOV) of the expression preview screen inherit the settings from the scene view.";
-        public string Hints_ControlWidthWheel = "The sliders for the shape key values can also be controlled with the mouse wheel.";
     }
 }
