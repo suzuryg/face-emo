@@ -36,5 +36,10 @@ namespace Suzuryg.FaceEmo.Detail
 
         public static readonly string KeyShowClipFieldInGestureTable = $"{DomainConstants.SystemName}_ShowClipFieldInGestureTable";
         public static readonly bool DefaultShowClipFieldInGestureTable = false;
+
+        public static readonly string Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue = $"{DomainConstants.SystemName}_ExpressionEditor_ShowOnlyDifferFromDefaultValue";
+        public static readonly string Key_ExpressionEditor_ReflectInPreviewOnMouseOver = $"{DomainConstants.SystemName}_ExpressionEditor_ReflectInPreviewOnMouseOver";
+        public static readonly bool Default_ExpressionEditor_ShowOnlyDifferFromDefaultValue = true;
+        public static readonly bool Default_ExpressionEditor_ReflectInPreviewOnMouseOver = true;
     }
 }

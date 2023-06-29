@@ -238,9 +238,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             LipSyncBlendShapes = new HashSet<string>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting?.TargetAvatar));
 
             var animatedBlendShapes = GetBlendShapeValues(Clip, _faceBlendShapes.Keys);
+            var showOnlyDifference = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue, DetailConstants.Default_ExpressionEditor_ShowOnlyDifferFromDefaultValue);
             foreach (var blendShape in animatedBlendShapes)
             {
-                if (!_expressionEditorSetting.ShowOnlyDifferFromDefaultValue ||
+                if (!showOnlyDifference ||
                     blendShape.Value != _faceBlendShapes[blendShape.Key] ||
                     BlinkBlendShapes.Contains(blendShape.Key) || // Add for warning display
                     LipSyncBlendShapes.Contains(blendShape.Key))   // Add for warning display

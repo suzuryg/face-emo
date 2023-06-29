@@ -319,16 +319,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                using (var check = new EditorGUI.ChangeCheckScope())
+                var showOnlyDifference = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue, DetailConstants.Default_ExpressionEditor_ShowOnlyDifferFromDefaultValue);
+                if (EditorGUILayout.Toggle(showOnlyDifference, GUILayout.Width(ToggleWidth)) != showOnlyDifference)
                 {
-                    EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ShowOnlyDifferFromDefaultValue)),
-                        new GUIContent(string.Empty), GUILayout.Width(ToggleWidth));
-
-                    if (check.changed)
-                    {
-                        _expressionEditorSetting.ApplyModifiedProperties();
-                        _expressionEditor.FetchProperties();
-                    }
+                    EditorPrefs.SetBool(DetailConstants.Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue, !showOnlyDifference);
+                    _expressionEditorSetting.ApplyModifiedProperties();
+                    _expressionEditor.FetchProperties();
                 }
                 GUILayout.Label(_localizationTable.ExpressionEditorView_ShowOnlyDifferFromDefaultValue);
             }
@@ -346,7 +342,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                         _localizationTable.Common_Yes, _localizationTable.Common_No,
                         centerPosition: centerPosition))
                     {
-                        _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ShowOnlyDifferFromDefaultValue)).boolValue = false;
+                        EditorPrefs.SetBool(DetailConstants.Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue, false);
                         _expressionEditorSetting.ApplyModifiedProperties();
                         _expressionEditor.FetchProperties();
                         _expressionEditor.AddAllFaceBlendShapes();
@@ -359,15 +355,10 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                using (var check = new EditorGUI.ChangeCheckScope())
+                var reflect = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ReflectInPreviewOnMouseOver, DetailConstants.Default_ExpressionEditor_ReflectInPreviewOnMouseOver);
+                if (EditorGUILayout.Toggle(reflect, GUILayout.Width(ToggleWidth)) != reflect)
                 {
-                    EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ReflectInPreviewOnMouseOver)),
-                        new GUIContent(string.Empty), GUILayout.Width(ToggleWidth));
-
-                    if (check.changed)
-                    {
-                        _expressionEditorSetting.ApplyModifiedProperties();
-                    }
+                    EditorPrefs.SetBool(DetailConstants.Key_ExpressionEditor_ReflectInPreviewOnMouseOver, !reflect);
                 }
                 GUILayout.Label(_localizationTable.ExpressionEditorView_ReflectInPreviewOnMouseOver);
             }
@@ -721,7 +712,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                                 var buttonRect = GUILayoutUtility.GetRect(new GUIContent(blendShapeKey), _addPropertyButtonStyle);
                                 var buttonStyle = _addPropertyButtonStyle;
 
-                                var reflect = _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.ReflectInPreviewOnMouseOver)).boolValue;
+                                var reflect = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ReflectInPreviewOnMouseOver, DetailConstants.Default_ExpressionEditor_ReflectInPreviewOnMouseOver);
                                 if (reflect && buttonRect.Contains(Event.current.mousePosition))
                                 {
                                     buttonStyle = _addPropertyButtonMouseOverStyle;
