@@ -158,8 +158,12 @@ namespace Suzuryg.FaceEmo.Detail.View
             _showClipFieldToggle.value = EditorPrefs.GetBool(DetailConstants.KeyShowClipFieldInGestureTable, DetailConstants.DefaultShowClipFieldInGestureTable);
 
             // Add event handlers
-            _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
-            _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+            // Delay event registration due to unstable slider values immediately after opening the window.
+            Observable.Timer(TimeSpan.FromMilliseconds(100)).ObserveOnMainThread().Subscribe(_ =>
+            {
+                _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+                _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+            }).AddTo(_disposables);
             _showClipFieldToggle.RegisterValueChangedCallback(OnShowClipFieldValueChanged);
 
             // Set text
@@ -214,7 +218,6 @@ namespace Suzuryg.FaceEmo.Detail.View
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
         {
             // TODO: Reduce unnecessary redrawing
-            // FIX: Immediately after opening a window, several refresh events occur even though the slider is not moved, and the UI slows down due to thumbnail refresh.
             _thumbnailDrawer.RequestUpdateAll();
         }
 

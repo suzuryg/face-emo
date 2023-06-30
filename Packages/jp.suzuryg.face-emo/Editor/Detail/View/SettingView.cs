@@ -151,8 +151,12 @@ namespace Suzuryg.FaceEmo.Detail.View
             _showHintsToggle.value = showHints;
 
             // Add event handlers
-            _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
-            _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            // Delay event registration due to unstable slider values immediately after opening the window.
+            Observable.Timer(TimeSpan.FromMilliseconds(100)).ObserveOnMainThread().Subscribe(_ =>
+            {
+                _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+                _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+            }).AddTo(_disposables);
             _showHintsToggle.RegisterValueChangedCallback(OnShowHintsValueChanged);
 
             Observable.FromEvent(x => _updateThumbnailButton.clicked += x, x => _updateThumbnailButton.clicked -= x)
