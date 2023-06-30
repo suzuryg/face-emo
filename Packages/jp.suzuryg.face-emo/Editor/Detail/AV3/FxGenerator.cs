@@ -561,7 +561,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             // Re-generate thumbnails
             if (_aV3Setting.GenerateExMenuThumbnails)
             {
-                _exMenuThumbnailDrawer.ClearCache();
+                _exMenuThumbnailDrawer.RequestUpdateAll();
                 foreach (var mode in modes)
                 {
                     _exMenuThumbnailDrawer.GetThumbnail(mode.Mode.Animation);

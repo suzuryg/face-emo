@@ -571,7 +571,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 width.intValue = textureWidth;
                 height.intValue = textureHeight;
-                _thumbnailDrawer.ClearCache();
+                _thumbnailDrawer.RequestUpdateAll();
             }
             _thumbnailDrawer.Update();
             var texture = _thumbnailDrawer.GetThumbnail(new Domain.Animation(string.Empty));
@@ -597,27 +597,27 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             var fov = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_FOV));
             Field_Slider(_localizationTable.InspectorView_Thumbnail_FOV, fov.floatValue, ThumbnailSetting.MinFOV, ThumbnailSetting.MaxFOV,
-                value => { fov.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+                value => { fov.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
 
             var distance = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Distance));
             Field_Slider(_localizationTable.InspectorView_Thumbnail_Distance, distance.floatValue, ThumbnailSetting.MinDistance, ThumbnailSetting.MaxDistance,
-                value => { distance.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+                value => { distance.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
 
             var hPosition = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraPosX));
             Field_Slider(_localizationTable.InspectorView_Thumbnail_HorizontalPosition, hPosition.floatValue, 0, 1,
-                value => { hPosition.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+                value => { hPosition.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
 
             var vPosition = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraPosY));
             Field_Slider(_localizationTable.InspectorView_Thumbnail_VerticalPosition, vPosition.floatValue, 0, 1,
-                value => { vPosition.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+                value => { vPosition.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
 
             var hAngle = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraAngleH));
             Field_Slider(_localizationTable.InspectorView_Thumbnail_HorizontalAngle, hAngle.floatValue, ThumbnailSetting.MaxCameraAngleH * -1, ThumbnailSetting.MaxCameraAngleH,
-                value => { hAngle.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+                value => { hAngle.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
 
             var vAngle = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraAngleV));
             Field_Slider(_localizationTable.InspectorView_Thumbnail_VerticalAngle, vAngle.floatValue, ThumbnailSetting.MaxCameraAngleV * -1, ThumbnailSetting.MaxCameraAngleV,
-                value => { vAngle.floatValue = value; _thumbnailDrawer.ClearCache(); }, labelWidth);
+                value => { vAngle.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
 
             EditorGUILayout.Space(10);
 
@@ -630,7 +630,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 vPosition.floatValue = ThumbnailSetting.DefaultCameraPosY;
                 hAngle.floatValue = ThumbnailSetting.DefaultCameraAngleH;
                 vAngle.floatValue = ThumbnailSetting.DefaultCameraAngleV;
-                _thumbnailDrawer.ClearCache();
+                _thumbnailDrawer.RequestUpdateAll();
             }
         }
 

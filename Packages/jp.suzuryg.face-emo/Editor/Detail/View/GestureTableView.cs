@@ -214,7 +214,8 @@ namespace Suzuryg.FaceEmo.Detail.View
         private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
         {
             // TODO: Reduce unnecessary redrawing
-            _thumbnailDrawer.ClearCache();
+            // FIX: Immediately after opening a window, several refresh events occur even though the slider is not moved, and the UI slows down due to thumbnail refresh.
+            _thumbnailDrawer.RequestUpdateAll();
         }
 
         private void OnShowClipFieldValueChanged(ChangeEvent<bool> changeEvent)

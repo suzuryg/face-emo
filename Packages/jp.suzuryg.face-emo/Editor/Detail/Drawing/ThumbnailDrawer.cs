@@ -169,9 +169,13 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
         }
 
-        public void ClearCache()
+        public void RequestUpdateAll()
         {
-            _cache.Clear();
+            var guids = new List<string>(_cache.Keys);
+            foreach (var guid in guids)
+            {
+                _requests.Add(guid);
+            }
         }
 
         public void Update()

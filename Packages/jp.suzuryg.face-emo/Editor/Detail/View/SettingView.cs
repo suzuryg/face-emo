@@ -246,13 +246,13 @@ namespace Suzuryg.FaceEmo.Detail.View
         private void OnThumbnailSettingChanged<T>(ChangeEvent<T> changeEvent)
         {
             // TODO: Reduce unnecessary redrawing
-            _thumbnailDrawer.ClearCache();
+            _thumbnailDrawer.RequestUpdateAll();
         }
 
         private void OnUpdateThumbnailButtonClicked()
         {
-            _thumbnailDrawer.ClearCache();
-            _gestureTableThumbnailDrawer.ClearCache();
+            _thumbnailDrawer.RequestUpdateAll();
+            _gestureTableThumbnailDrawer.RequestUpdateAll();
         }
 
         private void OnShowHintsValueChanged(ChangeEvent<bool> changeEvent)
