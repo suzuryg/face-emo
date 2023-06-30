@@ -65,13 +65,16 @@ namespace Suzuryg.FaceEmo.AppMain
                 backupper.SetName(_installer.RootObjectName);
 
                 // Disposables
-                _installer.Container.Resolve<ModeNameProvider>().AddTo(_disposables);
-                _installer.Container.Resolve<AnimationElement>().AddTo(_disposables);
+                _installer.Container.Resolve<ISubWindowManager>().AddTo(_disposables);
+                _installer.Container.Resolve<IBackupper>().AddTo(_disposables);
+                _installer.Container.Resolve<SelectionSynchronizer>().AddTo(_disposables);
                 _installer.Container.Resolve<MainThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<GestureTableThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<ExMenuThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<InspectorThumbnailDrawer>().AddTo(_disposables);
-                _installer.Container.Resolve<SelectionSynchronizer>().AddTo(_disposables);
+                _installer.Container.Resolve<ModeNameProvider>().AddTo(_disposables);
+                _installer.Container.Resolve<AnimationElement>().AddTo(_disposables);
+                _installer.Container.Resolve<ExpressionEditor>().AddTo(_disposables);
 
                 var expressionEditor = _installer.Container.Resolve<ExpressionEditor>().AddTo(_disposables);
                 expressionEditor.OnClipUpdated.Synchronize().ObserveOnMainThread().Subscribe(_ => Repaint()).AddTo(_disposables);

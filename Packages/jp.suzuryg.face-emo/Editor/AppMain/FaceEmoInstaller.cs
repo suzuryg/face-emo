@@ -90,10 +90,6 @@ namespace Suzuryg.FaceEmo.AppMain
             Container.Bind<InspectorViewState>().FromInstance(launcher.InspectorViewState).AsSingle();
 
             // Bind non-serialized classes
-            Container.BindInterfacesTo<SubWindowManager>().AsSingle();
-
-            Container.Bind<UpdateMenuSubject>().AsSingle();
-
             Container.Bind<ICreateMenuUseCase>().To<CreateMenuUseCase>().AsTransient();
             Container.Bind<IModifyMenuPropertiesUseCase>().To<ModifyMenuPropertiesUseCase>().AsTransient();
             Container.Bind<IAddMenuItemUseCase>().To<AddMenuItemUseCase>().AsTransient();
@@ -134,17 +130,19 @@ namespace Suzuryg.FaceEmo.AppMain
             Container.Bind<IRemoveConditionPresenter>().To<RemoveConditionPresenter>().AsSingle();
             Container.Bind<ISetExistingAnimationPresenter>().To<SetExistingAnimationPresenter>().AsSingle();
 
+            Container.BindInterfacesTo<SubWindowManager>().AsSingle();
             Container.BindInterfacesTo<MenuRepository>().AsSingle();
+            Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
+            Container.Bind<IBackupper>().To<FaceEmoBackupper>().AsSingle();
+            Container.Bind<UpdateMenuSubject>().AsSingle();
             Container.Bind<SelectionSynchronizer>().AsSingle();
             Container.Bind<MainThumbnailDrawer>().AsSingle();
             Container.Bind<GestureTableThumbnailDrawer>().AsSingle();
             Container.Bind<ExMenuThumbnailDrawer>().AsSingle();
             Container.Bind<InspectorThumbnailDrawer>().AsSingle();
-            Container.BindInterfacesTo<LocalizationSetting>().AsSingle();
             Container.Bind<ModeNameProvider>().AsSingle();
             Container.Bind<AnimationElement>().AsSingle();
             Container.Bind<ExpressionEditor>().AsSingle();
-            Container.Bind<IBackupper>().To<FaceEmoBackupper>().AsSingle();
             Container.Bind<MainWindowProvider>().AsSingle();
 
             Container.Bind<BranchListElement>().AsTransient();
