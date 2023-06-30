@@ -77,7 +77,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly string Path_BearsDenFx = $"{DetailConstants.ExternalDirectory}/BearsDen/CustomAnimatorControllers/__SetupFiles/Animator/Controller/FX.controller";
         public static readonly string Path_BearsDenIcons = $"{DetailConstants.ExternalDirectory}/BearsDen/CustomAnimatorControllers/__SetupFiles/Expression/Icons";
 
-        public static readonly string Path_FxTemplate = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplate.controller";
+        public static readonly string Path_FxTemplate_Basic = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplate_Basic.controller";
+        public static readonly string Path_FxTemplate_WithIntegrator = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplate_WithIntegrator.controller";
         public static readonly string Path_TemplateContainer = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplateContainer.controller";
         public static readonly string Path_EmoteLocker = $"{DetailConstants.DetailDirectory}/AV3/Template/FaceEmo_EmoteLocker.prefab";
         public static readonly string Path_IndicatorSound = $"{DetailConstants.DetailDirectory}/AV3/Template/FaceEmo_IndicatorSound.prefab";

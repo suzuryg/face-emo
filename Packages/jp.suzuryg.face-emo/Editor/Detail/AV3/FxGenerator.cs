@@ -31,8 +31,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 {
     public class FxGenerator : IFxGenerator
     {
-        private static readonly bool WriteDefaultsValue = false;
-
         private IReadOnlyLocalizationSetting _localizationSetting;
         private ModeNameProvider _modeNameProvider;
         private ExMenuThumbnailDrawer _exMenuThumbnailDrawer;
@@ -61,25 +59,20 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 var fxPath = generatedDir + "/FaceEmo_FX.controller";
                 var exMenuPath = generatedDir + "/FaceEmo_ExMenu.asset";
-                var cgeContainerPath = generatedDir + "/CgeIntegratorContainer.controller";
 
                 // Copy template FX controller
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Creating fx controller...", 0);
-                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate) == null)
+                var templatePath = _aV3Setting.SmoothAnalogFist ? AV3Constants.Path_FxTemplate_WithIntegrator : AV3Constants.Path_FxTemplate_Basic;
+                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(templatePath) == null)
                 {
                     throw new FaceEmoException("FX template was not found.");
                 }
-                else if (!AssetDatabase.CopyAsset(AV3Constants.Path_FxTemplate, fxPath))
+                else if (!AssetDatabase.CopyAsset(templatePath, fxPath))
                 {
                     Debug.LogError(fxPath);
                     throw new FaceEmoException("Failed to copy FX template.");
                 }
                 var animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(fxPath);
-
-                // Initialize CGE Integrator container
-                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Creating container...", 0);
-                var integratorContainer = new AnimatorController();
-                AssetDatabase.CreateAsset(integratorContainer, cgeContainerPath);
 
                 // Generate layers
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating layers...", 0);
@@ -88,7 +81,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 {
                     throw new FaceEmoException("AvatarDescriptor was not found.");
                 }
-                var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, WriteDefaultsValue));
+                var aac = AacV0.Create(GetConfiguration(avatarDescriptor, animatorController, writeDefaults: false));
                 var modes = AV3Utility.FlattenMenuItemList(menu.Registered, _modeNameProvider);
                 var defaultModeIndex = GetDefaultModeIndex(modes, menu);
                 var emoteCount = GetEmoteCount(modes);
@@ -98,10 +91,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 GenerateFaceEmotePlayerLayer(modes, _aV3Setting, aac, animatorController, useOverLimitMode);
                 ModifyBlinkLayer(aac, avatarDescriptor, animatorController);
                 ModifyMouthMorphCancelerLayer(_aV3Setting, aac, avatarDescriptor, animatorController);
-                if (_aV3Setting.SmoothAnalogFist)
-                {
-                    ComboGestureIntegratorProxy.DoGenerate(animatorController, integratorContainer, WriteDefaultsValue);
-                }
 
                 // Generate MA Object
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating ExMenu...", 0);

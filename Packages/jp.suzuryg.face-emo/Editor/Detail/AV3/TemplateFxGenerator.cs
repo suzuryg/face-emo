@@ -5,6 +5,7 @@ using UnityEditor.Animations;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -40,23 +41,22 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 {
                     throw new FaceEmoException("Original template was not found.");
                 }
-                else if (!AssetDatabase.CopyAsset(AV3Constants.Path_BearsDenFx, AV3Constants.Path_FxTemplate))
+                else if (!AssetDatabase.CopyAsset(AV3Constants.Path_BearsDenFx, AV3Constants.Path_FxTemplate_Basic))
                 {
-                    throw new FaceEmoException("Failed to copy FX template.");
+                    throw new FaceEmoException("Failed to copy FX template (basic).");
                 }
-                var animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate);
-
+                var animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate_Basic);
 
                 // Create container
-                var dummyContainer = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_TemplateContainer);
-                if (dummyContainer != null)
+                var templateContainer = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_TemplateContainer);
+                if (templateContainer != null)
                 {
                     AssetDatabase.DeleteAsset(AV3Constants.Path_TemplateContainer);
                 }
-                dummyContainer = new AnimatorController();
-                AssetDatabase.CreateAsset(dummyContainer, AV3Constants.Path_TemplateContainer);
+                templateContainer = new AnimatorController();
+                AssetDatabase.CreateAsset(templateContainer, AV3Constants.Path_TemplateContainer);
 
-                var aac = AacV0.Create(GetConfiguration(dummyContainer, writeDefaults: false));
+                var aac = AacV0.Create(GetConfiguration(templateContainer, writeDefaults: false));
 
                 AV3Utility.RemoveLayer(animatorController, AV3Constants.LayerName_Base);
                 AV3Utility.RemoveLayer(animatorController, AV3Constants.LayerName_FaceEmoteOverride);
@@ -72,6 +72,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 // Remove unused parameters
                 RemoveParameters(animatorController);
+
+                // Add integrator
+                if (!AssetDatabase.CopyAsset(AV3Constants.Path_FxTemplate_Basic, AV3Constants.Path_FxTemplate_WithIntegrator))
+                {
+                    throw new FaceEmoException("Failed to copy FX template (with integrator).");
+                }
+                var withIntegrator = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate_WithIntegrator);
+                ComboGestureIntegratorProxy.DoGenerate(withIntegrator, templateContainer, writeDefaults: false);
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, "Generation Succeeded!", "OK");
