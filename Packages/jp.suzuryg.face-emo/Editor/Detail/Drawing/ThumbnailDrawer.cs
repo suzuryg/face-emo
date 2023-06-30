@@ -2,6 +2,7 @@
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.View;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -81,6 +82,10 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         protected abstract float CameraAngleX { get; }
         protected abstract float CameraAngleY { get; }
 
+        // Observables
+        public IObservable<Unit> OnThumbnailUpdated => _onThumbnailUpdated.AsObservable();
+        private Subject<Unit> _onThumbnailUpdated = new Subject<Unit>();
+
         // Dependencies
         private AV3Setting _aV3Setting;
         protected ThumbnailSetting _thumbnailSetting;
@@ -88,8 +93,8 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         // Other fields
         private HashSet<string> _requests = new HashSet<string>();
         private Dictionary<string, Texture2D> _cache = new Dictionary<string, Texture2D>();
+        private Texture2D _hourglassIcon;
         private Texture2D _errorIcon;
-        private object _lockRequests = new object();
         private Scene _previewScene;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -101,8 +106,9 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             _thumbnailSetting = thumbnailSetting;
 
             // Others
+            _hourglassIcon = ViewUtility.GetIconTexture("hourglass_empty_FILL0_wght400_GRAD200_opsz300.png");
             _errorIcon = ViewUtility.GetIconTexture("error_FILL0_wght400_GRAD200_opsz300.png");
-            NullChecker.Check(_errorIcon);
+            NullChecker.Check(_hourglassIcon, _errorIcon);
 
             // Update thumbnails when animation is updated
             // (Called after updating animation and saving with Ctrl-S)
@@ -112,13 +118,16 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 {
                     if (_cache.ContainsKey(guid))
                     {
-                        lock (_lockRequests)
-                        {
-                            _requests.Add(guid);
-                        }
+                        _requests.Add(guid);
                     }
                 }
             }).AddTo(_disposables);
+
+            // Periodic update
+            if (this is MainThumbnailDrawer || this is GestureTableThumbnailDrawer)
+            {
+                Observable.FromCoroutine(PeriodicUpdate).Subscribe(_ => _onThumbnailUpdated.OnNext(Unit.Default)).AddTo(_disposables);
+            }
         }
 
         public void Dispose()
@@ -128,11 +137,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
 
         public Texture2D GetThumbnail(Domain.Animation animation)
         {
-            var guid = animation?.GUID;
-            if (string.IsNullOrEmpty(guid))
-            {
-                guid = EmptyClipKey;
-            }
+            var guid = GetGUID(animation);
 
             if (_cache.ContainsKey(guid))
             {
@@ -140,12 +145,19 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
             else
             {
-                lock (_lockRequests)
-                {
-                    _requests.Add(guid);
-                }
-                return _errorIcon;
+                _requests.Add(guid);
+                return _hourglassIcon;
             }
+        }
+
+        private string GetGUID(Domain.Animation animation)
+        {
+            var guid = animation?.GUID;
+            if (string.IsNullOrEmpty(guid))
+            {
+                guid = EmptyClipKey;
+            }
+            return guid;
         }
 
         public void RequestUpdate(AnimationClip animationClip)
@@ -153,10 +165,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(animationClip));
             if (!string.IsNullOrEmpty(guid))
             {
-                lock (_lockRequests)
-                {
-                    _requests.Add(guid);
-                }
+                _requests.Add(guid);
             }
         }
 
@@ -165,26 +174,37 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             _cache.Clear();
         }
 
-        // private static Unity.Profiling.ProfilerMarker _customMarker = new Unity.Profiling.ProfilerMarker($"{nameof(ThumbnailDrawerBase)}.{nameof(Update)}");
-
         public void Update()
+        {
+            var enumerator = UpdateCoroutine();
+            while (enumerator.MoveNext());
+        }
+
+        private IEnumerator PeriodicUpdate()
+        {
+            while (true)
+            {
+                yield return UpdateCoroutine();
+            }
+        }
+
+        // private static Unity.Profiling.ProfilerMarker _customMarker = new Unity.Profiling.ProfilerMarker($"{nameof(ThumbnailDrawerBase)}.{nameof(UpdateCoroutine)}");
+
+        private IEnumerator UpdateCoroutine()
         {
             // using (_customMarker.Auto()){
 
             // If there is no request for thumbnail generation, it is not executed (does not trigger a GameObject Instantiate).
-            lock (_lockRequests)
+            if (!_requests.Any())
             {
-                if (!_requests.Any())
-                {
-                    return;
-                }
+                yield break;
             }
 
             // Get Animator
             var avatarAnimator = AV3Utility.GetAnimator(_aV3Setting);
             if (avatarAnimator == null)
             {
-                return;
+                yield break;
             }
 
             // Prepare objects
@@ -242,25 +262,22 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 camera.transform.RotateAround(clonedAvatar.transform.position, Vector3.down, CameraAngleY);
 
                 // Generate thumbnails
-                List<string> requests;
-                lock (_lockRequests)
-                {
-                    requests = new List<string>(_requests);
-                    _requests.Clear();
-                }
+                var requests = new List<string>(_requests);
                 foreach (var guid in requests)
                 {
                     _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera);
 
                     // Apply gamma correction if necessary
-                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null && !ReferenceEquals(_cache[guid], _errorIcon) &&
+                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
+                        !ReferenceEquals(_cache[guid], _hourglassIcon) && !ReferenceEquals(_cache[guid], _errorIcon) &&
                         !Mathf.Approximately(_aV3Setting.GammaCorrectionValueForExMenuThumbnails, 1.0f))
                     {
                         DrawingUtility.ApplyGammaCorrectionGPU(_cache[guid], _aV3Setting.GammaCorrectionValueForExMenuThumbnails);
                     }
 
                     // Padding if necessary
-                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null && !ReferenceEquals(_cache[guid], _errorIcon))
+                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
+                        !ReferenceEquals(_cache[guid], _hourglassIcon) && !ReferenceEquals(_cache[guid], _errorIcon))
                     {
                         _cache[guid] = DrawingUtility.PaddingWithTransparentPixels(_cache[guid], ThumbnailSetting.ExMenu_OuterWidth, ThumbnailSetting.ExMenu_OuterHeight);
                     }
@@ -268,6 +285,9 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                     // Reset animator status
                     clonedAvatar.SetActive(false);
                     clonedAvatar.SetActive(true);
+
+                    _requests.Remove(guid);
+                    yield return null;
                 }
             }
             finally

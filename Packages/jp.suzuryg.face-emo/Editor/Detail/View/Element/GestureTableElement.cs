@@ -113,14 +113,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public void OnGUI(Rect rect)
         {
-            // Update thumbnails
-            var animations = GetAnimations();
-            foreach (var animation in animations)
-            {
-                _thumbnailDrawer.GetThumbnail(animation);
-            }
-            _thumbnailDrawer.Update();
-
             // Draw table
             var width = GetRectWidth();
             var height = GetRectHeight();

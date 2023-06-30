@@ -111,6 +111,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Synchronize selection event handler
             _selectionSynchronizer.OnSynchronizeSelection.Synchronize().Subscribe(OnSynchronizeSelection).AddTo(_disposables);
 
+            // Repaint thumbnail event handler
+            _thumbnailDrawer.OnThumbnailUpdated.Synchronize().ObserveOnMainThread().Subscribe(_ => _treeViewContainer?.MarkDirtyRepaint()).AddTo(_disposables);
+
             // Initialize tree element
             InitializeTreeElement();
 

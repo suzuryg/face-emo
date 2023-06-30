@@ -189,17 +189,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public void OnGUI(Rect rect)
         {
-            // Update thumbnails
-            if (!IsSimplified)
-            {
-                var animations = GetAnimations();
-                foreach (var animation in animations)
-                {
-                    _thumbnailDrawer.GetThumbnail(animation);
-                }
-                _thumbnailDrawer.Update();
-            }
-
             // Show Hints
             var hintRect = ShowHints();
             rect.y += hintRect.height;

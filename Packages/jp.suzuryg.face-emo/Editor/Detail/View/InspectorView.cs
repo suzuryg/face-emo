@@ -28,7 +28,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Subject<Locale> _onLocaleChanged = new Subject<Locale>();
 
         private ILocalizationSetting _localizationSetting;
-        private ThumbnailDrawerBase _thumbnailDrawer;
+        private InspectorThumbnailDrawer _thumbnailDrawer;
         private SerializedObject _inspectorViewState;
         private SerializedObject _av3Setting;
         private SerializedObject _thumbnailSetting;
@@ -50,14 +50,14 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public InspectorView(
             ILocalizationSetting localizationSetting,
-            InspectorThumbnailDrawer exMenuThumbnailDrawer,
+            InspectorThumbnailDrawer inspectorThumbnailDrawer,
             InspectorViewState inspectorViewState,
             AV3Setting av3Setting,
             ThumbnailSetting thumbnailSetting)
         {
             // Dependencies
             _localizationSetting = localizationSetting;
-            _thumbnailDrawer = exMenuThumbnailDrawer;
+            _thumbnailDrawer = inspectorThumbnailDrawer;
             _inspectorViewState = new SerializedObject(inspectorViewState);
             _av3Setting = new SerializedObject(av3Setting);
             _thumbnailSetting = new SerializedObject(thumbnailSetting);

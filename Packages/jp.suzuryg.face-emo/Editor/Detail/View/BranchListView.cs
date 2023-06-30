@@ -43,7 +43,6 @@ namespace Suzuryg.FaceEmo.Detail.View
         private UpdateMenuSubject _updateMenuSubject;
         private SelectionSynchronizer _selectionSynchronizer;
         private AV3Setting _aV3Setting;
-        private MainThumbnailDrawer _thumbnailDrawer;
 
         private Label _titleLabel;
         private Toggle _simplifyToggle;
@@ -109,7 +108,6 @@ namespace Suzuryg.FaceEmo.Detail.View
             _updateMenuSubject = updateMenuSubject;
             _selectionSynchronizer = selectionSynchronizer;
             _aV3Setting = aV3Setting;
-            _thumbnailDrawer = thumbnailDrawer;
             _branchListElement = branchListElement;
             _animationElement = animationElement;
 
@@ -134,6 +132,9 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Synchronize selection event handler
             _selectionSynchronizer.OnSynchronizeSelection.Synchronize().Subscribe(OnSynchronizeSelection).AddTo(_disposables);
+
+            // Repaint thumbnail event handler
+            thumbnailDrawer.OnThumbnailUpdated.Synchronize().ObserveOnMainThread().Subscribe(_ => _branchListContainer?.MarkDirtyRepaint()).AddTo(_disposables);
 
             // Presenter event handlers
             _addBranchPresenter.Observable.Synchronize().Subscribe(OnAddBranchPresenterCompleted).AddTo(_disposables);

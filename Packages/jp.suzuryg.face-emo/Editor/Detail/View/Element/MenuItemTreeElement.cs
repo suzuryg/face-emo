@@ -148,14 +148,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             // Update max label width
             _maxLabelWidth = GUI.skin.label.CalcSize(new GUIContent(_localizationTable.MenuItemListView_UseAnimationNameAsDisplayName)).x;
 
-            // Update thumbnails
-            var animations = GetAnimations();
-            foreach (var animation in animations)
-            {
-                _thumbnailDrawer.GetThumbnail(animation);
-            }
-            _thumbnailDrawer.Update();
-
             // Show Hints
             var hintRect = ShowHints();
             rect.y += hintRect.height;
