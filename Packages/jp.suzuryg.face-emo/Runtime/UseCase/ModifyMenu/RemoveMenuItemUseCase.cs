@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using System;
+using System.Collections.Generic;
 using UniRx;
 
 namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
@@ -11,9 +12,9 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
     public interface IRemoveMenuItemPresenter
     {
-        IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> Observable { get; }
+        IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, IMenu menu, string errorMessage)> Observable { get; }
 
-        void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, in IMenu menu, string errorMessage = "");
+        void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, in IMenu menu, string errorMessage = "");
     }
 
     public enum RemoveMenuItemResult
@@ -27,13 +28,13 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
     public class RemoveMenuItemPresenter : IRemoveMenuItemPresenter
     {
-        public IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
+        public IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
 
-        private Subject<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> _subject = new Subject<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)>();
+        private Subject<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, IMenu menu, string errorMessage)> _subject = new Subject<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, IMenu menu, string errorMessage)>();
 
-        public void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, in IMenu menu, string errorMessage = "")
+        public void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, in IMenu menu, string errorMessage = "")
         {
-            _subject.OnNext((removeMenuItemResult, removedItemId, menu, errorMessage));
+            _subject.OnNext((removeMenuItemResult, removedItemId, orderBeforeDeletion, menu, errorMessage));
         }
     }
 
@@ -52,17 +53,18 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
         public void Handle(string menuId, string menuItemId)
         {
+            var orderBeforeDeletion = new List<string>();
             try
             {
                 if (menuId is null || menuItemId is null)
                 {
-                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.ArgumentNull, menuItemId, null);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.ArgumentNull, menuItemId, orderBeforeDeletion, null);
                     return;
                 }
 
                 if (!_menuRepository.Exists(menuId))
                 {
-                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.MenuDoesNotExist, menuItemId, null);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.MenuDoesNotExist, menuItemId, orderBeforeDeletion, null);
                     return;
                 }
 
@@ -71,27 +73,30 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
                 if (menu.ContainsMode(menuItemId))
                 {
                     var mode = menu.GetMode(menuItemId);
-                    var parent = mode.Parent;
+                    orderBeforeDeletion = new List<string>(mode.Parent.Order);
                 }
                 else if (menu.ContainsGroup(menuItemId))
                 {
+                    var group = menu.GetGroup(menuItemId);
+                    orderBeforeDeletion = new List<string>(group.Parent.Order);
                 }
 
                 if (!menu.CanRemoveMenuItem(menuItemId))
                 {
-                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.InvalidId, menuItemId, menu);
+                    _removeMenuItemPresenter.Complete(RemoveMenuItemResult.InvalidId, menuItemId, orderBeforeDeletion, menu);
                     return;
                 }
 
                 menu.RemoveMenuItem(menuItemId);
 
                 _menuRepository.Save(menuId, menu, "RemoveMenuItem");
-                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Succeeded, menuItemId, menu);
                 _updateMenuSubject.OnNext(menu);
+
+                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Succeeded, menuItemId, orderBeforeDeletion, menu);
             }
             catch (Exception ex)
             {
-                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Error, menuItemId, null, ex.ToString());
+                _removeMenuItemPresenter.Complete(RemoveMenuItemResult.Error, menuItemId, orderBeforeDeletion, null, ex.ToString());
             }
         }
     }

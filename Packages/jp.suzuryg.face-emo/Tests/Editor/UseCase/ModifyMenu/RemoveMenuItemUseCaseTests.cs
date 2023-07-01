@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using NUnit.Framework;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 {
@@ -8,9 +9,9 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
     {
         public RemoveMenuItemResult Result { get; private set; }
 
-        System.IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IMenu menu, string errorMessage)> IRemoveMenuItemPresenter.Observable => throw new System.NotImplementedException();
+        System.IObservable<(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, IMenu menu, string errorMessage)> IRemoveMenuItemPresenter.Observable => throw new System.NotImplementedException();
 
-        public void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, in IMenu menu, string errorMessage = "")
+        public void Complete(RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, in IMenu menu, string errorMessage = "")
         {
             Result = removeMenuItemResult;
         }

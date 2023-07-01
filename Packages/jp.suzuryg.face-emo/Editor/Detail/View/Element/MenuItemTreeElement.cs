@@ -579,7 +579,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             return Padding + LeftMargin + ToggleWidth + _maxLabelWidth + ThumbnailMargin + AmountOfThumbnailShift + _thumbnailSetting.Main_Width + RightMargin + Padding;
         }
 
-        private IMenuItemList GetRootMenuItemList()
+        public IMenuItemList GetRootMenuItemList()
         {
             var id = _menuItemListViewState.RootGroupId;
 

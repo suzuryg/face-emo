@@ -32,6 +32,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private IAddMenuItemPresenter _addMenuItemPresenter;
         private ICopyMenuItemPresenter _copyMenuItemPresenter;
+        private IRemoveMenuItemPresenter _removeMenuItemPresenter;
 
         private IReadOnlyLocalizationSetting _localizationSetting;
         private LocalizationTable _localizationTable;
@@ -71,6 +72,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             IAddMenuItemPresenter addMenuItemPresenter,
             ICopyMenuItemPresenter copyMenuItemPresenter,
+            IRemoveMenuItemPresenter removeMenuItemPresenter,
 
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
@@ -95,6 +97,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Presenters
             _addMenuItemPresenter = addMenuItemPresenter;
             _copyMenuItemPresenter = copyMenuItemPresenter;
+            _removeMenuItemPresenter = removeMenuItemPresenter;
 
             // Others
             _localizationSetting = localizationSetting;
@@ -127,6 +130,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Presenter event handlers
             _addMenuItemPresenter.Observable.Synchronize().Subscribe(OnAddMenuItemPresenterCompleted).AddTo(_disposables);
             _copyMenuItemPresenter.Observable.Synchronize().Subscribe(OnCopyMenuItemPresenterCompleted).AddTo(_disposables);
+            _removeMenuItemPresenter.Observable.Synchronize().Subscribe(OnRemoveMenuItemPresenterCompleted).AddTo(_disposables);
 
             // Initialize tree element
             InitializeTreeElement();
@@ -510,6 +514,35 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (args.copyMenuItemResult == CopyMenuItemResult.Succeeded)
             {
                 _selectionSynchronizer.ChangeMenuItemListViewSelection(args.copiedItemId);
+            }
+        }
+
+        private void OnRemoveMenuItemPresenterCompleted(
+            (RemoveMenuItemResult removeMenuItemResult, string removedItemId, IReadOnlyList<string> orderBeforeDeletion, IMenu menu, string errorMessage) args)
+        {
+            if (args.removeMenuItemResult == RemoveMenuItemResult.Succeeded)
+            {
+                var id = string.Empty;
+
+                var index = args.orderBeforeDeletion.ToList().IndexOf(args.removedItemId);
+                var root = _menuItemTreeElement.GetRootMenuItemList();
+                if (root?.Order?.Count > 0)
+                {
+                    if (0 <= index && index < root.Order.Count)
+                    {
+                        id = root.Order[index];
+                    }
+                    else if (index >= root.Order.Count)
+                    {
+                        id = root.Order.LastOrDefault();
+                    }
+                    else
+                    {
+                        id = root.Order.FirstOrDefault();
+                    }
+                }
+
+                _selectionSynchronizer.ChangeMenuItemListViewSelection(id);
             }
         }
     }
