@@ -489,6 +489,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 // CheckBuffer processing load is small (confirmed by profiler).
                 _expressionEditor.CheckBuffer();
             }
+
+            // Repaint
+            if (fieldInputPerformed || removed.Any())
+            {
+                _expressionEditor.RepaintOtherWindows();
+            }
         }
 
         private void Field_AnimatedToggles()
@@ -545,6 +551,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             if (changed.Any() || removed.Any())
             {
                 _expressionEditor.CheckBuffer();
+            }
+
+            // Repaint
+            if (changed.Any() || removed.Any())
+            {
+                _expressionEditor.RepaintOtherWindows();
             }
         }
 
@@ -614,6 +626,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             if (fieldInputPerformed || changed.Any() || removed.Any())
             {
                 _expressionEditor.CheckBuffer();
+            }
+
+            // Repaint
+            if (fieldInputPerformed || removed.Any())
+            {
+                _expressionEditor.RepaintOtherWindows();
             }
         }
 
@@ -770,6 +788,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             {
                 _expressionEditor.CheckBuffer();
             }
+
+            // Repaint
+            if (added.Any())
+            {
+                _expressionEditor.RepaintOtherWindows();
+            }
         }
 
         private void Field_Toggles()
@@ -821,6 +845,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             if (added.Any())
             {
                 _expressionEditor.CheckBuffer();
+            }
+
+            // Repaint
+            if (added.Any())
+            {
+                _expressionEditor.RepaintOtherWindows();
             }
         }
 
@@ -874,6 +904,12 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             if (added.Any())
             {
                 _expressionEditor.CheckBuffer();
+            }
+
+            // Repaint
+            if (added.Any())
+            {
+                _expressionEditor.RepaintOtherWindows();
             }
         }
 
