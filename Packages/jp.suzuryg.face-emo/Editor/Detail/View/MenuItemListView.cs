@@ -30,6 +30,9 @@ namespace Suzuryg.FaceEmo.Detail.View
         private IMoveMenuItemUseCase _moveMenuItemUseCase;
         private ISetExistingAnimationUseCase _setExistingAnimationUseCase;
 
+        private IAddMenuItemPresenter _addMenuItemPresenter;
+        private ICopyMenuItemPresenter _copyMenuItemPresenter;
+
         private IReadOnlyLocalizationSetting _localizationSetting;
         private LocalizationTable _localizationTable;
 
@@ -66,6 +69,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             IMoveMenuItemUseCase moveMenuItemUseCase,
             ISetExistingAnimationUseCase setExistingAnimationUseCase,
 
+            IAddMenuItemPresenter addMenuItemPresenter,
+            ICopyMenuItemPresenter copyMenuItemPresenter,
+
             IReadOnlyLocalizationSetting localizationSetting,
             UpdateMenuSubject updateMenuSubject,
             SelectionSynchronizer selectionSynchronizer,
@@ -85,6 +91,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             _modifyGroupPropertiesUseCase = modifyGroupPropertiesUseCase;
             _moveMenuItemUseCase = moveMenuItemUseCase;
             _setExistingAnimationUseCase = setExistingAnimationUseCase;
+
+            // Presenters
+            _addMenuItemPresenter = addMenuItemPresenter;
+            _copyMenuItemPresenter = copyMenuItemPresenter;
 
             // Others
             _localizationSetting = localizationSetting;
@@ -113,6 +123,10 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Repaint thumbnail event handler
             _thumbnailDrawer.OnThumbnailUpdated.Synchronize().ObserveOnMainThread().Subscribe(_ => _treeViewContainer?.MarkDirtyRepaint()).AddTo(_disposables);
+
+            // Presenter event handlers
+            _addMenuItemPresenter.Observable.Synchronize().Subscribe(OnAddMenuItemPresenterCompleted).AddTo(_disposables);
+            _copyMenuItemPresenter.Observable.Synchronize().Subscribe(OnCopyMenuItemPresenterCompleted).AddTo(_disposables);
 
             // Initialize tree element
             InitializeTreeElement();
@@ -478,6 +492,24 @@ namespace Suzuryg.FaceEmo.Detail.View
                 }
 
                 _removeMenuItemUseCase.Handle("", id);
+            }
+        }
+
+        private void OnAddMenuItemPresenterCompleted(
+            (AddMenuItemResult addMenuItemResult, string addedItemId, IMenu menu, string errorMessage) args)
+        {
+            if (args.addMenuItemResult == AddMenuItemResult.Succeeded)
+            {
+                _selectionSynchronizer.ChangeMenuItemListViewSelection(args.addedItemId);
+            }
+        }
+
+        private void OnCopyMenuItemPresenterCompleted(
+            (CopyMenuItemResult copyMenuItemResult, string copiedItemId, IMenu menu, string errorMessage) args)
+        {
+            if (args.copyMenuItemResult == CopyMenuItemResult.Succeeded)
+            {
+                _selectionSynchronizer.ChangeMenuItemListViewSelection(args.copiedItemId);
             }
         }
     }

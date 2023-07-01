@@ -9,9 +9,9 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
     {
         public CopyMenuItemResult Result { get; private set; }
 
-        public IObservable<(CopyMenuItemResult copyMenuItemResult, IMenu menu, string errorMessage)> Observable => throw new NotImplementedException();
+        public IObservable<(CopyMenuItemResult copyMenuItemResult, string copiedItemId, IMenu menu, string errorMessage)> Observable => throw new NotImplementedException();
 
-        public void Complete(CopyMenuItemResult copyMenuItemResult, in IMenu menu, string errorMessage = "")
+        public void Complete(CopyMenuItemResult copyMenuItemResult, string copiedItemId, in IMenu menu, string errorMessage = "")
         {
             Result = copyMenuItemResult;
         }

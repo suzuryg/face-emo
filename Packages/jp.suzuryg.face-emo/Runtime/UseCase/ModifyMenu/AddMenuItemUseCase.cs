@@ -127,8 +127,9 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
                 }
 
                 _menuRepository.Save(menuId, menu, "AddMenuItem");
-                _addMenuItemPresenter.Complete(AddMenuItemResult.Succeeded, addedItemId, menu);
                 _updateMenuSubject.OnNext(menu);
+
+                _addMenuItemPresenter.Complete(AddMenuItemResult.Succeeded, addedItemId, menu);
             }
             catch (Exception ex)
             {

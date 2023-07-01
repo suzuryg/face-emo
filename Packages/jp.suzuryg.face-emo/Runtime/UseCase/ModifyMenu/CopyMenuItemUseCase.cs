@@ -12,9 +12,9 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
     public interface ICopyMenuItemPresenter
     {
-        IObservable<(CopyMenuItemResult copyMenuItemResult, IMenu menu, string errorMessage)> Observable { get; }
+        IObservable<(CopyMenuItemResult copyMenuItemResult, string copiedItemId, IMenu menu, string errorMessage)> Observable { get; }
 
-        void Complete(CopyMenuItemResult copyMenuItemResult,in IMenu menu, string errorMessage = "");
+        void Complete(CopyMenuItemResult copyMenuItemResult, string copiedItemId, in IMenu menu, string errorMessage = "");
     }
 
     public enum CopyMenuItemResult
@@ -28,13 +28,13 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
     public class CopyMenuItemPresenter : ICopyMenuItemPresenter
     {
-        public IObservable<(CopyMenuItemResult copyMenuItemResult, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
+        public IObservable<(CopyMenuItemResult copyMenuItemResult, string copiedItemId, IMenu menu, string errorMessage)> Observable => _subject.AsObservable();
 
-        private Subject<(CopyMenuItemResult copyMenuItemResult, IMenu menu, string errorMessage)> _subject = new Subject<(CopyMenuItemResult copyMenuItemResult, IMenu menu, string errorMessage)>();
+        private Subject<(CopyMenuItemResult copyMenuItemResult, string copiedItemId, IMenu menu, string errorMessage)> _subject = new Subject<(CopyMenuItemResult copyMenuItemResult, string copiedItemId, IMenu menu, string errorMessage)>();
 
-        public void Complete(CopyMenuItemResult copyMenuItemResult, in IMenu menu, string errorMessage = "")
+        public void Complete(CopyMenuItemResult copyMenuItemResult, string copiedItemId, in IMenu menu, string errorMessage = "")
         {
-            _subject.OnNext((copyMenuItemResult, menu, errorMessage));
+            _subject.OnNext((copyMenuItemResult, copiedItemId, menu, errorMessage));
         }
     }
 
@@ -57,11 +57,13 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
             {
                 if (string.IsNullOrEmpty(menuItemId) || string.IsNullOrEmpty(displayName))
                 {
-                    _copyMenuItemPresenter.Complete(CopyMenuItemResult.ArgumentNull, null);
+                    _copyMenuItemPresenter.Complete(CopyMenuItemResult.ArgumentNull, null, null);
                     return;
                 }
 
                 var menu = _menuRepository.Load(string.Empty);
+                string copiedItemId = null;
+
                 if (menu.ContainsMode(menuItemId))
                 {
                     var mode = menu.GetMode(menuItemId);
@@ -69,15 +71,15 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
                     if (!menu.CanAddMenuItemTo(parentId))
                     {
-                        _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidDestination, null);
+                        _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidDestination, null, null);
                         return;
                     }
 
-                    var copied = menu.CopyMode(menuItemId, parentId);
-                    menu.ModifyModeProperties(copied, displayName: displayName);
+                    copiedItemId = menu.CopyMode(menuItemId, parentId);
+                    menu.ModifyModeProperties(copiedItemId, displayName: displayName);
 
                     // Insert after the copy source
-                    menu.MoveMenuItem(new[] { copied }, parentId, mode.Parent.Order.ToList().FindIndex(x => x == menuItemId) + 1);
+                    menu.MoveMenuItem(new[] { copiedItemId }, parentId, mode.Parent.Order.ToList().FindIndex(x => x == menuItemId) + 1);
                 }
                 else if (menu.ContainsGroup(menuItemId))
                 {
@@ -86,29 +88,30 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
 
                     if (!menu.CanAddMenuItemTo(parentId))
                     {
-                        _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidDestination, null);
+                        _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidDestination, null, null);
                         return;
                     }
 
-                    var copied = menu.CopyGroup(menuItemId, parentId);
-                    menu.ModifyGroupProperties(copied, displayName: displayName);
+                    copiedItemId = menu.CopyGroup(menuItemId, parentId);
+                    menu.ModifyGroupProperties(copiedItemId, displayName: displayName);
 
                     // Insert after the copy source
-                    menu.MoveMenuItem(new[] { copied }, parentId, group.Parent.Order.ToList().FindIndex(x => x == menuItemId) + 1);
+                    menu.MoveMenuItem(new[] { copiedItemId }, parentId, group.Parent.Order.ToList().FindIndex(x => x == menuItemId) + 1);
                 }
                 else
                 {
-                    _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidSource, null);
+                    _copyMenuItemPresenter.Complete(CopyMenuItemResult.InvalidSource, null, null);
                     return;
                 }
 
                 _menuRepository.Save(string.Empty, menu, "CopyMenuItem");
-                _copyMenuItemPresenter.Complete(CopyMenuItemResult.Succeeded, menu);
                 _updateMenuSubject.OnNext(menu);
+
+                _copyMenuItemPresenter.Complete(CopyMenuItemResult.Succeeded, copiedItemId, menu);
             }
             catch (Exception ex)
             {
-                _copyMenuItemPresenter.Complete(CopyMenuItemResult.Error, null, ex.ToString());
+                _copyMenuItemPresenter.Complete(CopyMenuItemResult.Error, null, null, ex.ToString());
             }
         }
     }
