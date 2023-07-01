@@ -32,6 +32,7 @@ namespace Suzuryg.FaceEmo.Detail
             IGenerateFxPresenter generateFxPresenter,
             IAddBranchPresenter addBranchPresenter,
             IAddMultipleBranchesPresenter addMultipleBranchesPresenter,
+            ICopyBranchPresenter copyBranchPresenter,
             IModifyBranchPropertiesPresenter modifyBranchPropertiesPresenter,
             IChangeBranchOrderPresenter changeBranchOrderPresenter,
             IRemoveBranchPresenter removeBranchPresenter,
@@ -137,6 +138,15 @@ namespace Suzuryg.FaceEmo.Detail
                 if (x.addMultipleBranchesResult != AddMultipleBranchesResult.Succeeded)
                 {
                     EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.addMultipleBranchesResult.GetType().Name}: {x.addMultipleBranchesResult}", "OK");
+                    if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
+                }
+            }).AddTo(_disposables);
+
+            copyBranchPresenter.Observable.Synchronize().Subscribe(x =>
+            {
+                if (x.copyBranchResult != CopyBranchResult.Succeeded)
+                {
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName,  $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.copyBranchResult.GetType().Name}: {x.copyBranchResult}", "OK");
                     if (!string.IsNullOrEmpty(x.errorMessage)) { Debug.LogError(x.errorMessage); }
                 }
             }).AddTo(_disposables);

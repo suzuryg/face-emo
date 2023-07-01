@@ -105,8 +105,12 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_Preset_AllPatterns = "All Patterns (63 Patterns)";
         public string BranchListView_Message_AddPreset = "Are you sure you want to add the following facial expression preset?";
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
+        public string BranchListView_Message_CopyBranch = "Copy the selected expression?";
+        public string BranchListView_Message_CopyBranchWithClips = "Along with copying the expression, the following animation clips will be created. Is it okay?";
         public string BranchListView_Tooltip_AddBranch = "Adds a new expression above the currently selected expression. " +
             "If no expression is selected, it adds an expression at the top.";
+        public string BranchListView_Tooltip_CopyBranch = "Copy the selected expression. " +
+            "The animation clip set to the expression will also be copied at the same time.";
         public string BranchListView_Tooltip_DeleteBranch = "Delete the selected expression.";
         public string BranchListView_Tooltip_AddPreset = "Several facial expressions can be added at once by selecting a preset.";
         public string BranchListView_Tooltip_OpenGestureTable = "You can confirm which expression corresponds to each combination of gestures.";

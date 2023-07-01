@@ -24,6 +24,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private ISetExistingAnimationUseCase _setExistingAnimationUseCase;
         private IAddBranchUseCase _addBranchUseCase;
         private IAddMultipleBranchesUseCase _addMultipleBranchesUseCase;
+        private ICopyBranchUseCase _copyBranchUseCase;
         private IChangeBranchOrderUseCase _changeBranchOrderUseCase;
         private IModifyBranchPropertiesUseCase _modifyBranchPropertiesUseCase;
         private IRemoveBranchUseCase _removeBranchUseCase;
@@ -64,6 +65,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             ISetExistingAnimationUseCase setExistingAnimationUseCase,
             IAddBranchUseCase addBranchUseCase,
             IAddMultipleBranchesUseCase addMultipleBranchesUseCase,
+            ICopyBranchUseCase copyBranchUseCase,
             IChangeBranchOrderUseCase changeBranchOrderUseCase,
             IModifyBranchPropertiesUseCase modifyBranchPropertiesUseCase,
             IRemoveBranchUseCase removeBranchUseCase,
@@ -89,6 +91,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _setExistingAnimationUseCase = setExistingAnimationUseCase;
             _addBranchUseCase = addBranchUseCase;
             _addMultipleBranchesUseCase = addMultipleBranchesUseCase;
+            _copyBranchUseCase = copyBranchUseCase;
             _changeBranchOrderUseCase = changeBranchOrderUseCase;
             _modifyBranchPropertiesUseCase = modifyBranchPropertiesUseCase;
             _removeBranchUseCase = removeBranchUseCase;
@@ -223,7 +226,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _titleLabel.text = localizationTable.BranchListView_Title;
 
             if (_addBranchButton != null)       { _addBranchButton.tooltip = _localizationTable.BranchListView_Tooltip_AddBranch; }
-            if (_copyBranchButton != null)      { _copyBranchButton.tooltip = ""; }
+            if (_copyBranchButton != null)      { _copyBranchButton.tooltip = _localizationTable.BranchListView_Tooltip_CopyBranch; }
             if (_removeBranchButton != null)    { _removeBranchButton.tooltip = _localizationTable.BranchListView_Tooltip_DeleteBranch; }
         }
 
@@ -314,7 +317,76 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void OnCopyBranchButtonClicked()
         {
-            Debug.Log("Copy branch");
+            try
+            {
+                var menu = _branchListElement.Menu;
+                var modeId = _branchListElement.SelectedModeId;
+                var mode = menu.GetMode(modeId);
+                var branchIndex = _branchListElement.GetSelectedBranchIndex();
+                var branch = mode.Branches[branchIndex];
+
+                var useLeft = branch.IsLeftTriggerUsed && branch.CanLeftTriggerUsed;
+                var useRight = branch.IsRightTriggerUsed && branch.CanRightTriggerUsed;
+                var useBoth = useLeft && useRight;
+
+                var baseInfo = GetCopyClipInfo(branch.BaseAnimation);
+                var leftInfo = useLeft ? GetCopyClipInfo(branch.LeftHandAnimation) : (null, null, null, null);
+                var rightInfo = useRight ? GetCopyClipInfo(branch.RightHandAnimation) : (null, null, null, null);
+                var bothInfo = useBoth ? GetCopyClipInfo(branch.BothHandsAnimation) : (null, null, null, null);
+
+                var newClipNames = new List<string>()
+                {
+                    baseInfo.newName, leftInfo.newName, rightInfo.newName, bothInfo.newName,
+                };
+                newClipNames = newClipNames.Where(x => !string.IsNullOrEmpty(x)).ToList();
+
+                var height = newClipNames.Count > 0 ? 175 : OptoutableDialog.DefaultWindowHeight;
+                var message = newClipNames.Count > 0 ?
+                    LocalizationSetting.InsertLineBreak(_localizationTable.BranchListView_Message_CopyBranchWithClips) + "\n\n" + string.Join("\n", newClipNames) :
+                    _localizationTable.BranchListView_Message_CopyBranch;
+
+                if (OptoutableDialog.Show(DomainConstants.SystemName, message, _localizationTable.Common_Yes, _localizationTable.Common_No, windowHeight: height))
+                {
+                    var baseCopied = CopyClip(baseInfo);
+                    var leftCopied = CopyClip(leftInfo);
+                    var rightCopied = CopyClip(rightInfo);
+                    var bothCopied = CopyClip(bothInfo);
+
+                    _copyBranchUseCase.Handle("", modeId, branchIndex, baseCopied, leftCopied, rightCopied, bothCopied);
+                }
+            }
+            catch (Exception ex)
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_localizationTable.ErrorHandler_Message_ErrorOccured}\n{nameof(OnCopyBranchButtonClicked)}: Error", "OK");
+                Debug.LogException(ex);
+            }
+        }
+
+        private static (AnimationClip clip, string srcPath, string newName, string dstPath) GetCopyClipInfo(Domain.Animation animation)
+        {
+            var clip = AV3Utility.GetAnimationClipWithName(animation).clip;
+            if (clip == null) { return (null, null, null, null); }
+
+            var srcPath = AssetDatabase.GetAssetPath(clip);
+            var dirName = Path.GetDirectoryName(srcPath).Replace(Path.DirectorySeparatorChar, '/');
+            var baseName = Path.GetFileNameWithoutExtension(srcPath);
+            var newName = AnimationElement.GetNewAnimationName(dirName, baseName);
+            var dstPath = dirName + "/" + newName;
+
+            return (clip, srcPath, newName?.Replace(".anim", string.Empty), dstPath);
+        }
+
+        private static Domain.Animation CopyClip((AnimationClip clip, string srcPath, string newName, string dstPath) args)
+        {
+            if (!string.IsNullOrEmpty(args.srcPath) && !string.IsNullOrEmpty(args.dstPath))
+            {
+                AssetDatabase.CopyAsset(args.srcPath, args.dstPath);
+                return new Domain.Animation(AssetDatabase.AssetPathToGUID(args.dstPath));
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private void OnRemoveBranchButtonClicked()

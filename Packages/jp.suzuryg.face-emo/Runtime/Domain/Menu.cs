@@ -240,27 +240,42 @@ namespace Suzuryg.FaceEmo.Domain
 
             for (int i = 0; i < mode.Branches.Count; i++)
             {
-                copiedMode.AddBranch();
-                foreach (var condition in mode.Branches[i].Conditions)
-                {
-                    copiedMode.AddCondition(i, new Condition(condition.Hand, condition.HandGesture, condition.ComparisonOperator));
-                }
-
-                copiedMode.ModifyBranchProperties(i,
-                    eyeTrackingControl: mode.Branches[i].EyeTrackingControl,
-                    mouthTrackingControl: mode.Branches[i].MouthTrackingControl,
-                    blinkEnabled: mode.Branches[i].BlinkEnabled,
-                    mouthMorphCancelerEnabled: mode.Branches[i].MouthMorphCancelerEnabled,
-                    isLeftTriggerUsed: mode.Branches[i].IsLeftTriggerUsed,
-                    isRightTriggerUsed: mode.Branches[i].IsRightTriggerUsed);
-
-                if (mode.Branches[i].BaseAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].BaseAnimation, i, BranchAnimationType.Base); }
-                if (mode.Branches[i].LeftHandAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].LeftHandAnimation, i, BranchAnimationType.Left); }
-                if (mode.Branches[i].RightHandAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].RightHandAnimation, i, BranchAnimationType.Right); }
-                if (mode.Branches[i].BothHandsAnimation is Animation) { copiedMode.SetAnimation(mode.Branches[i].BothHandsAnimation, i, BranchAnimationType.Both); }
+                CopyBranch(modeId, i, copiedId);
             }
 
             return copiedId;
+        }
+
+        public void CopyBranch(string srcModeId, int srcBranchIndex, string dstModeId)
+        {
+            if (!ContainsMode(srcModeId)) { throw new FaceEmoException("Src mode does not exist."); }
+            else if (!ContainsBranch(srcModeId, srcBranchIndex)) { throw new FaceEmoException("Src branch does not exist."); }
+            else if (!ContainsMode(dstModeId)) { throw new FaceEmoException("Dst mode does not exist."); }
+
+            var srcMode = GetMode(srcModeId);
+            var srcBranch = srcMode.Branches[srcBranchIndex];
+            var dstMode = _modes[dstModeId];
+
+            dstMode.AddBranch();
+            var dstBranchIndex = dstMode.Branches.Count - 1;
+
+            foreach (var condition in srcBranch.Conditions)
+            {
+                dstMode.AddCondition(dstBranchIndex, new Condition(condition.Hand, condition.HandGesture, condition.ComparisonOperator));
+            }
+
+            dstMode.ModifyBranchProperties(dstBranchIndex,
+                eyeTrackingControl: srcBranch.EyeTrackingControl,
+                mouthTrackingControl: srcBranch.MouthTrackingControl,
+                blinkEnabled: srcBranch.BlinkEnabled,
+                mouthMorphCancelerEnabled: srcBranch.MouthMorphCancelerEnabled,
+                isLeftTriggerUsed: srcBranch.IsLeftTriggerUsed,
+                isRightTriggerUsed: srcBranch.IsRightTriggerUsed);
+
+            if (srcBranch.BaseAnimation is Animation) { dstMode.SetAnimation(srcBranch.BaseAnimation, dstBranchIndex, BranchAnimationType.Base); }
+            if (srcBranch.LeftHandAnimation is Animation) { dstMode.SetAnimation(srcBranch.LeftHandAnimation, dstBranchIndex, BranchAnimationType.Left); }
+            if (srcBranch.RightHandAnimation is Animation) { dstMode.SetAnimation(srcBranch.RightHandAnimation, dstBranchIndex, BranchAnimationType.Right); }
+            if (srcBranch.BothHandsAnimation is Animation) { dstMode.SetAnimation(srcBranch.BothHandsAnimation, dstBranchIndex, BranchAnimationType.Both); }
         }
 
         public string CopyGroup(string groupId, string destination)

@@ -304,7 +304,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             return "Assets";
         }
 
-        private string GetNewAnimationName(string defaultDir, string baseAnimationName)
+        public static string GetNewAnimationName(string defaultDir, string baseAnimationName)
         {
             // Define a regex pattern to match the ending _(number)
             string pattern = @"_\(\d+\)$";
