@@ -74,6 +74,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private string _blinkText;
         private string _mouthMorphCancelerText;
         private string _emptyText;
+        private string _nullText;
 
         private Texture2D _folderIcon;
 
@@ -159,8 +160,10 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             {
                 using (new EditorGUILayout.HorizontalScope(_emptyStyle))
                 {
+                    var text = GetRootMenuItemList() is IMenuItemList ? _emptyText : _nullText;
+
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(_emptyText);
+                    GUILayout.Label(text);
                     GUILayout.FlexibleSpace();
                 }
             }
@@ -194,6 +197,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             _blinkText = localizationTable.MenuItemListView_Blink;
             _mouthMorphCancelerText = localizationTable.MenuItemListView_MouthMorphCanceler;
             _emptyText = localizationTable.MenuItemListView_Empty;
+            _nullText = localizationTable.MenuItemListView_SelectFolder;
             base.SetText(localizationTable);
         }
 

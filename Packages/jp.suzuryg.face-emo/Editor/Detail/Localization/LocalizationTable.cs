@@ -73,6 +73,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string MenuItemListView_Blink = "Enable Blink";
         public string MenuItemListView_MouthMorphCanceler = "Mouth Morph Canceler";
         public string MenuItemListView_Empty = "You can add an expression pattern by pressing the button\nat the top of the view.";
+        public string MenuItemListView_SelectFolder = "Please select a folder on the left panel.";
 
         public string BranchListView_Title = "Expressions";
         public string BranchListView_Simplify = "Simplify";
