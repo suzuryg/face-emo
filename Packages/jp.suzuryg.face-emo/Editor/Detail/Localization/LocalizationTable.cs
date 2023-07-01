@@ -25,10 +25,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_ThumbnailHeight = "Thumbnail Height";
         public string Common_DoNotShowAgain = "Don't show again";
         public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of expression patterns and folders.";
-        public string Common_Message_DeleteGroup = "Are you sure you want to delete the following folder?";
-        public string Common_Message_DeleteMode = "Are you sure you want to delete the following expression pattern?";
-        public string Common_Message_DeleteBranch = "Are you sure you want to delete the currently selected expression?";
-        public string Common_Message_ClearMouthMorphBlendShapes = "Are you sure you want to clear mouth morph blend shapes?";
+        public string Common_Message_DeleteGroup = "Delete the following folder?";
+        public string Common_Message_DeleteMode = "Delete the following expression pattern?";
+        public string Common_Message_DeleteBranch = "Delete the currently selected expression?";
+        public string Common_Message_ClearMouthMorphBlendShapes = "Clear mouth morph blend shapes?";
         public string Common_Message_NotSavedInPlayMode = "Changes in play mode are not saved.";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
@@ -103,7 +103,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_Preset_RightPriority = "Right Priority (14 Patterns)";
         public string BranchListView_Preset_Combination = "Combination (35 Patterns)";
         public string BranchListView_Preset_AllPatterns = "All Patterns (63 Patterns)";
-        public string BranchListView_Message_AddPreset = "Are you sure you want to add the following facial expression preset?";
+        public string BranchListView_Message_AddPreset = "Add the following facial expression preset?";
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
         public string BranchListView_Message_CopyBranch = "Copy the selected expression?";
         public string BranchListView_Message_CopyBranchWithClips = "Along with copying the expression, the following animation clips will be created. Is it okay?";
@@ -122,7 +122,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string SettingView_ShowHints = "Show Hints";
         public string SettingView_Manual = "FaceEmo Manual";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
-        public string SettingView_Message_ConfirmApplyToAvatar = "Are you sure you want to apply facial expression menu to the avatar?";
+        public string SettingView_Message_ConfirmApplyToAvatar = "Apply facial expression menu to the avatar?";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
         public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
 
@@ -265,7 +265,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_Message_FailedToRename = "Failed to rename. Please enter a different name.";
         public string ExpressionEditorView_Message_BlinkBlendShapeExists = "Blend shapes for blink are included!";
         public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lipsync are included!";
-        public string ExpressionEditorView_Message_AddAllBlendShapes = "Are you sure you want to add all blend shapes to the animation clip?";
+        public string ExpressionEditorView_Message_AddAllBlendShapes = "Add all blend shapes to the animation clip?";
         public string ExpressionEditorView_Tooltip_Delimiter = "By entering the delimiter for the blend shapes, you can display the blend shapes by category. " +
             "For example, if the category name is \"=====Eye=====\", please enter \"=====\".";
         public string ExpressionEditorView_Tooltip_AddAllBlendShapes = "All unadded blend shapes will be added to the animation clip. " +
