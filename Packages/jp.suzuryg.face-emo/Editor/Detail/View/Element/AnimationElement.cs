@@ -153,25 +153,18 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 GUI.DrawTexture(new Rect(openRect.x + iconMargin, openRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _openIcon, ScaleMode.ScaleToFit, alphaBlend: true);
 
                 // Copy
-                using (new EditorGUI.DisabledScope(!clipExits))
+                if (GUI.Button(copyRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Copy)))
                 {
-                    if (GUI.Button(copyRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Copy)))
-                    {
-                        if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+                    if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
-                        var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, defaultClipName);
-                        if (!string.IsNullOrEmpty(guid))
-                        {
-                            _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
-                            setAnimationClipAction(guid);
-                        }
+                    var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, defaultClipName);
+                    if (!string.IsNullOrEmpty(guid))
+                    {
+                        _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
+                        setAnimationClipAction(guid);
                     }
                 }
                 GUI.DrawTexture(new Rect(copyRect.x + iconMargin, copyRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _copyIcon, ScaleMode.ScaleToFit, alphaBlend: true);
-                if (!clipExits)
-                {
-                    GUI.DrawTexture(copyRect, _blackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
-                }
 
                 // Edit
                 using (new EditorGUI.DisabledScope(!clipExits))
@@ -208,9 +201,10 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             // Open dialog and get the path of the AnimationClip
             var defaultDir = GetDefaultDir(existingAnimationPath);
             var selectedPath = string.Empty;
-            if (dialogMode == DialogMode.Open)
+            if (dialogMode == DialogMode.Open || dialogMode == DialogMode.Copy)
             {
-                selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: defaultDir, filters: new[] { "AnimationClip" , "anim" });
+                var title = dialogMode == DialogMode.Open ? _localizationTable.AnimationElement_Dialog_Open : _localizationTable.AnimationElement_Dialog_Copy;
+                selectedPath = EditorUtility.OpenFilePanelWithFilters(title: title, directory: defaultDir, filters: new[] { "AnimationClip" , "anim" });
             }
             else if (dialogMode == DialogMode.Create)
             {
@@ -218,18 +212,13 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 var defaultName = baseName + DateTime.Now.ToString("_yyyyMMdd_HHmmss");
                 selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: defaultName, extension: "anim", message: null, path: defaultDir);
             }
-            else if (dialogMode == DialogMode.Copy)
-            {
-                var baseAnimationName = System.IO.Path.GetFileName(existingAnimationPath).Replace(".anim", string.Empty);
-                selectedPath = EditorUtility.SaveFilePanelInProject(title: null, defaultName: GetNewAnimationName(defaultDir, baseAnimationName), extension: "anim", message: null, path: defaultDir);
-            }
 
             // Retrieve and return the GUID of the AnimationClip from the path
             if (!string.IsNullOrEmpty(selectedPath))
             {
                 // OpenFilePanel path is in OS format, so convert it to Unity format
                 var unityPath = selectedPath;
-                if (dialogMode == DialogMode.Open)
+                if (dialogMode == DialogMode.Open || dialogMode == DialogMode.Copy)
                 {
                     unityPath = PathConverter.ToUnityPath(selectedPath);
                 }
@@ -242,7 +231,13 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 }
                 else if (dialogMode == DialogMode.Copy)
                 {
-                    AssetDatabase.CopyAsset(existingAnimationPath, unityPath);
+                    var src = unityPath;
+                    var dirName = System.IO.Path.GetDirectoryName(src).Replace(System.IO.Path.DirectorySeparatorChar, '/');
+                    var baseName = System.IO.Path.GetFileNameWithoutExtension(src);
+                    var newName = GetNewAnimationName(dirName, baseName);
+                    var dst = dirName + "/" + newName;
+                    AssetDatabase.CopyAsset(src, dst);
+                    unityPath = dst;
                 }
 
                 // Retrieve GUID

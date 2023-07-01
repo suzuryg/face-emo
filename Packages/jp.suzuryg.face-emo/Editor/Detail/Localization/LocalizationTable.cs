@@ -132,8 +132,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
         public string AnimationElement_Tooltip_Create = "Create a new animation clip.";
         public string AnimationElement_Tooltip_Open = "Open an animation clip.";
-        public string AnimationElement_Tooltip_Copy = "Copy the attached animation clip.";
+        public string AnimationElement_Tooltip_Copy = "Copy an existing animation clip to create a new animation clip.";
         public string AnimationElement_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip.";
+        public string AnimationElement_Dialog_Open = "Please select an animation clip to set to the expression.";
+        public string AnimationElement_Dialog_Copy = "Please select the animation clip to be copied.";
 
         public string ModeNameProvider_NewMode = "NewExpressionPattern";
         public string ModeNameProvider_NewGroup = "NewFolder";
