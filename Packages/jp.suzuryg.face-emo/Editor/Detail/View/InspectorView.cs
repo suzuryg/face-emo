@@ -478,10 +478,10 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             EditorGUILayout.Space(10);
 
-            if (GUILayout.Button(_localizationTable.Common_Clear) &&
+            if (GUILayout.Button(_localizationTable.Common_DeleteAll) &&
                 OptoutableDialog.Show(DomainConstants.SystemName,
-                    _localizationTable.Common_Message_ClearMouthMorphBlendShapes,
-                    _localizationTable.Common_Yes, _localizationTable.Common_No))
+                    _localizationTable.InspectorView_Message_ClearMouthMorphBlendShapes,
+                    _localizationTable.Common_Delete, _localizationTable.Common_Cancel))
             {
                 var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
                 property.ClearArray();

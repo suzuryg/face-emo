@@ -353,7 +353,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 EditorApplication.delayCall += () =>
                 {
                     if (OptoutableDialog.Show(DomainConstants.SystemName, _localizationTable.ExpressionEditorView_Message_AddAllBlendShapes,
-                        _localizationTable.Common_Yes, _localizationTable.Common_No,
+                        _localizationTable.Common_Add, _localizationTable.Common_Cancel,
                         centerPosition: centerPosition))
                     {
                         EditorPrefs.SetBool(DetailConstants.Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue, false);

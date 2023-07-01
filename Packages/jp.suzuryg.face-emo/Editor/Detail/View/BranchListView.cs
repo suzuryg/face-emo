@@ -340,12 +340,12 @@ namespace Suzuryg.FaceEmo.Detail.View
                 };
                 newClipNames = newClipNames.Where(x => !string.IsNullOrEmpty(x)).ToList();
 
-                var height = newClipNames.Count > 0 ? 175 : OptoutableDialog.DefaultWindowHeight;
+                var height = newClipNames.Count > 0 ? 185 : OptoutableDialog.DefaultWindowHeight;
                 var message = newClipNames.Count > 0 ?
                     LocalizationSetting.InsertLineBreak(_localizationTable.BranchListView_Message_CopyBranchWithClips) + "\n\n" + string.Join("\n", newClipNames) :
                     _localizationTable.BranchListView_Message_CopyBranch;
 
-                if (OptoutableDialog.Show(DomainConstants.SystemName, message, _localizationTable.Common_Yes, _localizationTable.Common_No, windowHeight: height))
+                if (OptoutableDialog.Show(DomainConstants.SystemName, message, _localizationTable.Common_Copy, _localizationTable.Common_Cancel, windowHeight: height))
                 {
                     var baseCopied = CopyClip(baseInfo);
                     var leftCopied = CopyClip(leftInfo);
@@ -488,7 +488,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                     var branchIndex = _branchListElement?.GetSelectedBranchIndex();
                     var preset = presets[_selectedPresetIndex];
                     if (OptoutableDialog.Show(DomainConstants.SystemName, _localizationTable.BranchListView_Message_AddPreset + "\n" + preset,
-                        _localizationTable.Common_Yes, _localizationTable.Common_No))
+                        _localizationTable.Common_Add, _localizationTable.Common_Cancel))
                     {
                         var gestures = new[]
                         {

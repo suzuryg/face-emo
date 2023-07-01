@@ -270,7 +270,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             if (OptoutableDialog.Show(DomainConstants.SystemName,
                 _localizationTable.SettingView_Message_ConfirmApplyToAvatar,
-                _localizationTable.Common_Yes, _localizationTable.Common_No,
+                _localizationTable.Common_Apply, _localizationTable.Common_Cancel,
                 centerPosition: GetDialogCenterPosition()))
             {
                 _mainWindow?.Focus(); // DisplayProgressBar() is displayed in the center of the focused EditorWindow.

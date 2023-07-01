@@ -8,9 +8,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Add = "Add";
         public string Common_Cancel = "Cancel";
         public string Common_Delete = "Delete";
-        public string Common_Clear = "Clear";
-        public string Common_Yes = "Yes";
-        public string Common_No = "No";
+        public string Common_DeleteAll = "Delete All";
+        public string Common_Copy = "Copy";
+        public string Common_Apply = "Apply";
 
         public string Common_Neutral = "Neutral";
         public string Common_Fist = "Fist";
@@ -28,7 +28,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Message_DeleteGroup = "Delete the following folder?";
         public string Common_Message_DeleteMode = "Delete the following expression pattern?";
         public string Common_Message_DeleteBranch = "Delete the currently selected expression?";
-        public string Common_Message_ClearMouthMorphBlendShapes = "Clear mouth morph blend shapes?";
         public string Common_Message_NotSavedInPlayMode = "Changes in play mode are not saved.";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
@@ -106,9 +105,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_Message_AddPreset = "Add the following facial expression preset?";
         public string BranchListView_Message_InvalidPreset = "An error occurred while adding a facial expression preset.";
         public string BranchListView_Message_CopyBranch = "Copy the selected expression?";
-        public string BranchListView_Message_CopyBranchWithClips = "Along with copying the expression, the following animation clips will be created. Is it okay?";
-        public string BranchListView_Tooltip_AddBranch = "Adds a new expression above the currently selected expression. " +
-            "If no expression is selected, it adds an expression at the top.";
+        public string BranchListView_Message_CopyBranchWithClips = "Along with copying the expression, the following animation clips will be created.\n" +
+            "Copy the selected expression?";
+        public string BranchListView_Tooltip_AddBranch = "Add a new expression above the selected expression. " +
+            "If no expression is selected, add the expression at the top.";
         public string BranchListView_Tooltip_CopyBranch = "Copy the selected expression. " +
             "The animation clip set to the expression will also be copied at the same time.";
         public string BranchListView_Tooltip_DeleteBranch = "Delete the selected expression.";
@@ -158,6 +158,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
         public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
+        public string InspectorView_Message_ClearMouthMorphBlendShapes = "Delete all mouth morph blend shapes?";
 
         public string InspectorView_ApplyingToMultipleAvatars = "Applying Facial Expression Menu to Multiple Avatars";
         public string InspectorView_MenuPrefab = "Facial Expression Menu Prefab";
