@@ -116,7 +116,7 @@ namespace Suzuryg.FaceEmo.AppMain
         [MenuItem("FaceEmo/Restore Menu", false, 1)]
         public static void Restore(MenuCommand menuCommand)
         {
-            var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: null, filters: new[] { "FaceEmoProject" , "asset" });
+            var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: FaceEmoBackupper.BackupDir, filters: new[] { "FaceEmoProject" , "asset" });
             if (string.IsNullOrEmpty(selectedPath)) { return; }
 
             // OpenFilePanel path is in OS format, so convert it to Unity format
