@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3.9
+sidebar_position: 0
 sidebar_label: 複数のアバターに表情メニューを適用する
 ---
 
