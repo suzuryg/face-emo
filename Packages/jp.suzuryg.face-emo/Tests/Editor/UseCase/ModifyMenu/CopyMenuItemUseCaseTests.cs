@@ -1,4 +1,7 @@
 ﻿using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode;
+using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode.ModifyBranch;
+using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System;
@@ -51,13 +54,18 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
             Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.ArgumentNull));
 
             // Create Menu
-            useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>().Handle(menuId);
+            var createMenuUseCase = useCaseTestsInstaller.Container.Resolve<CreateMenuUseCase>();
+            createMenuUseCase.Handle(menuId);
 
             // Add item
-            AddMenuItemUseCase addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
-            RemoveMenuItemUseCase removeMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<RemoveMenuItemUseCase>();
-            ModifyModePropertiesUseCase modifyModePropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyModePropertiesUseCase>();
-            ModifyGroupPropertiesUseCase modifyGroupPropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyGroupPropertiesUseCase>();
+            var addMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<AddMenuItemUseCase>();
+            var removeMenuItemUseCase = useCaseTestsInstaller.Container.Resolve<RemoveMenuItemUseCase>();
+            var modifyModePropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyModePropertiesUseCase>();
+            var modifyGroupPropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyGroupPropertiesUseCase>();
+            var addBranchUseCase = useCaseTestsInstaller.Container.Resolve<AddBranchUseCase>();
+            var modifyBranchPropertiesUseCase = useCaseTestsInstaller.Container.Resolve<ModifyBranchPropertiesUseCase>();
+            var modifyConditionUseCase = useCaseTestsInstaller.Container.Resolve<ModifyConditionUseCase>();
+            var setExistingAnimationUseCase = useCaseTestsInstaller.Container.Resolve<SetExistingAnimationUseCase>();
 
             addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
             addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Mode);
@@ -153,7 +161,6 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
             copyMenuItemUseCase.Handle(m0, "Copied");
             Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.InvalidDestination));
 
-            // Copy mode
             removeMenuItemUseCase.Handle(menuId, m5);
             copyMenuItemUseCase.Handle(m0, "m0_Copy");
             Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
@@ -166,7 +173,6 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m3"));
             Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m4"));
 
-            // Copy group
             removeMenuItemUseCase.Handle(menuId, m4);
             copyMenuItemUseCase.Handle(g0, "g0_Copy");
             Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
@@ -179,7 +185,393 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu
             Assert.That(loadMenu().Registered.GetModeAt(5).DisplayName, Is.EqualTo("m2"));
             Assert.That(loadMenu().Registered.GetModeAt(6).DisplayName, Is.EqualTo("m3"));
 
-            // TODO: other tests
+            // Copy mode
+            var neutral = new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals);
+            var fist = new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals);
+            var open = new Condition(Hand.Left, HandGesture.HandOpen, ComparisonOperator.Equals);
+            var point = new Condition(Hand.Left, HandGesture.Fingerpoint, ComparisonOperator.Equals);
+            var victory = new Condition(Hand.Left, HandGesture.Victory, ComparisonOperator.Equals);
+            var gun = new Condition(Hand.Left, HandGesture.HandGun, ComparisonOperator.Equals);
+            var rock = new Condition(Hand.Left, HandGesture.RockNRoll, ComparisonOperator.Equals);
+            var thumbs = new Condition(Hand.Left, HandGesture.ThumbsUp, ComparisonOperator.Equals);
+
+            createMenuUseCase.Handle(menuId);
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(0));
+
+            addMenuItemUseCase.Handle(menuId, Menu.RegisteredId, AddMenuItemType.Group);
+            var g_0 = loadMenu().Registered.Order[0];
+            modifyGroupPropertiesUseCase.Handle(menuId, g_0, displayName: "g_0");
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(1));
+
+            addMenuItemUseCase.Handle(menuId, g_0, AddMenuItemType.Mode);
+            var m_0 = loadMenu().Registered.GetGroupAt(0).Order[0];
+            modifyModePropertiesUseCase.Handle(menuId, m_0, displayName: "m_0");
+            Assert.That(loadMenu().Registered.GetGroupAt(0).Order.Count, Is.EqualTo(1));
+
+            copyMenuItemUseCase.Handle(m_0, "m_1");
+            Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).Order.Count, Is.EqualTo(2));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).DisplayName, Is.EqualTo("m_0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).Branches.Count, Is.EqualTo(0));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).DisplayName, Is.EqualTo("m_1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches.Count, Is.EqualTo(0));
+
+            modifyModePropertiesUseCase.Handle(menuId, m_0,
+                changeDefaultFace: true,
+                useAnimationNameAsDisplayName: true,
+                eyeTrackingControl: EyeTrackingControl.Animation,
+                mouthTrackingControl: MouthTrackingControl.Animation,
+                blinkEnabled: false,
+                mouthMorphCancelerEnabled: false);
+
+            copyMenuItemUseCase.Handle(m_0, "m_2");
+            Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).Order.Count, Is.EqualTo(3));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).DisplayName, Is.EqualTo("m_0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).UseAnimationNameAsDisplayName, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).Branches.Count, Is.EqualTo(0));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).DisplayName, Is.EqualTo("m_2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).UseAnimationNameAsDisplayName, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches.Count, Is.EqualTo(0));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).DisplayName, Is.EqualTo("m_1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches.Count, Is.EqualTo(0));
+
+            var m_2 = loadMenu().Registered.GetGroupAt(0).Order[1];
+            modifyModePropertiesUseCase.Handle(menuId, m_2,
+                changeDefaultFace: true,
+                useAnimationNameAsDisplayName: false,
+                eyeTrackingControl: EyeTrackingControl.Tracking,
+                mouthTrackingControl: MouthTrackingControl.Animation,
+                blinkEnabled: true,
+                mouthMorphCancelerEnabled: false);
+
+            addBranchUseCase.Handle(menuId, m_2, new[] { neutral, fist });
+            addBranchUseCase.Handle(menuId, m_2, new[] { open, point });
+
+            modifyBranchPropertiesUseCase.Handle(menuId, m_2, 1,
+                eyeTrackingControl: EyeTrackingControl.Animation,
+                mouthTrackingControl: MouthTrackingControl.Animation,
+                blinkEnabled: false,
+                mouthMorphCancelerEnabled: false,
+                isLeftTriggerUsed: true,
+                isRightTriggerUsed: true);
+
+            setExistingAnimationUseCase.Handle(menuId, new Animation("0"), m_2, 0, BranchAnimationType.Base);
+            setExistingAnimationUseCase.Handle(menuId, new Animation("1"), m_2, 0, BranchAnimationType.Left);
+            setExistingAnimationUseCase.Handle(menuId, new Animation("2"), m_2, 0, BranchAnimationType.Right);
+            setExistingAnimationUseCase.Handle(menuId, new Animation("3"), m_2, 0, BranchAnimationType.Both);
+
+            copyMenuItemUseCase.Handle(m_2, "m_3");
+            Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).Order.Count, Is.EqualTo(4));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).DisplayName, Is.EqualTo("m_0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).UseAnimationNameAsDisplayName, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).Branches.Count, Is.EqualTo(0));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).DisplayName, Is.EqualTo("m_2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches.Count, Is.EqualTo(2));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].Conditions[1], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].BaseAnimation.GUID, Is.EqualTo("0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].LeftHandAnimation.GUID, Is.EqualTo("1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].RightHandAnimation.GUID, Is.EqualTo("2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].BothHandsAnimation.GUID, Is.EqualTo("3"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].Conditions[1], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].IsRightTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].BothHandsAnimation, Is.Null);
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).DisplayName, Is.EqualTo("m_3"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches.Count, Is.EqualTo(2));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].Conditions[1], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].BaseAnimation.GUID, Is.EqualTo("0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].LeftHandAnimation.GUID, Is.EqualTo("1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].RightHandAnimation.GUID, Is.EqualTo("2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].BothHandsAnimation.GUID, Is.EqualTo("3"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].Conditions[1], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].IsRightTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].BothHandsAnimation, Is.Null);
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).DisplayName, Is.EqualTo("m_1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).Branches.Count, Is.EqualTo(0));
+
+            // Copy group
+            copyMenuItemUseCase.Handle(g_0, "g_1");
+            Assert.That(mockCopyMenuItemPresenter.Result, Is.EqualTo(CopyMenuItemResult.Succeeded));
+            Assert.That(loadMenu().Registered.Order.Count, Is.EqualTo(2));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).DisplayName, Is.EqualTo("g_0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).DisplayName, Is.EqualTo("g_1"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).Order.Count, Is.EqualTo(4));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).DisplayName, Is.EqualTo("m_0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).UseAnimationNameAsDisplayName, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(0).Branches.Count, Is.EqualTo(0));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).DisplayName, Is.EqualTo("m_2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches.Count, Is.EqualTo(2));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].Conditions[1], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].BaseAnimation.GUID, Is.EqualTo("0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].LeftHandAnimation.GUID, Is.EqualTo("1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].RightHandAnimation.GUID, Is.EqualTo("2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[0].BothHandsAnimation.GUID, Is.EqualTo("3"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].Conditions[1], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].IsRightTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(1).Branches[1].BothHandsAnimation, Is.Null);
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).DisplayName, Is.EqualTo("m_3"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches.Count, Is.EqualTo(2));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].Conditions[1], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].BaseAnimation.GUID, Is.EqualTo("0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].LeftHandAnimation.GUID, Is.EqualTo("1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].RightHandAnimation.GUID, Is.EqualTo("2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[0].BothHandsAnimation.GUID, Is.EqualTo("3"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].Conditions[1], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].IsRightTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(2).Branches[1].BothHandsAnimation, Is.Null);
+
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).DisplayName, Is.EqualTo("m_1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(0).GetModeAt(3).Branches.Count, Is.EqualTo(0));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).Order.Count, Is.EqualTo(4));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).DisplayName, Is.EqualTo("m_0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).UseAnimationNameAsDisplayName, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(0).Branches.Count, Is.EqualTo(0));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).DisplayName, Is.EqualTo("m_2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches.Count, Is.EqualTo(2));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].Conditions[1], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].BaseAnimation.GUID, Is.EqualTo("0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].LeftHandAnimation.GUID, Is.EqualTo("1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].RightHandAnimation.GUID, Is.EqualTo("2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[0].BothHandsAnimation.GUID, Is.EqualTo("3"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].Conditions[1], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].IsRightTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(1).Branches[1].BothHandsAnimation, Is.Null);
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).ChangeDefaultFace, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).DisplayName, Is.EqualTo("m_3"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches.Count, Is.EqualTo(2));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].Conditions[0], Is.EqualTo(neutral));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].Conditions[1], Is.EqualTo(fist));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].BaseAnimation.GUID, Is.EqualTo("0"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].LeftHandAnimation.GUID, Is.EqualTo("1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].RightHandAnimation.GUID, Is.EqualTo("2"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[0].BothHandsAnimation.GUID, Is.EqualTo("3"));
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].Conditions[0], Is.EqualTo(open));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].Conditions[1], Is.EqualTo(point));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].MouthMorphCancelerEnabled, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].IsRightTriggerUsed, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].BaseAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].LeftHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].RightHandAnimation, Is.Null);
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(2).Branches[1].BothHandsAnimation, Is.Null);
+
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).DisplayName, Is.EqualTo("m_1"));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).BlinkEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(loadMenu().Registered.GetGroupAt(1).GetModeAt(3).Branches.Count, Is.EqualTo(0));
         }
     }
 }
