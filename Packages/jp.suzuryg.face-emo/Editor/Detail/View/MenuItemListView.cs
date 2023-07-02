@@ -481,7 +481,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                     var ok = OptoutableDialog.Show(DomainConstants.SystemName,
                         _localizationTable.Common_Message_DeleteGroup + "\n\n" + groupName,
                         _localizationTable.Common_Delete, _localizationTable.Common_Cancel,
-                        DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation);
+                        DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation, isRiskyAction: true);
 
                     if (!ok) { return; }
                 }
@@ -491,7 +491,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                     var ok = OptoutableDialog.Show(DomainConstants.SystemName,
                         _localizationTable.Common_Message_DeleteMode + "\n\n" + modeName,
                         _localizationTable.Common_Delete, _localizationTable.Common_Cancel,
-                        DetailConstants.KeyModeDeleteConfirmation, DetailConstants.DefaultModeDeleteConfirmation);
+                        DetailConstants.KeyModeDeleteConfirmation, DetailConstants.DefaultModeDeleteConfirmation, isRiskyAction: true);
                     if (!ok) { return; }
                 }
 

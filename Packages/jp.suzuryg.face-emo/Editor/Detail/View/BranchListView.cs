@@ -399,7 +399,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             var ok = OptoutableDialog.Show(DomainConstants.SystemName,
                 _localizationTable.Common_Message_DeleteBranch,
                 _localizationTable.Common_Delete, _localizationTable.Common_Cancel,
-                DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation);
+                DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, isRiskyAction: true);
             if (!ok) { return; }
 
             _removeBranchUseCase.Handle("", modeId, branchIndex);

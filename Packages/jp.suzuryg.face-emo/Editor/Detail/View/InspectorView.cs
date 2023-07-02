@@ -481,7 +481,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (GUILayout.Button(_localizationTable.Common_DeleteAll) &&
                 OptoutableDialog.Show(DomainConstants.SystemName,
                     _localizationTable.InspectorView_Message_ClearMouthMorphBlendShapes,
-                    _localizationTable.Common_Delete, _localizationTable.Common_Cancel))
+                    _localizationTable.Common_Delete, _localizationTable.Common_Cancel, isRiskyAction: true))
             {
                 var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
                 property.ClearArray();

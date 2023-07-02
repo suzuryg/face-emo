@@ -23,16 +23,29 @@ namespace Suzuryg.FaceEmo.Detail.View
         private static string _cancel;
         private static string _showDialogKey;
         private static bool _showDialogDefaultValue;
+        private static bool _isRiskyAction;
 
         private static Vector2 _scrollPosition;
 
         private static GUIStyle _labelStyle;
-        private static GUIStyle _buttonStyle;
         private static GUIStyle _toggleStyle;
+        private static GUIStyle _normalButtonStyle;
+
+        private static Texture2D _safeNormalTexture;
+        private static Texture2D _safeHoverTexture;
+        private static Texture2D _safeActiveTexture;
+
+        private static Texture2D _riskyNormalTexture;
+        private static Texture2D _riskyHoverTexture;
+        private static Texture2D _riskyActiveTexture;
+
+        private static GUIStyle _safeButtonStyle;
+        private static GUIStyle _riskyButtonStyle;
 
         public static bool Show(string title, string message, string ok,
             string cancel = null, string showDialogKey = null, bool showDialogDefaultValue = true,
             Vector2? centerPosition = null,
+            bool isRiskyAction = false,
             int windowWidth = DefaultWindowWidth, int windowHeight = DefaultWindowHeight)
         {
             // Check optout value
@@ -48,6 +61,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _cancel = cancel;
             _showDialogKey = showDialogKey;
             _showDialogDefaultValue = showDialogDefaultValue;
+            _isRiskyAction = isRiskyAction;
 
             // Get window
             var window = GetWindow<OptoutableDialog>();
@@ -100,10 +114,65 @@ namespace Suzuryg.FaceEmo.Detail.View
                 _toggleStyle.fontSize = FontSize;
             }
 
-            if (_buttonStyle == null)
+            if (_normalButtonStyle == null)
             {
-                _buttonStyle = new GUIStyle(GUI.skin.button);
-                _buttonStyle.fontSize = FontSize;
+                _normalButtonStyle = new GUIStyle(GUI.skin.button);
+                _normalButtonStyle.fontSize = FontSize;
+            }
+
+            SetTexture(ref _safeNormalTexture,  new Color(0.21f, 0.46f, 0.84f, 1f),  new Color(0.24f, 0.53f, 0.98f, 1f));
+            SetTexture(ref _safeHoverTexture,   new Color(0.19f, 0.42f, 0.76f, 1f),  new Color(0.22f, 0.48f, 0.88f, 1f));
+            SetTexture(ref _safeActiveTexture,  new Color(0.17f, 0.38f, 0.68f, 1f),  new Color(0.20f, 0.43f, 0.78f, 1f));
+
+            SetTexture(ref _riskyNormalTexture, new Color(0.70f, 0.27f, 0.24f, 1f),  new Color(0.86f, 0.33f, 0.30f, 1f));
+            SetTexture(ref _riskyHoverTexture,  new Color(0.60f, 0.23f, 0.21f, 1f),  new Color(0.76f, 0.29f, 0.26f, 1f));
+            SetTexture(ref _riskyActiveTexture, new Color(0.50f, 0.19f, 0.17f, 1f),  new Color(0.66f, 0.25f, 0.22f, 1f));
+
+            if (_safeButtonStyle == null)
+            {
+                _safeButtonStyle = new GUIStyle(GUI.skin.button);
+                _safeButtonStyle.fontSize = FontSize;
+                _safeButtonStyle.fontStyle = FontStyle.Bold;
+
+                _safeButtonStyle.normal.textColor = Color.white;
+                _safeButtonStyle.normal.background = _safeNormalTexture;
+
+                _safeButtonStyle.hover.textColor = Color.white;
+                _safeButtonStyle.hover.background = _safeHoverTexture;
+
+                _safeButtonStyle.active.textColor = Color.white;
+                _safeButtonStyle.active.background = _safeActiveTexture;
+            }
+
+            if (_riskyButtonStyle == null)
+            {
+                _riskyButtonStyle = new GUIStyle(GUI.skin.button);
+                _riskyButtonStyle.fontSize = FontSize;
+                _riskyButtonStyle.fontStyle = FontStyle.Bold;
+
+                _riskyButtonStyle.normal.textColor = Color.white;
+                _riskyButtonStyle.normal.background = _riskyNormalTexture;
+
+                _riskyButtonStyle.hover.textColor = Color.white;
+                _riskyButtonStyle.hover.background = _riskyHoverTexture;
+
+                _riskyButtonStyle.active.textColor = Color.white;
+                _riskyButtonStyle.active.background = _riskyActiveTexture;
+            }
+        }
+
+        private static void SetTexture(ref Texture2D texture, Color dark, Color light)
+        {
+            if (texture == null)
+            {
+                if (EditorGUIUtility.isProSkin)
+                {
+                    texture = ViewUtility.MakeTexture(dark);
+                }
+                else
+                {
+                    texture = ViewUtility.MakeTexture(light);
+                }
             }
         }
 
@@ -182,7 +251,9 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void OK()
         {
-            if (GUILayout.Button(_ok, _buttonStyle, GUILayout.MinWidth(ButtonWidth), GUILayout.Height(ButtonHeight)))
+            // FIX: Button color may not change to hover color on mouse over (occurs only when GUIStyle background is changed).
+            var style = _isRiskyAction ? _riskyButtonStyle : _safeButtonStyle;
+            if (GUILayout.Button(_ok, style, GUILayout.MinWidth(ButtonWidth), GUILayout.Height(ButtonHeight)))
             {
                 _result = true;
                 Close();
@@ -193,7 +264,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             if (!string.IsNullOrEmpty(_cancel))
             {
-                if (GUILayout.Button(_cancel, _buttonStyle, GUILayout.MinWidth(ButtonWidth), GUILayout.Height(ButtonHeight)))
+                if (GUILayout.Button(_cancel, _normalButtonStyle, GUILayout.MinWidth(ButtonWidth), GUILayout.Height(ButtonHeight)))
                 {
                     _result = false;
                     Close();
