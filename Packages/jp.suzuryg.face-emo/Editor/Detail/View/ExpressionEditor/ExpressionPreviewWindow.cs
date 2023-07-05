@@ -61,6 +61,8 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public void UpdateRenderCache()
         {
+            if (camera == null) { return; }
+
             // When using the camera without copying, the aspect ratio of the SceneView goes wrong
             var cameraRoot = new GameObject();
             try
