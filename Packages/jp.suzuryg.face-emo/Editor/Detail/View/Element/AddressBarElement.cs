@@ -37,20 +37,25 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             // Localization
             SetText(localizationSetting.Table);
             localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
-
-            // Styles
-            try
-            {
-                _buttonStyle = new GUIStyle(EditorStyles.label);
-            }
-            catch (NullReferenceException)
-            {
-                // Workaround for play mode
-                _buttonStyle = new GUIStyle();
-            }
         }
 
         public void Dispose() => _disposables.Dispose();
+
+        private void SetStyle()
+        {
+            if (_buttonStyle == null)
+            {
+                try
+                {
+                    _buttonStyle = new GUIStyle(EditorStyles.label);
+                }
+                catch (NullReferenceException)
+                {
+                    // Workaround for play mode
+                    _buttonStyle = new GUIStyle();
+                }
+            }
+        }
 
         private void SetText(LocalizationTable localizationTable)
         {
@@ -109,6 +114,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public void OnGUI(Rect rect)
         {
+            SetStyle();
+
             using (new GUILayout.AreaScope(rect))
             using (new EditorGUILayout.HorizontalScope())
             {

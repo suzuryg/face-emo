@@ -112,25 +112,33 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             _folderIcon = ViewUtility.GetIconTexture("folder_FILL0_wght400_GRAD200_opsz48.png");
             NullChecker.Check(_folderIcon);
 
-            // Styles
-            try
-            {
-                _itemStyle = new GUIStyle(EditorStyles.helpBox);
-            }
-            catch (NullReferenceException)
-            {
-                // Workaround for play mode
-                _itemStyle = new GUIStyle();
-            }
-            _itemStyle.padding = new RectOffset(Padding, Padding, Padding, Padding);
-
-            _emptyStyle = new GUIStyle();
-            _emptyStyle.padding = new RectOffset(10, 10, 10, 10);
-
             // Textures
             _selectedBackgroundTexture = new Texture2D(1, 1);
             _selectedBackgroundTexture.SetPixel(0, 0, ViewUtility.GetSelectedColor());
             _selectedBackgroundTexture.Apply();
+        }
+
+        private void SetStyle()
+        {
+            if (_itemStyle == null)
+            {
+                try
+                {
+                    _itemStyle = new GUIStyle(EditorStyles.helpBox);
+                }
+                catch (NullReferenceException)
+                {
+                    // Workaround for play mode
+                    _itemStyle = new GUIStyle();
+                }
+                _itemStyle.padding = new RectOffset(Padding, Padding, Padding, Padding);
+            }
+
+            if (_emptyStyle == null)
+            {
+                _emptyStyle = new GUIStyle();
+                _emptyStyle.padding = new RectOffset(10, 10, 10, 10);
+            }
         }
 
         public void ChangeRootGroup(string rootGroupId)
@@ -146,6 +154,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public override void OnGUI(Rect rect)
         {
+            SetStyle();
+
             // Update max label width
             _maxLabelWidth = GUI.skin.label.CalcSize(new GUIContent(_localizationTable.MenuItemListView_UseAnimationNameAsDisplayName)).x;
 

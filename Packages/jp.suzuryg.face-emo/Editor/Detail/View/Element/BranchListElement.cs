@@ -139,34 +139,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             _reorderableList.onReorderCallbackWithDetails = OnElementOrderChanged;
             _reorderableList.onSelectCallback = OnElementSelectionChanged;
 
-            // Styles
-            try
-            {
-                _centerStyle = new GUIStyle(EditorStyles.label);
-                _centerUpperStyle = new GUIStyle(EditorStyles.label);
-                _warningStyle = new GUIStyle(EditorStyles.label);
-            }
-            catch (NullReferenceException)
-            {
-                // Workaround for play mode
-                _centerStyle = new GUIStyle();
-                _centerUpperStyle = new GUIStyle();
-                _warningStyle = new GUIStyle();
-            }
-            _centerStyle.alignment = TextAnchor.MiddleCenter;
-            _centerUpperStyle.alignment = TextAnchor.UpperCenter;
-
-            if (EditorGUIUtility.isProSkin)
-            {
-                _warningStyle.normal.textColor = Color.red;
-            }
-            else
-            {
-                _redTexture = ViewUtility.MakeTexture(Color.red);
-                _warningStyle.normal.background = _redTexture;
-                _warningStyle.normal.textColor = Color.black;
-            }
-
             // Textures
             _activeBackgroundTexture = new Texture2D(1, 1);
             _activeBackgroundTexture.SetPixel(0, 0, ActiveElementColor);
@@ -187,8 +159,62 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             _conditionDisposables.Dispose();
         }
 
+        private void SetStyle()
+        {
+            if (_centerStyle == null)
+            {
+                try
+                {
+                    _centerStyle = new GUIStyle(EditorStyles.label);
+                }
+                catch (NullReferenceException)
+                {
+                    _centerStyle = new GUIStyle();
+                }
+                _centerStyle.alignment = TextAnchor.MiddleCenter;
+            }
+
+            if (_centerUpperStyle == null)
+            {
+                try
+                {
+                    _centerUpperStyle = new GUIStyle(EditorStyles.label);
+                }
+                catch (NullReferenceException)
+                {
+                    _centerUpperStyle = new GUIStyle();
+                }
+                _centerUpperStyle.alignment = TextAnchor.UpperCenter;
+            }
+
+            if (_warningStyle == null)
+            {
+                try
+                {
+                    _warningStyle = new GUIStyle(EditorStyles.label);
+                }
+                catch (NullReferenceException)
+                {
+                    _warningStyle = new GUIStyle();
+                }
+
+                if (EditorGUIUtility.isProSkin)
+                {
+                    _warningStyle.normal.textColor = Color.red;
+                }
+                else
+                {
+                    _redTexture = ViewUtility.MakeTexture(Color.red);
+                    _warningStyle.normal.background = _redTexture;
+                    _warningStyle.normal.textColor = Color.black;
+                }
+            }
+        }
+
         public void OnGUI(Rect rect)
         {
+            SetStyle();
+
             // Show Hints
             var hintRect = ShowHints();
             rect.y += hintRect.height;
