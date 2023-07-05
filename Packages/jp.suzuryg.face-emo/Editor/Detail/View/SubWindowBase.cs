@@ -2,8 +2,10 @@
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
-    public class SubWindowBase : EditorWindow
+    public class SubWindowBase : EditorWindow, ISubWindow
     {
+        public bool IsInitialized { get; set; } = false;
+
         public SubWindowBase()
         {
             wantsMouseMove = true;

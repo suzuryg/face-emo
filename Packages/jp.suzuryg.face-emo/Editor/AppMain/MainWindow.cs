@@ -59,7 +59,7 @@ namespace Suzuryg.FaceEmo.AppMain
                 _mainView.Initialize(rootVisualElement);
 
                 _subWindowManager = _installer.Container.Resolve<ISubWindowManager>().AddTo(_disposables);
-                _subWindowManager.Initialize(titleContent.text, _installer);
+                _subWindowManager.Initialize(_installer);
 
                 var backupper = _installer.Container.Resolve<IBackupper>().AddTo(_disposables);
                 backupper.SetName(_installer.RootObjectName);

@@ -90,8 +90,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Clip = animationClip;
 
             // Focus the preview window last because the preview window is likely to be hidden
-            _subWindowProvider.Provide<ExpressionEditorWindow>()?.Focus();
-            _subWindowProvider.Provide<ExpressionPreviewWindow>()?.Focus();
+            try
+            {
+                _subWindowProvider.Provide<ExpressionEditorWindow>()?.Focus();
+                _subWindowProvider.Provide<ExpressionPreviewWindow>()?.Focus();
+            }
+            catch (NullReferenceException)
+            {
+                // Somehow even if I do NULL checks with "window ! = null", NullReferenceException will be thrown.
+            }
 
             FetchProperties();
             InitializePreviewClip();
@@ -138,10 +145,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
 
             // Sample
-            AnimationMode.StartAnimationMode();
-            AnimationMode.BeginSampling();
-            AnimationMode.SampleAnimationClip(_previewAvatar, synthesized, synthesized.length);
-            AnimationMode.EndSampling();
+            if (synthesized != null)
+            {
+                AnimationMode.StartAnimationMode();
+                AnimationMode.BeginSampling();
+                AnimationMode.SampleAnimationClip(_previewAvatar, synthesized, synthesized.length);
+                AnimationMode.EndSampling();
+            }
 
             _previewAvatar.transform.position = new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
             _previewAvatar.transform.rotation = Quaternion.identity;

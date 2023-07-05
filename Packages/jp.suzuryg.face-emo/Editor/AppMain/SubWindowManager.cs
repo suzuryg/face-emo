@@ -14,7 +14,6 @@ namespace Suzuryg.FaceEmo.AppMain
 {
     public class SubWindowManager : ISubWindowManager
     {
-        private string _windowTitle;
         private FaceEmoInstaller _installer;
         private SceneView _lastActiveSceneView;
 
@@ -27,13 +26,15 @@ namespace Suzuryg.FaceEmo.AppMain
             _disposables.Dispose();
         }
         
-        public void Initialize(string windowTitle, FaceEmoInstaller installer)
+        public void Initialize(FaceEmoInstaller installer)
         {
-            _windowTitle = windowTitle;
             _installer = installer;
+
+            // Ensure that subwindows are owned by the main window when opening a new main window.
+            CloseAllSubWinodows();
         }
 
-        public T Provide<T>() where T : EditorWindow
+        public T Provide<T>() where T : EditorWindow, ISubWindow
         {
             Action<EditorWindow> initializeAction = (window) =>
             {
@@ -77,12 +78,12 @@ namespace Suzuryg.FaceEmo.AppMain
             return GetWindow<T>(initializeAction);
         }
 
-        public T ProvideIfOpenedAlready<T>() where T : EditorWindow
+        public T ProvideIfOpenedAlready<T>() where T : EditorWindow, ISubWindow
         {
             // SIGSEGV occurred during execution of FindObjectsOfTypeAll(). Occurred due to concurrent access? Exclusion control it to be safe.
             lock (_lockFindObjects)
             {
-                var existingWindows = Resources.FindObjectsOfTypeAll<T>().Where(x => x.titleContent.text == _windowTitle);
+                var existingWindows = Resources.FindObjectsOfTypeAll<T>();
                 if (existingWindows.Any()) { return existingWindows.First(); }
                 else { return null; }
             }
@@ -95,25 +96,28 @@ namespace Suzuryg.FaceEmo.AppMain
             ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.Close();
         }
 
-        private T GetWindow<T>(Action<EditorWindow> initializeAction) where T : EditorWindow
+        private T GetWindow<T>(Action<EditorWindow> initializeAction) where T : EditorWindow, ISubWindow
         {
-            var existingWindow = ProvideIfOpenedAlready<T>();
-            if (existingWindow is T) { return existingWindow; }
-            else
+            var window = ProvideIfOpenedAlready<T>();
+            if (window == null)
+            {
+                window = ScriptableObject.CreateInstance<T>();
+                window.titleContent = new GUIContent(DomainConstants.SystemName);
+                window.Show();
+            }
+
+            if (!window.IsInitialized)
             {
                 _lastActiveSceneView = SceneView.lastActiveSceneView;
-
-                var window = ScriptableObject.CreateInstance<T>();
-                window.titleContent = new GUIContent(_windowTitle);
-                window.Show();
 
                 if (initializeAction is Action<EditorWindow>)
                 {
                     initializeAction(window);
+                    window.IsInitialized = true;
                 }
-
-                return window;
             }
+
+            return window;
         }
     }
 }

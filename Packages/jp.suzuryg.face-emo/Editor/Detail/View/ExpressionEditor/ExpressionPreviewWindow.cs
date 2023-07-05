@@ -3,13 +3,16 @@ using System.Threading;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Drawing;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
-    public class ExpressionPreviewWindow : SceneView
+    public class ExpressionPreviewWindow : SceneView, ISubWindow
     {
+        public bool IsInitialized { get; set; } = false;
+
         private AV3.ExpressionEditor _expressionEditor;
         private Texture2D _renderCache;
 
@@ -57,6 +60,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
             minSize = new Vector2(300, 300);
             base.OnEnable();
+
+            // Workaround for the title being changed to "Scene" when restarting Unity.
+            titleContent = new GUIContent(DomainConstants.SystemName);
         }
 
         public void UpdateRenderCache()

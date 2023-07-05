@@ -5,7 +5,7 @@ namespace Suzuryg.FaceEmo.AppMain
 {
     public interface ISubWindowManager : ISubWindowProvider, IDisposable
     {
-        void Initialize(string windowTitle, FaceEmoInstaller installer);
+        void Initialize(FaceEmoInstaller installer);
         void CloseAllSubWinodows();
     }
 }

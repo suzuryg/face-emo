@@ -6,7 +6,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 {
     public interface ISubWindowProvider
     {
-        T Provide<T>() where T : EditorWindow;
-        T ProvideIfOpenedAlready<T>() where T : EditorWindow;
+        T Provide<T>() where T : EditorWindow, ISubWindow;
+        T ProvideIfOpenedAlready<T>() where T : EditorWindow, ISubWindow;
     }
 }
