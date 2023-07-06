@@ -91,9 +91,9 @@ namespace Suzuryg.FaceEmo.AppMain
 
         public void CloseAllSubWinodows()
         {
-            ProvideIfOpenedAlready<GestureTableWindow>()?.Close();
-            ProvideIfOpenedAlready<ExpressionEditorWindow>()?.Close();
-            ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.Close();
+            ProvideIfOpenedAlready<GestureTableWindow>()?.CloseIfNotDocked();
+            ProvideIfOpenedAlready<ExpressionEditorWindow>()?.CloseIfNotDocked();
+            ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.CloseIfNotDocked();
         }
 
         private T GetWindow<T>(Action<EditorWindow> initializeAction) where T : EditorWindow, ISubWindow

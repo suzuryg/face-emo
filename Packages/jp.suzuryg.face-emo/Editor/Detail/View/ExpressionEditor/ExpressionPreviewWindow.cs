@@ -6,12 +6,23 @@ using UnityEditor.SceneManagement;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Drawing;
+using System.Reflection;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
     public class ExpressionPreviewWindow : SceneView, ISubWindow
     {
         public bool IsInitialized { get; set; } = false;
+
+        public bool IsDocked
+        {
+            get
+            {
+                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+                MethodInfo method = GetType().GetProperty( "docked", flags ).GetGetMethod( true );
+                return (bool)method.Invoke( this, null );
+            }
+        }
 
         private AV3.ExpressionEditor _expressionEditor;
         private Texture2D _renderCache;
@@ -80,6 +91,19 @@ namespace Suzuryg.FaceEmo.Detail.View
             finally
             {
                 UnityEngine.GameObject.DestroyImmediate(cameraRoot);
+            }
+        }
+
+        public void CloseIfNotDocked()
+        {
+            if (!IsDocked)
+            {
+                Close();
+            }
+            else
+            {
+                // Must be initialized the next time opened from the main window.
+                IsInitialized = false;
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Threading;
 using UnityEngine;
 using UnityEditor;
+using Suzuryg.FaceEmo.Detail.Localization;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
@@ -20,9 +21,18 @@ namespace Suzuryg.FaceEmo.Detail.View
             _subWindowProvider = subWindowProvider;
         }
 
+        private void OnGUI()
+        {
+            if (!IsInitialized)
+            {
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                GUILayout.Label(loc.ExpressionEditorView_Message_NotInitialized);
+            }
+        }
+
         private void OnDisable()
         {
-            _subWindowProvider?.Provide<ExpressionPreviewWindow>()?.Close();
+            _subWindowProvider?.Provide<ExpressionPreviewWindow>()?.CloseIfNotDocked();
         }
     }
 }

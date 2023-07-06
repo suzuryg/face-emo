@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using System.Reflection;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
@@ -6,9 +7,33 @@ namespace Suzuryg.FaceEmo.Detail.View
     {
         public bool IsInitialized { get; set; } = false;
 
+        public bool IsDocked
+        {
+            get
+            {
+                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+                MethodInfo method = GetType().GetProperty( "docked", flags ).GetGetMethod( true );
+                return (bool)method.Invoke( this, null );
+            }
+        }
+
         public SubWindowBase()
         {
             wantsMouseMove = true;
+        }
+
+        public void CloseIfNotDocked()
+        {
+            if (!IsDocked)
+            {
+                Close();
+            }
+            else
+            {
+                // Must be initialized the next time opened from the main window.
+                rootVisualElement.Clear();
+                IsInitialized = false;
+            }
         }
 
         private void OnEnable()

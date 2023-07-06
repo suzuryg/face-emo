@@ -129,6 +129,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string GestureTableView_ShowClipField = "Show Animation Selector";
         public string GestureTableView_Separator = " & ";
         public string GestureTableView_ModeIsNotSelected = "Please select an expression pattern in the main window.";
+        public string GestureTableView_Message_NotInitialized = "Please open gesture table from main window of FaceEmo.";
         public string GestureTableView_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip. " +
             "If no animation clip is set, create a new one.";
 
@@ -267,6 +268,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_Message_BlinkBlendShapeExists = "Blend shapes for blink are included!";
         public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lipsync are included!";
         public string ExpressionEditorView_Message_AddAllBlendShapes = "Add all blend shapes to the animation clip?";
+        public string ExpressionEditorView_Message_NotInitialized = "Please open expression editor from main window of FaceEmo.";
         public string ExpressionEditorView_Tooltip_Delimiter = "By entering the delimiter for the blend shapes, you can display the blend shapes by category. " +
             "For example, if the category name is \"=====Eye=====\", please enter \"=====\".";
         public string ExpressionEditorView_Tooltip_AddAllBlendShapes = "All unadded blend shapes will be added to the animation clip. " +
