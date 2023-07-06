@@ -51,7 +51,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (playModeStateChange == PlayModeStateChange.EnteredEditMode)
             {
                 rootVisualElement.Clear();
-                Close();
+                CloseIfNotDocked();
             }
         }
     }

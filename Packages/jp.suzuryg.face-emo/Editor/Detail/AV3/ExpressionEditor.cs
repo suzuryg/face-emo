@@ -28,6 +28,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public IReadOnlyDictionary<int, TransformProxy> AdditionalTransforms => _additionalTransforms;
         public IReadOnlyDictionary<int, TransformProxy> AnimatedAdditionalTransformsBuffer => _animatedAdditionalTransformsBuffer;
         public IObservable<Unit> OnClipUpdated => _onClipUpdated.AsObservable();
+        public bool IsDisposed => _disposables is null || _disposables.IsDisposed;
 
         private ISubWindowProvider _subWindowProvider;
         private ILocalizationSetting _localizationSetting;

@@ -111,7 +111,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             // When the animation changes are saved with Ctrl-S, the AnimationMode is stopped.
             // Therefore, the following process is performed to resume sampling.
-            if (ReferenceEquals(focusedWindow, this) && !AnimationMode.InAnimationMode())
+            if (ReferenceEquals(focusedWindow, this) && !AnimationMode.InAnimationMode() && _expressionEditor?.IsDisposed == false)
             {
                 _expressionEditor?.StartSampling();
             }
@@ -134,7 +134,10 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void OnFocus()
         {
-            _expressionEditor?.StartSampling();
+            if (_expressionEditor?.IsDisposed == false)
+            {
+                _expressionEditor?.StartSampling();
+            }
         }
 
         private void OnLostFocus()
