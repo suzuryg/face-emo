@@ -60,20 +60,20 @@ namespace Suzuryg.FaceEmo.AppMain
             {
                 var rootObject = launcher.gameObject;
 
-                var windowTitle = rootObject.name;
-                foreach (var window in Resources.FindObjectsOfTypeAll<MainWindow>())
+                MainWindow mainWindow;
+                var existingWindows = Resources.FindObjectsOfTypeAll<MainWindow>();
+                if (existingWindows.Any())
                 {
-                    if (window.titleContent.text == windowTitle)
-                    {
-                        window.Show();
-                        return;
-                    }
+                    mainWindow = existingWindows.First();
+                }
+                else
+                {
+                    mainWindow = CreateInstance<MainWindow>();
                 }
 
-                var mainWindow = CreateInstance<MainWindow>();
-                mainWindow.titleContent = new GUIContent(windowTitle);
                 mainWindow.Initialize(rootObject.GetFullPath());
                 mainWindow.Show();
+                mainWindow.Focus();
             }
             catch (Exception ex)
             {

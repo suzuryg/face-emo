@@ -107,11 +107,14 @@ namespace Suzuryg.FaceEmo.AppMain
             {
                 Undo.undoRedoPerformed -= _undoRedoCallback;
             }
+
+            rootVisualElement.Clear();
         }
 
         private void OnEnable()
         {
             EditorApplication.playModeStateChanged += OnPlayModeChanged;
+            titleContent = new GUIContent(DomainConstants.SystemName);
             wantsMouseMove = true;
 
             Build();
@@ -129,7 +132,6 @@ namespace Suzuryg.FaceEmo.AppMain
             if (playModeStateChange == PlayModeStateChange.EnteredEditMode ||
                 playModeStateChange == PlayModeStateChange.EnteredPlayMode)
             {
-                rootVisualElement.Clear();
                 Build();
             }
         }
