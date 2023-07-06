@@ -595,19 +595,19 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public IMenuItemList GetRootMenuItemList()
         {
-            var id = _menuItemListViewState.RootGroupId;
+            var id = _menuItemListViewState?.RootGroupId;
 
             if (id == Domain.Menu.RegisteredId)
             {
-                return Menu.Registered;
+                return Menu?.Registered;
             }
             else if (id == Domain.Menu.UnregisteredId)
             {
-                return Menu.Unregistered;
+                return Menu?.Unregistered;
             }
-            else if (Menu.ContainsGroup(id))
+            else if (Menu?.ContainsGroup(id) == true)
             {
-                return Menu.GetGroup(id);
+                return Menu?.GetGroup(id);
             }
             else
             {

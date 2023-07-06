@@ -32,6 +32,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
         public string Common_Message_MAIsNotInstalled = "Modular Avatar must be installed in order to use FaceEmo!";
+        public string Common_Message_ErrorWhenClosingSubWindows = "An error occurred while closing the sub-windows, please restart Unity if FaceEmo is not working properly.";
         public string Common_Tooltip_EyeTracking = "You can set whether to use pseudo eye-tracking. This setting can be configured independently of the blinking setting.";
         public string Common_Tooltip_Blink = "You can set whether to blink. Please disable blinking for expressions where the eyes are closed.";
         public string Common_Tooltip_LipSync = "You can set whether to use lip-syncing. " +

@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View;
 using Suzuryg.FaceEmo.Detail.View.ExpressionEditor;
 using System;
@@ -91,9 +92,22 @@ namespace Suzuryg.FaceEmo.AppMain
 
         public void CloseAllSubWinodows()
         {
-            ProvideIfOpenedAlready<GestureTableWindow>()?.CloseIfNotDocked();
-            ProvideIfOpenedAlready<ExpressionEditorWindow>()?.CloseIfNotDocked();
-            ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.CloseIfNotDocked();
+            try
+            {
+                ProvideIfOpenedAlready<GestureTableWindow>()?.CloseIfNotDocked();
+                ProvideIfOpenedAlready<ExpressionEditorWindow>()?.CloseIfNotDocked();
+                ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.CloseIfNotDocked();
+            }
+            catch (NullReferenceException ex)
+            {
+                // If a sub-window is docked, an error may occur in Close(), for example, when recompiling a script.
+                // Close() is not executed when docked, but the correct docking status may not be obtained.
+
+                // Sometimes the title of the docked EditorWindow becomes "Failed to load" and it does not work properly.
+                // In this state, it is not possible to close it from the script, but restarting Unity will restore it while maintaining the docking.
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                Debug.Log(loc.Common_Message_ErrorWhenClosingSubWindows + "\n" + ex);
+            }
         }
 
         private T GetWindow<T>(Action<EditorWindow> initializeAction) where T : EditorWindow, ISubWindow
