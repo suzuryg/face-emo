@@ -27,11 +27,6 @@ namespace Suzuryg.FaceEmo.AppMain
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
-        public MainWindow()
-        {
-            wantsMouseMove = true;
-        }
-
         public void Initialize(string launcherObjectPath)
         {
             _launcherObjectPath = launcherObjectPath;
@@ -117,6 +112,7 @@ namespace Suzuryg.FaceEmo.AppMain
         private void OnEnable()
         {
             EditorApplication.playModeStateChanged += OnPlayModeChanged;
+            wantsMouseMove = true;
 
             Build();
         }

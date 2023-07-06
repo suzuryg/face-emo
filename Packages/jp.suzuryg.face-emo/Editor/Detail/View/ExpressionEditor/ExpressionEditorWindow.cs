@@ -10,12 +10,6 @@ namespace Suzuryg.FaceEmo.Detail.View
     {
         private ISubWindowProvider _subWindowProvider;
 
-        public ExpressionEditorWindow() : base()
-        {
-            // Avoid duplicate invocations of blend shape preview on mouseover.
-            wantsMouseMove = false;
-        }
-
         public void SetProvider(ISubWindowProvider subWindowProvider)
         {
             _subWindowProvider = subWindowProvider;
@@ -30,7 +24,15 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
-        private void OnDisable()
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            // Avoid duplicate invocations of blend shape preview on mouseover.
+            wantsMouseMove = false;
+        }
+
+        protected override void OnDisable()
         {
             _subWindowProvider?.Provide<ExpressionPreviewWindow>()?.CloseIfNotDocked();
         }

@@ -17,11 +17,6 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
-        public SubWindowBase()
-        {
-            wantsMouseMove = true;
-        }
-
         public void CloseIfNotDocked()
         {
             if (!IsDocked)
@@ -36,12 +31,13 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             EditorApplication.playModeStateChanged += OnPlayModeChanged;
+            wantsMouseMove = true;
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
         }

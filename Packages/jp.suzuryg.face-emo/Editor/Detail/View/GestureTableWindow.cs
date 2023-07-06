@@ -5,8 +5,10 @@ namespace Suzuryg.FaceEmo.Detail.View
 {
     public class GestureTableWindow : SubWindowBase
     {
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             minSize = new Vector2(800, 500);
         }
 
