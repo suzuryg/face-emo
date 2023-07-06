@@ -135,17 +135,19 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Initialize fields
             _thumbnailSetting.Update();
 
-            _thumbnailWidthSlider.bindingPath = nameof(ThumbnailSetting.Main_Width);
-            _thumbnailWidthSlider.BindProperty(_thumbnailSetting);
             _thumbnailWidthSlider.lowValue = ThumbnailSetting.Main_MinWidth;
             _thumbnailWidthSlider.highValue = ThumbnailSetting.Main_MaxWidth;
             _thumbnailWidthSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Width)).intValue;
 
-            _thumbnailHeightSlider.bindingPath = nameof(ThumbnailSetting.Main_Height);
-            _thumbnailHeightSlider.BindProperty(_thumbnailSetting);
+            _thumbnailWidthSlider.bindingPath = nameof(ThumbnailSetting.Main_Width);
+            _thumbnailWidthSlider.BindProperty(_thumbnailSetting);
+
             _thumbnailHeightSlider.lowValue = ThumbnailSetting.Main_MinHeight;
             _thumbnailHeightSlider.highValue = ThumbnailSetting.Main_MaxHeight;
             _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Height)).intValue;
+
+            _thumbnailHeightSlider.bindingPath = nameof(ThumbnailSetting.Main_Height);
+            _thumbnailHeightSlider.BindProperty(_thumbnailSetting);
 
             var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
             _showHintsToggle.value = showHints;

@@ -143,17 +143,19 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Initialize fields
             _thumbnailSetting.Update();
 
-            _thumbnailWidthSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Width);
-            _thumbnailWidthSlider.BindProperty(_thumbnailSetting);
             _thumbnailWidthSlider.lowValue = ThumbnailSetting.GestureTable_MinWidth;
             _thumbnailWidthSlider.highValue = ThumbnailSetting.GestureTable_MaxWidth;
             _thumbnailWidthSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Width)).intValue;
 
-            _thumbnailHeightSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Height);
-            _thumbnailHeightSlider.BindProperty(_thumbnailSetting);
+            _thumbnailWidthSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Width);
+            _thumbnailWidthSlider.BindProperty(_thumbnailSetting);
+
             _thumbnailHeightSlider.lowValue = ThumbnailSetting.GestureTable_MinHeight;
             _thumbnailHeightSlider.highValue = ThumbnailSetting.GestureTable_MaxHeight;
             _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Height)).intValue;
+
+            _thumbnailHeightSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Height);
+            _thumbnailHeightSlider.BindProperty(_thumbnailSetting);
 
             _showClipFieldToggle.value = EditorPrefs.GetBool(DetailConstants.KeyShowClipFieldInGestureTable, DetailConstants.DefaultShowClipFieldInGestureTable);
 

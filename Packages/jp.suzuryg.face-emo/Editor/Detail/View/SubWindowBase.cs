@@ -48,7 +48,8 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void OnPlayModeChanged(PlayModeStateChange playModeStateChange)
         {
-            if (playModeStateChange == PlayModeStateChange.EnteredEditMode)
+            if (playModeStateChange == PlayModeStateChange.EnteredEditMode ||
+                playModeStateChange == PlayModeStateChange.EnteredPlayMode)
             {
                 rootVisualElement.Clear();
                 CloseIfNotDocked();
