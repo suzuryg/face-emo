@@ -89,32 +89,6 @@ function Details ()  {
           </div>
         </div>
       </div>
-      <div className="row">
-        <div className={clsx('col col--4')}>
-          <div className="text--right">
-            <img src={require('@site/static/img/icon.png').default} className={styles.feature_detail_img} />
-          </div>
-        </div>
-        <div className={clsx('col col-8')}>
-          <div className="text--left">
-            .........................................
-            .........................................
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className={clsx('col col--4')}>
-          <div className="text--right">
-            <img src={require('@site/static/img/icon.png').default} className={styles.feature_detail_img} />
-          </div>
-        </div>
-        <div className={clsx('col col-8')}>
-          <div className="text--left">
-            .........................................
-            .........................................
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
