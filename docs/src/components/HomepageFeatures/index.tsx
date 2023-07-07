@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
+import Translate from '@docusaurus/Translate'
 
 function Features() {
   return (
@@ -10,11 +11,11 @@ function Features() {
           <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img} />
         </div>
         <div className="text--center padding-horiz--md">
-          <h3>かんたん表情作成</h3>
+          <h3><Translate>Effortless Emote Creation</Translate></h3>
           <p>
-            トリガーウィンクもサクッと完了。<br/>
-            リップシンクのオンオフもボタン一つ。<br/>
-            もちろん、編集もらくちん。
+            <Translate>Easily create trigger winks.</Translate><br/>
+            <Translate>Switch lip sync on and off with a single click.</Translate><br/>
+            <Translate>Of course, editing is a breeze.</Translate>
           </p>
         </div>
       </div>
@@ -23,10 +24,10 @@ function Features() {
           <img src={require('@site/static/img/root_page/02.png').default} className={styles.feature_img} />
         </div>
         <div className="text--center padding-horiz--md">
-          <h3>らくらく管理</h3>
+          <h3><Translate>Easy Management</Translate></h3>
           <p>
-            表情パターンをリスト表示。<br/>
-            ジェスチャーの組み合わせも表管理。
+            <Translate>List display for facial expression patterns.</Translate><br/>
+            <Translate>Manage combinations of gestures in a table.</Translate>
           </p>
         </div>
       </div>
@@ -35,10 +36,10 @@ function Features() {
           <img src={require('@site/static/img/root_page/03.png').default} className={styles.feature_img} />
         </div>
         <div className="text--center padding-horiz--md">
-          <h3>切り替え自由</h3>
+          <h3><Translate>Freedom to Switch</Translate></h3>
           <p>
-            表情パターンは Ex Menu で切り替え簡単。<br/>
-            TPOで使い分け！
+            <Translate>Easily switch between facial expression patterns.</Translate><br/>
+            <Translate>Use different expressions for different occasions!</Translate>
           </p>
         </div>
       </div>
@@ -93,63 +94,23 @@ function Details ()  {
   );
 }
 
-function Install() {
+function Credits(){
   return(
     <div>
-      <div className="text--center">
-        <h1 className="homepage_h1_padding_0rem">インストール</h1>
-      </div>
-      <div className="row">
-        {/*
-        <div className={clsx('col col--4')}>
-          <div className="text--right">
-            <img src={require('@site/static/img/root_page/01.png').default} className={styles.feature_img}/>
-          </div>
-        </div>
-        */}
-        <div className={clsx('col col--3 padding-horiz--md')}></div>
-        <div className={clsx('col col--8')}>
-          <div className="text--left">
-            1. [VRChat Creator Companion](https://vcc.docs.vrchat.com/)を導入<br/>
-            2. Modular Avatar の リポジトリを登録<br/>
-            3. FaceEmo のリポジトリを登録<br/>
-            4. プロジェクトに最新版を設定<br/>
-            [unitypackage版](https://github.com/suzuryg/face-emo/releases)<br/>
-          </div>
-        </div>
-        <div className={clsx('col col--3')}></div>
-      </div>
-    </div>
-  )
-}
-
-function DependentSoftware() {
-  return(
-    <div>
-      <div className="text--center">
-        <h1 className="homepage_h1_padding_0rem">関連ソフトウェア</h1>
-      </div>
       <div className="row">
         <div className={clsx('col col--3 padding-horiz--md')}></div>
         <div className={clsx('col col--8')}>
           <div className="text--left">
-            - [ComboGestureExpression (Integrator)](https://booth.pm/ja/items/2219616)<br/>
-            - [CustomAnimatorController](https://booth.pm/ja/items/4424448)<br/>
-            - [Modular Avatar](https://modular-avatar.nadena.dev/ja/)<br/>
+            <Translate>The images in this document are made using the following tools and assets.</Translate>
+            <ul>
+              <li><a href="https://booth.pm/ja/items/4667400/"><Translate>Moe avatar (by Kyubi closet)</Translate></a></li>
+              <li><a href="https://github.com/BlackStartx/VRC-Gesture-Manager/"><Translate>Gesture Manager (by BlackStartx)</Translate></a></li>
+            </ul>
           </div>
         </div>
         <div className={clsx('col col--3')}></div>
       </div>
-    </div>
-  );
-}
-
-function ReleaseNote(){
-  return(<div></div>);
-}
-
-function Author(){
-  return(<div></div>);
+    </div>);
 }
 
 export default function HomepageFeatures(): JSX.Element {
@@ -160,12 +121,7 @@ export default function HomepageFeatures(): JSX.Element {
         <hr/>
         <Details/>
         <hr/>
-        <Install/>
-        <hr/>
-        <DependentSoftware/>
-        <hr/>
-        <ReleaseNote/>
-        <Author/>
+        <Credits/>
       </div>
     </section>
   );

@@ -59,6 +59,12 @@ const config = {
         title: 'FaceEmo',
         items: [
           {
+            type: 'doc',
+            docId: 'tutorials/index',
+            position: 'left',
+            label: 'Docs',
+          },
+          {
               type: 'localeDropdown',
               position: 'left',
           },
