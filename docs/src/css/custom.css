@@ -28,3 +28,20 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* writen by attica, for intro/index  >>> */
+
+.homepage_header_padding {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+}
+
+.homepage_h1_padding_0rem {
+  padding-bottom: 0rem !important;
+}
+
+.homepage_h1_padding {
+  padding-bottom: 2rem !important;
+}
+
+/* <<< writen by attica, for intro/index */
