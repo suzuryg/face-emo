@@ -601,10 +601,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 AssetDatabase.AddObjectToAsset(emoteSelectMenu, container);
             }
-            else
-            {
-                rootMenu.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE, lockIcon));
-            }
 
             // Setting
             GenerateSettingMenu(rootMenu, container);
@@ -785,6 +781,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             var settingRoot = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             settingRoot.name = loc.ExMenu_Setting;
+
+            // Emote lock setting
+            var lockIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Lock.png");
+            settingRoot.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE, lockIcon));
 
             // Blink off setting
             if (_aV3Setting.AddConfig_BlinkOff && _aV3Setting.ReplaceBlink)

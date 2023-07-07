@@ -371,14 +371,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var freeSpace = menu?.Registered?.FreeSpace;
             if (!freeSpace.HasValue) { return null; }
 
-            freeSpace--; // Emote select or lock
+            if (av3Setting.AddConfig_EmoteSelect) { freeSpace--; }
             return freeSpace;
         }
 
         public static int GetActualRegisteredListCapacity(AV3Setting av3Setting)
         {
             var capacity = Domain.RegisteredMenuItemList.Capacity;
-            capacity--; // Emote select or lock
+            if (av3Setting.AddConfig_EmoteSelect) { capacity--; }
             return capacity;
         }
     }
