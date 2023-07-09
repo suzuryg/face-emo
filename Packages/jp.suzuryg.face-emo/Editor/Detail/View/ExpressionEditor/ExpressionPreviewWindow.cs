@@ -86,7 +86,12 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 var renderCamera = cameraRoot.AddComponent<Camera>();
                 renderCamera.CopyFrom(camera);
-                _renderCache = DrawingUtility.GetRenderedTexture(renderCamera.pixelWidth, renderCamera.pixelHeight, renderCamera);
+
+                var drawScale = position.width / renderCamera.pixelWidth;
+                var scaledTextureWidth = (int)Math.Round(position.width, MidpointRounding.AwayFromZero);
+                var scaledTextureHeight = (int)Math.Round(renderCamera.pixelHeight * drawScale, MidpointRounding.AwayFromZero);
+
+                _renderCache = DrawingUtility.GetRenderedTexture(scaledTextureWidth, scaledTextureHeight, renderCamera);
             }
             finally
             {
@@ -126,7 +131,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 if (_renderCache != null)
                 {
-                    GUI.DrawTexture(new Rect(position.width - _renderCache.width, position.height - _renderCache.height, _renderCache.width, _renderCache.height),
+                    GUI.DrawTexture(new Rect(0, position.height - _renderCache.height, _renderCache.width, _renderCache.height),
                         _renderCache, ScaleMode.ScaleToFit, alphaBlend: false);
                 }
             }

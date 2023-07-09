@@ -756,6 +756,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                                 var reflect = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ReflectInPreviewOnMouseOver, DetailConstants.Default_ExpressionEditor_ReflectInPreviewOnMouseOver);
                                 if (reflect && buttonRect.Contains(Event.current.mousePosition))
                                 {
+                                    // FIX: Button background color is not reflected correctly when display magnification is changed.
                                     buttonStyle = _addPropertyButtonMouseOverStyle;
                                     blendShapeMouseOver = blendShapeKey;
                                 }
