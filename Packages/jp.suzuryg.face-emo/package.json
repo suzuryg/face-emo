@@ -7,14 +7,15 @@
   "author": {
     "name": "suzuryg",
     "email": "suzuryg@outlook.com",
-    "url": "https://suzuryg.github.io/"
+    "url": "https://suzuryg.github.io/face-emo/"
   },
   "url": "https://suzuryg.github.io/face-emo/",
+  "repo": "https://suzuryg.github.io/vpm-repos/vpm.json",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "2.0.2"
   },
   "vpmDependencies": {
-    "nadena.dev.modular-avatar":  ">=1.4.5",
+    "nadena.dev.modular-avatar":  "^1.4.5",
     "com.vrchat.avatars": ">=3.1.9"
   }
 }
