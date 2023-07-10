@@ -9,6 +9,9 @@ on:
 env:
   packageName: "jp.suzuryg.face-emo"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
