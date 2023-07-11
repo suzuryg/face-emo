@@ -15,7 +15,6 @@
     "com.unity.nuget.newtonsoft-json": "2.0.2"
   },
   "vpmDependencies": {
-    "nadena.dev.modular-avatar":  "^1.4.5",
     "com.vrchat.avatars": ">=3.1.9"
   }
 }
