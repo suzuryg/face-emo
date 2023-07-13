@@ -47,53 +47,6 @@ function Features() {
   );
 }
 
-
-function Details ()  {
-  return (
-    <div>
-      <div className="text--center" >
-        <h1 className="homepage_h1_padding" >FaceEmo機能一覧</h1>
-      </div>
-      <div className="row">
-        <div className={clsx('col col--4')}>
-          <div className="text--right">
-            <img src={require('@site/static/img/root_page/function01.png').default} className={styles.feature_detail_img} />
-          </div>
-        </div>
-        <div className={clsx('col col-8')}>
-          <div className="text--left">
-            表情エディター
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className={clsx('col col--4')}>
-          <div className="text--right">
-            <img src={require('@site/static/img/root_page/function02.png').default} className={styles.feature_detail_img} />
-          </div>
-        </div>
-        <div className={clsx('col col-8')}>
-          <div className="text--left">
-            左右ジェスチャーを組み合わせの一覧表
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className={clsx('col col--4')}>
-          <div className="text--right">
-            <img src={require('@site/static/img/root_page/function03.png').default} className={styles.feature_detail_img} />
-          </div>
-        </div>
-        <div className={clsx('col col-8')}>
-          <div className="text--left">
-            表情パターンごとにデフォルト表情を変えられる
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Credits(){
   return(
     <div>
@@ -118,8 +71,6 @@ export default function HomepageFeatures(): JSX.Element {
     <section className={styles.features}>
       <div className="container">
         <Features/>
-        <hr/>
-        <Details/>
         <hr/>
         <Credits/>
       </div>
