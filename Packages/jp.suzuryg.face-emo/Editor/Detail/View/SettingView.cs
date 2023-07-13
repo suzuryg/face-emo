@@ -340,12 +340,15 @@ namespace Suzuryg.FaceEmo.Detail.View
 
                 if (Event.current.type == EventType.MouseDown && linkRect.Contains(Event.current.mousePosition))
                 {
-                    var url = "https://suzuryg.github.io/face-emo/";
+                    var homeUrl = "https://suzuryg.github.io/face-emo/";
+                    var pageUrl = "docs/tutorials";
+                    var fullUrl = homeUrl;
                     if (_localizationSetting.Locale == Locale.ja_JP)
                     {
-                        url += "jp/";
+                        fullUrl += "ja/";
                     }
-                    Application.OpenURL(url);
+                    fullUrl += pageUrl;
+                    Application.OpenURL(fullUrl);
                 }
             }
         }
