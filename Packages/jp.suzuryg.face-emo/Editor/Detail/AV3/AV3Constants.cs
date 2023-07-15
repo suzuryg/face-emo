@@ -73,9 +73,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly int MaxEmoteNum = 256;
         public static readonly float VoiceThreshold = 0.01f;
 
-        public static readonly string Path_BlinkTemplate = $"{DetailConstants.ExternalDirectory}/BearsDen/CustomAnimatorControllers/__SetupFiles/Animator/Animation/FX/Blink/Blink_Enable.anim";
-        public static readonly string Path_BearsDenFx = $"{DetailConstants.ExternalDirectory}/BearsDen/CustomAnimatorControllers/__SetupFiles/Animator/Controller/FX.controller";
-        public static readonly string Path_BearsDenIcons = $"{DetailConstants.ExternalDirectory}/BearsDen/CustomAnimatorControllers/__SetupFiles/Expression/Icons";
+        public static readonly string Path_BlinkTemplate = $"{DetailConstants.ExternalDirectory}/CAC/Animator/Animation/FX/Blink/Blink_Enable.anim";
+        public static readonly string Path_BearsDenFx = $"{DetailConstants.ExternalDirectory}/CAC/Animator/Controller/FX.controller";
+        public static readonly string Path_BearsDenIcons = $"{DetailConstants.ExternalDirectory}/CAC/Expression/Icons";
 
         public static readonly string Path_FxTemplate_Basic = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplate_Basic.controller";
         public static readonly string Path_FxTemplate_WithIntegrator = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplate_WithIntegrator.controller";

@@ -11,7 +11,7 @@ namespace Suzuryg.FaceEmo.Detail
     {
         public static readonly string PackageName = "jp.suzuryg.face-emo";
         public static string DetailDirectory => $"Packages/{PackageName}/Editor/Detail";
-        public static string ExternalDirectory => $"Packages/{PackageName}/External";
+        public static string ExternalDirectory => $"Packages/{PackageName}/Ext";
         public static string ViewDirectory => $"{DetailDirectory}/View";
         public static string IconDirectory => $"{ViewDirectory}/Icon";
         public static string LocalizationDirectory => $"{DetailDirectory}/Localization";
