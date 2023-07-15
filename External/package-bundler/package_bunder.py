@@ -36,15 +36,14 @@ def read_config(config_file):
     return config
 
 def create_symlink(src, dst, symlink_logger):
-    dst.parent.mkdir(parents=True, exist_ok=True)
-
     if dst.is_symlink():
-        dst.unlink()
-        os.symlink(os.path.relpath(src, dst.parent), dst)
-        symlink_logger.info(f'Removed and recreated symbolic link: {dst}')
-    else:
-        os.symlink(os.path.relpath(src, dst.parent), dst)
-        symlink_logger.info(f'Created symbolic link: {dst}')
+        suffix = 1
+        while dst.with_name(f"{dst.stem}_{suffix}{dst.suffix}").is_symlink():
+            suffix += 1
+        dst = dst.with_name(f"{dst.stem}_{suffix}{dst.suffix}")
+
+    dst.symlink_to(os.path.relpath(src, dst.parent))
+    symlink_logger.info(f'Created symbolic link: {dst}')
 
 def create_gitignore(dst, content):
     dst.mkdir(parents=True, exist_ok=True)
@@ -58,7 +57,6 @@ def package_bundler(src_dir, dst_dir, config, symlink_logger, ignored_hierarchy_
             ignored_hierarchy_logger.info(f'Ignored hierarchy: {root}')
             continue
 
-        relative_root = Path(root).relative_to(src_dir)
         for file in files:
             if file.endswith('.meta'):
                 continue
@@ -66,10 +64,10 @@ def package_bundler(src_dir, dst_dir, config, symlink_logger, ignored_hierarchy_
                 ignored_file_logger.info(f'Ignored file: {root}/{file}')
                 continue
 
-            create_symlink(Path(root) / file, dst_dir / relative_root / file, symlink_logger)
+            create_symlink(Path(root) / file, dst_dir / file, symlink_logger)
 
         if any(file.endswith(ext) for ext in config.target_extensions for file in files):
-            create_gitignore(dst_dir / relative_root, config.gitignore_content)
+            create_gitignore(dst_dir, config.gitignore_content)
 
 if __name__ == "__main__":
     config_file = sys.argv[1]
