@@ -153,9 +153,7 @@
       "version": "file:jp.suzuryg.face-emo",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "2.0.2"
-      }
+      "dependencies": {}
     },
     "nadena.dev.modular-avatar": {
       "version": "file:nadena.dev.modular-avatar",
