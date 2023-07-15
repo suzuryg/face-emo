@@ -1,11 +1,11 @@
 symlinks:
   - src: ..\av3-animator-as-code
-    dest: ..\..\Packages\jp.suzuryg.face-emo\External\Hai\AnimatorAsCodeFramework
+    dest: ..\..\Packages\jp.suzuryg.face-emo\Ext\AnimatorAsCodeFramework
     target:
       - LICENSE
     include-meta-file: false
   - src: ..\av3-animator-as-code\Framework\Editor\V0
-    dest: ..\..\Packages\jp.suzuryg.face-emo\External\Hai\AnimatorAsCodeFramework
+    dest: ..\..\Packages\jp.suzuryg.face-emo\Ext\AnimatorAsCodeFramework
     target:
       - Aac.cs
       - AacAnimatorNode.cs
@@ -15,14 +15,14 @@ symlinks:
       - AacFlStates.cs
     include-meta-file: false
   - src: ..\av3-animator-as-code\Framework\Editor\V0\Extensions\VRChat
-    dest: ..\..\Packages\jp.suzuryg.face-emo\External\Hai\AnimatorAsCodeFramework
+    dest: ..\..\Packages\jp.suzuryg.face-emo\Ext\AnimatorAsCodeFramework
     target:
       - TrackingElement.cs
       - VRChatExtensions.cs
     include-meta-file: false
 
   - src: ..\combo-gesture-expressions-av3\Assets\Hai\ComboGesture\Scripts\Editor\Internal
-    dest: ..\..\Packages\jp.suzuryg.face-emo\External\Hai\ComboGestureIntegrator\Internal
+    dest: ..\..\Packages\jp.suzuryg.face-emo\Ext\ComboGestureIntegrator\Internal
     target:
       - CgeAssetContainer.cs
       - CgeLayerForAnalogFistSmoothing.cs
@@ -30,7 +30,7 @@ symlinks:
     include-meta-file: false
 
   - src: ..\combo-gesture-expressions-av3\Assets\Hai\ComboGesture\Scripts\Editor\Internal\CgeAac
-    dest: ..\..\Packages\jp.suzuryg.face-emo\External\Hai\ComboGestureIntegrator\Internal
+    dest: ..\..\Packages\jp.suzuryg.face-emo\Ext\ComboGestureIntegrator\Internal
     target:
       - CgeAac.cs
       - CgeAacAnimatorNode.cs
