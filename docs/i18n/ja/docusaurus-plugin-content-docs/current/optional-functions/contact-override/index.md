@@ -13,7 +13,7 @@ Projectビューで右クリックして「Create」→「FaceEmo_EmoteOverrideE
 
 ![PrefabとAnimatorController](create_prefab2.png)
 
-作成されたAnimatorControllerを開き、「Active」をダブルクリックします。
+作成されたAnimatorControllerを開き、「ACTIVE」をダブルクリックします。
 
 ![Activeをダブルクリック](select_active.png)
 

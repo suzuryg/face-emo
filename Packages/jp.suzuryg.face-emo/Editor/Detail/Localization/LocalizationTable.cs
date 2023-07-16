@@ -179,7 +179,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Message_TargetAvatarIsInSubAvatars = "It includes the main target avatar.";
         public string InspectorView_Message_SubAvatarNotInScene = "It includes an avatar that is not in the scene.";
 
-        public string InspectorView_Thumbnail = "Expression Thumbnail Setting";
+        public string InspectorView_Thumbnail = "Expression Thumbnail Settings";
         public string InspectorView_Thumbnail_FOV = "FOV";
         public string InspectorView_Thumbnail_Distance = "Distance";
         public string InspectorView_Thumbnail_HorizontalPosition = "Position (Horizontal)";
@@ -188,7 +188,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Thumbnail_VerticalAngle = "Angle (Vertical)";
         public string InspectorView_Thumbnail_Reset = "Reset";
 
-        public string InspectorView_AFK = "AFK Face Setting";
+        public string InspectorView_AFK = "AFK Face Settings";
         public string InspectorView_AFK_EnterFace = "AFK Enter Face";
         public string InspectorView_AFK_Face = "AFK Face";
         public string InspectorView_AFK_ExitFace = "AFK Exit Face";
@@ -201,10 +201,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock";
         public string InspectorView_AddConfig_Override = "Emote Override";
         public string InspectorView_AddConfig_Voice = "Do Not Transition When Speaking";
-        public string InspectorView_AddConfig_HandPattern = "Gesture Setting";
+        public string InspectorView_AddConfig_HandPattern = "Gesture Settings";
         public string InspectorView_AddConfig_Controller = "Controller Type";
 
-        public string InspectorView_AvatarApplicationSetting = "Avatar Application Setting";
+        public string InspectorView_AvatarApplicationSetting = "Avatar Application Settings";
         public string InspectorView_EmoteSelect = "Generate Emote Select Menu";
         public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
         public string InspectorView_TransitionDuration = "Transition Duration (sec)";
@@ -212,9 +212,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
 
-        public string InspectorView_Defaults = "Default Value for Expression Setting";
+        public string InspectorView_Defaults = "Default Value for Expression Settings";
 
-        public string InspectorView_EditorSetting = "Editor Setting";
+        public string InspectorView_EditorSetting = "Editor Settings";
         public string InspectorView_AutoSave = "Autosave Scene When Modifying Expression Menu";
         public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Folder";
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
@@ -273,7 +273,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_Message_ClipIsNull = "The animation clip has been deleted. Please open another animation clip.";
         public string ExpressionEditorView_Message_FailedToRename = "Failed to rename. Please enter a different name.";
         public string ExpressionEditorView_Message_BlinkBlendShapeExists = "Blend shapes for blink are included!";
-        public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lipsync are included!";
+        public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lip-sync are included!";
         public string ExpressionEditorView_Message_AddAllBlendShapes = "Add all blend shapes to the animation clip?";
         public string ExpressionEditorView_Message_NotInitialized = "Please open expression editor from main window of FaceEmo.";
         public string ExpressionEditorView_Tooltip_Delimiter = "By entering the delimiter for the blend shapes, you can display the blend shapes by category. " +
@@ -292,14 +292,14 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please see the console for more details.";
 
         public string ExMenu_EmoteSelect = "Emote Select";
-        public string ExMenu_Setting = "Setting";
+        public string ExMenu_Setting = "Settings";
         public string ExMenu_EmoteLock = "Emote Lock ON [NOT Saved]";
         public string ExMenu_BlinkOff = "Blink OFF [NOT Saved]";
         public string ExMenu_DanceGimmick = "Enable Dance Gimmick [NOT Saved]";
         public string ExMenu_ContactLock = "Enable Contact Emote Lock";
         public string ExMenu_Override = "Enable Emote Override";
         public string ExMenu_Voice = "Do Not Transition When Speaking";
-        public string ExMenu_HandPattern = "Gesture Setting";
+        public string ExMenu_HandPattern = "Gesture Settings";
         public string ExMenu_HandPattern_SwapLR = "Swap LR";
         public string ExMenu_HandPattern_DisableLeft = "Disable Left";
         public string ExMenu_HandPattern_DisableRight = "Disable Right";

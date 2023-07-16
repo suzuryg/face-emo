@@ -9,11 +9,11 @@ sidebar_label: 自動バックアップから表情メニューを復元する
 
 ツールバーから「FaceEmo」→「Restore Menu」を実行します。
 
-![RestoreMenu実行](dummy.png)
+![RestoreMenu実行](restore_execute.png)
 
 ファイルを選択する画面が開くので、「Assets/Suzuryg/FaceEmo/AutoBackup」の中から復元に使用したいバックアップデータを選びます。
 
-![バックアップデータ選択](dummy.png)
+![バックアップデータ選択](select_data.png)
 
 :::tip
 - 自動バックアップは、表情メニューをアバターに適用したタイミングで作成されます
@@ -23,4 +23,4 @@ sidebar_label: 自動バックアップから表情メニューを復元する
 
 バックアップデータを開くと、復元された表情メニューがヒエラルキー上に作成されます。
 
-![表情メニューの復元](dummy.png)
+![表情メニューの復元](restore_result.png)

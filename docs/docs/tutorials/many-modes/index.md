@@ -5,11 +5,11 @@ sidebar_label: Creating a Variety of Expression Patterns
 
 # Creating a Variety of Expression Patterns
 
-Let's add a lot of expression patterns and make them switchable in the Expression Menu.
+Let's add a lot of expression patterns and make them switchable in the facial expression menu.
 
 ## Adding Folders
 
-To create a lot of expression patterns, you need to group them, as there is a limit to the number of items that can be added to the Expression Menu.
+To create a lot of expression patterns, you need to group them, as there is a limit to the number of items that can be added to the VRChat Expression Menu.
 Click on the second button from the left in the "Expression Patterns" view and try adding a folder.
 
 ![Add folder](add_group.png)
@@ -17,6 +17,8 @@ Click on the second button from the left in the "Expression Patterns" view and t
 You can change the name of the folder freely. This time, we will change it to "Folder1".
 
 ![Rename folder](rename_group.png)
+
+---
 
 ## Switching Display Hierarchy
 
@@ -48,6 +50,8 @@ Use the "Archive" to store things you want to temporarily remove from the avatar
 Expression patterns and folders can be moved by drag & drop. 
 You can also move between the Tree View and the Expression Patterns View.
 :::
+
+---
 
 ## Adding Expression Patterns
 
@@ -93,9 +97,11 @@ Select the "Wink" expression pattern and set it in the "Expressions" view as sho
 
 ![Wink tongue out](wink_tang.png)
 
-## Applying the Expression Menu to the Avatar
+---
 
-Once you've done this, the creation of the expression menu is complete when you execute "Apply to Avatar".  
+## Applying the Facial Expression Menu to the Avatar
+
+Once you've done this, the creation of the facial expression menu is complete when you execute "Apply to Avatar".  
 Upload the avatar and confirm that it behaves as follows:
 
 - You can switch expressions in the Expression Menu
