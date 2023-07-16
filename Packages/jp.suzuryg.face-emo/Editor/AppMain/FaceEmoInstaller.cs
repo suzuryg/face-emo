@@ -178,14 +178,16 @@ namespace Suzuryg.FaceEmo.AppMain
         {
             if (!rootObjectPath.StartsWith("/"))
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} is not a full path.", "OK");
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath}{loc.Common_Message_NotFullPath}", "OK");
                 return null;
             }
 
             var launcherObject = GameObject.Find(rootObjectPath);
             if (launcherObject == null)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} was not found. Please activate the GameObject.", "OK");
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath}{loc.Common_Message_LauncherObjectNotFound}", "OK");
                 return null;
             }
 
@@ -195,7 +197,8 @@ namespace Suzuryg.FaceEmo.AppMain
             launcherObject.SetActive(true);
             if (anotherObject != null)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath} has duplicate path. Please change GameObject's name.", "OK");
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath}{loc.Common_Message_DuplicatePath}", "OK");
                 return null;
             }
 

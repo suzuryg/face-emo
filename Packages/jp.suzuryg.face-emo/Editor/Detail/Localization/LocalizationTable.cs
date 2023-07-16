@@ -33,6 +33,12 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
         public string Common_Message_MAIsNotInstalled = "Modular Avatar must be installed in order to use FaceEmo!";
         public string Common_Message_ErrorWhenClosingSubWindows = "An error occurred while closing the sub-windows, please restart Unity if FaceEmo is not working properly.";
+        public string Common_Message_NotFullPath = " is not a full path.";
+        public string Common_Message_LauncherObjectNotFound = " was not found. Please activate the GameObject.";
+        public string Common_Message_DuplicatePath = " has duplicate path. Please change GameObject's name.";
+        public string Common_Message_FailedToLaunch = "Failed to Launch FaceEmo.";
+        public string Common_Message_FailedToOpenProject = "Failed to open FaceEmoProject.";
+        public string Common_Message_SeeConsole = "Please see the console for more details.";
         public string Common_Tooltip_EyeTracking = "You can set whether to use pseudo eye-tracking. This setting can be configured independently of the blinking setting.";
         public string Common_Tooltip_Blink = "You can set whether to blink. Please disable blinking for expressions where the eyes are closed.";
         public string Common_Tooltip_LipSync = "You can set whether to use lip-syncing. " +
@@ -283,7 +289,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string FxGenerator_Message_FaceMeshNotFound = "Face mesh was not found. Default face and blink may not be properly animated.";
         public string FxGenerator_Message_BlinkBlendShapeNotFound = "Blink blend shape was not found. Blink may not be properly animated.";
 
-        public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please check the console.";
+        public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please see the console for more details.";
 
         public string ExMenu_EmoteSelect = "Emote Select";
         public string ExMenu_Setting = "Setting";

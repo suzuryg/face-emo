@@ -77,8 +77,9 @@ namespace Suzuryg.FaceEmo.AppMain
             }
             catch (Exception ex)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"Failed to launch. Please see the console.", "OK");
-                Debug.LogError(ex.ToString());
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_FailedToLaunch + "\n" + loc.Common_Message_SeeConsole, "OK");
+                Debug.LogError(loc.Common_Message_FailedToLaunch + "\n" + ex?.ToString());
             }
 #else
             EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.GetTable(LocalizationSetting.GetLocale()).Common_Message_MAIsNotInstalled, "OK");
@@ -134,9 +135,9 @@ namespace Suzuryg.FaceEmo.AppMain
             }
             catch (Exception ex)
             {
-                Debug.LogException(ex);
-                var message = ex is FaceEmoException ? ex.Message : "Failed to open FaceEmoProject.";
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, message, "OK");
+                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_FailedToOpenProject + "\n" + loc.Common_Message_SeeConsole, "OK");
+                Debug.LogError(loc.Common_Message_FailedToOpenProject + "\n" + ex?.ToString());
                 if (gameObject != null) { DestroyImmediate(gameObject); }
             }
         }
