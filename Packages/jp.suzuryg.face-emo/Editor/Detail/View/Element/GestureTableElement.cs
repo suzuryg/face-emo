@@ -32,6 +32,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         public IObservable<Unit> OnBranchIndexExceeded => _onBranchIndexExceeded.AsObservable();
         public IObservable<(HandGesture left, HandGesture right)?> OnAddBrandchButtonClicked => _onAddBranchButtonClicked.AsObservable();
         public IObservable<(HandGesture left, HandGesture right)?> OnEditClipButtonClicked => _onEditClipButtonClicked.AsObservable();
+        public IObservable<(HandGesture left, HandGesture right)?> OnCombineButtonClicked => _onCombineButtonClicked.AsObservable();
         public IObservable<(string clipGUID, HandGesture left, HandGesture right)?> OnBaseAnimationChanged => _onBaseAnimationChanged.AsObservable();
 
         public IMenu Menu { get; private set; }
@@ -43,6 +44,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private Subject<Unit> _onBranchIndexExceeded = new Subject<Unit>();
         private Subject<(HandGesture left, HandGesture right)?> _onAddBranchButtonClicked = new Subject<(HandGesture left, HandGesture right)?>();
         private Subject<(HandGesture left, HandGesture right)?> _onEditClipButtonClicked = new Subject<(HandGesture left, HandGesture right)?>();
+        private Subject<(HandGesture left, HandGesture right)?> _onCombineButtonClicked = new Subject<(HandGesture left, HandGesture right)?>();
         private Subject<(string clipGUID, HandGesture left, HandGesture right)?> _onBaseAnimationChanged = new Subject<(string clipGUID, HandGesture left, HandGesture right)?>();
 
         private ISubWindowProvider _subWindowProvider;
@@ -55,6 +57,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private Texture2D _selectedElementTexture;
         private Texture2D _createIcon;
         private Texture2D _editIcon;
+        private Texture2D _combineIcon;
 
         private GUIStyle _gestureLabelStyle;
         private GUIStyle _centerUpperStyle;
@@ -100,6 +103,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
             _createIcon = ViewUtility.GetIconTexture("note_add_FILL0_wght400_GRAD200_opsz150.png");
             _editIcon = ViewUtility.GetIconTexture("edit_FILL0_wght400_GRAD200_opsz150.png");
+            _combineIcon = ViewUtility.GetIconTexture("cell_merge_FILL0_wght400_GRAD200_opsz48.png");
 
             // Set text
             SetText(localizationSetting.Table);
@@ -296,10 +300,11 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                             thumbnailHeight),
                             thumbnail);
                     }
-                    // Button
+
+                    // Button (Create or Edit)
                     var branchExists = branch is IBranch;
                     var icon = branchExists ? _editIcon : _createIcon;
-                    var tooltip = branchExists ? _localizationTable.GestureTableView_Tooltip_Edit : _localizationTable.BranchListView_Tooltip_AddBranch;
+                    var tooltip = branchExists ? _localizationTable.GestureTableView_Tooltip_Edit : _localizationTable.GestureTableView_Tooltip_Add;
                     var buttonRect = new Rect(
                         elementRect.x + ElementPadding + contentWidth + ElementPadding - ButtonSize,
                         elementRect.y + ElementPadding + EditorGUIUtility.singleLineHeight,
@@ -311,6 +316,22 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                         else { _onAddBranchButtonClicked.OnNext((leftHand, rightHand)); }
                     }
                     GUI.DrawTexture(buttonRect, icon, ScaleMode.ScaleToFit, alphaBlend: true);
+
+                    // Button (combine)
+                    if (leftHand != HandGesture.Neutral && rightHand != HandGesture.Neutral)
+                    {
+                        var combinebuttonRect = new Rect(
+                            elementRect.x + ElementPadding + contentWidth + ElementPadding - ButtonSize,
+                            elementRect.y + ElementPadding + EditorGUIUtility.singleLineHeight + thumbnailHeight - ButtonSize,
+                            ButtonSize,
+                            ButtonSize);
+                        var combineTooltip = _localizationTable.GestureTableView_Tooltip_Combine;
+                        if (GUI.Button(combinebuttonRect, new GUIContent(string.Empty, combineTooltip)))
+                        {
+                            _onCombineButtonClicked.OnNext((leftHand, rightHand));
+                        }
+                        GUI.DrawTexture(combinebuttonRect, _combineIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                    }
 
                     // ObjectField
                     if (branch is IBranch &&

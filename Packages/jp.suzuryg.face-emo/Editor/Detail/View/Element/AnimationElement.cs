@@ -25,7 +25,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private Texture2D _blackTranslucent;
         private Texture2D _createIcon;
         private Texture2D _openIcon;
-        private Texture2D _copyIcon;
+        private Texture2D _combineIcon;
         private Texture2D _editIcon;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -68,16 +68,17 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
             _createIcon = ViewUtility.GetIconTexture("note_add_FILL0_wght400_GRAD200_opsz150.png");
             _openIcon = ViewUtility.GetIconTexture("folder_open_FILL0_wght400_GRAD200_opsz150.png");
-            _copyIcon = ViewUtility.GetIconTexture("content_copy_FILL0_wght400_GRAD200_opsz150.png");
+            _combineIcon = ViewUtility.GetIconTexture("cell_merge_FILL0_wght400_GRAD200_opsz150.png");
             _editIcon = ViewUtility.GetIconTexture("edit_FILL0_wght400_GRAD200_opsz150.png");
 
-            NullChecker.Check(_blackTranslucent, _createIcon, _openIcon, _copyIcon, _editIcon);
+            NullChecker.Check(_blackTranslucent, _createIcon, _openIcon, _combineIcon, _editIcon);
         }
 
         // TODO: Specify up-left point, not a rect.
         public void Draw(Rect rect, Domain.Animation animation, MainThumbnailDrawer thumbnailDrawer,
             Action<string> setAnimationClipAction, // The argument is new animation's GUID.
-            string defaultClipName = null)
+            string defaultClipName = null,
+            bool canCombine = true, Domain.Animation leftCombine = null, Domain.Animation rightCombine = null)
         {
             // Thumbnail
             var thumbnailWidth = _thumbnailSetting.Main_Width;
@@ -117,7 +118,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
                 var createRect = new Rect(thumbnailRect.x + margin, thumbnailRect.y + margin, width, height);
                 var openRect = new Rect(thumbnailRect.x + thumbnailRect.width / 2 + margin, thumbnailRect.y + margin, width, height);
-                var copyRect = new Rect(thumbnailRect.x + margin, thumbnailRect.y + thumbnailRect.height / 2 + margin, width, height);
+                var combineRect = new Rect(thumbnailRect.x + margin, thumbnailRect.y + thumbnailRect.height / 2 + margin, width, height);
                 var editRect = new Rect(thumbnailRect.x + thumbnailRect.width / 2 + margin, thumbnailRect.y + thumbnailRect.height / 2 + margin, width, height);
 
                 const float iconMarginRate = 0.1f;
@@ -152,19 +153,26 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 }
                 GUI.DrawTexture(new Rect(openRect.x + iconMargin, openRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _openIcon, ScaleMode.ScaleToFit, alphaBlend: true);
 
-                // Copy
-                if (GUI.Button(copyRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Copy)))
+                // Combine
+                using (new EditorGUI.DisabledScope(!canCombine))
                 {
-                    if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
-
-                    var guid = GetAnimationGuidWithDialog(DialogMode.Copy, path, defaultClipName);
-                    if (!string.IsNullOrEmpty(guid))
+                    if (GUI.Button(combineRect, new GUIContent(string.Empty, _localizationTable.AnimationElement_Tooltip_Combine)))
                     {
-                        _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(guid)));
-                        setAnimationClipAction(guid);
+                        if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
+                        if (leftCombine is null) { leftCombine = animation; }
+
+                        CombineClipsDialog.Show(this, thumbnailDrawer,
+                            thumbnailWidth, thumbnailHeight,
+                            _expressionEditor, setAnimationClipAction,
+                            leftAnimation: leftCombine, rightAnimation: rightCombine);
                     }
                 }
-                GUI.DrawTexture(new Rect(copyRect.x + iconMargin, copyRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _copyIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                GUI.DrawTexture(new Rect(combineRect.x + iconMargin, combineRect.y + iconMargin, width - iconMargin * 2, height - iconMargin * 2), _combineIcon, ScaleMode.ScaleToFit, alphaBlend: true);
+                if (!canCombine)
+                {
+                    GUI.DrawTexture(combineRect, _blackTranslucent, ScaleMode.StretchToFill, alphaBlend: true);
+                }
 
                 // Edit
                 using (new EditorGUI.DisabledScope(!clipExits))

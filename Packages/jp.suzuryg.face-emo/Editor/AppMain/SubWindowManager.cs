@@ -3,6 +3,7 @@ using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View;
+using Suzuryg.FaceEmo.Detail.View.Element;
 using Suzuryg.FaceEmo.Detail.View.ExpressionEditor;
 using System;
 using System.Linq;
@@ -64,6 +65,10 @@ namespace Suzuryg.FaceEmo.AppMain
                             expressionPreviewWindow.Initialize(expressionEditor, _lastActiveSceneView);
                         }
                     }
+                    else if (typeof(T) == typeof(CombineClipsDialog))
+                    {
+                        // NOP
+                    }
                     else
                     {
                         throw new FaceEmoException($"Unknown window: {typeof(T)}");
@@ -97,6 +102,7 @@ namespace Suzuryg.FaceEmo.AppMain
                 ProvideIfOpenedAlready<GestureTableWindow>()?.CloseIfNotDocked();
                 ProvideIfOpenedAlready<ExpressionEditorWindow>()?.CloseIfNotDocked();
                 ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.CloseIfNotDocked();
+                ProvideIfOpenedAlready<CombineClipsDialog>()?.Close();
             }
             catch (NullReferenceException ex)
             {

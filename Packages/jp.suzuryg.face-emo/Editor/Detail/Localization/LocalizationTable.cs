@@ -10,6 +10,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Delete = "Delete";
         public string Common_DeleteAll = "Delete All";
         public string Common_Copy = "Copy";
+        public string Common_Combine = "Combine";
         public string Common_Apply = "Apply";
 
         public string Common_Neutral = "Neutral";
@@ -137,14 +138,18 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string GestureTableView_Separator = " & ";
         public string GestureTableView_ModeIsNotSelected = "Please select an expression pattern in the main window.";
         public string GestureTableView_Message_NotInitialized = "Please open gesture table from main window of FaceEmo.";
+        public string GestureTableView_Tooltip_Add = "Add a new expression.";
         public string GestureTableView_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip. " +
             "If no animation clip is set, create a new one.";
+        public string GestureTableView_Tooltip_Combine = "Combine the expressions of the left and right hand. " +
+            "When the same blend shape is used, the one with the higher value takes precedence.";
 
         public string AnimationElement_NewClipName = "NewExpression";
         public string AnimationElement_Message_GuidWasNotFound = "The selected animation clip does not exist in this project.";
         public string AnimationElement_Tooltip_Create = "Create a new animation clip.";
         public string AnimationElement_Tooltip_Open = "Open an animation clip.";
-        public string AnimationElement_Tooltip_Copy = "Copy an existing animation clip to create a new animation clip.";
+        public string AnimationElement_Tooltip_Combine = "Choose and combine two animation clips. " +
+            "When the same blend shape is used, the one with the higher value takes precedence.";
         public string AnimationElement_Tooltip_Edit = "Open ExpressionEditor and edit the attached animation clip.";
         public string AnimationElement_Dialog_Open = "Please select an animation clip to set to the expression.";
         public string AnimationElement_Dialog_Copy = "Please select the animation clip to be copied.";

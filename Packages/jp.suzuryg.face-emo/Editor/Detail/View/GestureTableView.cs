@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
+using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View.Element;
@@ -85,6 +86,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _gestureTableElement.OnBranchIndexExceeded.Synchronize().Subscribe(_ => OnBranchIndexExceeded()).AddTo(_disposables);
             _gestureTableElement.OnAddBrandchButtonClicked.Synchronize().Subscribe(OnAddBranchButtonClicked).AddTo(_disposables);
             _gestureTableElement.OnEditClipButtonClicked.Synchronize().Subscribe(OnEditClipButtonClicked).AddTo(_disposables);
+            _gestureTableElement.OnCombineButtonClicked.Synchronize().Subscribe(OnCombineButtonClicked).AddTo(_disposables);
             _gestureTableElement.OnBaseAnimationChanged.Synchronize().Subscribe(OnBaseAnimationChanged).AddTo(_disposables);
 
             // Localization table changed event handler
@@ -284,6 +286,69 @@ namespace Suzuryg.FaceEmo.Detail.View
                     _setExistingAnimationUseCase.Handle(string.Empty, new Domain.Animation(guid), modeId, branchIndex, BranchAnimationType.Base);
                 }
             }
+        }
+
+        private void OnCombineButtonClicked((HandGesture left, HandGesture right)? args)
+        {
+            if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationSetting.GetCurrentLocaleTable().Common_Message_NotPossibleInPlayMode, "OK"); return; }
+            else if (!args.HasValue) { return; }
+            else if (_gestureTableElement?.Menu?.ContainsMode(_gestureTableElement?.SelectedModeId) != true) { return; }
+
+            var modeId = _gestureTableElement.SelectedModeId;
+            var mode = _gestureTableElement.Menu.GetMode(modeId);
+            var targetBranch = mode.GetGestureCell(args.Value.left, args.Value.right);
+            var conditions = new[]
+            {
+                new Condition(Hand.Left, args.Value.left, ComparisonOperator.Equals),
+                new Condition(Hand.Right, args.Value.right, ComparisonOperator.Equals),
+            };
+            int branchIndex;
+
+            // Create new clip
+            var newClipGuid = _animationElement.GetAnimationGuidWithDialog(AnimationElement.DialogMode.Create, string.Empty, defaultClipName: null);
+            if (string.IsNullOrEmpty(newClipGuid)) { return; }
+
+            // Use existing branch
+            if (targetBranch != null &&
+                targetBranch.Conditions.Count == 2 &&
+                targetBranch.Conditions.Contains(conditions[0]) &&
+                targetBranch.Conditions.Contains(conditions[1]))
+            {
+                var found = false;
+                for (branchIndex = 0; branchIndex < mode.Branches.Count; branchIndex++)
+                {
+                    if (ReferenceEquals(targetBranch, mode.Branches[branchIndex]))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) { throw new FaceEmoException("The target branch was not found."); }
+            }
+            // Add new branch
+            else
+            {
+                _addBranchUseCase.Handle("", _gestureTableElement.SelectedModeId,
+                    conditions: conditions,
+                    order: 0,
+                    defaultsProvider: _defaultProviderGenerator.Generate());
+
+                branchIndex = 0;
+
+                _selectionSynchronizer.ChangeGestureTableViewSelection(args.Value.left, args.Value.right);
+            }
+
+            // Combine clips
+            var newClipPath = AssetDatabase.GUIDToAssetPath(newClipGuid);
+            var newClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(newClipPath);
+
+            var leftClip = AV3Utility.GetAnimationClipWithName(mode.GetGestureCell(args.Value.left, HandGesture.Neutral)?.BaseAnimation).clip;
+            var rightClip = AV3Utility.GetAnimationClipWithName(mode.GetGestureCell(HandGesture.Neutral, args.Value.right)?.BaseAnimation).clip;
+
+            AV3Utility.CombineExpressions(leftClip, rightClip, newClip);
+
+            _expressionEditor.Open(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(newClipGuid)));
+            _setExistingAnimationUseCase.Handle(string.Empty, new Domain.Animation(newClipGuid), modeId, branchIndex, BranchAnimationType.Base);
         }
 
         private void OnBaseAnimationChanged((string clipGUID, HandGesture left, HandGesture right)? args)

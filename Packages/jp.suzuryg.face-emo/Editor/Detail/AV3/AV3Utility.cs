@@ -2,10 +2,11 @@
 using UnityEngine;
 using UnityEditor.Animations;
 using UnityEditor;
-using System.IO;
 using VRC.SDKBase;
 using Suzuryg.FaceEmo.Domain;
 using VRC.SDK3.Avatars.Components;
+using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
@@ -334,6 +335,39 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         }
 
         public static AnimationClip SynthesizeAvatarPose(AnimationClip animationClip) => SynthesizeClip(GetAvatarPoseClip(), animationClip);
+
+        public static void CombineExpressions(AnimationClip leftHand, AnimationClip rightHand, AnimationClip destination)
+        {
+            if (leftHand != null)
+            {
+                foreach (var binding in AnimationUtility.GetCurveBindings(leftHand))
+                {
+                    var leftCurve = AnimationUtility.GetEditorCurve(leftHand, binding);
+                    var oldCurve = AnimationUtility.GetEditorCurve(destination, binding);
+
+                    var leftValue = leftCurve != null && leftCurve.keys.Length > 0 ? leftCurve.keys.Last().value : 0;
+                    var oldValue = oldCurve != null && oldCurve.keys.Length > 0 ? oldCurve.keys.Last().value : 0;
+
+                    var newCurve = new AnimationCurve(new Keyframe(time: 0, value: Math.Max(leftValue, oldValue)));
+                    AnimationUtility.SetEditorCurve(destination, binding, newCurve);
+                }
+            }
+
+            if (rightHand != null)
+            {
+                foreach (var binding in AnimationUtility.GetCurveBindings(rightHand)) 
+                {
+                    var rightCurve = AnimationUtility.GetEditorCurve(rightHand, binding);
+                    var oldCurve = AnimationUtility.GetEditorCurve(destination, binding);
+
+                    var rightValue = rightCurve != null && rightCurve.keys.Length > 0 ? rightCurve.keys.Last().value : 0;
+                    var oldValue = oldCurve != null && oldCurve.keys.Length > 0 ? oldCurve.keys.Last().value : 0;
+
+                    var newCurve = new AnimationCurve(new Keyframe(time: 0, value: Math.Max(rightValue, oldValue)));
+                    AnimationUtility.SetEditorCurve(destination, binding, newCurve);
+                }
+            }
+        }
 
         public static List<ModeEx> FlattenMenuItemList(IMenuItemList menuItemList, ModeNameProvider modeNameProvider)
         {
