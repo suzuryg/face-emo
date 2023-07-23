@@ -187,7 +187,7 @@ namespace Suzuryg.FaceEmo.AppMain
             selectionRect.yMin += 1;
             selectionRect.yMax -= 1;
             var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("b8710db71cc992745987c4e92d53fcd1")); // logo
-            if (GUI.Button(selectionRect, new GUIContent(string.Empty, loc.Common_Tooltip_LaunchFromHierarchy)))
+            if (GUI.Button(selectionRect, new GUIContent(string.Empty, loc?.Common_Tooltip_LaunchFromHierarchy)))
             {
                 var exists = false;
                 foreach (var launcher in FindObjectsOfType<FaceEmoLauncherComponent>()?.OrderBy(x => x.name))
