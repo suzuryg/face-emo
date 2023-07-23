@@ -21,7 +21,7 @@ namespace Suzuryg.FaceEmo.Detail
 {
     public class FxGeneratorTests
     {
-        private static readonly string AnimationDir = "Assets/Temp/Animation";
+        private static readonly string AnimationDir = "Assets/Temp/FxGeneratorTests/Animations";
         //private static readonly string DestinationPath = "Assets/Temp/GeneratedFx.controller";
 
         //private static readonly string ParamName_IsLocal = "IsLocal";
@@ -51,7 +51,7 @@ namespace Suzuryg.FaceEmo.Detail
             _animationPaths = new List<string>();
             if (!AssetDatabase.IsValidFolder(AnimationDir))
             {
-                AssetDatabase.CreateFolder(Path.GetDirectoryName(AnimationDir), Path.GetFileName(AnimationDir));
+                AV3Utility.CreateFolderRecursively(AnimationDir);
             }
         }
 
