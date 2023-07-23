@@ -28,7 +28,7 @@
 {
     margin-left: 10px;
     margin-top: -1px;
-    width: 200px;
+    width: 150px;
     height: 20px;
 }
 
@@ -59,11 +59,19 @@
     height: 20px;
 }
 
-#OpenManualField
+#OpenManualButton
 {
-    margin-left: 12px;
-    margin-top: -5px;
-    height: 20px;
+    flex-direction: row;
+
+    margin-left: 10px;
+    width: 180px;
+    height: 45px;
+}
+
+#OpenManualLabel
+{
+    margin-left: 10px;
+    font-size: 16px;
 }
 
 #ApplyButton
