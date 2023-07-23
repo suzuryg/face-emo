@@ -5,7 +5,7 @@ using VRC.SDK3.Avatars.Components;
 using nadena.dev.modular_avatar.core;
 #endif
 
-namespace Suzuryg.FaceEmo.Detail.AV3
+namespace Suzuryg.FaceEmo.Detail.MA
 {
     [DefaultExecutionOrder(-20000)] // run before modular avatar
 #if USE_MODULAR_AVATAR

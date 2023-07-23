@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 #endif
 
-namespace Suzuryg.FaceEmo.Detail.AV3
+namespace Suzuryg.FaceEmo.Detail.MA
 {
     [DisallowMultipleComponent]
     public class TrackingControlDisabler : RunBeforeModularAvatar

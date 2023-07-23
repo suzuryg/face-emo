@@ -12,6 +12,7 @@ using UnityEditor;
 using UniRx;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
+using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FaceEmo.Detail.Drawing
 {
@@ -205,8 +206,9 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
 
             // Get Animator
+            var targetAvatar = _aV3Setting.TargetAvatar as VRCAvatarDescriptor;
             var avatarAnimator = AV3Utility.GetAnimator(_aV3Setting);
-            if (avatarAnimator == null)
+            if (targetAvatar == null || avatarAnimator == null)
             {
                 yield break;
             }
@@ -245,7 +247,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                             ThumbnailSetting.CameraPosXCoef * leftShoulder.position.x,
                             CameraPosX);
 
-                        var distance = Math.Abs(animator.GetBoneTransform(HumanBodyBones.Neck).position.y - _aV3Setting.TargetAvatar.ViewPosition.y);
+                        var distance = Math.Abs(animator.GetBoneTransform(HumanBodyBones.Neck).position.y - targetAvatar.ViewPosition.y);
                         y = Mathf.Lerp(-distance, distance, CameraPosY);
                     }
                     else
@@ -260,9 +262,9 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 camera.orthographic = false;
                 camera.nearClipPlane = 0.01f;
                 camera.fieldOfView = FOV;
-                camera.transform.position = new Vector3(x, _aV3Setting.TargetAvatar.ViewPosition.y + y, Distance);
+                camera.transform.position = new Vector3(x, targetAvatar.ViewPosition.y + y, Distance);
                 cameraRoot.transform.rotation = Quaternion.Euler(0, 180, 0);
-                camera.transform.RotateAround(_aV3Setting.TargetAvatar.ViewPosition, Vector3.left, CameraAngleX);
+                camera.transform.RotateAround(targetAvatar.ViewPosition, Vector3.left, CameraAngleX);
                 camera.transform.RotateAround(clonedAvatar.transform.position, Vector3.down, CameraAngleY);
 
                 // Generate thumbnails

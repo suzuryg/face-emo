@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FaceEmo.Detail.AV3
 {
     public class AV3Setting : ScriptableObject
     {
-        public VRCAvatarDescriptor TargetAvatar;
+        // Independent of VRCSDK to prevent ScriptableObject references breaking in the event of a compilation error.
+        // Cast to VRCAvatarDescriptor when in use.
+        public MonoBehaviour TargetAvatar;
+        public List<MonoBehaviour> SubTargetAvatars = new List<MonoBehaviour>();
 
-        public List<VRCAvatarDescriptor> SubTargetAvatars = new List<VRCAvatarDescriptor>();
         public GameObject MARootObjectPrefab;
 
         public List<string> MouthMorphBlendShapes = new List<string>();

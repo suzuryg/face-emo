@@ -99,7 +99,11 @@ namespace Suzuryg.FaceEmo.Detail.View
             _subTargetAvatars.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
             {
                 var element = _subTargetAvatars.serializedProperty.GetArrayElementAtIndex(index);
-                EditorGUI.PropertyField(rect, element, GUIContent.none);
+                var avatar = EditorGUI.ObjectField(rect, GUIContent.none, element.objectReferenceValue, typeof(VRCAvatarDescriptor), allowSceneObjects: true) as VRCAvatarDescriptor;
+                if (!ReferenceEquals(avatar, element.objectReferenceValue))
+                {
+                    element.objectReferenceValue = avatar;
+                }
             };
             _subTargetAvatars.drawNoneElementCallback = (Rect rect) =>
             {
@@ -322,9 +326,12 @@ namespace Suzuryg.FaceEmo.Detail.View
         private void Field_TargetAvatar()
         {
             var property = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar));
-            EditorGUILayout.PropertyField(property, new GUIContent(_localizationTable.InspectorView_TargetAvatar));
+            var avatar = EditorGUILayout.ObjectField(new GUIContent(_localizationTable.InspectorView_TargetAvatar), property.objectReferenceValue, typeof(VRCAvatarDescriptor), allowSceneObjects: true) as VRCAvatarDescriptor;
+            if (!ReferenceEquals(avatar, property.objectReferenceValue))
+            {
+                property.objectReferenceValue = avatar;
+            }
 
-            var avatar = property.objectReferenceValue as VRCAvatarDescriptor;
             if (avatar != null && avatar.gameObject?.scene.name == null)
             {
                 EditorGUILayout.LabelField(_localizationTable.InspectorView_Message_TargetAvatarNotInScene, _warningLabelStyle);

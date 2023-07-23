@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Suzuryg.FaceEmo.Detail.AV3
+namespace Suzuryg.FaceEmo.Detail.MA
 {
     [DisallowMultipleComponent]
     public class BlinkDisabler : RunBeforeModularAvatar

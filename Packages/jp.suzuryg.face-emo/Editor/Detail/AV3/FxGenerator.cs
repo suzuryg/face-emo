@@ -3,6 +3,7 @@ using AnimatorAsCode.V0.Extensions.VRChat;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Detail.Drawing;
+using Suzuryg.FaceEmo.Detail.MA;
 using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
 using System;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 // Generate layers
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating layers...", 0);
-                var avatarDescriptor = _aV3Setting.TargetAvatar;
+                var avatarDescriptor = _aV3Setting.TargetAvatar as VRCAvatarDescriptor;
                 if (avatarDescriptor == null)
                 {
                     throw new FaceEmoException("AvatarDescriptor was not found.");

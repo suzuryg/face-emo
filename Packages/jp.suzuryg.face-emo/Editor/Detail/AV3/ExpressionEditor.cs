@@ -174,9 +174,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public Vector3 GetAvatarViewPosition()
         {
             // Returns view position if previewable in T-pose.
-            if (AV3Utility.GetAvatarPoseClip() != null && _aV3Setting?.TargetAvatar?.ViewPosition != null)
+            if (AV3Utility.GetAvatarPoseClip() != null && (_aV3Setting?.TargetAvatar as VRCAvatarDescriptor)?.ViewPosition != null)
             {
-                return _aV3Setting.TargetAvatar.ViewPosition + new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
+                return (_aV3Setting.TargetAvatar as VRCAvatarDescriptor).ViewPosition + new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
             }
             // Returns head position if not previewable in T-pose.
             else
@@ -244,9 +244,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _animatedAdditionalTogglesBuffer.Clear();
 
             // Get face blendshapes
-            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(_aV3Setting?.TargetAvatar, excludeBlink: false, excludeLipSync: false);
-            BlinkBlendShapes = new HashSet<string>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting?.TargetAvatar));
-            LipSyncBlendShapes = new HashSet<string>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting?.TargetAvatar));
+            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor, excludeBlink: false, excludeLipSync: false);
+            BlinkBlendShapes = new HashSet<string>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor));
+            LipSyncBlendShapes = new HashSet<string>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor));
 
             var animatedBlendShapes = GetBlendShapeValues(Clip, _faceBlendShapes.Keys);
             var showOnlyDifference = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue, DetailConstants.Default_ExpressionEditor_ShowOnlyDifferFromDefaultValue);
@@ -570,7 +570,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         private Dictionary<string, EditorCurveBinding> GetBlendShapeBindings(IEnumerable<string> blendShapeNames)
         {
             var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
-            var faceMesh = AV3Utility.GetFaceMesh(_aV3Setting?.TargetAvatar);
+            var faceMesh = AV3Utility.GetFaceMesh(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
             var transformPath = AnimationUtility.CalculateTransformPath(faceMesh?.transform, animator?.transform);
             var bindings = new Dictionary<string, EditorCurveBinding>();
             foreach (var blendShapeName in blendShapeNames)
