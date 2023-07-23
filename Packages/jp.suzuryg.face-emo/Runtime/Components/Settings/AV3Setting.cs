@@ -61,6 +61,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public bool ExpressionDefaults_BlinkEnabled = true;
         public bool ExpressionDefaults_MouthMorphCancelerEnabled = true;
 
-        public string LastOpendOrSavedAnimationPath;
+        public string LastOpenedAnimationPath;
+        public string LastSavedAnimationPath;
     }
 }

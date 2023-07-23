@@ -207,7 +207,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         public string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath, string defaultClipName)
         {
             // Open dialog and get the path of the AnimationClip
-            var defaultDir = GetDefaultDir(existingAnimationPath);
+            var defaultDir = GetDefaultDir(dialogMode);
             var selectedPath = string.Empty;
             if (dialogMode == DialogMode.Open || dialogMode == DialogMode.Copy)
             {
@@ -260,7 +260,14 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 if (!string.IsNullOrEmpty(guid))
                 {
                     _aV3Object.Update();
-                    _aV3Object.FindProperty(nameof(AV3Setting.LastOpendOrSavedAnimationPath)).stringValue = unityPath;
+                    if (dialogMode == DialogMode.Open)
+                    {
+                        _aV3Object.FindProperty(nameof(AV3Setting.LastOpenedAnimationPath)).stringValue = unityPath;
+                    }
+                    else
+                    {
+                        _aV3Object.FindProperty(nameof(AV3Setting.LastSavedAnimationPath)).stringValue = unityPath;
+                    }
                     _aV3Object.ApplyModifiedProperties();
 
                     return guid;
@@ -284,22 +291,19 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             Copy,
         }
 
-        private string GetDefaultDir(string existingAnimationPath)
+        private string GetDefaultDir(DialogMode dialogMode)
         {
-            // Use existing animation path
-            var path = existingAnimationPath;
-            while (!string.IsNullOrEmpty(path))
-            {
-                path = System.IO.Path.GetDirectoryName(path);
-                if (AssetDatabase.IsValidFolder(path))
-                {
-                    return path;
-                }
-            }
-
             // Use last opened or saved animation path
             _aV3Object.Update();
-            path = _aV3Object.FindProperty(nameof(AV3Setting.LastOpendOrSavedAnimationPath)).stringValue;
+            string path;
+            if (dialogMode == DialogMode.Open)
+            {
+                path = _aV3Object.FindProperty(nameof(AV3Setting.LastOpenedAnimationPath)).stringValue;
+            }
+            else
+            {
+                path = _aV3Object.FindProperty(nameof(AV3Setting.LastSavedAnimationPath)).stringValue;
+            }
             while (!string.IsNullOrEmpty(path))
             {
                 path = System.IO.Path.GetDirectoryName(path);
@@ -309,6 +313,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 }
             }
 
+            // Use default path
             return "Assets";
         }
 
