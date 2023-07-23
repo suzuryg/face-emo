@@ -1,16 +1,10 @@
 {
-    "name": "jp.suzuryg.face-emo.appmain.Editor",
+    "name": "jp.suzuryg.face-emo.components.ma.Runtime",
     "references": [
         "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
-        "GUID:df45ab4f3bbb8394987fc80e55e039ef",
-        "GUID:3a369c7d7783a1740996446681282216",
-        "GUID:79c0d231dad4cc84e8226bd51341a07b",
-        "GUID:f68081a78616c494b81567c8b81d43c9",
-        "GUID:f597f459d3af4524ab11c9bedb00b17f"
+        "GUID:fc900867c0f47cd49b6e2ae4ef907300"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

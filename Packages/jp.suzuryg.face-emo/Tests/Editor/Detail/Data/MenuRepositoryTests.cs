@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Components.Data;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;

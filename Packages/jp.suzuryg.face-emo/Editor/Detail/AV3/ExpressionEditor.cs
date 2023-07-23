@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.Components.Settings;
 using System.Linq;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;

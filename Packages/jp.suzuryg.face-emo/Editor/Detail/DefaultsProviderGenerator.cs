@@ -1,5 +1,5 @@
 ﻿using Suzuryg.FaceEmo.Domain;
-using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Components.Settings;
 
 namespace Suzuryg.FaceEmo.Detail
 {

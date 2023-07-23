@@ -1,0 +1,15 @@
+{
+    "name": "jp.suzuryg.face-emo.components.Runtime",
+    "references": [
+        "GUID:ad29c40ce7d8264468d6c7634e6a3a40"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

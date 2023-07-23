@@ -3,6 +3,7 @@ using Suzuryg.FaceEmo.UseCase.ModifyMenu;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode.ModifyBranch;
+using Suzuryg.FaceEmo.Components.Data;
 using Suzuryg.FaceEmo.Detail.Data;
 using Zenject;
 

@@ -1,4 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.Components.Settings;
+using Suzuryg.FaceEmo.Components.States;
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;

@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.Components.Data;
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;

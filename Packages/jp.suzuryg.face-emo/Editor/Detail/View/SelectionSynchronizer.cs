@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
+using Suzuryg.FaceEmo.Components.States;
 using System;
 using System.Collections.Generic;
 using System.Threading;

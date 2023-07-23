@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Domain;
-using Suzuryg.FaceEmo.UseCase;
+using Suzuryg.FaceEmo.Components.Settings;
+using Suzuryg.FaceEmo.Components.States;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;

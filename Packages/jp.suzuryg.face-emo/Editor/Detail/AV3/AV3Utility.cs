@@ -4,6 +4,7 @@ using UnityEditor.Animations;
 using UnityEditor;
 using VRC.SDKBase;
 using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.Components.Settings;
 using VRC.SDK3.Avatars.Components;
 using System;
 using System.IO;

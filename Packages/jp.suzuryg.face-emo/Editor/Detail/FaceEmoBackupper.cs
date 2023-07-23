@@ -1,4 +1,7 @@
 ﻿using Suzuryg.FaceEmo.UseCase;
+using Suzuryg.FaceEmo.Components;
+using Suzuryg.FaceEmo.Components.Data;
+using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Data;
 using Suzuryg.FaceEmo.Detail.Drawing;

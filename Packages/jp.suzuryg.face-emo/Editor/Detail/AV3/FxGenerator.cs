@@ -2,8 +2,9 @@
 using AnimatorAsCode.V0.Extensions.VRChat;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
+using Suzuryg.FaceEmo.Components.Settings;
+using Suzuryg.FaceEmo.Components.MA;
 using Suzuryg.FaceEmo.Detail.Drawing;
-using Suzuryg.FaceEmo.Detail.MA;
 using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
 using System;
 using System.Linq;
