@@ -130,7 +130,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string SettingView_ShowHints = "Show Hints";
         public string SettingView_Manual = "Open Manual";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
-        public string SettingView_Message_ConfirmApplyToAvatar = "Apply facial expression menu to the avatar?";
+        public string SettingView_Message_ConfirmApplyToAvatar = "Apply facial expression menu to the avatar?\n\n\n" +
+            "* To prevent interference between expressions, the expressions originally set on the avatar will be disabled on upload.\n" +
+            "If you want to revert back to the original settings, delete the \"FaceEmoPrefab\" that will be added to the avatar.";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
         public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
 

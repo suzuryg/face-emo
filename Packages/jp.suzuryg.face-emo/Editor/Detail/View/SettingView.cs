@@ -278,9 +278,18 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
+            var dialogWidth = 550;
+            var dialogHeight = 150;
+
+            if (_localizationSetting.Locale == Locale.en_US)
+            {
+                dialogHeight += (int)EditorGUIUtility.singleLineHeight;
+            }
+
             if (OptoutableDialog.Show(DomainConstants.SystemName,
-                _localizationTable.SettingView_Message_ConfirmApplyToAvatar,
+                LocalizationSetting.InsertLineBreak(_localizationTable.SettingView_Message_ConfirmApplyToAvatar),
                 _localizationTable.Common_Apply, _localizationTable.Common_Cancel,
+                windowWidth: dialogWidth, windowHeight: dialogHeight,
                 centerPosition: GetDialogCenterPosition()))
             {
                 _mainWindow?.Focus(); // DisplayProgressBar() is displayed in the center of the focused EditorWindow.
