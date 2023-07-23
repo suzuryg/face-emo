@@ -75,6 +75,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             // Get window
             var window = GetWindow<CombineClipsDialog>();
             window.titleContent = new GUIContent(DomainConstants.SystemName);
+            window.wantsMouseMove = true;
+
             mainThumbnailDrawer.OnThumbnailUpdated.Synchronize().ObserveOnMainThread().Subscribe(_ =>
             {
                 if (window != null) { window.Repaint(); }
@@ -186,6 +188,12 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             {
                 Cancel(leftButtonRect);
                 OK(rightButtonRect);
+            }
+
+            // To draw thumbnail ovarlay.
+            if (Event.current.type == EventType.MouseMove)
+            {
+                Repaint();
             }
         }
 
