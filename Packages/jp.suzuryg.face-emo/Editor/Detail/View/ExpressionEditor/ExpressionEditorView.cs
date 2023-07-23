@@ -931,6 +931,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 HelpBoxDrawer.WarnLayout(_localizationTable.Hints_LipSyncBlendShapeIncluded);
             }
 
+            HelpBoxDrawer.InfoLayout(_localizationTable.Hints_ExpressionEditorLayout);
             HelpBoxDrawer.InfoLayout(_localizationTable.Hints_ExpressionPreview);
         }
     }

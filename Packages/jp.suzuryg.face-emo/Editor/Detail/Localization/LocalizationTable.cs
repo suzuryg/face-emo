@@ -335,6 +335,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
                                                  "You can rearrange the order of expressions by drag & drop.";
         public string Hints_BlinkBlendShapeIncluded = "If the expression contains blend shapes for blinking, there's a possibility that your expression may be overwritten by the blinking animation and not play correctly.";
         public string Hints_LipSyncBlendShapeIncluded = "If your expression contains blend shapes for lip-syncing, there's a possibility that the lip-sync may not function correctly.";
+        public string Hints_ExpressionEditorLayout = "The window arrangement of the Expression Editor can be changed freely. " +
+            "The changed window arrangement will be reflected the next time you start up.";
         public string Hints_ExpressionPreview = "The expression preview screen can be moved, rotated, and zoomed in and out in the same way as the scene view. " +
             "The camera settings (like FOV) of the expression preview screen inherit the settings from the scene view.";
     }
