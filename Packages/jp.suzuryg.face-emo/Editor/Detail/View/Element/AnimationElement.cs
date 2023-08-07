@@ -207,7 +207,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         public string GetAnimationGuidWithDialog(DialogMode dialogMode, string existingAnimationPath, string defaultClipName)
         {
             // Open dialog and get the path of the AnimationClip
-            var defaultDir = GetDefaultDir(dialogMode);
+            var defaultDir = GetDefaultDir(existingAnimationPath, dialogMode);
             var selectedPath = string.Empty;
             if (dialogMode == DialogMode.Open || dialogMode == DialogMode.Copy)
             {
@@ -291,11 +291,26 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             Copy,
         }
 
-        private string GetDefaultDir(DialogMode dialogMode)
+        private string GetDefaultDir(string existingAnimationPath, DialogMode dialogMode)
         {
+            string path;
+
+            // Use existing animation path (open mode only)
+            if (dialogMode == DialogMode.Open)
+            {
+                path = existingAnimationPath;
+                while (!string.IsNullOrEmpty(path))
+                {
+                    path = System.IO.Path.GetDirectoryName(path);
+                    if (AssetDatabase.IsValidFolder(path))
+                    {
+                        return path;
+                    }
+                }
+            }
+
             // Use last opened or saved animation path
             _aV3Object.Update();
-            string path;
             if (dialogMode == DialogMode.Open)
             {
                 path = _aV3Object.FindProperty(nameof(AV3Setting.LastOpenedAnimationPath)).stringValue;
