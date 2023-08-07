@@ -340,7 +340,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private void OnOpenManualButtonClicked()
         {
             var homeUrl = "https://suzuryg.github.io/face-emo/";
-            var pageUrl = "docs/tutorials";
+            var pageUrl = "docs/tutorials/";
             var fullUrl = homeUrl;
             if (_localizationSetting.Locale == Locale.ja_JP)
             {

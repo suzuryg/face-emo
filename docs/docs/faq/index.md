@@ -18,7 +18,7 @@ Please check the following points:
 
 |<center>Check Points</center>|<center>Approaches</center>|
 |:-|:-|
-| "FaceEmo" is not added to the VRChat Expression Menu | Follow the [tutorial](../tutorials) to apply the facial expression menu to your avatar. |
+| "FaceEmo" is not added to the VRChat Expression Menu | Follow the [tutorial](../tutorials/) to apply the facial expression menu to your avatar. |
 | The expression pattern is not correctly selected in the "FaceEmo" menu | Please select the appropriate expression pattern. |
 | The "FaceEmo" → "Emote Select" menu is open | Please close the "Emote Select" menu with "Back". <br/> (Check the VRChat Expression Menu for both left and right hands) |
 | "FaceEmo" → "Emote Select" → "Emote Lock ON" is enabled | Please disable "Emote lock ON". |
