@@ -54,10 +54,22 @@ function Credits(){
         <div className={clsx('col col--3 padding-horiz--md')}></div>
         <div className={clsx('col col--8')}>
           <div className="text--left">
-            <Translate>The images in this document are made using the following tools and assets.</Translate>
+            <Translate>The images in this document are made using the following assets.</Translate>
             <ul>
               <li><a href="https://booth.pm/ja/items/4667400/"><Translate>Moe avatar (by Kyubi closet)</Translate></a></li>
+              <li><a href="https://vrchat.com/home/world/wrld_28fe7769-b97a-464e-9025-a8ee29aed047"><Translate>Simple (by ryuku)</Translate></a></li>
               <li><a href="https://github.com/BlackStartx/VRC-Gesture-Manager/"><Translate>Gesture Manager (by BlackStartx)</Translate></a></li>
+            </ul>
+          </div>
+          <div className="text--left">
+            <Translate>The video in this document is made using the following assets.</Translate>
+            <ul>
+              <li><a href="https://booth.pm/ja/items/4667400/"><Translate>Moe avatar (by Kyubi closet)</Translate></a></li>
+              <li><a href="https://vrchat.com/home/world/wrld_a97ec0a1-3134-4ecd-85b9-0691ec221b2f"><Translate>Cross Discs Beach (by NNLogic)</Translate></a></li>
+              <li><a href="https://vrchat.com/home/world/wrld_28fe7769-b97a-464e-9025-a8ee29aed047"><Translate>Simple (by ryuku)</Translate></a></li>
+              <li><a href="https://booth.pm/ja/items/2019087"><Translate>SappmeBeer (by DEMITASS－KUN)</Translate></a></li>
+              <li><a href="https://bgmer.net/music/249"><Translate>To the Rainbow's Root (by BGMer)</Translate></a></li>
+              <li><a href="https://vsq.co.jp/plus/sound/category_sub/sea/"><Translate>Wave (by VSQ plus+)</Translate></a></li>
             </ul>
           </div>
         </div>

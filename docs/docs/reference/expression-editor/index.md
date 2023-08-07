@@ -18,8 +18,14 @@ Here, if you press a button other than "Open", the Expression Editor will open.
 |:-:|:-:|:-|
 |Create|Top Left|Creates a new animation clip.<br/>Opens the Expression Editor and edits the newly created animation clip.|
 |Open|Top Right|Opens an existing animation clip.|
-|Copy|Bottom Left|Copies an existing animation clip and creates a new animation clip.<br/>Opens the Expression Editor and edits the newly created animation clip.|
+|Combine|Bottom Left|Choose and combine two animation clips.<br/>When the same blend shape is used, the one with the higher value takes precedence.|
 |Edit|Bottom Right|Opens the Expression Editor and edits the set animation clip.|
+
+:::tip
+When combining animations, if you set one of the animations to "None" and execute the combination, the other animation will be copied as it is.
+
+![Combine](combine.png)
+:::
 
 ---
 

@@ -5,13 +5,6 @@ sidebar_label: FAQ
 
 # FAQ
 
-## The installation fails.
-
-Try the following approaches:
-
-- Update VCC to the latest version
-- Move your Unity project to a shallower directory (such as directly under the drive)
-
 ## The facial expression does not change when I change the hand gesture.
 
 Please check the following points:
@@ -39,3 +32,10 @@ Reference: [Tutorial > Creating a Simple Facial Expression Menu](../tutorials/si
 ## Can I display a dialog box again after checking "Don't show again"?
 
 You can change the display status of the dialog box from the "Editor Settings" in the Inspector.
+
+## The UI is displayed incorrectly.
+
+If you are experiencing any of the following problems, you may be able to resolve the problem by going to Play mode once and then back to Edit mode.
+
+- Width of each view is not adjusted correctly.
+- Expression thumbnails are not rendered.
