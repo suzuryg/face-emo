@@ -56,8 +56,15 @@ namespace Suzuryg.FaceEmo.AppMain
         public static void Launch(FaceEmoLauncherComponent launcher)
         {
 #if USE_MODULAR_AVATAR
+            var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
             try
             {
+                if (PackageVersionChecker.ModularAvatar == "1.5.0-beta-4" || PackageVersionChecker.ModularAvatar == "1.5.0")
+                {
+                    // Not blocking launch because only some behavior is faulty.
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.InspectorView_Message_MAVersionError_1_5_0, "OK");
+                }
+
                 var rootObject = launcher.gameObject;
 
                 MainWindow mainWindow;
@@ -77,7 +84,6 @@ namespace Suzuryg.FaceEmo.AppMain
             }
             catch (Exception ex)
             {
-                var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_FailedToLaunch + "\n" + loc.Common_Message_SeeConsole, "OK");
                 Debug.LogError(loc.Common_Message_FailedToLaunch + "\n" + ex?.ToString());
             }
