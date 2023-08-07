@@ -136,12 +136,15 @@ namespace Suzuryg.FaceEmo.Detail.View
 
                 _safeButtonStyle.normal.textColor = Color.white;
                 _safeButtonStyle.normal.background = _safeNormalTexture;
+                _safeButtonStyle.normal.scaledBackgrounds = new[] { _safeNormalTexture };
 
                 _safeButtonStyle.hover.textColor = Color.white;
                 _safeButtonStyle.hover.background = _safeHoverTexture;
+                _safeButtonStyle.hover.scaledBackgrounds = new[] { _safeHoverTexture };
 
                 _safeButtonStyle.active.textColor = Color.white;
                 _safeButtonStyle.active.background = _safeActiveTexture;
+                _safeButtonStyle.active.scaledBackgrounds = new[] { _safeActiveTexture };
             }
 
             if (_riskyButtonStyle == null)
@@ -152,12 +155,15 @@ namespace Suzuryg.FaceEmo.Detail.View
 
                 _riskyButtonStyle.normal.textColor = Color.white;
                 _riskyButtonStyle.normal.background = _riskyNormalTexture;
+                _riskyButtonStyle.normal.scaledBackgrounds = new[] { _riskyNormalTexture };
 
                 _riskyButtonStyle.hover.textColor = Color.white;
                 _riskyButtonStyle.hover.background = _riskyHoverTexture;
+                _riskyButtonStyle.normal.scaledBackgrounds = new[] { _riskyHoverTexture };
 
                 _riskyButtonStyle.active.textColor = Color.white;
                 _riskyButtonStyle.active.background = _riskyActiveTexture;
+                _riskyButtonStyle.active.scaledBackgrounds = new[] { _riskyActiveTexture };
             }
         }
 

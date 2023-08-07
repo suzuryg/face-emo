@@ -124,6 +124,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             _addPropertyButtonMouseOverStyle = new GUIStyle(GUI.skin.button);
             _addPropertyButtonMouseOverStyle.alignment = TextAnchor.MiddleLeft;
             _addPropertyButtonMouseOverStyle.normal.background = _emphasizedTexture;
+            _addPropertyButtonMouseOverStyle.normal.scaledBackgrounds = new[] { _emphasizedTexture };
             _addPropertyButtonMouseOverStyle.normal.textColor = ViewUtility.GetEmphasizedTextColor();
             _addPropertyButtonMouseOverStyle.fixedHeight = EditorGUIUtility.singleLineHeight * 1.5f;
 
@@ -136,6 +137,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             else
             {
                 _warningTextStyle.normal.background = _redTexture;
+                _warningTextStyle.normal.scaledBackgrounds = new[] { _redTexture };
                 _warningTextStyle.normal.textColor = Color.black;
             }
 
@@ -145,6 +147,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             // Warned prperty
             _warnedPropertyStyle = new GUIStyle(GUI.skin.label);
             _warnedPropertyStyle.normal.background = _redTexture;
+            _warnedPropertyStyle.normal.scaledBackgrounds = new[] { _redTexture };
             _warnedPropertyStyle.normal.textColor = Color.black;
         }
 
@@ -757,7 +760,6 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                                 var reflect = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ReflectInPreviewOnMouseOver, DetailConstants.Default_ExpressionEditor_ReflectInPreviewOnMouseOver);
                                 if (reflect && buttonRect.Contains(Event.current.mousePosition))
                                 {
-                                    // FIX: Button background color is not reflected correctly when display magnification is changed.
                                     buttonStyle = _addPropertyButtonMouseOverStyle;
                                     blendShapeMouseOver = blendShapeKey;
                                 }

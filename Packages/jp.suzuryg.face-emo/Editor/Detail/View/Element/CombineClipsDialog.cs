@@ -129,12 +129,15 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
                 _safeButtonStyle.normal.textColor = Color.white;
                 _safeButtonStyle.normal.background = _safeNormalTexture;
+                _safeButtonStyle.normal.scaledBackgrounds = new[] { _safeNormalTexture };
 
                 _safeButtonStyle.hover.textColor = Color.white;
                 _safeButtonStyle.hover.background = _safeHoverTexture;
+                _safeButtonStyle.hover.scaledBackgrounds = new[] { _safeHoverTexture };
 
                 _safeButtonStyle.active.textColor = Color.white;
                 _safeButtonStyle.active.background = _safeActiveTexture;
+                _safeButtonStyle.active.scaledBackgrounds = new[] { _safeActiveTexture };
             }
         }
 

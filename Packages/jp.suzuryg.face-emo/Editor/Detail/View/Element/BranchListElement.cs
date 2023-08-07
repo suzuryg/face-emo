@@ -205,6 +205,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 {
                     _redTexture = ViewUtility.MakeTexture(Color.red);
                     _warningStyle.normal.background = _redTexture;
+                    _warningStyle.normal.scaledBackgrounds = new[] { _redTexture };
                     _warningStyle.normal.textColor = Color.black;
                 }
             }
