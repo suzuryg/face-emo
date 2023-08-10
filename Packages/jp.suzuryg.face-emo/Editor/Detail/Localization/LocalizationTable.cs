@@ -226,6 +226,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Folder";
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
+        public string InspectorView_ShowBlinkBlendShapes = "Show Blink Blend Shapes";
+        public string InspectorView_ShowLipSyncBlendShapes = "Show Lip Sync Blend Shapes";
 
         public string InspectorView_Tooltip_MouthMorphCanceler = "This is used in expressions where Mouth Morph Canceler is enabled. " +
             "During speech, you can prevent disruptions by resetting certain shape key values to their default values (the values set on the scene).";

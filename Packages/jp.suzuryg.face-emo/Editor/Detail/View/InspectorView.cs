@@ -803,6 +803,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             ToggleEditorPrefsField(DetailConstants.KeyGroupDeleteConfirmation, DetailConstants.DefaultGroupDeleteConfirmation, _localizationTable.InspectorView_GroupDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyModeDeleteConfirmation, DetailConstants.DefaultModeDeleteConfirmation, _localizationTable.InspectorView_ModeDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, _localizationTable.InspectorView_BranchDeleteConfirmation);
+            ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowBlinkBlendShapes, DetailConstants.Default_ExpressionEditor_ShowBlinkBlendShapes, _localizationTable.InspectorView_ShowBlinkBlendShapes);
+            ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowLipSyncBlendShapes, DetailConstants.Default_ExpressionEditor_ShowLipSyncBlendShapes, _localizationTable.InspectorView_ShowLipSyncBlendShapes);
         }
 
         private static void TogglePropertyField(SerializedProperty serializedProperty, string label, string tooltip = null)
