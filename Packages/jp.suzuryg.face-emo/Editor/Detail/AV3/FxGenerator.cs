@@ -115,6 +115,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 // Instantiate prefabs
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Instantiating prefabs...", 0);
+                ModifyExistingSubPrefabs(rootObject);
                 InstantiatePrefabs(rootObject);
 
                 // Update MA object prefab
@@ -948,10 +949,45 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 var instantiated = PrefabUtility.InstantiatePrefab(loaded) as GameObject;
                 instantiated.transform.parent = rootObject.transform;
                 instantiated.transform.SetAsFirstSibling();
+
+#if USE_MODULAR_AVATAR
+                var modularAvatarMergeAnimator = instantiated.GetComponent<ModularAvatarMergeAnimator>();
+                if (modularAvatarMergeAnimator != null)
+                {
+                    modularAvatarMergeAnimator.matchAvatarWriteDefaults = _aV3Setting.MatchAvatarWriteDefaults;
+                    EditorUtility.SetDirty(modularAvatarMergeAnimator);
+                }
+#else
+                Debug.LogError("Please install Modular Avatar!");
+#endif
             }
         }
 
-        private static void AddMergeAnimatorComponent(GameObject rootObject, AnimatorController animatorController)
+        private void ModifyExistingSubPrefabs(GameObject rootObject)
+        {
+#if USE_MODULAR_AVATAR
+            if (rootObject != null && rootObject.transform != null)
+            {
+                for (int i = 0; i < rootObject.transform.childCount; i++)
+                {
+                    var child = rootObject.transform.GetChild(i);
+                    if (child != null && child.gameObject != null)
+                    {
+                        var modularAvatarMergeAnimator = child.gameObject.GetComponent<ModularAvatarMergeAnimator>();
+                        if (modularAvatarMergeAnimator != null)
+                        {
+                            modularAvatarMergeAnimator.matchAvatarWriteDefaults = _aV3Setting.MatchAvatarWriteDefaults;
+                            EditorUtility.SetDirty(modularAvatarMergeAnimator);
+                        }
+                    }
+                }
+            }
+#else
+            Debug.LogError("Please install Modular Avatar!");
+#endif
+        }
+
+        private void AddMergeAnimatorComponent(GameObject rootObject, AnimatorController animatorController)
         {
 #if USE_MODULAR_AVATAR
             foreach (var component in rootObject.GetComponents<ModularAvatarMergeAnimator>())
@@ -964,7 +1000,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             modularAvatarMergeAnimator.layerType = VRCAvatarDescriptor.AnimLayerType.FX;
             modularAvatarMergeAnimator.deleteAttachedAnimator = true;
             modularAvatarMergeAnimator.pathMode = MergeAnimatorPathMode.Absolute;
-            modularAvatarMergeAnimator.matchAvatarWriteDefaults = false;
+            modularAvatarMergeAnimator.matchAvatarWriteDefaults = _aV3Setting.MatchAvatarWriteDefaults;
 
             EditorUtility.SetDirty(modularAvatarMergeAnimator);
 #else

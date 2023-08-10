@@ -12,6 +12,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Copy = "Copy";
         public string Common_Combine = "Combine";
         public string Common_Apply = "Apply";
+        public string Common_Enable = "Enable";
 
         public string Common_Neutral = "Neutral";
         public string Common_Fist = "Fist";
@@ -174,6 +175,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
         public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
         public string InspectorView_Message_ClearMouthMorphBlendShapes = "Delete all mouth morph blend shapes?";
+        public string InspectorView_Message_EnableMatchAvatarWriteDefaults = "FaceEmo is designed to be used with Write Defaults set to OFF.\n" +
+            "There may be issues with facial expression control if Write Defaults is set to ON.\n" +
+            "Do you want to enable the setting to Match Avatar Write Defaults?\n";
 
         public string InspectorView_ApplyingToMultipleAvatars = "Applying Facial Expression Menu to Multiple Avatars";
         public string InspectorView_MenuPrefab = "Facial Expression Menu Prefab";
@@ -218,6 +222,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AddExpressionParameterPrefix = "Add Expression Parameter Prefix (FaceEmo_)";
         public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
+        public string InspectorView_MatchAvatarWriteDefaults = "Match Avatar Write Defaults (not recommended)";
 
         public string InspectorView_Defaults = "Default Value for Expression Settings";
 

@@ -772,6 +772,32 @@ namespace Suzuryg.FaceEmo.Detail.View
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddParameterPrefix)), _localizationTable.InspectorView_AddExpressionParameterPrefix);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _localizationTable.InspectorView_ReplaceBlink);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _localizationTable.InspectorView_DisableTrackingControls);
+
+            // Match Avatar Write Defaults
+            var wdProperty = _av3Setting.FindProperty(nameof(AV3Setting.MatchAvatarWriteDefaults));
+            bool wdValue;
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                wdValue = EditorGUILayout.Toggle(string.Empty, wdProperty.boolValue, GUILayout.Width(ToggleWidth));
+                GUILayout.Label(new GUIContent(_localizationTable.InspectorView_MatchAvatarWriteDefaults, tooltip: null));
+            }
+            if (wdValue != wdProperty.boolValue)
+            {
+                if (wdValue)
+                {
+                    if (OptoutableDialog.Show(DomainConstants.SystemName,
+                        LocalizationSetting.InsertLineBreak(_localizationTable.InspectorView_Message_EnableMatchAvatarWriteDefaults),
+                        _localizationTable.Common_Enable, _localizationTable.Common_Cancel, windowWidth: 470, isRiskyAction: true))
+                    {
+                        wdProperty.boolValue = true;
+                    }
+                }
+                else
+                {
+                    wdProperty.boolValue = false;
+                }
+
+            }
         }
 
         private void Field_Defaults()
