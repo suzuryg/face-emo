@@ -689,6 +689,10 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
 
         private void Field_FaceBlendShapes()
         {
+            // Get setting values
+            var showBlink = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ShowBlinkBlendShapes, DetailConstants.Default_ExpressionEditor_ShowBlinkBlendShapes);
+            var showLipSync  = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ShowLipSyncBlendShapes, DetailConstants.Default_ExpressionEditor_ShowLipSyncBlendShapes);
+
             // Categorize
             var delimiter = _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)).stringValue;
             var categorized = new Dictionary<string, List<string>>();
@@ -744,6 +748,9 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     // If there are any blend shapes in the category, display them.
                     foreach (var blendShapeKey in category.Value)
                     {
+                        if (!showBlink && _expressionEditor.BlinkBlendShapes.Contains(blendShapeKey)) { continue; }
+                        if (!showLipSync && _expressionEditor.LipSyncBlendShapes.Contains(blendShapeKey)) { continue; }
+
                         using (new GUILayout.HorizontalScope())
                         {
                             GUILayout.Space(IndentWidth);
