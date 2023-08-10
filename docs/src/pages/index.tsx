@@ -18,8 +18,13 @@ function HomepageHeader() {
         <div className={styles.buttons}>
             <Link
                 className={`button button--secondary button--lg  ${styles.button}`}
-                to="https://suzuryg.booth.pm/">
-                <Translate>Download</Translate>
+                to="https://suzuryg.booth.pm/items/4915091">
+                <Translate>Download (BOOTH)</Translate>
+            </Link>
+            <Link
+                className={`button button--secondary button--lg  ${styles.button}`}
+                to="vcc://vpm/addRepo?url=https://suzuryg.github.io/vpm-repos/vpm.json">
+                <Translate>Download (VCC)</Translate>
             </Link>
             <Link
                 className={`button button--secondary button--lg ${styles.button}`}

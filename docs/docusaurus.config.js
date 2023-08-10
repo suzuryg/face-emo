@@ -69,7 +69,7 @@ const config = {
               position: 'left',
           },
           {
-            href: 'https://suzuryg.booth.pm/',
+            href: 'https://suzuryg.booth.pm/items/4915091',
             label: 'BOOTH',
             position: 'right',
           },

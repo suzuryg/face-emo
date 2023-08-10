@@ -1,6 +1,9 @@
 {
-  "Download": {
-    "message": "ダウンロード"
+  "Download (BOOTH)": {
+    "message": "ダウンロード (BOOTH)"
+  },
+  "Download (VCC)": {
+    "message": "ダウンロード (VCC)"
   },
   "Docs": {
     "message": "マニュアル"
