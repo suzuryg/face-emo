@@ -529,7 +529,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalSkinnedMeshes);
             }
 
-            var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
+            var avatarTransform = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.transform;
 
             _additionalSkinnedMeshes.DoLayoutList();
 
@@ -538,7 +538,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 var skinnedMesh = meshProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as SkinnedMeshRenderer;
                 if (skinnedMesh == null) { continue; }
-                if (string.IsNullOrEmpty(avatarPath) || !skinnedMesh.gameObject.GetFullPath().StartsWith(avatarPath))
+                if (avatarTransform == null || !IsDescendantOf(skinnedMesh.transform, avatarTransform))
                 {
                     EditorGUILayout.LabelField($"{skinnedMesh.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
                 }
@@ -553,7 +553,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalToggle);
             }
 
-            var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
+            var avatarTransform = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.transform;
 
             _additionalToggleObjects.DoLayoutList();
 
@@ -562,7 +562,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 var gameObject = toggleProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
                 if (gameObject == null) { continue; }
-                if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
+                if (avatarTransform == null || !IsDescendantOf(gameObject.transform, avatarTransform))
                 {
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
                 }
@@ -577,7 +577,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalTransform);
             }
 
-            var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
+            var avatarTransform = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.transform;
 
             _additionalTransformObjects.DoLayoutList();
 
@@ -586,7 +586,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 var gameObject = transformProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as GameObject;
                 if (gameObject == null) { continue; }
-                if (string.IsNullOrEmpty(avatarPath) || !gameObject.GetFullPath().StartsWith(avatarPath))
+                if (avatarTransform == null || !IsDescendantOf(gameObject.transform, avatarTransform))
                 {
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
                 }
@@ -907,6 +907,18 @@ namespace Suzuryg.FaceEmo.Detail.View
                 }
                 GUILayout.Label(label);
             }
+        }
+
+        bool IsDescendantOf(Transform child, Transform potentialAncestor)
+        {
+            while (child != null)
+            {
+                if (child == potentialAncestor)
+                    return true;
+
+                child = child.parent;
+            }
+            return false;
         }
     }
 }
