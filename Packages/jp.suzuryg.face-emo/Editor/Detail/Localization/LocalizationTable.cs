@@ -164,6 +164,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_TargetAvatarIsNotSpecified = "Please specify the target avatar.";
         public string InspectorView_Launch = "Launch FaceEmo";
         public string InspectorView_TargetAvatar = "Target Avatar";
+        public string InspectorView_AddtionalSkinnedMeshes = "Addtional Expression Meshes";
         public string InspectorView_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string InspectorView_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionMenu icons";
@@ -241,6 +242,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "If you make multiple selections or select a range and press \"Add\", you can add blend shapes all at once.";
         public string InspectorView_Tooltip_ConfirmMouthMorphBlendShape = "If Mouth Morph Canceler is not working properly, please make sure that all mouth morph blend shapes have been added. " +
             "If you are morphing the mouth with blend shapes for MMD, do not forget to add those as well.";
+        public string InspectorView_Tooltip_AdditionalSkinnedMeshes = "If the face mesh is divided into multiple parts, please add them here. " +
+            "Blend shapes not included in the face mesh can also be controlled by adding the mesh here.";
         public string InspectorView_Tooltip_AdditionalToggle = "In conjunction with expressions, you can control the ON/OFF of specific objects (such as expression particles). " +
             "Objects specified here can be used in the expression editor.";
         public string InspectorView_Tooltip_AdditionalTransform = "In conjunction with expressions, you can control the position, rotation, and scale of specific objects (such as beast ears and ahoge). " +

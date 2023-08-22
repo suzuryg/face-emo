@@ -20,6 +20,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly float PreviewAvatarPosZ = 100;
 
         public AnimationClip Clip { get; private set; }
+        public string FaceMeshTransformPath { get; private set; }
         public HashSet<BlendShape> BlinkBlendShapes = new HashSet<BlendShape>();
         public HashSet<BlendShape> LipSyncBlendShapes = new HashSet<BlendShape>();
         public IReadOnlyDictionary<BlendShape, float> FaceBlendShapes => _faceBlendShapes;
@@ -244,8 +245,21 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _animatedAdditionalToggles.Clear();
             _animatedAdditionalTogglesBuffer.Clear();
 
+            // Get face mesh path
+            var faceMesh = AV3Utility.GetFaceMesh(_aV3Setting.TargetAvatar as VRCAvatarDescriptor);
+            if (faceMesh != null)
+            {
+                FaceMeshTransformPath = AV3Utility.GetPathFromAvatarRoot(faceMesh.transform, _aV3Setting.TargetAvatar as VRCAvatarDescriptor);
+            }
+
             // Get face blendshapes
             _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(_aV3Setting.TargetAvatar as VRCAvatarDescriptor, excludeBlink: false, excludeLipSync: false);
+            foreach (var mesh in _aV3Setting.AdditionalSkinnedMeshes)
+            {
+                var blendShapes = AV3Utility.GetBlendShapeValues(mesh, _aV3Setting.TargetAvatar as VRCAvatarDescriptor, excludeBlink: false, excludeLipSync: false);
+                foreach (var item in blendShapes) { _faceBlendShapes[item.Key] = item.Value; }
+            }
+
             BlinkBlendShapes = new HashSet<BlendShape>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting.TargetAvatar as VRCAvatarDescriptor));
             LipSyncBlendShapes = new HashSet<BlendShape>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting.TargetAvatar as VRCAvatarDescriptor));
 

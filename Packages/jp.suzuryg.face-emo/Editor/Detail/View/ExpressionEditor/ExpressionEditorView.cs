@@ -698,16 +698,32 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             var categorized = new Dictionary<string, List<BlendShape>>();
             var categoryName = _localizationTable.ExpressionEditorView_UncategorizedBlendShapes;
             categorized[categoryName] = new List<BlendShape>();
-            foreach (var key in _expressionEditor.FaceBlendShapes.Keys)
+            foreach (var blendShape in _expressionEditor.FaceBlendShapes.Keys)
             {
-                if (!string.IsNullOrEmpty(delimiter) && key.Name.Contains(delimiter))
+                // face mesh
+                if (blendShape.Path == _expressionEditor.FaceMeshTransformPath)
                 {
-                    categoryName = string.IsNullOrEmpty(delimiter) ? key.Name : key.Name.Replace(delimiter, string.Empty);
-                    categorized[categoryName] = new List<BlendShape>();
+                    if (!string.IsNullOrEmpty(delimiter) && blendShape.Name.Contains(delimiter))
+                    {
+                        categoryName = string.IsNullOrEmpty(delimiter) ? blendShape.Name : blendShape.Name.Replace(delimiter, string.Empty);
+                        categorized[categoryName] = new List<BlendShape>();
+                    }
+                    else
+                    {
+                        categorized[categoryName].Add(blendShape);
+                    }
                 }
+                // additional mesh
                 else
                 {
-                    categorized[categoryName].Add(key);
+                    if (categorized.ContainsKey(blendShape.Path))
+                    {
+                        categorized[blendShape.Path].Add(blendShape);
+                    }
+                    else
+                    {
+                        categorized[blendShape.Path] = new List<BlendShape>() { blendShape };
+                    }
                 }
             }
 

@@ -36,6 +36,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private ReorderableList _subTargetAvatars;
         private ReorderableList _mouthMorphBlendShapes;
+        private ReorderableList _additionalSkinnedMeshes;
         private ReorderableList _additionalToggleObjects;
         private ReorderableList _additionalTransformObjects;
 
@@ -122,6 +123,19 @@ namespace Suzuryg.FaceEmo.Detail.View
                 GUI.Label(rect, _localizationTable.InspectorView_EmptyBlendShapes, _centerStyle);
             };
 
+            // Additional skinned meshes
+            _additionalSkinnedMeshes = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalSkinnedMeshes)));
+            _additionalSkinnedMeshes.headerHeight = 0;
+            _additionalSkinnedMeshes.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                var element = _additionalSkinnedMeshes.serializedProperty.GetArrayElementAtIndex(index);
+                EditorGUI.PropertyField(rect, element, GUIContent.none);
+            };
+            _additionalSkinnedMeshes.drawNoneElementCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyObjects, _centerStyle);
+            };
+
             // Additional expression objects
             _additionalToggleObjects = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AdditionalToggleObjects)));
             _additionalToggleObjects.headerHeight = 0;
@@ -205,6 +219,17 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (isMouthMorphBlendShapesOpened.boolValue)
             {
                 Field_MouthMorphBlendShape();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Additional Skinned Meshes
+            var isAddtionalSkinnedMeshesOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAddtionalSkinnedMeshesOpened));
+            isAddtionalSkinnedMeshesOpened.boolValue = EditorGUILayout.Foldout(isAddtionalSkinnedMeshesOpened.boolValue,
+                new GUIContent(_localizationTable.InspectorView_AddtionalSkinnedMeshes));
+            if (isAddtionalSkinnedMeshesOpened.boolValue)
+            {
+                Field_AdditionalSkinnedMeshes();
             }
 
             EditorGUILayout.Space(10);
@@ -493,6 +518,30 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
                 property.ClearArray();
+            }
+        }
+
+        private void Field_AdditionalSkinnedMeshes()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalSkinnedMeshes);
+            }
+
+            var avatarPath = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.GetFullPath();
+
+            _additionalSkinnedMeshes.DoLayoutList();
+
+            var meshProperty = _av3Setting?.FindProperty(nameof(AV3Setting.AdditionalSkinnedMeshes));
+            for (int i = 0; i < meshProperty?.arraySize; i++)
+            {
+                var skinnedMesh = meshProperty?.GetArrayElementAtIndex(i)?.objectReferenceValue as SkinnedMeshRenderer;
+                if (skinnedMesh == null) { continue; }
+                if (string.IsNullOrEmpty(avatarPath) || !skinnedMesh.gameObject.GetFullPath().StartsWith(avatarPath))
+                {
+                    EditorGUILayout.LabelField($"{skinnedMesh.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
+                }
             }
         }
 
