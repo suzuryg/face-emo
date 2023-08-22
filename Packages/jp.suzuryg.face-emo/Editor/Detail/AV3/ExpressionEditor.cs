@@ -20,10 +20,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly float PreviewAvatarPosZ = 100;
 
         public AnimationClip Clip { get; private set; }
-        public HashSet<string> BlinkBlendShapes = new HashSet<string>();
-        public HashSet<string> LipSyncBlendShapes = new HashSet<string>();
-        public IReadOnlyDictionary<string, float> FaceBlendShapes => _faceBlendShapes;
-        public IReadOnlyDictionary<string, float> AnimatedBlendShapesBuffer => _animatedBlendShapesBuffer;
+        public HashSet<BlendShape> BlinkBlendShapes = new HashSet<BlendShape>();
+        public HashSet<BlendShape> LipSyncBlendShapes = new HashSet<BlendShape>();
+        public IReadOnlyDictionary<BlendShape, float> FaceBlendShapes => _faceBlendShapes;
+        public IReadOnlyDictionary<BlendShape, float> AnimatedBlendShapesBuffer => _animatedBlendShapesBuffer;
         public IReadOnlyDictionary<int, (GameObject gameObject, bool isActive)> AdditionalToggles => _additionalToggles;
         public IReadOnlyDictionary<int, (GameObject gameObject, bool isActive)> AnimatedAdditionalTogglesBuffer => _animatedAdditionalTogglesBuffer;
         public IReadOnlyDictionary<int, TransformProxy> AdditionalTransforms => _additionalTransforms;
@@ -40,10 +40,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         private GameObject _previewAvatar;
         private AnimationClip _previewClip;
-        private string _previewBlendShape;
-        private Dictionary<string, float> _faceBlendShapes = new Dictionary<string, float>();
-        private Dictionary<string, float> _animatedBlendShapes = new Dictionary<string, float>();
-        private Dictionary<string, float> _animatedBlendShapesBuffer = new Dictionary<string, float>();
+        private BlendShape _previewBlendShape;
+        private Dictionary<BlendShape, float> _faceBlendShapes = new Dictionary<BlendShape, float>();
+        private Dictionary<BlendShape, float> _animatedBlendShapes = new Dictionary<BlendShape, float>();
+        private Dictionary<BlendShape, float> _animatedBlendShapesBuffer = new Dictionary<BlendShape, float>();
         private Dictionary<int, (GameObject gameObject, bool isActive)> _additionalToggles = new Dictionary<int, (GameObject gameObject, bool isActive)>();
         private Dictionary<int, (GameObject gameObject, bool isActive)> _animatedAdditionalToggles = new Dictionary<int, (GameObject gameObject, bool isActive)>();
         private Dictionary<int, (GameObject gameObject, bool isActive)> _animatedAdditionalTogglesBuffer = new Dictionary<int, (GameObject gameObject, bool isActive)>();
@@ -116,10 +116,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
         }
 
-        public void SetPreviewBlendShape(string blendShapeName)
+        public void SetPreviewBlendShape(BlendShape blendShape)
         {
             var previous = _previewBlendShape;
-            _previewBlendShape = blendShapeName;
+            _previewBlendShape = blendShape;
             if (previous != _previewBlendShape) { RenderPreviewClip(); }
         }
 
@@ -135,7 +135,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             // Synthesize preview blend shape
             AnimationClip synthesized;
-            if (string.IsNullOrEmpty(_previewBlendShape))
+            if (_previewBlendShape == null)
             {
                 synthesized = _previewClip;
             }
@@ -245,9 +245,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _animatedAdditionalTogglesBuffer.Clear();
 
             // Get face blendshapes
-            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapes(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor, excludeBlink: false, excludeLipSync: false);
-            BlinkBlendShapes = new HashSet<string>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor));
-            LipSyncBlendShapes = new HashSet<string>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor));
+            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(_aV3Setting.TargetAvatar as VRCAvatarDescriptor, excludeBlink: false, excludeLipSync: false);
+            BlinkBlendShapes = new HashSet<BlendShape>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting.TargetAvatar as VRCAvatarDescriptor));
+            LipSyncBlendShapes = new HashSet<BlendShape>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting.TargetAvatar as VRCAvatarDescriptor));
 
             var animatedBlendShapes = GetBlendShapeValues(Clip, _faceBlendShapes.Keys);
             var showOnlyDifference = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ShowOnlyDifferFromDefaultValue, DetailConstants.Default_ExpressionEditor_ShowOnlyDifferFromDefaultValue);
@@ -287,7 +287,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
 
             // Initialize buffer
-            _animatedBlendShapesBuffer = new Dictionary<string, float>(_animatedBlendShapes);
+            _animatedBlendShapesBuffer = new Dictionary<BlendShape, float>(_animatedBlendShapes);
             _animatedAdditionalTogglesBuffer = new Dictionary<int, (GameObject gameObject, bool isActive)>(_animatedAdditionalToggles);
             _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>(_animatedAdditionalTransforms);
         }
@@ -309,13 +309,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             CheckBuffer();
         }
 
-        public void SetBlendShapeBuffer(string blendShapeName, float newValue)
+        public void SetBlendShapeBuffer(BlendShape blendShape, float newValue)
         {
             // Set buffer
-            _animatedBlendShapesBuffer[blendShapeName] = newValue;
+            _animatedBlendShapesBuffer[blendShape] = newValue;
 
             // Update preview clip
-            SetBlendShapeValue(_previewClip, blendShapeName, newValue);
+            SetBlendShapeValue(_previewClip, blendShape, newValue);
             RenderPreviewClip();
         }
 
@@ -342,13 +342,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             RenderPreviewClip();
         }
 
-        public void RemoveBlendShapeBuffer(string blendShapeName)
+        public void RemoveBlendShapeBuffer(BlendShape blendShape)
         {
             // Remove buffer
-            _animatedBlendShapesBuffer.Remove(blendShapeName);
+            _animatedBlendShapesBuffer.Remove(blendShape);
 
             // Update preview clip
-            RemoveBlendShapeValue(_previewClip, blendShapeName);
+            RemoveBlendShapeValue(_previewClip, blendShape);
             RenderPreviewClip();
         }
 
@@ -385,7 +385,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             // Check for updates
             // BlendShape
-            var updatedBlendShapes = new List<string>();
+            var updatedBlendShapes = new List<BlendShape>();
             foreach (var blendShape in _animatedBlendShapesBuffer)
             {
                 if (_animatedBlendShapes.ContainsKey(blendShape.Key))
@@ -441,7 +441,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             // Check for removes
             // BlendShape
-            var removedBlendShapes = new List<string>();
+            var removedBlendShapes = new List<BlendShape>();
             foreach (var key in _animatedBlendShapes.Keys)
             {
                 if (!_animatedBlendShapesBuffer.ContainsKey(key)) { removedBlendShapes.Add(key); }
@@ -514,7 +514,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
 
             // Initialize buffer
-            _animatedBlendShapesBuffer = new Dictionary<string, float>(_animatedBlendShapes);
+            _animatedBlendShapesBuffer = new Dictionary<BlendShape, float>(_animatedBlendShapes);
             _animatedAdditionalTransformsBuffer = new Dictionary<int, TransformProxy>(_animatedAdditionalTransforms);
         }
 
@@ -568,43 +568,40 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             RepaintOtherWindows();
         }
 
-        private Dictionary<string, EditorCurveBinding> GetBlendShapeBindings(IEnumerable<string> blendShapeNames)
+        private Dictionary<BlendShape, EditorCurveBinding> GetBlendShapeBindings(IEnumerable<BlendShape> blendShapes)
         {
-            var animator = _aV3Setting?.TargetAvatar?.gameObject?.GetComponent<Animator>();
-            var faceMesh = AV3Utility.GetFaceMesh(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
-            var transformPath = AnimationUtility.CalculateTransformPath(faceMesh?.transform, animator?.transform);
-            var bindings = new Dictionary<string, EditorCurveBinding>();
-            foreach (var blendShapeName in blendShapeNames)
+            var bindings = new Dictionary<BlendShape, EditorCurveBinding>();
+            foreach (var blendShape in blendShapes)
             {
-                bindings[blendShapeName] = new EditorCurveBinding { path = transformPath, propertyName = $"blendShape.{blendShapeName}", type = typeof(SkinnedMeshRenderer) };
+                bindings[blendShape] = new EditorCurveBinding { path = blendShape.Path, propertyName = $"blendShape.{blendShape.Name}", type = typeof(SkinnedMeshRenderer) };
             }
             return bindings;
         }
 
-        private Dictionary<string, float> GetBlendShapeValues(AnimationClip animationClip, IEnumerable<string> blendShapeNames)
+        private Dictionary<BlendShape, float> GetBlendShapeValues(AnimationClip animationClip, IEnumerable<BlendShape> blendShapes)
         {
-            var blendShapes = new Dictionary<string, float>();
-            if (animationClip == null) { return blendShapes; }
+            var values = new Dictionary<BlendShape, float>();
+            if (animationClip == null) { return values; }
 
-            var bindings = GetBlendShapeBindings(blendShapeNames);
+            var bindings = GetBlendShapeBindings(blendShapes);
             foreach (var binding in bindings)
             {
                 var curve = AnimationUtility.GetEditorCurve(animationClip, binding.Value);
-                if (curve != null && curve.keys.Length > 0) { blendShapes[binding.Key] = curve.keys.Last().value; }
+                if (curve != null && curve.keys.Length > 0) { values[binding.Key] = curve.keys.Last().value; }
             }
-            return blendShapes;
+            return values;
         }
 
-        private void SetBlendShapeValue(AnimationClip animationClip, string blendShapeName, float newValue)
+        private void SetBlendShapeValue(AnimationClip animationClip, BlendShape blendShape, float newValue)
         {
-            var binding = GetBlendShapeBindings(new[] { blendShapeName }).FirstOrDefault();
+            var binding = GetBlendShapeBindings(new[] { blendShape }).FirstOrDefault();
             var curve = new AnimationCurve(new Keyframe(time: 0, value: newValue));
             AnimationUtility.SetEditorCurve(animationClip, binding.Value, curve);
         }
 
-        private void RemoveBlendShapeValue(AnimationClip animationClip, string blendShapeName)
+        private void RemoveBlendShapeValue(AnimationClip animationClip, BlendShape blendShape)
         {
-            var binding = GetBlendShapeBindings(new[] { blendShapeName }).FirstOrDefault();
+            var binding = GetBlendShapeBindings(new[] { blendShape }).FirstOrDefault();
             AnimationUtility.SetEditorCurve(animationClip, binding.Value, null);
         }
 

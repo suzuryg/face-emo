@@ -1150,11 +1150,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             {
                 var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
                 var excludeLipSync = true;
-                var blendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, excludeBlink, excludeLipSync);
-                foreach (var name in blendShapes.Keys)
+                var blendShapeValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
+                foreach (var blendShape in blendShapeValues.Keys)
                 {
-                    var weight = blendShapes[name];
-                    clip = clip.BlendShape(faceMesh, name, weight);
+                    var weight = blendShapeValues[blendShape];
+                    clip = clip.BlendShape(faceMesh, blendShape.Name, weight);
                 }
             }
             else
@@ -1200,7 +1200,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var eyeLids = AV3Utility.GetEyeLidsBlendShapes(avatarDescriptor);
             if (eyeLids.Count > 0)
             {
-                clip = clip.BlendShape(faceMesh, eyeLids.First(), GetBlinkCurve());
+                clip = clip.BlendShape(faceMesh, eyeLids.First().Name, GetBlinkCurve());
             }
             else
             {
@@ -1246,13 +1246,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var mouthMorphBlendShapes = new HashSet<string>(aV3Setting.MouthMorphBlendShapes);
             var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
             var excludeLipSync = true;
-            var blendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, excludeBlink, excludeLipSync);
-            foreach (var name in blendShapes.Keys)
+            var blendShapeValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
+            foreach (var blendShape in blendShapeValues.Keys)
             {
-                var weight = blendShapes[name];
-                if (mouthMorphBlendShapes.Contains(name))
+                var weight = blendShapeValues[blendShape];
+                if (mouthMorphBlendShapes.Contains(blendShape.Name))
                 {
-                    clip = clip.BlendShape(faceMesh, name, weight);
+                    clip = clip.BlendShape(faceMesh, blendShape.Name, weight);
                 }
             }
 

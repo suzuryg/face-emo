@@ -171,85 +171,110 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             return faceMesh;
         }
 
-        public static HashSet<string> GetBlendShapeNamesToBeExcluded(VRCAvatarDescriptor avatarDescriptor, bool excludeBlink, bool excludeLipSync)
+        public static HashSet<BlendShape> GetBlendShapesToBeExcluded(VRCAvatarDescriptor avatarDescriptor, bool excludeBlink, bool excludeLipSync)
         {
-            HashSet<string> toBeExcluded = new HashSet<string>();
+            HashSet<BlendShape> toBeExcluded = new HashSet<BlendShape>();
 
             // Exclude shape key for blinking when using AvatarDescriptor's blink feature
             if (excludeBlink)
             {
-                toBeExcluded = new HashSet<string>(GetEyeLidsBlendShapes(avatarDescriptor));
+                toBeExcluded = new HashSet<BlendShape>(GetEyeLidsBlendShapes(avatarDescriptor));
             }
 
             // Exclude shape key for lip-sync
             if (excludeLipSync)
             {
-                foreach (var name in GetLipSyncBlendShapes(avatarDescriptor))
+                foreach (var blendShape in GetLipSyncBlendShapes(avatarDescriptor))
                 {
-                    toBeExcluded.Add(name);
+                    toBeExcluded.Add(blendShape);
                 }
             }
 
             return toBeExcluded;
         }
 
-        public static List<string> GetEyeLidsBlendShapes(VRCAvatarDescriptor avatarDescriptor)
+        public static List<BlendShape> GetEyeLidsBlendShapes(VRCAvatarDescriptor avatarDescriptor)
         {
-            var ret = new List<string>();
-            if (avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes != null &&
+            var ret = new List<BlendShape>();
+            if (avatarDescriptor != null &&
+                avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes != null &&
                 avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh != null &&
                 avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh != null)
             {
-                var sharedMesh = avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh;
+                var skinnedMesh = avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh;
+                var transformPath = GetPathFromAvatarRoot(skinnedMesh.transform, avatarDescriptor);
+                if (transformPath == null) { return ret; }
+
                 foreach (var index in avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes)
                 {
-                    if (0 <= index && index < sharedMesh.blendShapeCount)
+                    if (0 <= index && index < skinnedMesh.sharedMesh.blendShapeCount)
                     {
-                        ret.Add(sharedMesh.GetBlendShapeName(index));
+                        var name = skinnedMesh.sharedMesh.GetBlendShapeName(index);
+                        ret.Add(new BlendShape(path: transformPath, name: name));
                     }
                 }
             }
             return ret;
         }
 
-        public static List<string> GetLipSyncBlendShapes(VRCAvatarDescriptor avatarDescriptor)
+        public static List<BlendShape> GetLipSyncBlendShapes(VRCAvatarDescriptor avatarDescriptor)
         {
-            var ret = new List<string>();
-            if (avatarDescriptor.VisemeBlendShapes is string[])
+            var ret = new List<BlendShape>();
+
+            if (avatarDescriptor != null &&
+                avatarDescriptor.VisemeSkinnedMesh != null &&
+                avatarDescriptor.VisemeBlendShapes is string[])
             {
+                var skinnedMesh = avatarDescriptor.VisemeSkinnedMesh;
+                var transformPath = GetPathFromAvatarRoot(skinnedMesh.transform, avatarDescriptor);
+                if (transformPath == null) { return ret; }
+
                 foreach (var name in avatarDescriptor.VisemeBlendShapes)
                 {
-                    ret.Add(name);
+                    ret.Add(new BlendShape(path: transformPath, name: name));
                 }
             }
+
             return ret;
         }
 
-        public static Dictionary<string, float> GetFaceMeshBlendShapes(VRCAvatarDescriptor avatarDescriptor, bool excludeBlink, bool excludeLipSync)
+        public static string GetPathFromAvatarRoot(Transform transform, VRCAvatarDescriptor avatarDescriptor)
         {
+            if (avatarDescriptor == null || avatarDescriptor.gameObject == null) { return null; }
+            var animator = avatarDescriptor.gameObject.GetComponent<Animator>();
+            if (animator == null) { return null; }
+            return AnimationUtility.CalculateTransformPath(transform, animator.transform);
+        }
+
+        public static Dictionary<BlendShape, float> GetFaceMeshBlendShapeValues(VRCAvatarDescriptor avatarDescriptor, bool excludeBlink, bool excludeLipSync)
+        {
+            var values = new Dictionary<BlendShape, float>();
+
             var faceMesh = GetFaceMesh(avatarDescriptor);
-            var toBeExcluded = GetBlendShapeNamesToBeExcluded(avatarDescriptor, excludeBlink, excludeLipSync);
+            if (faceMesh == null || faceMesh.sharedMesh == null) { return values; }
+
+            var transformPath = GetPathFromAvatarRoot(faceMesh.transform, avatarDescriptor);
+            if (transformPath == null) { return values; }
+
+            var toBeExcluded = GetBlendShapesToBeExcluded(avatarDescriptor, excludeBlink, excludeLipSync);
 
             // Get blendshape names and weights
-            var blendShapes = new Dictionary<string, float>();
-            if (faceMesh != null && faceMesh.sharedMesh != null)
+            for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
             {
-                for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
+                var name = faceMesh.sharedMesh.GetBlendShapeName(i);
+                var blendShape = new BlendShape(path: transformPath, name: name);
+
+                var excluded = toBeExcluded.Contains(blendShape);
+                if (excludeLipSync && name.StartsWith("vrc.")) { excluded = true; }
+
+                if (!excluded)
                 {
-                    var name = faceMesh.sharedMesh.GetBlendShapeName(i);
-
-                    var excluded = toBeExcluded.Contains(name);
-                    if (excludeLipSync && name.StartsWith("vrc.")) { excluded = true; }
-
-                    if (!excluded)
-                    {
-                        var weight = faceMesh.GetBlendShapeWeight(i);
-                        blendShapes[name] = weight;
-                    }
+                    var weight = faceMesh.GetBlendShapeWeight(i);
+                    values[blendShape] = weight;
                 }
             }
 
-            return blendShapes;
+            return values;
         }
 
         public static string ConvertNameToSafePath(string name)
