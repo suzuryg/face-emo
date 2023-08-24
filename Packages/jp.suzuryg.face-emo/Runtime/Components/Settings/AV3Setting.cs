@@ -33,7 +33,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public bool ReplaceBlink = true;
         public bool DisableTrackingControls = true;
         public bool AddParameterPrefix = true;
-        public bool MatchAvatarWriteDefaults = false;
+        public bool MatchAvatarWriteDefaults = true;
 
         public bool AddConfig_EmoteSelect = true;
         public bool AddConfig_BlinkOff = true;

@@ -22,6 +22,8 @@ namespace Suzuryg.FaceEmo.Detail.View
     {
         private static readonly string DirtyMark = "*";
 
+        private static GUIStyle _radioButtonStyle;
+
         private IModifyMenuPropertiesUseCase _modifyMenuPropertiesUseCase;
         private IGenerateFxUseCase _generateFxUseCase;
 
@@ -34,6 +36,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private UpdateMenuSubject _updateMenuSubject;
         private MainThumbnailDrawer _thumbnailDrawer;
         private GestureTableThumbnailDrawer _gestureTableThumbnailDrawer;
+        private SerializedObject _av3Setting;
         private SerializedObject _thumbnailSetting;
 
         private Label _thumbnailWidthLabel;
@@ -47,9 +50,15 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Button _openManualButton;
         private Image _openManualImage;
         private Label _openManualLabel;
+        private IMGUIContainer _writeDefaultsSettingArea;
         private Button _applyButton;
 
         private Texture2D _bookIcon;
+
+        private string _unifyWriteDefaultsLabel;
+        private string _disableWriteDefaultsLabel;
+        private string _unifyWriteDefaultsTooltip;
+        private string _disableWriteDefaultsTooltip;
 
         private List<ModeEx> _flattendModes = new List<ModeEx>();
         private string[] _modePaths = new string[0];
@@ -69,6 +78,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             UpdateMenuSubject updateMenuSubject,
             MainThumbnailDrawer thumbnailDrawer,
             GestureTableThumbnailDrawer gestureTableThumbnailDrawer,
+            AV3Setting av3Setting,
             ThumbnailSetting thumbnailSetting)
         {
             // Usecases
@@ -84,6 +94,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _updateMenuSubject = updateMenuSubject;
             _thumbnailDrawer = thumbnailDrawer;
             _gestureTableThumbnailDrawer = gestureTableThumbnailDrawer;
+            _av3Setting = new SerializedObject(av3Setting);
             _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
             // Update menu event handler
@@ -133,9 +144,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             _openManualButton = root.Q<Button>("OpenManualButton");
             _openManualImage = root.Q<Image>("OpenManualImage");
             _openManualLabel = root.Q<Label>("OpenManualLabel");
+            _writeDefaultsSettingArea = root.Q<IMGUIContainer>("WriteDefaultsSetting");
             _applyButton = root.Q<Button>("ApplyButton");
             NullChecker.Check(_thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _updateThumbnailButton,
-               _defaultSelectionLabel, _defaultSelectionComboBoxArea, _showHintsToggle, _openManualButton, _openManualImage, _openManualLabel, _applyButton);
+               _defaultSelectionLabel, _defaultSelectionComboBoxArea, _showHintsToggle, _openManualButton, _openManualImage, _openManualLabel, _writeDefaultsSettingArea, _applyButton);
 
             // Initialize fields
             _thumbnailSetting.Update();
@@ -176,6 +188,8 @@ namespace Suzuryg.FaceEmo.Detail.View
                 .Synchronize().Subscribe(_ => DefaultSelectionComboBoxOnGUI()).AddTo(_disposables);
             Observable.FromEvent(x => _openManualButton.clicked += x, x => _openManualButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnOpenManualButtonClicked()).AddTo(_disposables);
+            Observable.FromEvent(x => _writeDefaultsSettingArea.onGUIHandler += x, x => _writeDefaultsSettingArea.onGUIHandler -= x)
+                .Synchronize().Subscribe(_ => WriteDefaultsSettingOnGUI()).AddTo(_disposables);
 
             // Set text
             SetText(_localizationSetting.Table);
@@ -197,6 +211,11 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             if (_showHintsToggle != null) { _showHintsToggle.text = localizationTable.SettingView_ShowHints; }
             if (_openManualLabel != null) { _openManualLabel.text = localizationTable.SettingView_Manual; }
+
+            _unifyWriteDefaultsLabel = localizationTable.SettingView_UnifyWriteDefaults;
+            _disableWriteDefaultsLabel = localizationTable.SettingView_DisableWriteDefaults;
+            _unifyWriteDefaultsTooltip = LocalizationSetting.InsertLineBreak(localizationTable.SettingView_Tooltip_UnifyWriteDefaults);
+            _disableWriteDefaultsTooltip = LocalizationSetting.InsertLineBreak(localizationTable.SettingView_Tooltip_DisableWriteDefaults);
 
             _applyButtonText = localizationTable.SettingView_ApplyToAvatar;
             if (_applyButton != null)
@@ -348,6 +367,41 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
             fullUrl += pageUrl;
             Application.OpenURL(fullUrl);
+        }
+
+        private void WriteDefaultsSettingOnGUI()
+        {
+            if (_radioButtonStyle == null)
+            {
+                try
+                {
+                    _radioButtonStyle = new GUIStyle(EditorStyles.radioButton);
+                }
+                catch (NullReferenceException)
+                {
+                    // Workaround for play mode
+                    _radioButtonStyle = new GUIStyle();
+                }
+                var padding = _radioButtonStyle.padding;
+                _radioButtonStyle.padding = new RectOffset(padding.left + 3, padding.right, padding.top, padding.bottom);
+            }
+
+            var options = new[]
+            {
+                new GUIContent(_unifyWriteDefaultsLabel, _unifyWriteDefaultsTooltip),
+                new GUIContent(_disableWriteDefaultsLabel, _disableWriteDefaultsTooltip),
+            };
+
+            _av3Setting.Update();
+            var wdProperty = _av3Setting.FindProperty(nameof(AV3Setting.MatchAvatarWriteDefaults));
+            var wdIndex = wdProperty.boolValue ? 0 : 1;
+
+            var newValue = GUILayout.SelectionGrid(wdIndex, options, 1, _radioButtonStyle);
+            if (newValue != wdIndex)
+            {
+                wdProperty.boolValue = !wdProperty.boolValue;
+                _av3Setting.ApplyModifiedProperties();
+            }
         }
     }
 }
