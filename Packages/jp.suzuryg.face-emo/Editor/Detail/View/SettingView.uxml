@@ -15,15 +15,17 @@
 				<engine:SliderInt name="ThumbnailWidthSlider" class="Slider"/>
 				<engine:Label name="ThumbnailHeightLabel" class="Label"/>
 				<engine:SliderInt name="ThumbnailHeightSlider" class="Slider"/>
-				<engine:Button name="UpdateThumbnailButton" class="Button"/>
 			</engine:VisualElement>
 
 			<engine:VisualElement name="DefaultSelectionRow">
 				<engine:Label name="DefaultSelectionLabel" class="Label"/>
 				<engine:IMGUIContainer name="DefaultSelectionComboBox"/>
+				<engine:Button name="UpdateThumbnailButton" class="Button"/>
 				<engine:Toggle name="ShowHintsToggle"/>
 			</engine:VisualElement>
 		</engine:VisualElement>
+
+		<engine:IMGUIContainer name="WriteDefaultsSetting"/>
 
 		<engine:Button name="OpenManualButton" class="Button">
 			<engine:Image name="OpenManualImage" class="Image"/>

@@ -15,7 +15,7 @@
 .Slider
 {
     margin-left: 10px;
-    width: 200px;
+    width: 235px;
     height: 30px;
 }
 
@@ -27,8 +27,8 @@
 #UpdateThumbnailButton
 {
     margin-left: 10px;
-    margin-top: -1px;
-    width: 150px;
+    margin-top: -5px;
+    width: 120px;
     height: 20px;
 }
 
@@ -48,15 +48,21 @@
 {
     margin-left: 10px;
     margin-top: -5px;
-    width: 445px;
+    width: 280px;
     height: 20px;
 }
 
 #ShowHintsToggle
 {
-    margin-left: 12px;
+    margin-left: 7px;
     margin-top: -5px;
     height: 20px;
+}
+
+#WriteDefaultsSetting
+{
+    margin-left: 5px;
+    margin-top: 5px;
 }
 
 #OpenManualButton

@@ -12,7 +12,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Copy = "Copy";
         public string Common_Combine = "Combine";
         public string Common_Apply = "Apply";
-        public string Common_Enable = "Enable";
 
         public string Common_Neutral = "Neutral";
         public string Common_Fist = "Fist";
@@ -23,8 +22,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_HandGun = "Gun";
         public string Common_ThumbsUp = "Thumbs";
 
-        public string Common_ThumbnailWidth = "Thumbnail Width";
-        public string Common_ThumbnailHeight = "Thumbnail Height";
+        public string Common_ThumbnailWidth = "Thumb Width";
+        public string Common_ThumbnailHeight = "Thumb Height";
         public string Common_DoNotShowAgain = "Don't show again";
         public string Common_Message_InvalidDestination = "You cannot move to here. Check the number of expression patterns and folders.";
         public string Common_Message_DeleteGroup = "Delete the following folder?";
@@ -129,6 +128,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string SettingView_UpdateThumbnails = "Update Thumbnails";
         public string SettingView_DefaultSelectedMode = "Default Selected Pattern";
         public string SettingView_ShowHints = "Show Hints";
+        public string SettingView_UnifyWriteDefaults = "Unify WD (Gimmick Priority)";
+        public string SettingView_DisableWriteDefaults = "Disable WD (Expression Priority)";
         public string SettingView_Manual = "Open Manual";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
         public string SettingView_Message_ConfirmApplyToAvatar = "Apply facial expression menu to the avatar?\n\n\n" +
@@ -136,6 +137,11 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "If you want to revert back to the original settings, delete the \"FaceEmoPrefab\" that will be added to the avatar.";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
         public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
+        public string SettingView_Tooltip_UnifyWriteDefaults = "If the avatar's WriteDefaults are unified with ON, FaceEmo's WriteDefaults will be ON.\n" +
+            "If not unified, FaceEmo's WriteDefaults will be OFF.\n\n" +
+            "Gimmicks that assume WriteDefaults is ON will work correctly, but may cause problems with FaceEmo's facial expression manipulation.";
+        public string SettingView_Tooltip_DisableWriteDefaults = "Disable WriteDefaults in FaceEmo regardless of the avatar's WriteDefaults state.\n" +
+            "Select this option if you want to ensure stable facial expression manipulation.";
 
         public string GestureTableView_ShowClipField = "Show Animation Selector";
         public string GestureTableView_Separator = " & ";
@@ -176,9 +182,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
         public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
         public string InspectorView_Message_ClearMouthMorphBlendShapes = "Delete all mouth morph blend shapes?";
-        public string InspectorView_Message_EnableMatchAvatarWriteDefaults = "FaceEmo is designed to be used with Write Defaults set to OFF.\n" +
-            "There may be issues with facial expression control if Write Defaults is set to ON.\n" +
-            "Do you want to enable the setting to Match Avatar Write Defaults?\n";
 
         public string InspectorView_ApplyingToMultipleAvatars = "Applying Facial Expression Menu to Multiple Avatars";
         public string InspectorView_MenuPrefab = "Facial Expression Menu Prefab";
@@ -223,7 +226,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AddExpressionParameterPrefix = "Add Expression Parameter Prefix (FaceEmo_)";
         public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
         public string InspectorView_DisableTrackingControls = "Disable VRCTrackingControls for eyes and mouth at build time (recommended)";
-        public string InspectorView_MatchAvatarWriteDefaults = "Match Avatar Write Defaults (not recommended)";
 
         public string InspectorView_Defaults = "Default Value for Expression Settings";
 
