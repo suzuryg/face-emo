@@ -1145,21 +1145,39 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var clip = aac.NewClip();
 
             // Generate face mesh blendshape animation
-            var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
-            if (faceMesh != null)
+            var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the blend shapes for blinking
+            var excludeLipSync = true;
+
+            var pathToMesh = new Dictionary<string, SkinnedMeshRenderer>();
+            var faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
+            foreach (var mesh in _aV3Setting.AdditionalSkinnedMeshes)
             {
-                var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
-                var excludeLipSync = true;
-                var blendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, excludeBlink, excludeLipSync);
-                foreach (var name in blendShapes.Keys)
-                {
-                    var weight = blendShapes[name];
-                    clip = clip.BlendShape(faceMesh, name, weight);
-                }
+                var blendShapes = AV3Utility.GetBlendShapeValues(mesh, _aV3Setting.TargetAvatar as VRCAvatarDescriptor, excludeBlink, excludeLipSync);
+                foreach (var item in blendShapes) { faceBlendShapes[item.Key] = item.Value; }
+                if (blendShapes.Any()) { pathToMesh[blendShapes.First().Key.Path] = mesh; }
             }
-            else
+
+            foreach (var blendShape in faceBlendShapes)
             {
-                Debug.LogError(loc.FxGenerator_Message_FaceMeshNotFound);
+                SkinnedMeshRenderer mesh;
+                if (pathToMesh.ContainsKey(blendShape.Key.Path))
+                {
+                    mesh = pathToMesh[blendShape.Key.Path];
+                }
+                else
+                {
+                    mesh = AV3Utility.GetMeshByPath(blendShape.Key.Path, avatarDescriptor);
+                    pathToMesh[blendShape.Key.Path] = mesh;
+                }
+
+                if (mesh != null)
+                {
+                    clip = clip.BlendShape(mesh, blendShape.Key.Name, blendShape.Value);
+                }
+                else
+                {
+                    Debug.LogError(loc.FxGenerator_Message_FaceMeshNotFound);
+                }
             }
 
             // Generate additional expresstion objects animation
@@ -1200,7 +1218,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var eyeLids = AV3Utility.GetEyeLidsBlendShapes(avatarDescriptor);
             if (eyeLids.Count > 0)
             {
-                clip = clip.BlendShape(faceMesh, eyeLids.First(), GetBlinkCurve());
+                clip = clip.BlendShape(faceMesh, eyeLids.First().Name, GetBlinkCurve());
             }
             else
             {
@@ -1246,13 +1264,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var mouthMorphBlendShapes = new HashSet<string>(aV3Setting.MouthMorphBlendShapes);
             var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
             var excludeLipSync = true;
-            var blendShapes = AV3Utility.GetFaceMeshBlendShapes(avatarDescriptor, excludeBlink, excludeLipSync);
-            foreach (var name in blendShapes.Keys)
+            var blendShapeValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
+            foreach (var blendShape in blendShapeValues.Keys)
             {
-                var weight = blendShapes[name];
-                if (mouthMorphBlendShapes.Contains(name))
+                var weight = blendShapeValues[blendShape];
+                if (mouthMorphBlendShapes.Contains(blendShape.Name))
                 {
-                    clip = clip.BlendShape(faceMesh, name, weight);
+                    clip = clip.BlendShape(faceMesh, blendShape.Name, weight);
                 }
             }
 

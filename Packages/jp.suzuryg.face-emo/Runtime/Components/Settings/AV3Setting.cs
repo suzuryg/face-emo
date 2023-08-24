@@ -13,6 +13,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public GameObject MARootObjectPrefab;
 
         public List<string> MouthMorphBlendShapes = new List<string>();
+        public List<SkinnedMeshRenderer> AdditionalSkinnedMeshes = new List<SkinnedMeshRenderer>();
         public List<GameObject> AdditionalToggleObjects = new List<GameObject>();
         public List<GameObject> AdditionalTransformObjects = new List<GameObject>();
 

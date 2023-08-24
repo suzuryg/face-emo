@@ -161,7 +161,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             _expressionEditorSetting.Update();
 
             // Calculate property name width
-            var propertyNames = _expressionEditor.FaceBlendShapes.Select(blendShape => blendShape.Key)
+            var propertyNames = _expressionEditor.FaceBlendShapes.Select(blendShape => blendShape.Key.Name)
                 .Concat(_expressionEditor.AdditionalToggles.Select(toggle => toggle.Value.gameObject?.name))
                 .Concat(_expressionEditor.AdditionalTransforms.Select(transform => transform.Value?.GameObject?.name))
                 .Concat(new[] {
@@ -400,11 +400,11 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         private void Field_AnimatedBlendShapes()
         {
             var fieldInputPerformed = false;
-            var changed = new Dictionary<string, float>();
-            var removed = new List<string>();
+            var changed = new Dictionary<BlendShape, float>();
+            var removed = new List<BlendShape>();
 
             var labelWidth = _expressionEditor.AnimatedBlendShapesBuffer
-                .Select(blendShape => GUI.skin.label.CalcSize(new GUIContent(blendShape.Key)).x)
+                .Select(blendShape => GUI.skin.label.CalcSize(new GUIContent(blendShape.Key.Name)).x)
                 .DefaultIfEmpty()
                 .Max();
             labelWidth += 10;
@@ -431,7 +431,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     const float maxValue = 100;
 
                     // Label
-                    GUIContent labelContent = new GUIContent(blendShape.Key);
+                    GUIContent labelContent = new GUIContent(blendShape.Key.Name);
                     Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
                     var warned = _expressionEditor.BlinkBlendShapes.Contains(blendShape.Key) || _expressionEditor.LipSyncBlendShapes.Contains(blendShape.Key);
                     GUI.Label(labelRect, labelContent, warned ? _warnedPropertyStyle : _normalPropertyStyle);
@@ -695,19 +695,35 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
 
             // Categorize
             var delimiter = _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)).stringValue;
-            var categorized = new Dictionary<string, List<string>>();
+            var categorized = new Dictionary<string, List<BlendShape>>();
             var categoryName = _localizationTable.ExpressionEditorView_UncategorizedBlendShapes;
-            categorized[categoryName] = new List<string>();
-            foreach (var key in _expressionEditor.FaceBlendShapes.Keys)
+            categorized[categoryName] = new List<BlendShape>();
+            foreach (var blendShape in _expressionEditor.FaceBlendShapes.Keys)
             {
-                if (!string.IsNullOrEmpty(delimiter) && key.Contains(delimiter))
+                // face mesh
+                if (blendShape.Path == _expressionEditor.FaceMeshTransformPath)
                 {
-                    categoryName = string.IsNullOrEmpty(delimiter) ? key : key.Replace(delimiter, string.Empty);
-                    categorized[categoryName] = new List<string>();
+                    if (!string.IsNullOrEmpty(delimiter) && blendShape.Name.Contains(delimiter))
+                    {
+                        categoryName = string.IsNullOrEmpty(delimiter) ? blendShape.Name : blendShape.Name.Replace(delimiter, string.Empty);
+                        categorized[categoryName] = new List<BlendShape>();
+                    }
+                    else
+                    {
+                        categorized[categoryName].Add(blendShape);
+                    }
                 }
+                // additional mesh
                 else
                 {
-                    categorized[categoryName].Add(key);
+                    if (categorized.ContainsKey(blendShape.Path))
+                    {
+                        categorized[blendShape.Path].Add(blendShape);
+                    }
+                    else
+                    {
+                        categorized[blendShape.Path] = new List<BlendShape>() { blendShape };
+                    }
                 }
             }
 
@@ -727,8 +743,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             }
 
             // Draw buttons
-            var added = new List<string>();
-            var blendShapeMouseOver = string.Empty;
+            var added = new List<BlendShape>();
+            BlendShape blendShapeMouseOver = null;
             foreach (var category in categorized)
             {
                 _faceBlendShapeFoldoutStates[category.Key] = EditorGUILayout.Foldout(_faceBlendShapeFoldoutStates[category.Key], category.Key);
@@ -757,11 +773,11 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
 
                             if (_expressionEditor.AnimatedBlendShapesBuffer.ContainsKey(blendShapeKey))
                             {
-                                GUILayout.Label(blendShapeKey, _addPropertyLabelStyle);
+                                GUILayout.Label(blendShapeKey.Name, _addPropertyLabelStyle);
                             }
                             else
                             {
-                                var buttonRect = GUILayoutUtility.GetRect(new GUIContent(blendShapeKey), _addPropertyButtonStyle);
+                                var buttonRect = GUILayoutUtility.GetRect(new GUIContent(blendShapeKey.Name), _addPropertyButtonStyle);
                                 var buttonStyle = _addPropertyButtonStyle;
 
                                 var reflect = EditorPrefs.GetBool(DetailConstants.Key_ExpressionEditor_ReflectInPreviewOnMouseOver, DetailConstants.Default_ExpressionEditor_ReflectInPreviewOnMouseOver);
@@ -771,7 +787,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                                     blendShapeMouseOver = blendShapeKey;
                                 }
 
-                                if (GUI.Button(buttonRect, blendShapeKey, buttonStyle))
+                                if (GUI.Button(buttonRect, blendShapeKey.Name, buttonStyle))
                                 {
                                     added.Add(blendShapeKey);
                                 }

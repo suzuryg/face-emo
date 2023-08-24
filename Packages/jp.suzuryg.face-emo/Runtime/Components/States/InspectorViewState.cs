@@ -6,6 +6,7 @@ namespace Suzuryg.FaceEmo.Components.States
     {
         public bool IsApplyingToMultipleAvatarsOpened = false;
         public bool IsMouthMorphBlendShapesOpened = false;
+        public bool IsAddtionalSkinnedMeshesOpened = false;
         public bool IsAddtionalToggleOpened = false;
         public bool IsAddtionalTransformOpened = false;
         public bool IsAFKOpened = false;
