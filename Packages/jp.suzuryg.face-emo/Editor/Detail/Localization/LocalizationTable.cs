@@ -238,6 +238,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
         public string InspectorView_ShowBlinkBlendShapes = "Show Blink Blend Shapes";
         public string InspectorView_ShowLipSyncBlendShapes = "Show Lip Sync Blend Shapes";
+        public string InspectorView_HierarchyIconOffset = "\"Emo\" button position offset";
 
         public string InspectorView_Tooltip_MouthMorphCanceler = "This is used in expressions where the Mouth Morph Canceler is enabled. " +
             "During speech, you can prevent disruptions by resetting certain blend shape values to their default values (the values set in the scene).";

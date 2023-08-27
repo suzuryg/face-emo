@@ -187,7 +187,7 @@ namespace Suzuryg.FaceEmo.AppMain
             var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
 
             const float buttonWidth = 30;
-            const float xOffsetForOtherTools = 20;
+            float xOffsetForOtherTools = EditorPrefs.GetFloat(DetailConstants.KeyHierarchyIconOffset, DetailConstants.DefaultHierarchyIconOffset);
             selectionRect.xMin += selectionRect.width - buttonWidth - xOffsetForOtherTools;
             selectionRect.xMax -= xOffsetForOtherTools;
             selectionRect.yMin += 1;
