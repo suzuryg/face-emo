@@ -421,6 +421,10 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             {
                 GUILayout.Label(_localizationTable.ExpressionEditorView_Message_LipSyncBlendShapeExists, _warningTextStyle);
             }
+            if (_expressionEditor.AnimatedBlendShapesBuffer.Any(blendShape => !_expressionEditor.FaceBlendShapes.ContainsKey(blendShape.Key)))
+            {
+                GUILayout.Label(_localizationTable.ExpressionEditorView_Message_ExcluededBlendShapeExists, _warningTextStyle);
+            }
 
             // Draw controls
             foreach (var blendShape in _expressionEditor.AnimatedBlendShapesBuffer)
@@ -433,7 +437,10 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     // Label
                     GUIContent labelContent = new GUIContent(blendShape.Key.Name);
                     Rect labelRect = GUILayoutUtility.GetRect(labelContent, GUI.skin.label, GUILayout.Width(labelWidth));
-                    var warned = _expressionEditor.BlinkBlendShapes.Contains(blendShape.Key) || _expressionEditor.LipSyncBlendShapes.Contains(blendShape.Key);
+                    var warned =
+                        _expressionEditor.BlinkBlendShapes.Contains(blendShape.Key) ||
+                        _expressionEditor.LipSyncBlendShapes.Contains(blendShape.Key) ||
+                        !_expressionEditor.FaceBlendShapes.ContainsKey(blendShape.Key);
                     GUI.Label(labelRect, labelContent, warned ? _warnedPropertyStyle : _normalPropertyStyle);
 
                     // Slider

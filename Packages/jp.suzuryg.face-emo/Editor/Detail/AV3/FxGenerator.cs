@@ -1156,6 +1156,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 foreach (var item in blendShapes) { faceBlendShapes[item.Key] = item.Value; }
                 if (blendShapes.Any()) { pathToMesh[blendShapes.First().Key.Path] = mesh; }
             }
+            foreach (var excluded in _aV3Setting.ExcludedBlendShapes)
+            {
+                while (faceBlendShapes.ContainsKey(excluded)) { faceBlendShapes.Remove(excluded); }
+            }
 
             foreach (var blendShape in faceBlendShapes)
             {

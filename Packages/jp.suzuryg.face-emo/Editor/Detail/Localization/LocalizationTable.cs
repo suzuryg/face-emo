@@ -175,13 +175,15 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionMenu icons";
         public string InspectorView_GammaCorrectionValue = "Gamma correction value for expression thumbnails";
-        public string InspectorView_MouthMorphBlendShapes = "MouthMorphBlendShapes";
+        public string InspectorView_MouthMorphBlendShapes = "Mouth Morph Blend Shapes";
+        public string InspectorView_ExcludedBlendShapes = "Excluded Blend Shapes";
         public string InspectorView_EmptyBlendShapes = "Press the + button to add blend shapes.";
         public string InspectorView_EmptyObjects = "Press the + button to add an object.";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
         public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
         public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
         public string InspectorView_Message_ClearMouthMorphBlendShapes = "Delete all mouth morph blend shapes?";
+        public string InspectorView_Message_ClearExcludedBlendShapes = "Delete all excluded blend shapes?";
 
         public string InspectorView_ApplyingToMultipleAvatars = "Applying Facial Expression Menu to Multiple Avatars";
         public string InspectorView_MenuPrefab = "Facial Expression Menu Prefab";
@@ -276,6 +278,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Tooltip_Application_EmoteSelect = "If disabled, the number of expression patterns that can be registered in the Expression Menu is increased by one.";
         public string InspectorView_Tooltip_Defaults = "You can change the settings values right after creating expression patterns or expressions.";
         public string InspectorView_Tooltip_Editor = "You can configure the behavior of this tool's UI. These settings are shared across all projects.";
+        public string InspectorView_Hints_ExcluedBlendShapes = "You can specify blend shapes that are not controlled by FaceEmo. " +
+            "If there are blend shapes controlled by other gimmicks, please add them here.";
 
         public string ExpressionEditorView_Rename = "Rename";
         public string ExpressionEditorView_Confirm = "Confirm";
@@ -293,6 +297,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_Message_FailedToRename = "Failed to rename. Please enter a different name.";
         public string ExpressionEditorView_Message_BlinkBlendShapeExists = "Blend shapes for blink are included!";
         public string ExpressionEditorView_Message_LipSyncBlendShapeExists = "Blend shapes for lip-sync are included!";
+        public string ExpressionEditorView_Message_ExcluededBlendShapeExists = "Uncontrolled blend shapes are included!";
         public string ExpressionEditorView_Message_AddAllBlendShapes = "Add all blend shapes to the animation clip?";
         public string ExpressionEditorView_Message_NotInitialized = "Please open expression editor from main window of FaceEmo.";
         public string ExpressionEditorView_Tooltip_Delimiter = "By entering the delimiter for the blend shapes, you can display the blend shapes by category. " +
