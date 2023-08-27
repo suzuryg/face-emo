@@ -1273,7 +1273,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
             #pragma warning restore CS0612
 
-            var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
+            var excludeBlink = false;
             var excludeLipSync = true;
             var blendShapeValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
             foreach (var mesh in aV3Setting.AdditionalSkinnedMeshes)

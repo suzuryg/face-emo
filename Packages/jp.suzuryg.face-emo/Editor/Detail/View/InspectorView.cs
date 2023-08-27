@@ -431,7 +431,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (avatarDescriptor != null)
             {
                 var replaceBlink = _av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)).boolValue;
-                var excludeBlink = !replaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
+                var excludeBlink = false;
                 var excludeLipSync = true;
                 faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync).Select(x => x.Key).ToList();
 
