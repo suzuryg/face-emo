@@ -302,6 +302,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
 
         public string Backupper_Message_FailedToFindTargetAvatar = "Failed to find tareget avatar. Make sure the avatar is active.";
         public string Backupper_Message_FailedToFindSubTargetAvatar = "Failed to find sub tareget avatar. Make sure the avatar is active.";
+        public string Backupper_Message_FailedToFindSkinnedMesh = "Failed to find skinned mesh.";
         public string Backupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";
         public string Backupper_Message_FailedToFindTransformObject = "Failed to find transform object.";
 

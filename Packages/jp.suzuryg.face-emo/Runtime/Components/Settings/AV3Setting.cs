@@ -19,6 +19,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
 
         public string TargetAvatarPath;
         public List<string> SubTargetAvatarPaths = new List<string>();
+        public List<string> AdditionalSkinnedMeshPaths = new List<string>();
         public List<string> AdditionalToggleObjectPaths = new List<string>();
         public List<string> AdditionalTransformObjectPaths = new List<string>();
 
