@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Suzuryg.FaceEmo.Detail
+namespace Suzuryg.FaceEmo.Domain
 {
     [Serializable]
     public class BlendShape : IEquatable<BlendShape>
