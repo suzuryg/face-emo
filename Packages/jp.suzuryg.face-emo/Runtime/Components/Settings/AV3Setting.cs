@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Suzuryg.FaceEmo.Domain;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Suzuryg.FaceEmo.Components.Settings
@@ -12,7 +14,10 @@ namespace Suzuryg.FaceEmo.Components.Settings
 
         public GameObject MARootObjectPrefab;
 
+        [Obsolete]
         public List<string> MouthMorphBlendShapes = new List<string>();
+        public List<BlendShape> MouthMorphs = new List<BlendShape>();
+
         public List<SkinnedMeshRenderer> AdditionalSkinnedMeshes = new List<SkinnedMeshRenderer>();
         public List<GameObject> AdditionalToggleObjects = new List<GameObject>();
         public List<GameObject> AdditionalTransformObjects = new List<GameObject>();

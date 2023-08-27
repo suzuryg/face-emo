@@ -15,6 +15,8 @@ using UnityEditor;
 using UnityEditorInternal;
 using UniRx;
 using VRC.SDK3.Avatars.Components;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
@@ -113,7 +115,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             };
 
             // Mouth morph blendshapes
-            _mouthMorphBlendShapes = new ReorderableList(null, typeof(string));
+            _mouthMorphBlendShapes = new ReorderableList(null, typeof(BlendShape));
             _mouthMorphBlendShapes.onAddCallback = AddMouthMorphBlendShape;
             _mouthMorphBlendShapes.onRemoveCallback = RemoveMouthMorphBlendShape;
             _mouthMorphBlendShapes.draggable = false;
@@ -421,23 +423,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
-        private List<string> GetMouthMorphBlendShapes()
-        {
-            _av3Setting.Update();
-            var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
-
-            var list = new List<string>();
-            for (int i = 0; i < property.arraySize; i++)
-            {
-                list.Add(property.GetArrayElementAtIndex(i).stringValue);
-            }
-
-            return list;
-        }
-
         private void AddMouthMorphBlendShape(ReorderableList reorderableList)
         {
-            var faceBlendShapes = new List<string>();
+            var faceBlendShapes = new List<BlendShape>();
             _av3Setting.Update();
             var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
             if (avatarDescriptor != null)
@@ -445,26 +433,29 @@ namespace Suzuryg.FaceEmo.Detail.View
                 var replaceBlink = _av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)).boolValue;
                 var excludeBlink = !replaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
                 var excludeLipSync = true;
-                faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync).Select(x => x.Key.Name).ToList();
+                faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync).Select(x => x.Key).ToList();
+
+                foreach (var mesh in GetValue<List<SkinnedMeshRenderer>>(_av3Setting.FindProperty(nameof(AV3Setting.AdditionalSkinnedMeshes))))
+                {
+                    var blendShapes = AV3Utility.GetBlendShapeValues(mesh, avatarDescriptor, excludeBlink, excludeLipSync);
+                    foreach (var item in blendShapes) { faceBlendShapes.Add(item.Key); }
+                }
             }
 
             UnityEditor.PopupWindow.Show(
                 new Rect(Event.current.mousePosition, Vector2.one),
-                new ListSelectPopupContent<string>(faceBlendShapes, _localizationTable.Common_Add, _localizationTable.Common_Cancel,
-                new Action<IReadOnlyList<string>>(blendShapes =>
+                new ListSelectPopupContent<BlendShape>(faceBlendShapes, _localizationTable.Common_Add, _localizationTable.Common_Cancel,
+                new Action<IReadOnlyList<BlendShape>>(added =>
                 {
-                    var existing = new HashSet<string>(GetMouthMorphBlendShapes());
-                    var toAdd = blendShapes.Distinct().Where(x => !existing.Contains(x)).ToList();
-
                     _av3Setting.Update();
 
-                    var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
-                    var start = property.arraySize;
-                    property.arraySize += toAdd.Count;
-                    for (int i = 0; i < toAdd.Count; i++)
+                    var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs));
+                    var list = GetValue<List<BlendShape>>(property);
+                    foreach (var item in added)
                     {
-                        property.GetArrayElementAtIndex(i + start).stringValue = toAdd[i];
+                        if (!list.Contains(item)) { list.Add(item); }
                     }
+                    SetValue(property, list);
 
                     _av3Setting.ApplyModifiedProperties();
                 })));
@@ -478,20 +469,17 @@ namespace Suzuryg.FaceEmo.Detail.View
                 return;
             }
 
-            var selected = _mouthMorphBlendShapes.list[_mouthMorphBlendShapes.index] as string;
+            var selected = _mouthMorphBlendShapes.list[_mouthMorphBlendShapes.index] as BlendShape;
 
             _av3Setting.Update();
 
-            var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
-            for (int i = 0; i < property.arraySize; i++)
+            var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs));
+            var list = GetValue<List<BlendShape>>(property);
+            while (list.Contains(selected))
             {
-                var element = property.GetArrayElementAtIndex(i);
-                if (element.stringValue == selected)
-                {
-                    // Remove all duplicate elements without breaking to be sure.
-                    property.DeleteArrayElementAtIndex(i);
-                }
+                list.Remove(selected);
             }
+            SetValue(property, list);
 
             _av3Setting.ApplyModifiedProperties();
         }
@@ -506,7 +494,33 @@ namespace Suzuryg.FaceEmo.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ConfirmMouthMorphBlendShape);
             }
 
-            _mouthMorphBlendShapes.list = GetMouthMorphBlendShapes(); // Is it necessary to get every frame?
+            _av3Setting.Update();
+            var mouthMorphsProperty = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs));
+            var mouthMorphs = GetValue<List<BlendShape>>(mouthMorphsProperty);
+
+            #pragma warning disable CS0612
+            var obsoleteProperty = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
+            if (obsoleteProperty.arraySize > 0)
+            {
+                var obsolete = GetValue<List<string>>(obsoleteProperty);
+                var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
+                var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
+                if (faceMesh != null)
+                {
+                    var faceMeshPath = AV3Utility.GetPathFromAvatarRoot(faceMesh.transform, avatarDescriptor);
+                    foreach (var name in obsolete)
+                    {
+                        var blendShape = new BlendShape(path: faceMeshPath, name: name);
+                        if (!mouthMorphs.Contains(blendShape)) { mouthMorphs.Add(blendShape); }
+                    }
+                    obsolete.Clear();
+                    SetValue(obsoleteProperty, obsolete);
+                    SetValue(mouthMorphsProperty, mouthMorphs);
+                }
+            }
+            #pragma warning restore CS0612
+
+            _mouthMorphBlendShapes.list = mouthMorphs; // Is it necessary to get every frame?
             _mouthMorphBlendShapes.DoLayoutList();
 
             EditorGUILayout.Space(10);
@@ -516,8 +530,8 @@ namespace Suzuryg.FaceEmo.Detail.View
                     _localizationTable.InspectorView_Message_ClearMouthMorphBlendShapes,
                     _localizationTable.Common_Delete, _localizationTable.Common_Cancel, isRiskyAction: true))
             {
-                var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
-                property.ClearArray();
+                _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs)).ClearArray();
+                _av3Setting.ApplyModifiedProperties();
             }
         }
 
@@ -893,6 +907,28 @@ namespace Suzuryg.FaceEmo.Detail.View
                 child = child.parent;
             }
             return false;
+        }
+
+        private static T GetValue<T>(SerializedProperty property)
+        {
+            object obj = property.serializedObject.targetObject;
+            System.Reflection.FieldInfo fieldInfo = obj.GetType().GetField(property.propertyPath);
+            if (fieldInfo != null)
+            {
+                return (T)fieldInfo.GetValue(obj);
+            }
+            return default(T);
+        }
+
+        private static void SetValue<T>(SerializedProperty property, T newValue)
+        {
+            object obj = property.serializedObject.targetObject;
+            System.Reflection.FieldInfo fieldInfo = obj.GetType().GetField(property.propertyPath);
+            if (fieldInfo != null)
+            {
+                fieldInfo.SetValue(obj, newValue);
+            }
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
     }
 }

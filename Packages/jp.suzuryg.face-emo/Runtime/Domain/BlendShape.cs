@@ -25,6 +25,11 @@ namespace Suzuryg.FaceEmo.Domain
             _name = name;
         }
 
+        public override string ToString()
+        {
+            return _path + "." + _name;
+        }
+
         public bool Equals(BlendShape other)
         {
             if (other is null)
