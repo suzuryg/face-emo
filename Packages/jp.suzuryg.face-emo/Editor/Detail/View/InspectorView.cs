@@ -563,7 +563,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
             if (showHints)
             {
-                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_ExcluedBlendShapes);
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_ExcludedBlendShapes);
             }
 
             _av3Setting.Update();
@@ -590,6 +590,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (showHints)
             {
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalSkinnedMeshes);
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ResetAdditionalSkinnedMeshes);
             }
 
             var avatarTransform = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.transform;

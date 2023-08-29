@@ -239,8 +239,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_ShowBlinkBlendShapes = "Show Blink Blend Shapes";
         public string InspectorView_ShowLipSyncBlendShapes = "Show Lip Sync Blend Shapes";
 
-        public string InspectorView_Tooltip_MouthMorphCanceler = "This is used in expressions where Mouth Morph Canceler is enabled. " +
-            "During speech, you can prevent disruptions by resetting certain shape key values to their default values (the values set on the scene).";
+        public string InspectorView_Tooltip_MouthMorphCanceler = "This is used in expressions where the Mouth Morph Canceler is enabled. " +
+            "During speech, you can prevent disruptions by resetting certain blend shape values to their default values (the values set in the scene).";
         public string InspectorView_Tooltip_AddMouthMorphBlendShape = "When selecting blend shapes, you can make multiple selections by \"Ctrl + Click\". " +
             "Also, you can select a range by \"Shift + Click\" or \"Shift + Arrow key\". " +
             "If you make multiple selections or select a range and press \"Add\", you can add blend shapes all at once.";
@@ -248,6 +248,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "If you are morphing the mouth with blend shapes for MMD, do not forget to add those as well.";
         public string InspectorView_Tooltip_AdditionalSkinnedMeshes = "If the face mesh is divided into multiple parts, please add them here. " +
             "Blend shapes not included in the face mesh can also be controlled by adding the mesh here.";
+        public string InspectorView_Tooltip_ResetAdditionalSkinnedMeshes = "Blend shapes within the specified mesh will be reset to their default values (the values set in the scene) if they are not controlled by facial animation. " +
+            "Please add blend shapes you want to control with other gimmicks to the \"Excluded Blend Shapes\" list.";
         public string InspectorView_Tooltip_AdditionalToggle = "In conjunction with expressions, you can control the ON/OFF of specific objects (such as expression particles). " +
             "Objects specified here can be used in the expression editor.";
         public string InspectorView_Tooltip_AdditionalTransform = "In conjunction with expressions, you can control the position, rotation, and scale of specific objects (such as beast ears and ahoge). " +
@@ -278,7 +280,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Tooltip_Application_EmoteSelect = "If disabled, the number of expression patterns that can be registered in the Expression Menu is increased by one.";
         public string InspectorView_Tooltip_Defaults = "You can change the settings values right after creating expression patterns or expressions.";
         public string InspectorView_Tooltip_Editor = "You can configure the behavior of this tool's UI. These settings are shared across all projects.";
-        public string InspectorView_Hints_ExcluedBlendShapes = "You can specify blend shapes that are not controlled by FaceEmo. " +
+        public string InspectorView_Hints_ExcludedBlendShapes = "You can specify blend shapes that are not controlled by FaceEmo. " +
             "If there are blend shapes controlled by other gimmicks, please add them here.";
 
         public string ExpressionEditorView_Rename = "Rename";
