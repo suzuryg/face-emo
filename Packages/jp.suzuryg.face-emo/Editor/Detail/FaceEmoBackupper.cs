@@ -137,6 +137,13 @@ namespace Suzuryg.FaceEmo.Detail
                 if (subAvatar != null) { _aV3Setting.SubTargetAvatarPaths.Add(subAvatar?.gameObject?.GetFullPath()); }
             }
 
+            // Meshes
+            _aV3Setting.AdditionalSkinnedMeshPaths.Clear();
+            foreach (var mesh in _aV3Setting.AdditionalSkinnedMeshes)
+            {
+                if (mesh != null) { _aV3Setting.AdditionalSkinnedMeshPaths.Add(mesh.gameObject.GetFullPath()); }
+            }
+
             // Toggles
             _aV3Setting.AdditionalToggleObjectPaths.Clear();
             foreach (var toggle in _aV3Setting.AdditionalToggleObjects)
@@ -179,6 +186,22 @@ namespace Suzuryg.FaceEmo.Detail
                 else
                 {
                     Debug.LogError($"{_localizationTable.Backupper_Message_FailedToFindSubTargetAvatar}\n{path}");
+                }
+            }
+
+            // Meshes
+            _aV3Setting.AdditionalSkinnedMeshes.Clear();
+            foreach (var path in _aV3Setting.AdditionalSkinnedMeshPaths)
+            {
+                if (path.StartsWith("/") &&
+                    GameObject.Find(path) is GameObject gameObject && gameObject != null &&
+                    gameObject.GetComponent<SkinnedMeshRenderer>() is SkinnedMeshRenderer skinnedMesh && skinnedMesh != null)
+                {
+                    _aV3Setting.AdditionalSkinnedMeshes.Add(skinnedMesh);
+                }
+                else
+                {
+                    Debug.LogError($"{_localizationTable.Backupper_Message_FailedToFindSkinnedMesh}\n{path}");
                 }
             }
 
