@@ -31,7 +31,9 @@ namespace Suzuryg.FaceEmo.Detail
         public static readonly string KeyAutoSave = $"{DomainConstants.SystemName}_AutoSave";
         public static readonly bool DefaultAutoSave = true;
 
+        public static readonly string KeyHierarchyIconOffset = $"{DomainConstants.SystemName}_HierarchyIconOffset";
         public static readonly string KeyHideHierarchyIcon = $"{DomainConstants.SystemName}_HideHierarchyIcon";
+        public static readonly float DefaultHierarchyIconOffset = 20;
         public static readonly bool DefaultHideHierarchyIcon = false;
 
         public static readonly string KeyShowClipFieldInGestureTable = $"{DomainConstants.SystemName}_ShowClipFieldInGestureTable";

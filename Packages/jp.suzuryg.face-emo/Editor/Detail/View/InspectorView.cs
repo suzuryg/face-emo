@@ -918,6 +918,17 @@ namespace Suzuryg.FaceEmo.Detail.View
             ToggleEditorPrefsField(DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, _localizationTable.InspectorView_BranchDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowBlinkBlendShapes, DetailConstants.Default_ExpressionEditor_ShowBlinkBlendShapes, _localizationTable.InspectorView_ShowBlinkBlendShapes);
             ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowLipSyncBlendShapes, DetailConstants.Default_ExpressionEditor_ShowLipSyncBlendShapes, _localizationTable.InspectorView_ShowLipSyncBlendShapes);
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var offset = EditorPrefs.GetFloat(DetailConstants.KeyHierarchyIconOffset, DetailConstants.DefaultHierarchyIconOffset);
+                GUILayout.Label(_localizationTable.InspectorView_HierarchyIconOffset);
+                var newOffset = EditorGUILayout.FloatField(offset);
+                if (!Mathf.Approximately(newOffset, offset))
+                {
+                    EditorPrefs.SetFloat(DetailConstants.KeyHierarchyIconOffset, newOffset);
+                }
+            }
         }
 
         private static void TogglePropertyField(SerializedProperty serializedProperty, string label, string tooltip = null)
