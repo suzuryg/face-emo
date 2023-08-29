@@ -1254,23 +1254,44 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         {
             var clip = aac.NewClip();
 
-            var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
-            if (faceMesh == null)
+            #pragma warning disable CS0612
+            var obsolete = aV3Setting.MouthMorphBlendShapes;
+            if (obsolete.Any())
             {
-                return clip;
+                var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
+                if (faceMesh != null)
+                {
+                    var faceMeshPath = AV3Utility.GetPathFromAvatarRoot(faceMesh.transform, avatarDescriptor);
+                    foreach (var name in obsolete)
+                    {
+                        var blendShape = new BlendShape(path: faceMeshPath, name: name);
+                        if (!aV3Setting.MouthMorphs.Contains(blendShape)) { aV3Setting.MouthMorphs.Add(blendShape); }
+                    }
+                    obsolete.Clear();
+                    EditorUtility.SetDirty(aV3Setting);
+                }
             }
+            #pragma warning restore CS0612
 
-            // Generate clip
-            var mouthMorphBlendShapes = new HashSet<string>(aV3Setting.MouthMorphBlendShapes);
-            var excludeBlink = !_aV3Setting.ReplaceBlink; // If blinking is not replaced by animation, do not reset the shape key for blinking
+            var excludeBlink = false;
             var excludeLipSync = true;
             var blendShapeValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
+            foreach (var mesh in aV3Setting.AdditionalSkinnedMeshes)
+            {
+                var blendShapes = AV3Utility.GetBlendShapeValues(mesh, avatarDescriptor, excludeBlink, excludeLipSync);
+                foreach (var item in blendShapes) { blendShapeValues[item.Key] = item.Value; }
+            }
+
+            var mouthMorphBlendShapes = new HashSet<BlendShape>(aV3Setting.MouthMorphs);
+
+            var cachedMeshes = new Dictionary<string, SkinnedMeshRenderer>();
             foreach (var blendShape in blendShapeValues.Keys)
             {
                 var weight = blendShapeValues[blendShape];
-                if (mouthMorphBlendShapes.Contains(blendShape.Name))
+                if (mouthMorphBlendShapes.Contains(blendShape))
                 {
-                    clip = clip.BlendShape(faceMesh, blendShape.Name, weight);
+                    var mesh = cachedMeshes.ContainsKey(blendShape.Path) ? cachedMeshes[blendShape.Path] : AV3Utility.GetMeshByPath(blendShape.Path, avatarDescriptor);
+                    clip = clip.BlendShape(mesh, blendShape.Name, weight);
                 }
             }
 

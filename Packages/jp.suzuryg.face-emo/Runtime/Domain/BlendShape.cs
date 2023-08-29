@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Suzuryg.FaceEmo.Detail
+namespace Suzuryg.FaceEmo.Domain
 {
     [Serializable]
     public class BlendShape : IEquatable<BlendShape>
@@ -23,6 +23,11 @@ namespace Suzuryg.FaceEmo.Detail
         {
             _path = path;
             _name = name;
+        }
+
+        public override string ToString()
+        {
+            return _path + "." + _name;
         }
 
         public bool Equals(BlendShape other)
