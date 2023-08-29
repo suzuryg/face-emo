@@ -17,6 +17,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         [Obsolete]
         public List<string> MouthMorphBlendShapes = new List<string>();
         public List<BlendShape> MouthMorphs = new List<BlendShape>();
+        public List<BlendShape> ExcludedBlendShapes = new List<BlendShape>();
 
         public List<SkinnedMeshRenderer> AdditionalSkinnedMeshes = new List<SkinnedMeshRenderer>();
         public List<GameObject> AdditionalToggleObjects = new List<GameObject>();

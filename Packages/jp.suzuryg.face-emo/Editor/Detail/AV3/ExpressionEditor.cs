@@ -276,6 +276,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 }
             }
 
+            // Exclude blendshapes
+            foreach (var excluded in _aV3Setting.ExcludedBlendShapes)
+            {
+                while (_faceBlendShapes.ContainsKey(excluded)) { _faceBlendShapes.Remove(excluded); }
+            }
+
             // Get additional toggles
             foreach (var gameObject in _aV3Setting?.AdditionalToggleObjects)
             {

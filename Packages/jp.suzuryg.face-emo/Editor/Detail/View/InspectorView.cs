@@ -38,6 +38,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private ReorderableList _subTargetAvatars;
         private ReorderableList _mouthMorphBlendShapes;
+        private ReorderableList _excludedBlendShapes;
         private ReorderableList _additionalSkinnedMeshes;
         private ReorderableList _additionalToggleObjects;
         private ReorderableList _additionalTransformObjects;
@@ -116,11 +117,22 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Mouth morph blendshapes
             _mouthMorphBlendShapes = new ReorderableList(null, typeof(BlendShape));
-            _mouthMorphBlendShapes.onAddCallback = AddMouthMorphBlendShape;
-            _mouthMorphBlendShapes.onRemoveCallback = RemoveMouthMorphBlendShape;
+            _mouthMorphBlendShapes.onAddCallback = reorderableList => AddBlendShape(reorderableList, nameof(AV3Setting.MouthMorphs));
+            _mouthMorphBlendShapes.onRemoveCallback = reorderableList => RemoveBlendShape(reorderableList, nameof(AV3Setting.MouthMorphs));
             _mouthMorphBlendShapes.draggable = false;
             _mouthMorphBlendShapes.headerHeight = 0;
             _mouthMorphBlendShapes.drawNoneElementCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyBlendShapes, _centerStyle);
+            };
+
+            // Excluded blendshapes
+            _excludedBlendShapes = new ReorderableList(null, typeof(BlendShape));
+            _excludedBlendShapes.onAddCallback = reorderableList => AddBlendShape(reorderableList, nameof(AV3Setting.ExcludedBlendShapes));
+            _excludedBlendShapes.onRemoveCallback = reorderableList => RemoveBlendShape(reorderableList, nameof(AV3Setting.ExcludedBlendShapes));
+            _excludedBlendShapes.draggable = false;
+            _excludedBlendShapes.headerHeight = 0;
+            _excludedBlendShapes.drawNoneElementCallback = (Rect rect) =>
             {
                 GUI.Label(rect, _localizationTable.InspectorView_EmptyBlendShapes, _centerStyle);
             };
@@ -221,6 +233,17 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (isMouthMorphBlendShapesOpened.boolValue)
             {
                 Field_MouthMorphBlendShape();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Exclueded Blend Shapes
+            var isExcludedBlendShapesOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsExcludedBlendShapesOpened));
+            isExcludedBlendShapesOpened.boolValue = EditorGUILayout.Foldout(isExcludedBlendShapesOpened.boolValue,
+                new GUIContent(_localizationTable.InspectorView_ExcludedBlendShapes));
+            if (isExcludedBlendShapesOpened.boolValue)
+            {
+                Field_ExcludedBlendShape();
             }
 
             EditorGUILayout.Space(10);
@@ -423,7 +446,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
-        private void AddMouthMorphBlendShape(ReorderableList reorderableList)
+        private void AddBlendShape(ReorderableList reorderableList, string propertyName)
         {
             var faceBlendShapes = new List<BlendShape>();
             _av3Setting.Update();
@@ -449,7 +472,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 {
                     _av3Setting.Update();
 
-                    var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs));
+                    var property = _av3Setting.FindProperty(propertyName);
                     var list = GetValue<List<BlendShape>>(property);
                     foreach (var item in added)
                     {
@@ -461,19 +484,19 @@ namespace Suzuryg.FaceEmo.Detail.View
                 })));
         }
 
-        private void RemoveMouthMorphBlendShape(ReorderableList reorderableList)
+        private void RemoveBlendShape(ReorderableList reorderableList, string propertyName)
         {
             // Check for abnormal selections.
-            if (_mouthMorphBlendShapes.index >= _mouthMorphBlendShapes.list.Count)
+            if (reorderableList.index >= reorderableList.list.Count)
             {
                 return;
             }
 
-            var selected = _mouthMorphBlendShapes.list[_mouthMorphBlendShapes.index] as BlendShape;
+            var selected = reorderableList.list[reorderableList.index] as BlendShape;
 
             _av3Setting.Update();
 
-            var property = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs));
+            var property = _av3Setting.FindProperty(propertyName);
             var list = GetValue<List<BlendShape>>(property);
             while (list.Contains(selected))
             {
@@ -535,12 +558,39 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
+        private void Field_ExcludedBlendShape()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_ExcludedBlendShapes);
+            }
+
+            _av3Setting.Update();
+            var excludedProperty = _av3Setting.FindProperty(nameof(AV3Setting.ExcludedBlendShapes));
+            var excluded = GetValue<List<BlendShape>>(excludedProperty);
+            _excludedBlendShapes.list = excluded; // Is it necessary to get every frame?
+            _excludedBlendShapes.DoLayoutList();
+
+            EditorGUILayout.Space(10);
+
+            if (GUILayout.Button(_localizationTable.Common_DeleteAll) &&
+                OptoutableDialog.Show(DomainConstants.SystemName,
+                    _localizationTable.InspectorView_Message_ClearExcludedBlendShapes,
+                    _localizationTable.Common_Delete, _localizationTable.Common_Cancel, isRiskyAction: true))
+            {
+                _av3Setting.FindProperty(nameof(AV3Setting.ExcludedBlendShapes)).ClearArray();
+                _av3Setting.ApplyModifiedProperties();
+            }
+        }
+
         private void Field_AdditionalSkinnedMeshes()
         {
             var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
             if (showHints)
             {
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AdditionalSkinnedMeshes);
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ResetAdditionalSkinnedMeshes);
             }
 
             var avatarTransform = (_av3Setting?.FindProperty(nameof(AV3Setting.TargetAvatar))?.objectReferenceValue as VRCAvatarDescriptor)?.gameObject?.transform;
