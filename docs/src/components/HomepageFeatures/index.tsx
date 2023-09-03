@@ -1,7 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
-import Translate from '@docusaurus/Translate'
+import Translate from '@docusaurus/Translate';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 function Features() {
   return (
@@ -47,6 +48,22 @@ function Features() {
   );
 }
 
+function VideoContainer() {
+  const { siteConfig, i18n } = useDocusaurusContext();
+  var video_url;
+  if (i18n.currentLocale == "ja") { video_url = "https://www.youtube.com/embed/Y3taqFjOjZ8?rel=0"; }
+  else { video_url = "https://www.youtube.com/embed/hZIHdWUONHM?rel=0"; }
+
+  return (
+  <div className="text--center">
+      <iframe width="640" height="360"
+          src={video_url}
+          frameBorder="0"
+          allowFullScreen
+          sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"></iframe>
+  </div>);
+}
+
 function Credits(){
   return(
     <div>
@@ -83,6 +100,8 @@ export default function HomepageFeatures(): JSX.Element {
     <section className={styles.features}>
       <div className="container">
         <Features/>
+        <hr/>
+        <VideoContainer/>
         <hr/>
         <Credits/>
       </div>
