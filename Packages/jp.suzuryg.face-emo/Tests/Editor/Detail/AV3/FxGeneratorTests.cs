@@ -3,6 +3,7 @@ using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Domain;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -74,27 +75,90 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         {
             _fxGenerator.Generate(_menu);
             var generated = GetGeneratedAssets();
-            DefaultFaceLayer(generated.fx);
+            AssertDefaultFaceLayer(generated.fx);
+            AssertFaceEmotePlayerLayer(generated.fx);
         }
 
-        private void DefaultFaceLayer(AnimatorController fx)
+        private static void AssertDefaultFaceLayer(AnimatorController fx)
         {
-            var layer = GetLayer(fx, "[ USER EDIT ] DEFAULT FACE");
-            IsNormalLayer(layer);
+            var layer = fx.layers[0];
+            AssertNormalLayer(layer);
+            Assert.That(layer.name, Is.EqualTo("[ USER EDIT ] DEFAULT FACE"));
             Assert.That(layer.defaultWeight, Is.EqualTo(1));
             Assert.That(layer.stateMachine.states.Count, Is.EqualTo(1));
             Assert.That(layer.stateMachine.stateMachines.Count, Is.EqualTo(0));
             Assert.That(layer.stateMachine.entryTransitions.Count, Is.EqualTo(0));
             Assert.That(layer.stateMachine.anyStateTransitions.Count, Is.EqualTo(0));
+            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("DEFAULT"));
 
             var defaultState = GetState(layer, "DEFAULT");
-            IsNormalState(defaultState);
-            DefaultFaceClip(defaultState.motion as AnimationClip);
+            AssertNormalState(defaultState);
+            AssertDefaultFaceClip(defaultState.motion as AnimationClip);
             Assert.That(defaultState.transitions.Count, Is.EqualTo(0));
             Assert.That(defaultState.behaviours.Count, Is.EqualTo(0));
         }
 
-        private void DefaultFaceClip(AnimationClip clip)
+        private static void AssertFaceEmotePlayerLayer(AnimatorController fx)
+        {
+            var layer = fx.layers[7];
+            AssertNormalLayer(layer);
+            Assert.That(layer.name, Is.EqualTo("[ USER EDIT ] FACE EMOTE PLAYER"));
+            Assert.That(layer.defaultWeight, Is.EqualTo(1));
+            Assert.That(layer.stateMachine.states.Count, Is.EqualTo(2));
+            Assert.That(layer.stateMachine.stateMachines.Count, Is.EqualTo(2));
+            Assert.That(layer.stateMachine.entryTransitions.Count, Is.EqualTo(2));
+            Assert.That(layer.stateMachine.anyStateTransitions.Count, Is.EqualTo(3));
+
+            // TODO: Add emote state
+            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("AFK Standby"));
+
+            AssertNormalStateTransition(
+                layer.stateMachine.anyStateTransitions.Where(x =>
+                    x.destinationState.name == "in OVERRIDE" && x.duration == 0 && x.conditions.Count() == 2 &&
+                    x.conditions.Any(y => y.parameter == "CN_EMOTE_OVERRIDE" && y.mode == AnimatorConditionMode.If) &&
+                    x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(
+                layer.stateMachine.anyStateTransitions.Where(x =>
+                    x.destinationState.name == "in OVERRIDE" && x.duration == 0 && x.conditions.Count() == 2 &&
+                    x.conditions.Any(y => y.parameter == "CN_EMOTE_OVERRIDE" && y.mode == AnimatorConditionMode.If) &&
+                    x.conditions.Any(y => y.parameter == "SYNC_CN_DANCE_GIMMICK_ENABLE" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(
+                layer.stateMachine.anyStateTransitions.Where(x =>
+                    x.destinationState.name == "in DANCE" && x.duration == 0 && x.conditions.Count() == 3 &&
+                    x.conditions.Any(y => y.parameter == "SYNC_CN_DANCE_GIMMICK_ENABLE" && y.mode == AnimatorConditionMode.If) &&
+                    x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.If) &&
+                    x.conditions.Any(y => y.parameter == "Voice" && y.mode == AnimatorConditionMode.Less && y.threshold == 0.01f)));
+
+            // TODO: check entry transitions
+            // TODO: check afk state machine
+            // TODO: check not afk state machine
+
+            var overrideState = GetState(layer, "in OVERRIDE");
+            AssertNormalState(overrideState);
+            AssertAacDefaultClip(overrideState.motion as AnimationClip);
+            Assert.That(overrideState.transitions.Count, Is.EqualTo(1));
+            Assert.That(overrideState.behaviours.Count, Is.EqualTo(0));
+            AssertNormalStateTransition(
+                overrideState.transitions.Where(x =>
+                    x.isExit && x.duration == 0 && x.conditions.Count() == 1 &&
+                    x.conditions.Any(y => y.parameter == "CN_EMOTE_OVERRIDE" && y.mode == AnimatorConditionMode.IfNot)));
+
+            var danceState = GetState(layer, "in DANCE");
+            AssertNormalState(danceState);
+            AssertAacDefaultClip(danceState.motion as AnimationClip);
+            Assert.That(danceState.transitions.Count, Is.EqualTo(2));
+            Assert.That(danceState.behaviours.Count, Is.EqualTo(0));
+            AssertNormalStateTransition(
+                danceState.transitions.Where(x =>
+                    x.isExit && x.duration == 0 && x.conditions.Count() == 1 &&
+                    x.conditions.Any(y => y.parameter == "SYNC_CN_DANCE_GIMMICK_ENABLE" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(
+                danceState.transitions.Where(x =>
+                    x.isExit && x.duration == 0 && x.conditions.Count() == 1 &&
+                    x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.IfNot)));
+        }
+
+        private static void AssertDefaultFaceClip(AnimationClip clip)
         {
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
@@ -169,7 +233,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
         }
 
-        private static void IsNormalLayer(AnimatorControllerLayer layer)
+        private static void AssertNormalLayer(AnimatorControllerLayer layer)
         {
             Assert.That(layer.avatarMask == null, Is.True);
             Assert.That(layer.blendingMode, Is.EqualTo(AnimatorLayerBlendingMode.Override));
@@ -178,7 +242,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(layer.syncedLayerAffectsTiming, Is.EqualTo(false));
         }
 
-        private static void IsNormalState(AnimatorState state)
+        private static void AssertNormalState(AnimatorState state)
         {
             Assert.That(state.speed, Is.EqualTo(1));
             Assert.That(state.cycleOffset, Is.EqualTo(0));
@@ -192,6 +256,34 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(state.timeParameterActive, Is.EqualTo(false));
         }
 
+        private static void AssertAacDefaultClip(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(false));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings[0].path, Is.EqualTo("_ignored"));
+        }
+
+        private static void AssertNormalStateTransition(IEnumerable<AnimatorStateTransition> transitions)
+        {
+            Assert.That(transitions.Count, Is.EqualTo(1));
+            var transition = transitions.First();
+
+            Assert.That(transition.offset, Is.EqualTo(0));
+            Assert.That(transition.interruptionSource, Is.EqualTo(TransitionInterruptionSource.None));
+            Assert.That(transition.hasExitTime, Is.EqualTo(false));
+            Assert.That(transition.hasFixedDuration, Is.EqualTo(true));
+            Assert.That(transition.canTransitionToSelf, Is.EqualTo(false));
+            AssertNormalBaseTransition(transition);
+        }
+
+        private static void AssertNormalBaseTransition(AnimatorTransitionBase transition)
+        {
+            Assert.That(transition.solo, Is.EqualTo(false));
+            Assert.That(transition.mute, Is.EqualTo(false));
+        }
+
         private static (string generatedDir, AnimatorController fx, VRCExpressionsMenu exMenu) GetGeneratedAssets()
         {
             var generatedDir = AssetDatabase.GetSubFolders("Assets/Suzuryg/FaceEmo/Generated").OrderBy(x => x).Last();
@@ -202,13 +294,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(fx != null, Is.True);
             Assert.That(exMenu != null, Is.True);
             return (generatedDir, fx, exMenu);
-        }
-
-        private static AnimatorControllerLayer GetLayer(AnimatorController controller, string layerName)
-        {
-            var layers = controller.layers.Where(x => x.name == layerName);
-            Assert.That(layers.Count, Is.EqualTo(1));
-            return layers.First();
         }
 
         private static AnimatorState GetState(AnimatorControllerLayer layer, string stateName)
