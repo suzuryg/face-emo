@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: CustomEmote_Stand_Hold
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u304C\u304A\u304A"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 33
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u8352\u3076\u308B\u9DF9\u306E\u30DD\u30FC\u30BA"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 34
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u30C9\u30B8\u3063\u3053"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 35
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u7761\u7720"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 36
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u30E2\u30F3\u30AD\u30FC\u30C0\u30F3\u30B9"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 37
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u30B3\u30B5\u30C3\u30AF\u30C0\u30F3\u30B9"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 38
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u30AB\u30AB\u30DD\u30C0\u30F3\u30B91"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 39
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u30AB\u30AB\u30DD\u30C0\u30F3\u30B92"
+    icon: {fileID: 0}
+    type: 102
+    parameter:
+      name: VRCEmote
+    value: 40
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []

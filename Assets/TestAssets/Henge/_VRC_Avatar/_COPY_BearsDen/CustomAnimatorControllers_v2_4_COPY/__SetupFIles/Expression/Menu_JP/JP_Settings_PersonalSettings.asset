@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: JP_Settings_PersonalSettings
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u30B3\u30F3\u30C8\u30ED\u30FC\u30E9\u30FC"
+    icon: {fileID: 2800000, guid: 514c425a7855a1845961ef7a3773d758, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: dec1d119b6d4f1e49bdd771037dee3c7, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5\u6307\u5B9A\u30BF\u30A4\u30D7"
+    icon: {fileID: 2800000, guid: 4a903020065c79349a2cf2cc4c699eda, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: fc3a21c9106e77f49a8e250fe605f0ed, type: 2}
+    subParameters: []
+    labels: []
+  - name: "Contact\u8868\u60C5\u56FA\u5B9A\u6709\u52B9"
+    icon: {fileID: 2800000, guid: 103d35aed9293b540984b0d4830311b7, type: 3}
+    type: 102
+    parameter:
+      name: CN_CONTACT_EMOTE_LOCK_ENABLE
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5\u4E0A\u66F8\u304D\u6709\u52B9"
+    icon: {fileID: 2800000, guid: 4a903020065c79349a2cf2cc4c699eda, type: 3}
+    type: 102
+    parameter:
+      name: SYNC_CN_EMOTE_OVERRIDE_ENABLE
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "AFK\u5FA9\u5E30\u6642\u79FB\u52D5\u6709\u52B9"
+    icon: {fileID: 2800000, guid: 44b822c693fbd174d8f994ee312dd8e4, type: 3}
+    type: 102
+    parameter:
+      name: SYNC_CN_AFK_LOCOMOTION_ENABLE
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5\u5909\u66F4\u5F85\u3061 (\u30EA\u30C3\u30D7\u30B7\u30F3\u30AF\u5E72\u6E09\u9632\u6B62)"
+    icon: {fileID: 2800000, guid: 7f83deb51b30514499addc7b843db4e1, type: 3}
+    type: 102
+    parameter:
+      name: SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []

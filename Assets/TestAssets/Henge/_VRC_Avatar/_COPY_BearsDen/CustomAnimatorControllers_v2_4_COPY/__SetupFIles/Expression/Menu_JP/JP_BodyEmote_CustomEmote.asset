@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: JP_BodyEmote_CustomEmote
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u7ACB\u3061 \u5358\u767A \u30BB\u30C3\u30C81"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 0377de1e9316b394e929f0509d9d514c, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u7ACB\u3061 \u5358\u767A \u30BB\u30C3\u30C82"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 057c3581da12e0f4399eba6bf9307b90, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u7ACB\u3061 \u30EB\u30FC\u30D7 \u30BB\u30C3\u30C81"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 0baa54c4859bf7a4d90377628ab67fff, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u7ACB\u3061 \u30EB\u30FC\u30D7 \u30BB\u30C3\u30C82"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 16d96164c7811b642874dfd0abd5081b, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u5EA7\u308A \u5358\u767A \u30BB\u30C3\u30C81"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: b576082c2659eaf4898e4c57272edc63, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u5EA7\u308A \u5358\u767A \u30BB\u30C3\u30C82"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: e48b5a1ab57475b4a94bf64c7a646da9, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u5EA7\u308A \u30EB\u30FC\u30D7 \u30BB\u30C3\u30C81"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: fcbfb9f763a46884b9e5b96bb230443d, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u5EA7\u308A \u30EB\u30FC\u30D7 \u30BB\u30C3\u30C82"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: dd6aba13b34307644adcc529b4dda460, type: 2}
+    subParameters: []
+    labels: []

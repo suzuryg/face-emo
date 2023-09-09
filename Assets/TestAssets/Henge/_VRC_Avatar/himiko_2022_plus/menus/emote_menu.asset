@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: emote_menu
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "VRC\u7ACB\u3061\u30A8\u30E2\u30FC\u30C8"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: a84316d4902260447b5d1120b5b63591, type: 2}
+    subParameters: []
+    labels: []
+  - name: "VRC\u5EA7\u308A\u30A8\u30E2\u30FC\u30C8"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 73ea042d14c5f16418633de26da71cdf, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u30AB\u30B9\u30BF\u30E0\u7ACB\u3061\u30A8\u30E2\u30FC\u30C8"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 95adc7bb65811ec48bc18571acc47038, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u30AB\u30B9\u30BF\u30E0\u7ACB\u3061\u30EB\u30FC\u30D7"
+    icon: {fileID: 0}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 24e3f1e45edf1c3448488c7f1c17db70, type: 2}
+    subParameters: []
+    labels: []

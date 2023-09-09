@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: JP_FaceEmote_PatternSwitching
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u8868\u60C5\u30BB\u30C3\u30C8 1"
+    icon: {fileID: 2800000, guid: 8a60b18b8f9d4e94da6a7d5058b32281, type: 3}
+    type: 102
+    parameter:
+      name: EM_EMOTE_PATTERN
+    value: 0
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5\u30BB\u30C3\u30C8 2"
+    icon: {fileID: 2800000, guid: 8a60b18b8f9d4e94da6a7d5058b32281, type: 3}
+    type: 102
+    parameter:
+      name: EM_EMOTE_PATTERN
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5\u30BB\u30C3\u30C8 3"
+    icon: {fileID: 2800000, guid: 8a60b18b8f9d4e94da6a7d5058b32281, type: 3}
+    type: 102
+    parameter:
+      name: EM_EMOTE_PATTERN
+    value: 2
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []

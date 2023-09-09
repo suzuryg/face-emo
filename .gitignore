@@ -67,5 +67,6 @@ Assets/PackageMakerWindowData.asset*
 Assets/*
 !Assets/Editor
 Assets/Editor/*
+!Assets/TestAssets
 UIElementsSchema/*
 Thry/
