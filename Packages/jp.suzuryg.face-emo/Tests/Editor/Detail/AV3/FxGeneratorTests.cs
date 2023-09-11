@@ -75,13 +75,24 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         {
             _fxGenerator.Generate(_menu);
             var generated = GetGeneratedAssets();
-            AssertDefaultFaceLayer(generated.fx);
-            AssertFaceEmotePlayerLayer(generated.fx);
+            AssertDefaultFaceLayer(generated.fx.layers[0]);
+            AssertDanceGimmickControlLayer(generated.fx.layers[1]);
+            AssertLeftInputConverterLayer(generated.fx.layers[2]);
+            AssertRightInputConverterLayer(generated.fx.layers[3]);
+            AssertFaceEmoteLockLayer(generated.fx.layers[4]);
+            AssertFaceEmoteControlLayer(generated.fx.layers[5]);
+            AssertFaceEmoteSetControlLayer(generated.fx.layers[6]);
+            AssertFaceEmotePlayerLayer(generated.fx.layers[7]);
+            AssertBlinkLayer(generated.fx.layers[8]);
+            AssertMouthMorphCancellerLayer(generated.fx.layers[9]);
+            AssertLeftGestureWeightLayer(generated.fx.layers[10]);
+            AssertRightGestureWeightLayer(generated.fx.layers[11]);
+            AssertLeftGestureSmoothingLayer(generated.fx.layers[12]);
+            AssertRightGestureSmoothingLayer(generated.fx.layers[13]);
         }
 
-        private static void AssertDefaultFaceLayer(AnimatorController fx)
+        private static void AssertDefaultFaceLayer(AnimatorControllerLayer layer)
         {
-            var layer = fx.layers[0];
             AssertNormalLayer(layer);
             Assert.That(layer.name, Is.EqualTo("[ USER EDIT ] DEFAULT FACE"));
             Assert.That(layer.defaultWeight, Is.EqualTo(1));
@@ -98,9 +109,44 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(defaultState.behaviours.Count, Is.EqualTo(0));
         }
 
-        private static void AssertFaceEmotePlayerLayer(AnimatorController fx)
+        private static void AssertDanceGimmickControlLayer(AnimatorControllerLayer layer)
         {
-            var layer = fx.layers[7];
+            Assert.That(layer.name, Is.EqualTo("DANCE GIMICK CONTROL"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertLeftInputConverterLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("INPUT CONVERTER L"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertRightInputConverterLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("INPUT CONVERTER R"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertFaceEmoteLockLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("FACE EMOTE LOCK"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertFaceEmoteControlLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("FACE EMOTE CONTROL"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertFaceEmoteSetControlLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("FACE EMOTE SET CONTROL"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertFaceEmotePlayerLayer(AnimatorControllerLayer layer)
+        {
             AssertNormalLayer(layer);
             Assert.That(layer.name, Is.EqualTo("[ USER EDIT ] FACE EMOTE PLAYER"));
             Assert.That(layer.defaultWeight, Is.EqualTo(1));
@@ -156,6 +202,42 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 danceState.transitions.Where(x =>
                     x.isExit && x.duration == 0 && x.conditions.Count() == 1 &&
                     x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.IfNot)));
+        }
+
+        private static void AssertBlinkLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("BLINK"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertMouthMorphCancellerLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("MOUTH MORPH CANCELLER"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertLeftGestureWeightLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("Hai_GestureWeightLeft"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertRightGestureWeightLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("Hai_GestureWeightRight"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertLeftGestureSmoothingLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("Hai_GestureSmoothingLeft"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertRightGestureSmoothingLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("Hai_GestureSmoothingRight"));
+            // TODO: Check other properties
         }
 
         private static void AssertDefaultFaceClip(AnimationClip clip)
