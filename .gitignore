@@ -70,3 +70,7 @@ Assets/Editor/*
 !Assets/TestAssets
 UIElementsSchema/*
 Thry/
+
+Packages/packages-lock.json
+Packages/vpm-manifest.json
+
