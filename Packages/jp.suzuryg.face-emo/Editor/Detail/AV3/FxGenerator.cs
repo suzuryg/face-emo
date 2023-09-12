@@ -17,6 +17,7 @@ using UnityEditor.Animations;
 using UnityEngine.UIElements;
 using UnityEditor.IMGUI.Controls;
 using UniRx;
+using VRC.Dynamics;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDKBase;
 using VRC.SDK3.Avatars.ScriptableObjects;
@@ -566,21 +567,54 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             gate.TransitionsTo(disable)
                 .When(layer.Av3().IsLocal.IsEqualTo(true));
 
+            disable.TransitionsTo(enable).
+                When(layer.BoolParameter(AV3Constants.ParamName_CN_FORCE_BYPASS_ENABLE).IsTrue());
+            var enableToDisable = enable.TransitionsTo(disable).
+                When(layer.BoolParameter(AV3Constants.ParamName_CN_FORCE_BYPASS_ENABLE).IsFalse());
+
             if (!aV3Setting.ChangeAfkFace)
             {
                 disable.TransitionsTo(enable).
-                    When(layer.Av3().AFK.IsEqualTo(true));
-                enable.TransitionsTo(disable).
-                    When(layer.Av3().AFK.IsEqualTo(false));
+                    When(layer.Av3().AFK.IsTrue());
+                enableToDisable.
+                    And(layer.Av3().AFK.IsFalse());
             }
 
             disable.TransitionsTo(dance).
-                When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsEqualTo(true)).
+                When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsTrue()).
                 And(layer.Av3().InStation.IsEqualTo(true));
             dance.TransitionsTo(disable).
-                When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsEqualTo(false)).
+                When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsFalse()).
                 Or().
                 When(layer.Av3().InStation.IsEqualTo(false));
+
+            foreach (var item in aV3Setting.ContactReceivers)
+            {
+                if (item is ContactReceiver contactReceiver && !string.IsNullOrEmpty(contactReceiver.parameter))
+                {
+                    switch (contactReceiver.receiverType)
+                    {
+                        case ContactReceiver.ReceiverType.Constant:
+                            disable.TransitionsTo(enable).
+                                When(layer.BoolParameter(contactReceiver.parameter).IsTrue());
+                            enableToDisable.
+                                And(layer.BoolParameter(contactReceiver.parameter).IsFalse());
+                            break;
+                        case ContactReceiver.ReceiverType.OnEnter:
+                            disable.TransitionsTo(enable).
+                                When(layer.BoolParameter(contactReceiver.parameter).IsTrue());
+                            enableToDisable.
+                                And(layer.BoolParameter(contactReceiver.parameter).IsFalse());
+                            break;
+                        case ContactReceiver.ReceiverType.Proximity:
+                            disable.TransitionsTo(enable).
+                                When(layer.FloatParameter(contactReceiver.parameter).IsGreaterThan(aV3Setting.ProximityThreshold));
+                            enableToDisable.
+                                And(layer.FloatParameter(contactReceiver.parameter).IsLessThan(aV3Setting.ProximityThreshold));
+                            break;
+                    }
+                }
+            }
         }
 
         private VRCExpressionsMenu GenerateExMenu(IReadOnlyList<ModeEx> modes, IMenu menu, string exMenuPath, bool useOverLimitMode)

@@ -11,6 +11,7 @@ namespace Suzuryg.FaceEmo.Components.States
         public bool IsAddtionalToggleOpened = false;
         public bool IsAddtionalTransformOpened = false;
         public bool IsDanceGimmickOpened = false;
+        public bool IsContactOpened = false;
         public bool IsAFKOpened = false;
         public bool IsThumbnailOpened = false;
         public bool IsExpressionsMenuItemsOpened = false;

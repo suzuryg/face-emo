@@ -209,6 +209,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Dance_DisableExpressionLayers = "Disable Expression Layers Only";
         public string InspectorView_Dance_DisableEntireFxLayer = "Disable Entire FX Layer";
 
+        public string InspectorView_Contact = "Contact Settings";
+        public string InspectorView_Contact_ProximityThreshold = "Proximity Threshold";
+
         public string InspectorView_AFK = "AFK Face Settings";
         public string InspectorView_AFK_ChangeAfkFace = "Change AFK Face";
         public string InspectorView_AFK_EnterFace = "AFK Enter Face";
@@ -292,6 +295,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Hints_DisableExpressionLayers = "\"Disable Expression Layers Only\" works correctly only with avatars in standard configurations. " +
             "If the facial expression does not change, please check if the expression moves when FaceEmo is not applied.";
         public string InspectorView_Hints_DisableEntireFxLayer = "If you've selected \"Disable WD (Expression Priority)\", the \"Disable Entire FX Layer\" option will always be used";
+        public string InspectorView_Hints_Contact = "While the Contact Receivers specified here are being touched, FaceEmo's expression control is disabled. " +
+            "If you want to change the expression with the Contact Receivers set on the avatar, please add them here.";
 
         public string ExpressionEditorView_Rename = "Rename";
         public string ExpressionEditorView_Confirm = "Confirm";
@@ -322,6 +327,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Backupper_Message_FailedToFindSkinnedMesh = "Failed to find skinned mesh.";
         public string Backupper_Message_FailedToFindToggleObject = "Failed to find toggle object.";
         public string Backupper_Message_FailedToFindTransformObject = "Failed to find transform object.";
+        public string Backupper_Message_FailedToFindContactReceiver = "Failed to find contact receiver.";
 
         public string FxGenerator_Message_FaceMeshNotFound = "Face mesh was not found. Default face and blink may not be properly animated.";
         public string FxGenerator_Message_BlinkBlendShapeNotFound = "Blink blend shape was not found. To enable blink, set \"Eyelids Type\" in AvatarDescriptor to \"Blendshapes\" and set the blend shape for blink to \"Blink\".";

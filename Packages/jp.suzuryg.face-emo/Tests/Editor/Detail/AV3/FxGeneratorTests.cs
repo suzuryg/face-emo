@@ -10,6 +10,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
+using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
 
 namespace Suzuryg.FaceEmo.Detail.AV3
@@ -40,6 +41,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var avatarPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(TestAvatarPath);
             _avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
             _av3Setting.TargetAvatar = _avatarRoot.GetComponent<VRCAvatarDescriptor>();
+
+            var components = _avatarRoot.GetComponentsInChildren(typeof(VRCContactReceiver), includeInactive: true);
+            foreach (var item in components)
+            {
+                if (item is VRCContactReceiver contactReceiver)
+                {
+                    _av3Setting.ContactReceivers.Add(contactReceiver);
+                }
+            }
 
             if (!AssetDatabase.IsValidFolder(TempDirPath))
             {
@@ -376,7 +386,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var disableState = GetState(layer, "DISABLE");
             AssertNormalState(disableState);
             AssertAacDefaultClip(disableState.motion as AnimationClip);
-            Assert.That(disableState.transitions.Count, Is.EqualTo(2));
+            Assert.That(disableState.transitions.Count, Is.EqualTo(8));
             Assert.That(disableState.behaviours.Count, Is.EqualTo(1));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
@@ -388,16 +398,54 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(disableState.transitions[0].destinationState.name, Is.EqualTo("ENABLE"));
             Assert.That(disableState.transitions[0].duration, Is.EqualTo(0));
             Assert.That(disableState.transitions[0].conditions.Count, Is.EqualTo(1));
-            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("AFK"));
+            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_FORCE_BYPASS_ENABLE"));
             Assert.That(disableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
             AssertNormalStateTransition(disableState.transitions[1]);
-            Assert.That(disableState.transitions[1].destinationState.name, Is.EqualTo("in DANCE"));
+            Assert.That(disableState.transitions[1].destinationState.name, Is.EqualTo("ENABLE"));
             Assert.That(disableState.transitions[1].duration, Is.EqualTo(0));
-            Assert.That(disableState.transitions[1].conditions.Count, Is.EqualTo(2));
-            Assert.That(disableState.transitions[1].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(disableState.transitions[1].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[1].conditions[0].parameter, Is.EqualTo("AFK"));
             Assert.That(disableState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
-            Assert.That(disableState.transitions[1].conditions[1].parameter, Is.EqualTo("InStation"));
-            Assert.That(disableState.transitions[1].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[2]);
+            Assert.That(disableState.transitions[2].destinationState.name, Is.EqualTo("in DANCE"));
+            Assert.That(disableState.transitions[2].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[2].conditions.Count, Is.EqualTo(2));
+            Assert.That(disableState.transitions[2].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(disableState.transitions[2].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(disableState.transitions[2].conditions[1].parameter, Is.EqualTo("InStation"));
+            Assert.That(disableState.transitions[2].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[3]);
+            Assert.That(disableState.transitions[3].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[3].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[3].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[3].conditions[0].parameter, Is.EqualTo("Contact_Constant"));
+            Assert.That(disableState.transitions[3].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[4]);
+            Assert.That(disableState.transitions[4].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[4].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[4].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[4].conditions[0].parameter, Is.EqualTo("Contact_OnEnter"));
+            Assert.That(disableState.transitions[4].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[5]);
+            Assert.That(disableState.transitions[5].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[5].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[5].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[5].conditions[0].parameter, Is.EqualTo("Contact_Proximity"));
+            Assert.That(disableState.transitions[5].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.Greater));
+            Assert.That(disableState.transitions[5].conditions[0].threshold, Is.EqualTo(0.1).Within(0.01));
+            AssertNormalStateTransition(disableState.transitions[6]);
+            Assert.That(disableState.transitions[6].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[6].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[6].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[6].conditions[0].parameter, Is.EqualTo("Contact_Double_Constant"));
+            Assert.That(disableState.transitions[6].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[7]);
+            Assert.That(disableState.transitions[7].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[7].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[7].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[7].conditions[0].parameter, Is.EqualTo("Contact_Double_Proximity"));
+            Assert.That(disableState.transitions[7].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.Greater));
+            Assert.That(disableState.transitions[7].conditions[0].threshold, Is.EqualTo(0.1).Within(0.01));
 
             var enableState = GetState(layer, "ENABLE");
             AssertNormalState(enableState);
@@ -413,9 +461,23 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertNormalStateTransition(enableState.transitions[0]);
             Assert.That(enableState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
             Assert.That(enableState.transitions[0].duration, Is.EqualTo(0));
-            Assert.That(enableState.transitions[0].conditions.Count, Is.EqualTo(1));
-            Assert.That(enableState.transitions[0].conditions[0].parameter, Is.EqualTo("AFK"));
+            Assert.That(enableState.transitions[0].conditions.Count, Is.EqualTo(7));
+            Assert.That(enableState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_FORCE_BYPASS_ENABLE"));
             Assert.That(enableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[1].parameter, Is.EqualTo("AFK"));
+            Assert.That(enableState.transitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[2].parameter, Is.EqualTo("Contact_Constant"));
+            Assert.That(enableState.transitions[0].conditions[2].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[3].parameter, Is.EqualTo("Contact_OnEnter"));
+            Assert.That(enableState.transitions[0].conditions[3].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[4].parameter, Is.EqualTo("Contact_Proximity"));
+            Assert.That(enableState.transitions[0].conditions[4].mode, Is.EqualTo(AnimatorConditionMode.Less));
+            Assert.That(enableState.transitions[0].conditions[4].threshold, Is.EqualTo(0.1).Within(0.01));
+            Assert.That(enableState.transitions[0].conditions[5].parameter, Is.EqualTo("Contact_Double_Constant"));
+            Assert.That(enableState.transitions[0].conditions[5].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[6].parameter, Is.EqualTo("Contact_Double_Proximity"));
+            Assert.That(enableState.transitions[0].conditions[6].mode, Is.EqualTo(AnimatorConditionMode.Less));
+            Assert.That(enableState.transitions[0].conditions[6].threshold, Is.EqualTo(0.1).Within(0.01));
 
             var danceState = GetState(layer, "in DANCE");
             AssertNormalState(danceState);
@@ -468,7 +530,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var disableState = GetState(layer, "DISABLE");
             AssertNormalState(disableState);
             AssertAacDefaultClip(disableState.motion as AnimationClip);
-            Assert.That(disableState.transitions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions.Count, Is.EqualTo(7));
             Assert.That(disableState.behaviours.Count, Is.EqualTo(1));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
@@ -477,18 +539,56 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].name, Is.EqualTo("CN_BYPASS"));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].value, Is.EqualTo(0));
             AssertNormalStateTransition(disableState.transitions[0]);
-            Assert.That(disableState.transitions[0].destinationState.name, Is.EqualTo("in DANCE"));
+            Assert.That(disableState.transitions[0].destinationState.name, Is.EqualTo("ENABLE"));
             Assert.That(disableState.transitions[0].duration, Is.EqualTo(0));
-            Assert.That(disableState.transitions[0].conditions.Count, Is.EqualTo(2));
-            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(disableState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_FORCE_BYPASS_ENABLE"));
             Assert.That(disableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
-            Assert.That(disableState.transitions[0].conditions[1].parameter, Is.EqualTo("InStation"));
-            Assert.That(disableState.transitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[1]);
+            Assert.That(disableState.transitions[1].destinationState.name, Is.EqualTo("in DANCE"));
+            Assert.That(disableState.transitions[1].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[1].conditions.Count, Is.EqualTo(2));
+            Assert.That(disableState.transitions[1].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(disableState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(disableState.transitions[1].conditions[1].parameter, Is.EqualTo("InStation"));
+            Assert.That(disableState.transitions[1].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[2]);
+            Assert.That(disableState.transitions[2].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[2].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[2].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[2].conditions[0].parameter, Is.EqualTo("Contact_Constant"));
+            Assert.That(disableState.transitions[2].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[3]);
+            Assert.That(disableState.transitions[3].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[3].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[3].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[3].conditions[0].parameter, Is.EqualTo("Contact_OnEnter"));
+            Assert.That(disableState.transitions[3].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[4]);
+            Assert.That(disableState.transitions[4].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[4].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[4].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[4].conditions[0].parameter, Is.EqualTo("Contact_Proximity"));
+            Assert.That(disableState.transitions[4].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.Greater));
+            Assert.That(disableState.transitions[4].conditions[0].threshold, Is.EqualTo(0.1).Within(0.01));
+            AssertNormalStateTransition(disableState.transitions[5]);
+            Assert.That(disableState.transitions[5].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[5].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[5].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[5].conditions[0].parameter, Is.EqualTo("Contact_Double_Constant"));
+            Assert.That(disableState.transitions[5].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[6]);
+            Assert.That(disableState.transitions[6].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[6].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[6].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[6].conditions[0].parameter, Is.EqualTo("Contact_Double_Proximity"));
+            Assert.That(disableState.transitions[6].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.Greater));
+            Assert.That(disableState.transitions[6].conditions[0].threshold, Is.EqualTo(0.1).Within(0.01));
 
             var enableState = GetState(layer, "ENABLE");
             AssertNormalState(enableState);
             AssertAacDefaultClip(enableState.motion as AnimationClip);
-            Assert.That(enableState.transitions.Count, Is.EqualTo(0));
+            Assert.That(enableState.transitions.Count, Is.EqualTo(1));
             Assert.That(enableState.behaviours.Count, Is.EqualTo(1));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
@@ -496,6 +596,24 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].name, Is.EqualTo("CN_BYPASS"));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].value, Is.EqualTo(1));
+            AssertNormalStateTransition(enableState.transitions[0]);
+            Assert.That(enableState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(enableState.transitions[0].conditions.Count, Is.EqualTo(6));
+            Assert.That(enableState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_FORCE_BYPASS_ENABLE"));
+            Assert.That(enableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[1].parameter, Is.EqualTo("Contact_Constant"));
+            Assert.That(enableState.transitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[2].parameter, Is.EqualTo("Contact_OnEnter"));
+            Assert.That(enableState.transitions[0].conditions[2].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[3].parameter, Is.EqualTo("Contact_Proximity"));
+            Assert.That(enableState.transitions[0].conditions[3].mode, Is.EqualTo(AnimatorConditionMode.Less));
+            Assert.That(enableState.transitions[0].conditions[3].threshold, Is.EqualTo(0.1).Within(0.01));
+            Assert.That(enableState.transitions[0].conditions[4].parameter, Is.EqualTo("Contact_Double_Constant"));
+            Assert.That(enableState.transitions[0].conditions[4].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[0].conditions[5].parameter, Is.EqualTo("Contact_Double_Proximity"));
+            Assert.That(enableState.transitions[0].conditions[5].mode, Is.EqualTo(AnimatorConditionMode.Less));
+            Assert.That(enableState.transitions[0].conditions[5].threshold, Is.EqualTo(0.1).Within(0.01));
 
             var danceState = GetState(layer, "in DANCE");
             AssertNormalState(danceState);
