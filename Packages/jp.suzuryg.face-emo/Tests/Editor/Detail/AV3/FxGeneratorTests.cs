@@ -180,20 +180,24 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertDefaultFaceClip(defaultState.motion as AnimationClip);
             Assert.That(defaultState.transitions.Count, Is.EqualTo(1));
             Assert.That(defaultState.behaviours.Count, Is.EqualTo(0));
-            AssertNormalStateTransition(
-                defaultState.transitions.Where(x =>
-                    x.destinationState.name == "BYPASS" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "CN_BYPASS" && y.mode == AnimatorConditionMode.If)));
+            AssertNormalStateTransition(defaultState.transitions[0]);
+            Assert.That(defaultState.transitions[0].destinationState.name, Is.EqualTo("BYPASS"));
+            Assert.That(defaultState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(defaultState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(defaultState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_BYPASS"));
+            Assert.That(defaultState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
 
             var bypassState = GetState(layer, "BYPASS");
             AssertNormalState(bypassState);
             AssertAacDefaultClip(bypassState.motion as AnimationClip);
             Assert.That(bypassState.transitions.Count, Is.EqualTo(1));
             Assert.That(bypassState.behaviours.Count, Is.EqualTo(0));
-            AssertNormalStateTransition(
-                bypassState.transitions.Where(x =>
-                    x.destinationState.name == "DEFAULT" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "CN_BYPASS" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(bypassState.transitions[0]);
+            Assert.That(bypassState.transitions[0].destinationState.name, Is.EqualTo("DEFAULT"));
+            Assert.That(bypassState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(bypassState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(bypassState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_BYPASS"));
+            Assert.That(bypassState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
         }
 
         private static void AssertDanceGimmickControlLayer(AnimatorControllerLayer layer)
@@ -245,15 +249,21 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             // TODO: Add emote state
             Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("AFK Standby"));
 
-            AssertNormalStateTransition(
-                layer.stateMachine.anyStateTransitions.Where(x =>
-                    x.destinationState.name == "in OVERRIDE" && x.duration == 0 && x.conditions.Count() == 2 &&
-                    x.conditions.Any(y => y.parameter == "CN_EMOTE_OVERRIDE" && y.mode == AnimatorConditionMode.If) &&
-                    x.conditions.Any(y => y.parameter == "CN_BYPASS" && y.mode == AnimatorConditionMode.IfNot)));
-            AssertNormalStateTransition(
-                layer.stateMachine.anyStateTransitions.Where(x =>
-                    x.destinationState.name == "BYPASS" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "CN_BYPASS" && y.mode == AnimatorConditionMode.If)));
+            AssertNormalStateTransition(layer.stateMachine.anyStateTransitions[0]);
+            Assert.That(layer.stateMachine.anyStateTransitions[0].destinationState.name, Is.EqualTo("in OVERRIDE"));
+            Assert.That(layer.stateMachine.anyStateTransitions[0].duration, Is.EqualTo(0));
+            Assert.That(layer.stateMachine.anyStateTransitions[0].conditions.Count, Is.EqualTo(2));
+            Assert.That(layer.stateMachine.anyStateTransitions[0].conditions[0].parameter, Is.EqualTo("CN_EMOTE_OVERRIDE"));
+            Assert.That(layer.stateMachine.anyStateTransitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(layer.stateMachine.anyStateTransitions[0].conditions[1].parameter, Is.EqualTo("CN_BYPASS"));
+            Assert.That(layer.stateMachine.anyStateTransitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+
+            AssertNormalStateTransition(layer.stateMachine.anyStateTransitions[1]);
+            Assert.That(layer.stateMachine.anyStateTransitions[1].destinationState.name, Is.EqualTo("BYPASS"));
+            Assert.That(layer.stateMachine.anyStateTransitions[1].duration, Is.EqualTo(0));
+            Assert.That(layer.stateMachine.anyStateTransitions[1].conditions.Count, Is.EqualTo(1));
+            Assert.That(layer.stateMachine.anyStateTransitions[1].conditions[0].parameter, Is.EqualTo("CN_BYPASS"));
+            Assert.That(layer.stateMachine.anyStateTransitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
 
             // TODO: check entry transitions
             // TODO: check afk state machine
@@ -264,10 +274,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertAacDefaultClip(overrideState.motion as AnimationClip);
             Assert.That(overrideState.transitions.Count, Is.EqualTo(1));
             Assert.That(overrideState.behaviours.Count, Is.EqualTo(0));
-            AssertNormalStateTransition(
-                overrideState.transitions.Where(x =>
-                    x.isExit && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "CN_EMOTE_OVERRIDE" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(overrideState.transitions[0]);
+            Assert.That(overrideState.transitions[0].isExit, Is.EqualTo(true));
+            Assert.That(overrideState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(overrideState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(overrideState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_EMOTE_OVERRIDE"));
+            Assert.That(overrideState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
 
             var bypassState = GetState(layer, "BYPASS");
             AssertNormalState(bypassState);
@@ -294,10 +306,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((bypassState.behaviours[1] as VRC_AnimatorTrackingControl).trackingRightFingers, Is.EqualTo(VRC_AnimatorTrackingControl.TrackingType.NoChange));
             Assert.That((bypassState.behaviours[1] as VRC_AnimatorTrackingControl).trackingEyes, Is.EqualTo(VRC_AnimatorTrackingControl.TrackingType.Animation));
             Assert.That((bypassState.behaviours[1] as VRC_AnimatorTrackingControl).trackingMouth, Is.EqualTo(VRC_AnimatorTrackingControl.TrackingType.Tracking));
-            AssertNormalStateTransition(
-                bypassState.transitions.Where(x =>
-                    x.isExit && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "CN_BYPASS" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(bypassState.transitions[0]);
+            Assert.That(bypassState.transitions[0].isExit, Is.EqualTo(true));
+            Assert.That(bypassState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(bypassState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(bypassState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_BYPASS"));
+            Assert.That(bypassState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
         }
 
         private static void AssertBlinkLayer(AnimatorControllerLayer layer)
@@ -352,10 +366,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertAacDefaultClip(gateState.motion as AnimationClip);
             Assert.That(gateState.transitions.Count, Is.EqualTo(1));
             Assert.That(gateState.behaviours.Count, Is.EqualTo(0));
-            AssertNormalStateTransition(
-                gateState.transitions.Where(x =>
-                    x.destinationState.name == "DISABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "IsLocal" && y.mode == AnimatorConditionMode.If)));
+            AssertNormalStateTransition(gateState.transitions[0]);
+            Assert.That(gateState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(gateState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(gateState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(gateState.transitions[0].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(gateState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
 
             var disableState = GetState(layer, "DISABLE");
             AssertNormalState(disableState);
@@ -368,15 +384,20 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].name, Is.EqualTo("CN_BYPASS"));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].value, Is.EqualTo(0));
-            AssertNormalStateTransition(
-                disableState.transitions.Where(x =>
-                    x.destinationState.name == "ENABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "AFK" && y.mode == AnimatorConditionMode.If)));
-            AssertNormalStateTransition(
-                disableState.transitions.Where(x =>
-                    x.destinationState.name == "in DANCE" && x.duration == 0 && x.conditions.Count() == 2 &&
-                    x.conditions.Any(y => y.parameter == "SYNC_CN_DANCE_GIMMICK_ENABLE" && y.mode == AnimatorConditionMode.If) &&
-                    x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.If)));
+            AssertNormalStateTransition(disableState.transitions[0]);
+            Assert.That(disableState.transitions[0].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("AFK"));
+            Assert.That(disableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertNormalStateTransition(disableState.transitions[1]);
+            Assert.That(disableState.transitions[1].destinationState.name, Is.EqualTo("in DANCE"));
+            Assert.That(disableState.transitions[1].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[1].conditions.Count, Is.EqualTo(2));
+            Assert.That(disableState.transitions[1].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(disableState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(disableState.transitions[1].conditions[1].parameter, Is.EqualTo("InStation"));
+            Assert.That(disableState.transitions[1].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.If));
 
             var enableState = GetState(layer, "ENABLE");
             AssertNormalState(enableState);
@@ -389,10 +410,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].name, Is.EqualTo("CN_BYPASS"));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].value, Is.EqualTo(1));
-            AssertNormalStateTransition(
-                enableState.transitions.Where(x =>
-                    x.destinationState.name == "DISABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "AFK" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(enableState.transitions[0]);
+            Assert.That(enableState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(enableState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(enableState.transitions[0].conditions[0].parameter, Is.EqualTo("AFK"));
+            Assert.That(enableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
 
             var danceState = GetState(layer, "in DANCE");
             AssertNormalState(danceState);
@@ -405,14 +428,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].name, Is.EqualTo("CN_BYPASS"));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].value, Is.EqualTo(1));
-            AssertNormalStateTransition(
-                danceState.transitions.Where(x =>
-                    x.destinationState.name == "DISABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "SYNC_CN_DANCE_GIMMICK_ENABLE" && y.mode == AnimatorConditionMode.IfNot)));
-            AssertNormalStateTransition(
-                danceState.transitions.Where(x =>
-                    x.destinationState.name == "DISABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(danceState.transitions[0]);
+            Assert.That(danceState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(danceState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(danceState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(danceState.transitions[0].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(danceState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            AssertNormalStateTransition(danceState.transitions[1]);
+            Assert.That(danceState.transitions[1].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(danceState.transitions[1].duration, Is.EqualTo(0));
+            Assert.That(danceState.transitions[1].conditions.Count, Is.EqualTo(1));
+            Assert.That(danceState.transitions[1].conditions[0].parameter, Is.EqualTo("InStation"));
+            Assert.That(danceState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
         }
 
         private static void AssertBypassLayer_ChangeAfkFace(AnimatorControllerLayer layer)
@@ -431,10 +458,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertAacDefaultClip(gateState.motion as AnimationClip);
             Assert.That(gateState.transitions.Count, Is.EqualTo(1));
             Assert.That(gateState.behaviours.Count, Is.EqualTo(0));
-            AssertNormalStateTransition(
-                gateState.transitions.Where(x =>
-                    x.destinationState.name == "DISABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "IsLocal" && y.mode == AnimatorConditionMode.If)));
+            AssertNormalStateTransition(gateState.transitions[0]);
+            Assert.That(gateState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(gateState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(gateState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(gateState.transitions[0].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(gateState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
 
             var disableState = GetState(layer, "DISABLE");
             AssertNormalState(disableState);
@@ -447,11 +476,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].name, Is.EqualTo("CN_BYPASS"));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].value, Is.EqualTo(0));
-            AssertNormalStateTransition(
-                disableState.transitions.Where(x =>
-                    x.destinationState.name == "in DANCE" && x.duration == 0 && x.conditions.Count() == 2 &&
-                    x.conditions.Any(y => y.parameter == "SYNC_CN_DANCE_GIMMICK_ENABLE" && y.mode == AnimatorConditionMode.If) &&
-                    x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.If)));
+            AssertNormalStateTransition(disableState.transitions[0]);
+            Assert.That(disableState.transitions[0].destinationState.name, Is.EqualTo("in DANCE"));
+            Assert.That(disableState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[0].conditions.Count, Is.EqualTo(2));
+            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(disableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(disableState.transitions[0].conditions[1].parameter, Is.EqualTo("InStation"));
+            Assert.That(disableState.transitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.If));
 
             var enableState = GetState(layer, "ENABLE");
             AssertNormalState(enableState);
@@ -476,14 +508,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].name, Is.EqualTo("CN_BYPASS"));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].value, Is.EqualTo(1));
-            AssertNormalStateTransition(
-                danceState.transitions.Where(x =>
-                    x.destinationState.name == "DISABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "SYNC_CN_DANCE_GIMMICK_ENABLE" && y.mode == AnimatorConditionMode.IfNot)));
-            AssertNormalStateTransition(
-                danceState.transitions.Where(x =>
-                    x.destinationState.name == "DISABLE" && x.duration == 0 && x.conditions.Count() == 1 &&
-                    x.conditions.Any(y => y.parameter == "InStation" && y.mode == AnimatorConditionMode.IfNot)));
+            AssertNormalStateTransition(danceState.transitions[0]);
+            Assert.That(danceState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(danceState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(danceState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(danceState.transitions[0].conditions[0].parameter, Is.EqualTo("SYNC_CN_DANCE_GIMMICK_ENABLE"));
+            Assert.That(danceState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            AssertNormalStateTransition(danceState.transitions[1]);
+            Assert.That(danceState.transitions[1].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(danceState.transitions[1].duration, Is.EqualTo(0));
+            Assert.That(danceState.transitions[1].conditions.Count, Is.EqualTo(1));
+            Assert.That(danceState.transitions[1].conditions[0].parameter, Is.EqualTo("InStation"));
+            Assert.That(danceState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
         }
 
         private static void AssertDefaultFaceClip(AnimationClip clip)
@@ -593,11 +629,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(bindings[0].path, Is.EqualTo("_ignored"));
         }
 
-        private static void AssertNormalStateTransition(IEnumerable<AnimatorStateTransition> transitions)
+        private static void AssertNormalStateTransition(AnimatorStateTransition transition)
         {
-            Assert.That(transitions.Count, Is.EqualTo(1));
-            var transition = transitions.First();
-
             Assert.That(transition.offset, Is.EqualTo(0));
             Assert.That(transition.interruptionSource, Is.EqualTo(TransitionInterruptionSource.None));
             Assert.That(transition.hasExitTime, Is.EqualTo(false));
