@@ -10,7 +10,10 @@ namespace Suzuryg.FaceEmo.Components.Settings
         // Independent of VRCSDK to prevent ScriptableObject references breaking in the event of a compilation error.
         // Cast to VRCAvatarDescriptor when in use.
         public MonoBehaviour TargetAvatar;
+        public string TargetAvatarPath;
+
         public List<MonoBehaviour> SubTargetAvatars = new List<MonoBehaviour>();
+        public List<string> SubTargetAvatarPaths = new List<string>();
 
         public GameObject MARootObjectPrefab;
 
@@ -20,16 +23,20 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public List<BlendShape> ExcludedBlendShapes = new List<BlendShape>();
 
         public List<SkinnedMeshRenderer> AdditionalSkinnedMeshes = new List<SkinnedMeshRenderer>();
-        public List<GameObject> AdditionalToggleObjects = new List<GameObject>();
-        public List<GameObject> AdditionalTransformObjects = new List<GameObject>();
-
-        public string TargetAvatarPath;
-        public List<string> SubTargetAvatarPaths = new List<string>();
         public List<string> AdditionalSkinnedMeshPaths = new List<string>();
+
+        public List<GameObject> AdditionalToggleObjects = new List<GameObject>();
         public List<string> AdditionalToggleObjectPaths = new List<string>();
+
+        public List<GameObject> AdditionalTransformObjects = new List<GameObject>();
         public List<string> AdditionalTransformObjectPaths = new List<string>();
 
         public bool DisableFxDuringDancing = false;
+
+        public List<MonoBehaviour> ContactReceivers = new List<MonoBehaviour>();
+        public List<string> ContactReceiverPaths = new List<string>();
+        public List<string> ContactReceiverParameterNames = new List<string>();
+        public float ProximityThreshold = 0.1f;
 
         public bool ChangeAfkFace = false;
         public AnimationClip AfkEnterFace;

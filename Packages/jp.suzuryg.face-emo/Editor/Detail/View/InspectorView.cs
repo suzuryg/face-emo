@@ -15,6 +15,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UniRx;
 using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Dynamics.Contact.Components;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
@@ -42,6 +43,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private ReorderableList _additionalSkinnedMeshes;
         private ReorderableList _additionalToggleObjects;
         private ReorderableList _additionalTransformObjects;
+        private ReorderableList _contactReceivers;
 
         private LocalizationTable _localizationTable;
 
@@ -176,6 +178,34 @@ namespace Suzuryg.FaceEmo.Detail.View
                 GUI.Label(rect, _localizationTable.InspectorView_EmptyObjects, _centerStyle);
             };
 
+            // Contact receivers
+            _contactReceivers = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.ContactReceivers)));
+            _contactReceivers.headerHeight = 0;
+            _contactReceivers.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                var element = _contactReceivers.serializedProperty.GetArrayElementAtIndex(index);
+                var contactReceiver = EditorGUI.ObjectField(rect, GUIContent.none, element.objectReferenceValue, typeof(VRCContactReceiver), allowSceneObjects: true) as VRCContactReceiver;
+                if (!ReferenceEquals(contactReceiver, element.objectReferenceValue))
+                {
+                    element.objectReferenceValue = contactReceiver;
+
+                    var others = contactReceiver.gameObject.GetComponents<VRCContactReceiver>().Where(x => !ReferenceEquals(x, contactReceiver));
+                    if (others.Any())
+                    {
+                        foreach (var item in others)
+                        {
+                            _contactReceivers.serializedProperty.arraySize += 1;
+                            var size = _contactReceivers.serializedProperty.arraySize;
+                            _contactReceivers.serializedProperty.GetArrayElementAtIndex(size - 1).objectReferenceValue = item;
+                        }
+                    }
+                }
+            };
+            _contactReceivers.drawNoneElementCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyObjects, _centerStyle);
+            };
+
             // Set text
             SetText(_localizationSetting.Table);
         }
@@ -289,6 +319,17 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (isDanceGimmickOpened.boolValue)
             {
                 Field_DanceGimmick();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Contact setting
+            var isContactOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsContactOpened));
+            isContactOpened.boolValue = EditorGUILayout.Foldout(isContactOpened.boolValue, 
+                new GUIContent(_localizationTable.InspectorView_Contact));
+            if (isContactOpened.boolValue)
+            {
+                Field_Contact();
             }
 
             EditorGUILayout.Space(10);
@@ -719,6 +760,23 @@ namespace Suzuryg.FaceEmo.Detail.View
                     GUILayout.SelectionGrid(1, options, 1, _radioButtonStyle);
                 }
             }
+        }
+
+        private void Field_Contact()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_Contact);
+            }
+
+            _contactReceivers.DoLayoutList();
+
+            var label = new GUIContent(_localizationTable.InspectorView_Contact_ProximityThreshold);
+            var oldLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = Math.Max(GUI.skin.label.CalcSize(label).x, EditorGUIUtility.labelWidth);
+            EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ProximityThreshold)), label);
+            EditorGUIUtility.labelWidth = oldLabelWidth;
         }
 
         private void Field_AFKFace()

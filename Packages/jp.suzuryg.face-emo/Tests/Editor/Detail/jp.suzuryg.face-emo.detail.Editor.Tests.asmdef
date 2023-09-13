@@ -17,7 +17,9 @@
     "precompiledReferences": [
         "nunit.framework.dll",
         "VRCSDK3A.dll",
-        "VRCSDKBase.dll"
+        "VRCSDKBase.dll",
+        "VRC.Dynamics.dll",
+        "VRC.SDK3.Dynamics.Contact.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

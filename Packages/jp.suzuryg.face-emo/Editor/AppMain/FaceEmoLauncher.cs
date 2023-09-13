@@ -2,14 +2,17 @@
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Components;
 using Suzuryg.FaceEmo.Detail;
+using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.View;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Suzuryg.FaceEmo.Detail.Localization;
 using UniRx;
 using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Dynamics.Contact.Components;
 using System.Linq;
 
 namespace Suzuryg.FaceEmo.AppMain
@@ -213,10 +216,28 @@ namespace Suzuryg.FaceEmo.AppMain
 
                     var launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
                     launcher.AV3Setting.TargetAvatar = avatarDescriptor;
+                    launcher.AV3Setting.ContactReceivers = GetContactReceivers(avatarDescriptor);
                     Launch(launcher);
                 }
             }
             GUI.DrawTexture(selectionRect, icon, ScaleMode.ScaleToFit, alphaBlend: true);
+        }
+
+        private static List<MonoBehaviour> GetContactReceivers(VRCAvatarDescriptor avatarDescriptor)
+        {
+            var components = avatarDescriptor.gameObject.GetComponentsInChildren(typeof(VRCContactReceiver), includeInactive: true);
+            var receivers = new List<MonoBehaviour>();
+            foreach (var item in components)
+            {
+                if (item is VRCContactReceiver contactReceiver &&
+                    contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_NADENADE_POINT &&
+                    contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L &&
+                    contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R)
+                {
+                    receivers.Add(contactReceiver);
+                }
+            }
+            return receivers;
         }
 
         private const string HideHierarchyIconPath = "FaceEmo/Hide Hierarchy Icon";
