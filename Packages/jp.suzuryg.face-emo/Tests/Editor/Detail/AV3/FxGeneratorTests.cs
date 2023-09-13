@@ -365,30 +365,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertNormalLayer(layer);
             Assert.That(layer.name, Is.EqualTo("BYPASS"));
             Assert.That(layer.defaultWeight, Is.EqualTo(0));
-            Assert.That(layer.stateMachine.states.Count, Is.EqualTo(4));
+            Assert.That(layer.stateMachine.states.Count, Is.EqualTo(3));
             Assert.That(layer.stateMachine.stateMachines.Count, Is.EqualTo(0));
             Assert.That(layer.stateMachine.entryTransitions.Count, Is.EqualTo(0));
             Assert.That(layer.stateMachine.anyStateTransitions.Count, Is.EqualTo(0));
-            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("LOCAL GATE"));
-
-            var gateState = GetState(layer, "LOCAL GATE");
-            AssertNormalState(gateState);
-            AssertAacDefaultClip(gateState.motion as AnimationClip);
-            Assert.That(gateState.transitions.Count, Is.EqualTo(1));
-            Assert.That(gateState.behaviours.Count, Is.EqualTo(0));
-            AssertNormalStateTransition(gateState.transitions[0]);
-            Assert.That(gateState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
-            Assert.That(gateState.transitions[0].duration, Is.EqualTo(0));
-            Assert.That(gateState.transitions[0].conditions.Count, Is.EqualTo(1));
-            Assert.That(gateState.transitions[0].conditions[0].parameter, Is.EqualTo("IsLocal"));
-            Assert.That(gateState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("DISABLE"));
 
             var disableState = GetState(layer, "DISABLE");
             AssertNormalState(disableState);
             AssertAacDefaultClip(disableState.motion as AnimationClip);
             Assert.That(disableState.transitions.Count, Is.EqualTo(8));
             Assert.That(disableState.behaviours.Count, Is.EqualTo(1));
-            Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
+            Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(false));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters.Count, Is.EqualTo(1));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
@@ -452,7 +440,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertAacDefaultClip(enableState.motion as AnimationClip);
             Assert.That(enableState.transitions.Count, Is.EqualTo(1));
             Assert.That(enableState.behaviours.Count, Is.EqualTo(1));
-            Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
+            Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(false));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters.Count, Is.EqualTo(1));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
@@ -484,7 +472,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertAacDefaultClip(danceState.motion as AnimationClip);
             Assert.That(danceState.transitions.Count, Is.EqualTo(2));
             Assert.That(danceState.behaviours.Count, Is.EqualTo(1));
-            Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
+            Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(false));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters.Count, Is.EqualTo(1));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
@@ -509,30 +497,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertNormalLayer(layer);
             Assert.That(layer.name, Is.EqualTo("BYPASS"));
             Assert.That(layer.defaultWeight, Is.EqualTo(0));
-            Assert.That(layer.stateMachine.states.Count, Is.EqualTo(4));
+            Assert.That(layer.stateMachine.states.Count, Is.EqualTo(3));
             Assert.That(layer.stateMachine.stateMachines.Count, Is.EqualTo(0));
             Assert.That(layer.stateMachine.entryTransitions.Count, Is.EqualTo(0));
             Assert.That(layer.stateMachine.anyStateTransitions.Count, Is.EqualTo(0));
-            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("LOCAL GATE"));
-
-            var gateState = GetState(layer, "LOCAL GATE");
-            AssertNormalState(gateState);
-            AssertAacDefaultClip(gateState.motion as AnimationClip);
-            Assert.That(gateState.transitions.Count, Is.EqualTo(1));
-            Assert.That(gateState.behaviours.Count, Is.EqualTo(0));
-            AssertNormalStateTransition(gateState.transitions[0]);
-            Assert.That(gateState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
-            Assert.That(gateState.transitions[0].duration, Is.EqualTo(0));
-            Assert.That(gateState.transitions[0].conditions.Count, Is.EqualTo(1));
-            Assert.That(gateState.transitions[0].conditions[0].parameter, Is.EqualTo("IsLocal"));
-            Assert.That(gateState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("DISABLE"));
 
             var disableState = GetState(layer, "DISABLE");
             AssertNormalState(disableState);
             AssertAacDefaultClip(disableState.motion as AnimationClip);
             Assert.That(disableState.transitions.Count, Is.EqualTo(7));
             Assert.That(disableState.behaviours.Count, Is.EqualTo(1));
-            Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
+            Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(false));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters.Count, Is.EqualTo(1));
             Assert.That((disableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
@@ -590,7 +566,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertAacDefaultClip(enableState.motion as AnimationClip);
             Assert.That(enableState.transitions.Count, Is.EqualTo(1));
             Assert.That(enableState.behaviours.Count, Is.EqualTo(1));
-            Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
+            Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(false));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters.Count, Is.EqualTo(1));
             Assert.That((enableState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));
@@ -620,7 +596,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertAacDefaultClip(danceState.motion as AnimationClip);
             Assert.That(danceState.transitions.Count, Is.EqualTo(2));
             Assert.That(danceState.behaviours.Count, Is.EqualTo(1));
-            Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(true));
+            Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).localOnly, Is.EqualTo(false));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).debugString, Is.Null);
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters.Count, Is.EqualTo(1));
             Assert.That((danceState.behaviours[0] as VRC_AvatarParameterDriver).parameters[0].type, Is.EqualTo(VRC_AvatarParameterDriver.ChangeType.Set));

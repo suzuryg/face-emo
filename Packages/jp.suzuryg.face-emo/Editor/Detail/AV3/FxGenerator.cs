@@ -559,13 +559,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             layer.StateMachine.WithEntryPosition(0, -1).WithAnyStatePosition(0, -2).WithExitPosition(0, -3);
 
             // Create states
-            var gate = layer.NewState("LOCAL GATE", 0, 0);
-            var disable = layer.NewState("DISABLE", 0, 1).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), false).DrivingLocally();
-            var enable = layer.NewState("ENABLE", 0, 2).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true).DrivingLocally();
-            var dance = layer.NewState("in DANCE", 1, 2).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true).DrivingLocally();
-
-            gate.TransitionsTo(disable)
-                .When(layer.Av3().IsLocal.IsEqualTo(true));
+            var disable = layer.NewState("DISABLE", 0, 0).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), false);
+            var enable = layer.NewState("ENABLE", 0, 1).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true);
+            var dance = layer.NewState("in DANCE", 1, 1).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true);
 
             disable.TransitionsTo(enable).
                 When(layer.BoolParameter(AV3Constants.ParamName_CN_FORCE_BYPASS_ENABLE).IsTrue());
