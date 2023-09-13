@@ -93,6 +93,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 GenerateFaceEmotePlayerLayer(modes, _aV3Setting, aac, animatorController, useOverLimitMode);
                 ModifyBlinkLayer(aac, avatarDescriptor, animatorController);
                 ModifyMouthMorphCancelerLayer(_aV3Setting, aac, avatarDescriptor, animatorController);
+                AddBypassLayer(_aV3Setting, aac, animatorController);
 
                 // Generate MA Object
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating ExMenu...", 0);
@@ -266,7 +267,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             // Create default face state
             var defaultFace = GetDefaultFaceAnimation(aac, avatarDescriptor);
-            layer.NewState("DEFAULT", 0, 0).WithAnimation(defaultFace);
+            var defaultState = layer.NewState("DEFAULT", 0, 0).WithAnimation(defaultFace);
+
+            // Create bypass state
+            var bypassState = layer.NewState("BYPASS", 1, 0);
+            defaultState.TransitionsTo(bypassState).
+                When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsTrue());
+            bypassState.TransitionsTo(defaultState).
+                When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsFalse());
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...", 1);
         }
@@ -504,6 +512,17 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 .Or()
                 .When(layer.Av3().InStation.IsFalse());
 
+            // Create bypass state
+            var bypassState = layer.NewState("BYPASS", 4, -1)
+                .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), false)
+                .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE), false)
+                .TrackingSets(TrackingElement.Eyes, VRC_AnimatorTrackingControl.TrackingType.Animation)
+                .TrackingSets(TrackingElement.Mouth, VRC_AnimatorTrackingControl.TrackingType.Tracking);
+            bypassState.TransitionsFromAny()
+                .When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsTrue());
+            bypassState.Exits()
+                .When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsFalse());
+
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...", 1);
         }
 
@@ -537,6 +556,30 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AV3Utility.SetMotion(animatorController, layerName, AV3Constants.StateName_MouthMorphCancelerEnabled, motion.Clip);
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 1);
+        }
+
+        private void AddBypassLayer(AV3Setting aV3Setting, AacFlBase aac, AnimatorController animatorController)
+        {
+            // Create or replace layer
+            var layerName = AV3Constants.LayerName_Bypass;
+            var layer = aac.CreateSupportingArbitraryControllerLayer(animatorController, layerName);
+            AV3Utility.SetLayerWeight(animatorController, layerName, 0);
+            layer.StateMachine.WithEntryPosition(0, -1).WithAnyStatePosition(0, -2).WithExitPosition(0, -3);
+
+            // Create states
+            if (!aV3Setting.ChangeAfkFace)
+            {
+                var gate = layer.NewState("LOCAL GATE", 0, 0);
+                var disable = layer.NewState("DISABLE", 0, 1).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), false).DrivingLocally();
+                var enable = layer.NewState("ENABLE", 0, 2).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true).DrivingLocally();
+
+                gate.TransitionsTo(disable)
+                    .When(layer.Av3().IsLocal.IsEqualTo(true));
+                disable.TransitionsTo(enable).
+                    When(layer.Av3().AFK.IsEqualTo(true));
+                enable.TransitionsTo(disable).
+                    When(layer.Av3().AFK.IsEqualTo(false));
+            }
         }
 
         private VRCExpressionsMenu GenerateExMenu(IReadOnlyList<ModeEx> modes, IMenu menu, string exMenuPath, bool useOverLimitMode)
@@ -1065,6 +1108,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CN_BLINK_ENABLE, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CN_EMOTE_OVERRIDE, addPrefix: _aV3Setting.AddParameterPrefix));
+            modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CN_BYPASS, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_EV_PLAY_INDICATOR_SOUND, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_NADENADE_POINT, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L, addPrefix: _aV3Setting.AddParameterPrefix));

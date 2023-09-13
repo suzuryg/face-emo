@@ -17,6 +17,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly string LayerName_FaceEmoteOverride = "[ USER EDIT ] FACE EMOTE OVERRIDE";
         public static readonly string LayerName_Blink = "BLINK";
         public static readonly string LayerName_MouthMorphCanceler = "MOUTH MORPH CANCELLER";
+        public static readonly string LayerName_Bypass = "BYPASS";
         public static readonly string LayerName_LocalIndicatorSound = "LOCAL INDICATOR SOUND";
 
         public static readonly string StateName_BlinkEnabled = "ENABLE";
@@ -57,6 +58,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly string ParamName_CN_BLINK_ENABLE = "CN_BLINK_ENABLE";
         public static readonly string ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE = "CN_MOUTH_MORPH_CANCEL_ENABLE";
         public static readonly string ParamName_CN_EMOTE_OVERRIDE = "CN_EMOTE_OVERRIDE";
+        public static readonly string ParamName_CN_BYPASS = "CN_BYPASS";
         public static readonly string ParamName_EV_PLAY_INDICATOR_SOUND = "EV_PLAY_INDICATOR_SOUND";
         public static readonly string ParamName_CNST_TOUCH_NADENADE_POINT = "CNST_TOUCH_NADENADE_POINT";
         public static readonly string ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L = "CNST_TOUCH_EMOTE_LOCK_TRIGGER_L";

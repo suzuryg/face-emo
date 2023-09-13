@@ -206,6 +206,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Thumbnail_Reset = "Reset";
 
         public string InspectorView_AFK = "AFK Face Settings";
+        public string InspectorView_AFK_ChangeAfkFace = "Change AFK Face";
         public string InspectorView_AFK_EnterFace = "AFK Enter Face";
         public string InspectorView_AFK_Face = "AFK Face";
         public string InspectorView_AFK_ExitFace = "AFK Exit Face";
