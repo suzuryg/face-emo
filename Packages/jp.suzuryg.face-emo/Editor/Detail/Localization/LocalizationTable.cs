@@ -205,6 +205,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Thumbnail_VerticalAngle = "Angle (Vertical)";
         public string InspectorView_Thumbnail_Reset = "Reset";
 
+        public string InspectorView_Dance = "Dance Gimmick Settings";
+        public string InspectorView_Dance_DisableExpressionLayers = "Disable Expression Layers Only";
+        public string InspectorView_Dance_DisableEntireFxLayer = "Disable Entire FX Layer";
+
         public string InspectorView_AFK = "AFK Face Settings";
         public string InspectorView_AFK_ChangeAfkFace = "Change AFK Face";
         public string InspectorView_AFK_EnterFace = "AFK Enter Face";
@@ -284,6 +288,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Tooltip_Editor = "You can configure the behavior of this tool's UI. These settings are shared across all projects.";
         public string InspectorView_Hints_ExcludedBlendShapes = "You can specify blend shapes that are not controlled by FaceEmo. " +
             "If there are blend shapes controlled by other gimmicks, please add them here.";
+        public string InspectorView_Hints_DanceGimmick = "You can choose the behavior when the dance gimmick is enabled in the FaceEmo settings menu.";
+        public string InspectorView_Hints_DisableExpressionLayers = "\"Disable Expression Layers Only\" works correctly only with avatars in standard configurations. " +
+            "If the facial expression does not change, please check if the expression moves when FaceEmo is not applied.";
+        public string InspectorView_Hints_DisableEntireFxLayer = "If you've selected \"Disable WD (Expression Priority)\", the \"Disable Entire FX Layer\" option will always be used";
 
         public string ExpressionEditorView_Rename = "Rename";
         public string ExpressionEditorView_Confirm = "Confirm";

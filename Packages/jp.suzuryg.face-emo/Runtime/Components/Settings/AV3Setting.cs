@@ -29,6 +29,8 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public List<string> AdditionalToggleObjectPaths = new List<string>();
         public List<string> AdditionalTransformObjectPaths = new List<string>();
 
+        public bool DisableFxDuringDancing = false;
+
         public bool ChangeAfkFace = false;
         public AnimationClip AfkEnterFace;
         public AnimationClip AfkFace;

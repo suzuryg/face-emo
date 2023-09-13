@@ -95,6 +95,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 ModifyMouthMorphCancelerLayer(_aV3Setting, aac, avatarDescriptor, animatorController);
                 AddBypassLayer(_aV3Setting, aac, animatorController);
 
+                if (!_aV3Setting.DisableFxDuringDancing && _aV3Setting.MatchAvatarWriteDefaults)
+                {
+                    AV3Utility.RemoveLayer(animatorController, AV3Constants.LayerName_DanceGimickControl);
+                }
+
                 // Generate MA Object
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating ExMenu...", 0);
                 var exMenu = GenerateExMenu(modes, menu, exMenuPath, useOverLimitMode);
@@ -494,26 +499,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var overrideState = layer.NewState("in OVERRIDE", 2, -1);
             overrideState.TransitionsFromAny()
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsTrue())
-                .And(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsFalse())
-                .Or()
-                .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsTrue())
-                .And(layer.Av3().InStation.IsFalse());
+                .And(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsFalse());
             overrideState.Exits()
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsFalse());
 
-            // Create dance state
-            var danceState = layer.NewState("in DANCE", 3, -1);
-            danceState.TransitionsFromAny()
-                .When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsTrue())
-                .And(layer.Av3().InStation.IsTrue())
-                .And(layer.Av3().Voice.IsLessThan(AV3Constants.VoiceThreshold));
-            danceState.Exits()
-                .When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsFalse())
-                .Or()
-                .When(layer.Av3().InStation.IsFalse());
-
             // Create bypass state
-            var bypassState = layer.NewState("BYPASS", 4, -1)
+            var bypassState = layer.NewState("BYPASS", 3, -1)
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BLINK_ENABLE), false)
                 .Drives(layer.BoolParameter(AV3Constants.ParamName_CN_MOUTH_MORPH_CANCEL_ENABLE), false)
                 .TrackingSets(TrackingElement.Eyes, VRC_AnimatorTrackingControl.TrackingType.Animation)
@@ -567,19 +558,29 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             layer.StateMachine.WithEntryPosition(0, -1).WithAnyStatePosition(0, -2).WithExitPosition(0, -3);
 
             // Create states
+            var gate = layer.NewState("LOCAL GATE", 0, 0);
+            var disable = layer.NewState("DISABLE", 0, 1).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), false).DrivingLocally();
+            var enable = layer.NewState("ENABLE", 0, 2).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true).DrivingLocally();
+            var dance = layer.NewState("in DANCE", 1, 2).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true).DrivingLocally();
+
+            gate.TransitionsTo(disable)
+                .When(layer.Av3().IsLocal.IsEqualTo(true));
+
             if (!aV3Setting.ChangeAfkFace)
             {
-                var gate = layer.NewState("LOCAL GATE", 0, 0);
-                var disable = layer.NewState("DISABLE", 0, 1).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), false).DrivingLocally();
-                var enable = layer.NewState("ENABLE", 0, 2).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true).DrivingLocally();
-
-                gate.TransitionsTo(disable)
-                    .When(layer.Av3().IsLocal.IsEqualTo(true));
                 disable.TransitionsTo(enable).
                     When(layer.Av3().AFK.IsEqualTo(true));
                 enable.TransitionsTo(disable).
                     When(layer.Av3().AFK.IsEqualTo(false));
             }
+
+            disable.TransitionsTo(dance).
+                When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsEqualTo(true)).
+                And(layer.Av3().InStation.IsEqualTo(true));
+            dance.TransitionsTo(disable).
+                When(layer.BoolParameter(AV3Constants.ParamName_SYNC_CN_DANCE_GIMMICK_ENABLE).IsEqualTo(false)).
+                Or().
+                When(layer.Av3().InStation.IsEqualTo(false));
         }
 
         private VRCExpressionsMenu GenerateExMenu(IReadOnlyList<ModeEx> modes, IMenu menu, string exMenuPath, bool useOverLimitMode)

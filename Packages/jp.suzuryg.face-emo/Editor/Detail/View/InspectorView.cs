@@ -50,6 +50,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private GUIStyle _versionLabelStyle = new GUIStyle();
         private GUIStyle _launchButtonStyle = new GUIStyle();
         private GUIStyle _warningLabelStyle = new GUIStyle();
+        private static GUIStyle _radioButtonStyle;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -277,6 +278,17 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (isAddtionalTransformOpened.boolValue)
             {
                 Field_AdditionalTransformObjects();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Dance gimmick setting
+            var isDanceGimmickOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsDanceGimmickOpened));
+            isDanceGimmickOpened.boolValue = EditorGUILayout.Foldout(isDanceGimmickOpened.boolValue, 
+                new GUIContent(_localizationTable.InspectorView_Dance));
+            if (isDanceGimmickOpened.boolValue)
+            {
+                Field_DanceGimmick();
             }
 
             EditorGUILayout.Space(10);
@@ -653,6 +665,58 @@ namespace Suzuryg.FaceEmo.Detail.View
                 if (avatarTransform == null || !IsDescendantOf(gameObject.transform, avatarTransform))
                 {
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
+                }
+            }
+        }
+
+        private void Field_DanceGimmick()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_DanceGimmick);
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_DisableExpressionLayers);
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_DisableEntireFxLayer);
+            }
+
+            if (_radioButtonStyle == null)
+            {
+                try
+                {
+                    _radioButtonStyle = new GUIStyle(EditorStyles.radioButton);
+                }
+                catch (NullReferenceException)
+                {
+                    // Workaround for play mode
+                    _radioButtonStyle = new GUIStyle();
+                }
+                var padding = _radioButtonStyle.padding;
+                _radioButtonStyle.padding = new RectOffset(padding.left + 3, padding.right, padding.top, padding.bottom);
+            }
+
+            var options = new[]
+            {
+                new GUIContent(_localizationTable.InspectorView_Dance_DisableExpressionLayers, string.Empty),
+                new GUIContent(_localizationTable.InspectorView_Dance_DisableEntireFxLayer, string.Empty),
+            };
+
+            var matchAvatarWriteDefaults = _av3Setting.FindProperty(nameof(AV3Setting.MatchAvatarWriteDefaults));
+            if (matchAvatarWriteDefaults.boolValue)
+            {
+                var disableEntireFx = _av3Setting.FindProperty(nameof(AV3Setting.DisableFxDuringDancing));
+                var index = disableEntireFx.boolValue ? 1 : 0;
+
+                var newValue = GUILayout.SelectionGrid(index, options, 1, _radioButtonStyle);
+                if (newValue != index)
+                {
+                    disableEntireFx.boolValue = !disableEntireFx.boolValue;
+                }
+            }
+            else
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    GUILayout.SelectionGrid(1, options, 1, _radioButtonStyle);
                 }
             }
         }
