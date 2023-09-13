@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: CustomEmote_Stand_OneShot
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u624B\u3075\u308A"
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 17
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u624B\u3075\u308A_\u30B8\u30E3\u30F3\u30D7"
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 18
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u3075\u307F\u3064\u3051"
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 19
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u304A\u3073\u3048"
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 20
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u3042\u304F\u3073"
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 21
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: orz
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 22
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u53C2\u62DD"
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 23
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
+  - name: "\u306F\u308F\u308F"
+    icon: {fileID: 0}
+    type: 101
+    parameter:
+      name: VRCEmote
+    value: 24
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []

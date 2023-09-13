@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -340790334, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: JP__Root 1
+  m_EditorClassIdentifier: 
+  controls:
+  - name: "\u8A2D\u5B9A\u30FB\u30C4\u30FC\u30EB"
+    icon: {fileID: 2800000, guid: 96c3ed748a6b91644aa375b05d7ec62e, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 9c3ed4d23f0e56a4fb9421e775b8ed51, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u8868\u60C5"
+    icon: {fileID: 2800000, guid: af1ba8919b0ccb94a99caf43ac36f97d, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: cb908ae92a72c544c9fd3ab717e9181f, type: 2}
+    subParameters: []
+    labels: []
+  - name: "\u30A8\u30E2\u30FC\u30C8"
+    icon: {fileID: 2800000, guid: 011229dd2f6f5f64f8965a08d3434654, type: 3}
+    type: 103
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 11400000, guid: 75aacbd2334fef54384e3b963ebbf00c, type: 2}
+    subParameters: []
+    labels: []
+  - name: Avatar by bbbbb_himiko
+    icon: {fileID: 2800000, guid: 839b1e4d1af5f1842b05e1f43be0f44a, type: 3}
+    type: 101
+    parameter:
+      name: 
+    value: 1
+    style: 0
+    subMenu: {fileID: 0}
+    subParameters: []
+    labels: []
