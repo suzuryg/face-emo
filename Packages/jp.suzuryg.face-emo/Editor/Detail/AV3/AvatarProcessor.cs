@@ -1,4 +1,4 @@
-﻿using Suzuryg.FaceEmo.Components.MA;
+﻿using Suzuryg.FaceEmo.Components.AV3;
 using System;
 using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
