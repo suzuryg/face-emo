@@ -5,14 +5,10 @@ using VRC.SDK3.Avatars.Components;
 using nadena.dev.modular_avatar.core;
 #endif
 
-namespace Suzuryg.FaceEmo.Components.MA
+namespace Suzuryg.FaceEmo.Components.AV3
 {
     [DefaultExecutionOrder(-20000)] // run before modular avatar
-#if USE_MODULAR_AVATAR
-    public abstract class RunBeforeModularAvatar : AvatarTagComponent // Inherit AvatarTagComponent to register in VRChat whitelist
-#else
-    public abstract class RunBeforeModularAvatar : MonoBehaviour
-#endif
+    public abstract class RunBeforeModularAvatar : MonoBehaviour , VRC.SDKBase.IEditorOnly // Inherit IEditorOnly to register in VRChat whitelist
     {
 #if UNITY_EDITOR
         private static bool isPlaying => UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode;

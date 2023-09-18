@@ -1,0 +1,18 @@
+{
+    "name": "jp.suzuryg.face-emo.components.av3.Runtime",
+    "references": [
+        "GUID:ad29c40ce7d8264468d6c7634e6a3a40"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "VRCSDKBase.dll",
+        "VRCSDK3A.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
