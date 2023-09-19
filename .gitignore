@@ -71,10 +71,3 @@ Assets/Editor/*
 UIElementsSchema/*
 Thry/
 
-Packages/packages-lock.json
-Packages/vpm-manifest.json
-
-ProjectSettings/GraphicsSettings.asset
-ProjectSettings/ProjectSettings.asset
-ProjectSettings/QualitySettings.asset
-
