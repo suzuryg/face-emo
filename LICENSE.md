@@ -1,11 +1,3 @@
-FaceEmo is licensed under the MIT license, as described below, with some exceptions:
-
-* Packages/com.vrchat.core.bootstrap is distributed under the VRChat Distro license.
-  See [the associated License.md file](Packages/com.vrchat.core.bootstrap/License.md) for details.
-* Packages/com.vrchat.core.vpm-resolver is distributed under the VRChat Distro license.
-  See [the associated License.md file](Packages/com.vrchat.core.vpm-resolver/License.md) for details.
----
-
 The MIT License (MIT)
 Copyright (c) 2023 suzuryg
 

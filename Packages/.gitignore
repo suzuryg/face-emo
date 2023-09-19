@@ -1,5 +1,4 @@
 /*/
-!com.vrchat.core.*
-!jp.suzuryg.face-emo
 !com.vrchat.core.*/
 com.vrchat.*/
+!jp.suzuryg.face-emo
