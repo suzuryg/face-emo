@@ -788,6 +788,18 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
 
             var changeAfkFace = _av3Setting.FindProperty(nameof(AV3Setting.ChangeAfkFace));
+
+            using (new EditorGUI.DisabledScope(changeAfkFace.boolValue))
+            {
+                var label = new GUIContent(_localizationTable.InspectorView_AFK_ExitDuration);
+                var oldLabelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = Math.Max(GUI.skin.label.CalcSize(label).x, EditorGUIUtility.labelWidth);
+                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AfkExitDurationSeconds)), label);
+                EditorGUIUtility.labelWidth = oldLabelWidth;
+            }
+
+            EditorGUILayout.Space(10);
+
             TogglePropertyField(changeAfkFace, _localizationTable.InspectorView_AFK_ChangeAfkFace);
 
             using (new EditorGUI.DisabledScope(!changeAfkFace.boolValue))

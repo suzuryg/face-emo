@@ -502,6 +502,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsTrue())
                 .And(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsFalse());
             overrideState.Exits()
+                .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsFalse());
 
             // Create bypass state
@@ -513,6 +514,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             bypassState.TransitionsFromAny()
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsTrue());
             bypassState.Exits()
+                .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsFalse());
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...", 1);
@@ -570,10 +572,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             if (!aV3Setting.ChangeAfkFace)
             {
-                disable.TransitionsTo(enable).
+                var afk = layer.NewState("in AFK", -1, 0).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true);
+                var afkExit = layer.NewState("AFK Exit", -1, 1);
+                disable.TransitionsTo(afk).
                     When(layer.Av3().AFK.IsTrue());
-                enableToDisable.
-                    And(layer.Av3().AFK.IsFalse());
+                afk.TransitionsTo(afkExit).
+                    WithTransitionDurationSeconds(aV3Setting.AfkExitDurationSeconds).
+                    When(layer.Av3().AFK.IsFalse());
+                afkExit.TransitionsTo(disable).Automatically();
             }
 
             disable.TransitionsTo(dance).
