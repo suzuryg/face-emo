@@ -202,6 +202,7 @@ MonoBehaviour:
   InspectorView_Contact: "Contact\u8A2D\u5B9A"
   InspectorView_Contact_ProximityThreshold: "Proximity\u3057\u304D\u3044\u5024"
   InspectorView_AFK: "AFK\u8868\u60C5\u8A2D\u5B9A"
+  InspectorView_AFK_ExitDuration: "AFK\u7D42\u4E86\u6642\u306E\u9077\u79FB\u6642\u9593\uFF08\u79D2\uFF09"
   InspectorView_AFK_ChangeAfkFace: "AFK\u8868\u60C5\u3092\u5909\u66F4\u3059\u308B"
   InspectorView_AFK_EnterFace: "AFK\u958B\u59CB\u6642\u306E\u8868\u60C5"
   InspectorView_AFK_Face: "AFK\u4E2D\u306E\u8868\u60C5"

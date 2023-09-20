@@ -213,6 +213,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Contact_ProximityThreshold = "Proximity Threshold";
 
         public string InspectorView_AFK = "AFK Face Settings";
+        public string InspectorView_AFK_ExitDuration = "AFK Exit Duration (sec)";
         public string InspectorView_AFK_ChangeAfkFace = "Change AFK Face";
         public string InspectorView_AFK_EnterFace = "AFK Enter Face";
         public string InspectorView_AFK_Face = "AFK Face";

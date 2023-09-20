@@ -39,6 +39,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public float ProximityThreshold = 0.1f;
 
         public bool ChangeAfkFace = false;
+        public float AfkExitDurationSeconds = 0;
         public AnimationClip AfkEnterFace;
         public AnimationClip AfkFace;
         public AnimationClip AfkExitFace;

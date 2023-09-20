@@ -572,10 +572,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             if (!aV3Setting.ChangeAfkFace)
             {
-                disable.TransitionsTo(enable).
+                var afk = layer.NewState("in AFK", -1, 0).Drives(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS), true);
+                var afkExit = layer.NewState("AFK Exit", -1, 1);
+                disable.TransitionsTo(afk).
                     When(layer.Av3().AFK.IsTrue());
-                enableToDisable.
-                    And(layer.Av3().AFK.IsFalse());
+                afk.TransitionsTo(afkExit).
+                    WithTransitionDurationSeconds(aV3Setting.AfkExitDurationSeconds).
+                    When(layer.Av3().AFK.IsFalse());
+                afkExit.TransitionsTo(disable).Automatically();
             }
 
             disable.TransitionsTo(dance).
