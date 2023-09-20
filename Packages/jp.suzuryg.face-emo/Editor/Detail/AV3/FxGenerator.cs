@@ -502,6 +502,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsTrue())
                 .And(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsFalse());
             overrideState.Exits()
+                .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_EMOTE_OVERRIDE).IsFalse());
 
             // Create bypass state
@@ -513,6 +514,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             bypassState.TransitionsFromAny()
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsTrue());
             bypassState.Exits()
+                .WithTransitionDurationSeconds((float)aV3Setting.TransitionDurationSeconds)
                 .When(layer.BoolParameter(AV3Constants.ParamName_CN_BYPASS).IsFalse());
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating \"{layerName}\" layer...", 1);

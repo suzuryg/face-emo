@@ -286,7 +286,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(overrideState.behaviours.Count, Is.EqualTo(0));
             AssertNormalStateTransition(overrideState.transitions[0]);
             Assert.That(overrideState.transitions[0].isExit, Is.EqualTo(true));
-            Assert.That(overrideState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(overrideState.transitions[0].duration, Is.EqualTo(0.1).Within(0.01));
             Assert.That(overrideState.transitions[0].conditions.Count, Is.EqualTo(1));
             Assert.That(overrideState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_EMOTE_OVERRIDE"));
             Assert.That(overrideState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
@@ -318,7 +318,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That((bypassState.behaviours[1] as VRC_AnimatorTrackingControl).trackingMouth, Is.EqualTo(VRC_AnimatorTrackingControl.TrackingType.Tracking));
             AssertNormalStateTransition(bypassState.transitions[0]);
             Assert.That(bypassState.transitions[0].isExit, Is.EqualTo(true));
-            Assert.That(bypassState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(bypassState.transitions[0].duration, Is.EqualTo(0.1).Within(0.01));
             Assert.That(bypassState.transitions[0].conditions.Count, Is.EqualTo(1));
             Assert.That(bypassState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_BYPASS"));
             Assert.That(bypassState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
