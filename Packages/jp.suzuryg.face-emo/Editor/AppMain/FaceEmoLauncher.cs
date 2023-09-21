@@ -230,6 +230,7 @@ namespace Suzuryg.FaceEmo.AppMain
             foreach (var item in components)
             {
                 if (item is VRCContactReceiver contactReceiver &&
+                    !contactReceiver.parameter.StartsWith("MPB_") && // exclude marshmallow pb
                     contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_NADENADE_POINT &&
                     contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L &&
                     contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R)
