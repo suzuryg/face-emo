@@ -30,23 +30,46 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         public void Import(VRCAvatarDescriptor avatarDescriptor)
         {
+            // TODO: use additional meshes
             _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false).Keys.ToList();
 
-            var layers = new List<List<IBranch>>();
+            var fx = GetFxLayer(avatarDescriptor);
+            if (fx == null) { return; }
+
+            var cacLayer = GetCacLayer(fx);
+            if (cacLayer != null)
+            {
+                ImportCac(cacLayer);
+            }
+            else
+            {
+                ImportNormal(fx);
+            }
+        }
+
+        private AnimatorController GetFxLayer(VRCAvatarDescriptor avatarDescriptor)
+        {
             foreach (var baseLayer in avatarDescriptor.baseAnimationLayers)
             {
                 if (baseLayer.type == VRCAvatarDescriptor.AnimLayerType.FX &&
                     baseLayer.animatorController != null &&
                     baseLayer.animatorController is AnimatorController animatorController)
                 {
-                    foreach (var layer in animatorController.layers)
-                    {
-                        var branches = GetBranches(layer.stateMachine);
-                        if (branches.Any())
-                        {
-                            layers.Add(branches);
-                        }
-                    }
+                    return animatorController;
+                }
+            }
+            return null;
+        }
+
+        private void ImportNormal(AnimatorController fx)
+        {
+            var layers = new List<List<IBranch>>();
+            foreach (var layer in fx.layers)
+            {
+                var branches = GetBranches(layer.stateMachine);
+                if (branches.Any())
+                {
+                    layers.Add(branches);
                 }
             }
             layers.Reverse();
@@ -293,6 +316,158 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             _menu.SetAnimation(branch.LeftHandAnimation, modeId, branchIndex, BranchAnimationType.Left);
             _menu.SetAnimation(branch.RightHandAnimation, modeId, branchIndex, BranchAnimationType.Right);
             _menu.SetAnimation(branch.BothHandsAnimation, modeId, branchIndex, BranchAnimationType.Both);
+        }
+
+        private AnimatorControllerLayer GetCacLayer(AnimatorController fx)
+        {
+            foreach (var layer in fx.layers)
+            {
+                if (layer != null &&
+                    layer.stateMachine != null &&
+                    layer.stateMachine.stateMachines != null &&
+                    layer.stateMachine.stateMachines.SelectMany(x => x.stateMachine.entryTransitions).Any(y => y.conditions.First().parameter == "SYNC_EM_EMOTE"))
+                {
+                    return layer;
+                }
+            }
+            return null;
+        }
+
+        private void ImportCac(AnimatorControllerLayer cacLayer)
+        {
+            var transitions = cacLayer.stateMachine.stateMachines
+                .SelectMany(x => x.stateMachine.entryTransitions)
+                .Where(x => 
+                    !x.mute &&
+                    x.conditions.Length == 1 &&
+                    x.conditions.First().parameter == "SYNC_EM_EMOTE" &&
+                    x.destinationState != null &&
+                    IsFaceMotion(x.destinationState.motion))
+                .Select(x => (emoteIndex: (int)x.conditions.First().threshold - 1, transition: x))
+                .Where(x => x.emoteIndex >= 0)
+                .OrderBy(x => x.emoteIndex);
+            if (!transitions.Any()) { return; }
+
+            var chunks = new Dictionary<int, List<(int emoteIndex, AnimatorTransition transition)>>();
+            foreach (var item in transitions)
+            {
+                int modeIndex = item.emoteIndex / 14;
+                if (!chunks.ContainsKey(modeIndex)) { chunks[modeIndex] = new List<(int emoteIndex, AnimatorTransition transition)>(); }
+                chunks[modeIndex].Add(item);
+            }
+
+            var modes = new List<List<Branch>>();
+            foreach (var modeIndex in chunks.Keys.OrderBy(x => x))
+            {
+                var mode = new List<Branch>();
+                var chunk = chunks[modeIndex];
+                foreach (var item in chunk)
+                {
+                    var branch = new Branch();
+
+                    // condition
+                    branch.AddCondition(EmoteIndexToCondition(item.emoteIndex));
+
+                    // tracking
+                    foreach (var behaviour in item.transition.destinationState.behaviours)
+                    {
+                        if (behaviour is VRC_AnimatorTrackingControl trackingControl && trackingControl != null)
+                        {
+                            branch.EyeTrackingControl = trackingControl.trackingEyes == VRC_AnimatorTrackingControl.TrackingType.Animation ? EyeTrackingControl.Animation : EyeTrackingControl.Tracking;
+                            branch.MouthTrackingControl = trackingControl.trackingMouth == VRC_AnimatorTrackingControl.TrackingType.Animation ? MouthTrackingControl.Animation : MouthTrackingControl.Tracking;
+                        }
+                        else if (behaviour is VRC_AvatarParameterDriver parameterDriver && parameterDriver != null)
+                        {
+                            foreach (var parameter in parameterDriver.parameters)
+                            {
+                                if (parameter.name == "CN_BLINK_ENABLE")
+                                {
+                                    branch.BlinkEnabled = parameter.value > 0;
+                                }
+                                else if (parameter.name == "CN_MOUTH_MORPH_CANCEL_ENABLE")
+                                {
+                                    branch.MouthMorphCancelerEnabled = parameter.value > 0;
+                                }
+                            }
+                        }
+                    }
+
+                    // motion
+                    if (branch.Conditions.Any(x => x == new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)) && item.transition.destinationState.timeParameterActive)
+                    {
+                        branch.SetAnimation(GetFirstFrame(item.transition.destinationState.motion), BranchAnimationType.Base);
+                        branch.SetAnimation(GetLastFrame(item.transition.destinationState.motion), BranchAnimationType.Left);
+                        branch.IsLeftTriggerUsed = true;
+                    }
+                    else if (branch.Conditions.Any(x =>  x == new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals)) && item.transition.destinationState.timeParameterActive)
+                    {
+                        branch.SetAnimation(GetFirstFrame(item.transition.destinationState.motion), BranchAnimationType.Base);
+                        branch.SetAnimation(GetLastFrame(item.transition.destinationState.motion), BranchAnimationType.Right);
+                        branch.IsRightTriggerUsed = true;
+                    }
+                    else
+                    {
+                        branch.SetAnimation(GetLastFrame(item.transition.destinationState.motion), BranchAnimationType.Base);
+                    }
+
+                    mode.Add(branch);
+                }
+
+                if (mode.Any())
+                {
+                    modes.Add(mode);
+                }
+            }
+
+            for (int i = 0; i < modes.Count; i++)
+            {
+                var modeId = _menu.AddMode(Domain.Menu.RegisteredId);
+
+                // TODO: localization
+                _menu.ModifyModeProperties(modeId, displayName: $"Imported_{i + 1}");
+
+                foreach (var branch in modes[i])
+                {
+                    AddBranch(modeId, branch);
+                }
+            }
+        }
+
+        private Condition EmoteIndexToCondition(int emoteIndex)
+        {
+            switch (emoteIndex % 14)
+            {
+                case 0:
+                    return new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals);
+                case 1:
+                    return new Condition(Hand.Right, HandGesture.HandOpen, ComparisonOperator.Equals);
+                case 2:
+                    return new Condition(Hand.Right, HandGesture.Fingerpoint, ComparisonOperator.Equals);
+                case 3:
+                    return new Condition(Hand.Right, HandGesture.Victory, ComparisonOperator.Equals);
+                case 4:
+                    return new Condition(Hand.Right, HandGesture.RockNRoll, ComparisonOperator.Equals);
+                case 5:
+                    return new Condition(Hand.Right, HandGesture.HandGun, ComparisonOperator.Equals);
+                case 6:
+                    return new Condition(Hand.Right, HandGesture.ThumbsUp, ComparisonOperator.Equals);
+                case 7:
+                    return new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals);
+                case 8:
+                    return new Condition(Hand.Left, HandGesture.HandOpen, ComparisonOperator.Equals);
+                case 9:
+                    return new Condition(Hand.Left, HandGesture.Fingerpoint, ComparisonOperator.Equals);
+                case 10:
+                    return new Condition(Hand.Left, HandGesture.Victory, ComparisonOperator.Equals);
+                case 11:
+                    return new Condition(Hand.Left, HandGesture.RockNRoll, ComparisonOperator.Equals);
+                case 12:
+                    return new Condition(Hand.Left, HandGesture.HandGun, ComparisonOperator.Equals);
+                case 13:
+                    return new Condition(Hand.Left, HandGesture.ThumbsUp, ComparisonOperator.Equals);
+                default:
+                    return null;
+            }
         }
     }
 }
