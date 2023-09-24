@@ -4,6 +4,7 @@ using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Domain;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
@@ -51,7 +52,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             // animations
             var idle = AssertIdle(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/idol.anim"));
-            // var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim")); not used
             var dislike = AssertDislike(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
             var fun = AssertFun(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
             var joy = AssertJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
@@ -114,6 +114,94 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssertNormalBranch(mode.Branches[9], Hand.Left, HandGesture.RockNRoll, zito, false, false);
             AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.HandGun, dislike, false, false);
             AssertNormalBranch(mode.Branches[11], Hand.Left, HandGesture.ThumbsUp, wink, false, false);
+
+            GameObject.DestroyImmediate(avatarRoot);
+        }
+
+        [Test]
+        public void Import_MimyLabBasic()
+        {
+            var avatarPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TestAssets/Henge/Himiko_2022/Himiko_2022_Test.prefab");
+            var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
+            var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
+            var fx = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/TestAssets/MimyLab/Common/AV3Templates/FX/ExpressionImporterTests/Custom_FX_Basic.controller");
+
+            for (int i = 0; i < avartarDescriptor.baseAnimationLayers.Length; i++)
+            {
+                if (avartarDescriptor.baseAnimationLayers[i].type == VRCAvatarDescriptor.AnimLayerType.FX)
+                {
+                    avartarDescriptor.baseAnimationLayers[i].animatorController = fx;
+                    break;
+                }
+            }
+
+            _importer.Import(avartarDescriptor);
+
+            // animations
+            var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
+            var dislike = AssertDislike(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
+            var fun = AssertFun(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
+            var joy = AssertJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
+            var sorrow = AssertSorrow(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
+            var surprised = AssertSurprized(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
+            var wink = AssertWink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
+            var zito = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
+            var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
+            var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
+
+            // menu
+            Assert.That(_menu.Registered.Count, Is.EqualTo(1));
+            Assert.That(_menu.Unregistered.Count, Is.EqualTo(0));
+
+            // mode
+            var id = _menu.Registered.Order.First();
+            var mode = _menu.Registered.GetMode(id);
+            Assert.That(_menu.DefaultSelection, Is.EqualTo(id));
+            Assert.That(mode.DisplayName, Is.EqualTo("Imported"));
+            Assert.That(mode.ChangeDefaultFace, Is.EqualTo(false));
+            Assert.That(mode.UseAnimationNameAsDisplayName, Is.EqualTo(false));
+            Assert.That(mode.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
+            Assert.That(mode.MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(mode.BlinkEnabled, Is.EqualTo(true));
+            Assert.That(mode.MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(mode.Branches.Count, Is.EqualTo(14));
+
+            // branches
+            Assert.That(mode.Branches[0].Conditions.Count, Is.EqualTo(1));
+            Assert.That(mode.Branches[0].Conditions.First(), Is.EqualTo(new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals)));
+            Assert.That(mode.Branches[0].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
+            Assert.That(mode.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
+            Assert.That(mode.Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(mode.Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(mode.Branches[0].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(mode.Branches[0].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(mode.Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
+            Assert.That(mode.Branches[0].IsRightTriggerUsed, Is.EqualTo(true));
+            Assert.That(mode.Branches[0].IsReachable, Is.EqualTo(true));
+            AssertNormalBranch(mode.Branches[1], Hand.Right, HandGesture.HandOpen, zito, false, true);
+            AssertNormalBranch(mode.Branches[2], Hand.Right, HandGesture.Fingerpoint, wink, false, true);
+            AssertNormalBranch(mode.Branches[3], Hand.Right, HandGesture.Victory, surprised, false, true);
+            AssertNormalBranch(mode.Branches[4], Hand.Right, HandGesture.RockNRoll, sorrow, false, true);
+            AssertNormalBranch(mode.Branches[5], Hand.Right, HandGesture.HandGun, joy, false, true);
+            AssertNormalBranch(mode.Branches[6], Hand.Right, HandGesture.ThumbsUp, fun, false, true);
+
+            Assert.That(mode.Branches[7].Conditions.Count, Is.EqualTo(1));
+            Assert.That(mode.Branches[7].Conditions.First(), Is.EqualTo(new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)));
+            Assert.That(mode.Branches[7].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
+            Assert.That(mode.Branches[7].LeftHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
+            Assert.That(mode.Branches[7].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(mode.Branches[7].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(mode.Branches[7].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(mode.Branches[7].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(mode.Branches[7].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(mode.Branches[7].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(mode.Branches[7].IsReachable, Is.EqualTo(true));
+            AssertNormalBranch(mode.Branches[8], Hand.Left, HandGesture.HandOpen, angry, false, true);
+            AssertNormalBranch(mode.Branches[9], Hand.Left, HandGesture.Fingerpoint, dislike, false, true);
+            AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.Victory, fun, false, true);
+            AssertNormalBranch(mode.Branches[11], Hand.Left, HandGesture.RockNRoll, joy, false, true);
+            AssertNormalBranch(mode.Branches[12], Hand.Left, HandGesture.HandGun, sorrow, false, true);
+            AssertNormalBranch(mode.Branches[13], Hand.Left, HandGesture.ThumbsUp, surprised, false, true);
 
             GameObject.DestroyImmediate(avatarRoot);
         }
