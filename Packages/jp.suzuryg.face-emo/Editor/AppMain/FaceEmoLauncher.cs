@@ -45,6 +45,7 @@ namespace Suzuryg.FaceEmo.AppMain
                 _inspectorView = installer.Container.Resolve<InspectorView>().AddTo(_disposables);
                 _inspectorView.OnLaunchButtonClicked.Synchronize().Subscribe(_ => Launch(target as FaceEmoLauncherComponent)).AddTo(_disposables);
                 _inspectorView.OnLocaleChanged.Synchronize().Subscribe(ChangeLocale).AddTo(_disposables);
+                _inspectorView.OnMenuUpdated.Synchronize().Subscribe(x => UpdateMenu(x.menu, x.isModified)).AddTo(_disposables);
 
                 // Disposables
                 installer.Container.Resolve<InspectorThumbnailDrawer>().AddTo(_disposables);
@@ -93,6 +94,15 @@ namespace Suzuryg.FaceEmo.AppMain
 #else
             EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.GetTable(LocalizationSetting.GetLocale()).Common_Message_MAIsNotInstalled, "OK");
 #endif
+        }
+
+        private void UpdateMenu(IMenu menu, bool isModified)
+        {
+            var existingWindows = Resources.FindObjectsOfTypeAll<MainWindow>();
+            if (existingWindows.Any())
+            {
+                existingWindows.First().UpdateMenu(menu, isModified);
+            }
         }
 
         private void ChangeLocale(Locale locale)

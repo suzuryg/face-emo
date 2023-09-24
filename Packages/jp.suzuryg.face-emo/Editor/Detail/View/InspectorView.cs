@@ -27,9 +27,11 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public IObservable<Unit> OnLaunchButtonClicked => _onLaunchButtonClicked.AsObservable();
         public IObservable<Locale> OnLocaleChanged => _onLocaleChanged.AsObservable();
+        public IObservable<(IMenu menu, bool isModified)> OnMenuUpdated => _onMenuUpdated.AsObservable(); 
 
         private Subject<Unit> _onLaunchButtonClicked = new Subject<Unit>();
         private Subject<Locale> _onLocaleChanged = new Subject<Locale>();
+        private Subject<(IMenu menu, bool isModified)> _onMenuUpdated = new Subject<(IMenu menu, bool isModified)>();
 
         private ILocalizationSetting _localizationSetting;
         private InspectorThumbnailDrawer _thumbnailDrawer;
