@@ -345,16 +345,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
-
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
+            Assert.That(bindings.Length, Is.EqualTo(0));
 
             return clip;
         }
@@ -364,16 +355,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }
@@ -383,16 +367,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }
@@ -402,16 +379,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }
@@ -421,16 +391,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }
@@ -440,16 +403,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }
@@ -459,16 +415,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }
@@ -478,16 +427,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }
@@ -497,15 +439,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(100));
 
             return clip;
@@ -516,17 +451,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(9));
-
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_mabataki")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
+            Assert.That(bindings.Length, Is.EqualTo(0));
 
             return clip;
         }
@@ -536,17 +461,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(9));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_mabataki")), Is.EqualTo(100));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
-            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
 
             return clip;
         }

@@ -17,7 +17,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         private AV3Setting _av3Setting;
         private string _assetDir;
 
-        private List<BlendShape> _faceBlendShapes = new List<BlendShape>();
+        private Dictionary<BlendShape, float> _faceBlendShapesValues = new Dictionary<BlendShape, float>();
         private Dictionary<Motion, AnimationClip> _firstFrameCache = new Dictionary<Motion, AnimationClip>();
         private Dictionary<Motion, AnimationClip> _lastFrameCache = new Dictionary<Motion, AnimationClip>();
 
@@ -31,7 +31,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         public void Import(VRCAvatarDescriptor avatarDescriptor)
         {
             // TODO: use additional meshes
-            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false).Keys.ToList();
+            _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
 
             var fx = GetFxLayer(avatarDescriptor);
             if (fx == null) { return; }
@@ -201,7 +201,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             }
             else if (motion is AnimationClip animationClip)
             {
-                var bindings = new HashSet<EditorCurveBinding>(_faceBlendShapes.Select(x => new EditorCurveBinding { path = x.Path, propertyName = $"blendShape.{x.Name}", type = typeof(SkinnedMeshRenderer) }));
+                var bindings = new HashSet<EditorCurveBinding>(_faceBlendShapesValues.Select(x => new EditorCurveBinding { path = x.Key.Path, propertyName = $"blendShape.{x.Key.Name}", type = typeof(SkinnedMeshRenderer) }));
                 return AnimationUtility.GetCurveBindings(animationClip).Any(x => bindings.Contains(x));
             }
             else { return false; }
@@ -232,6 +232,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                         if (curve != null && curve.keys.Length > 0)
                         {
                             var value = curve.keys.First().value;
+
+                            var blendShape = new BlendShape(binding.path, binding.propertyName.Replace("blendShape.", string.Empty));
+                            if (_faceBlendShapesValues.ContainsKey(blendShape) && Mathf.Approximately(_faceBlendShapesValues[blendShape], value)) { continue; }
+
                             AnimationUtility.SetEditorCurve(firstFrame, binding, new AnimationCurve(new Keyframe(time: 0, value: value)));
                         }
                     }
@@ -273,6 +277,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                         if (curve != null && curve.keys.Length > 0)
                         {
                             var value = curve.keys.Last().value;
+
+                            var blendShape = new BlendShape(binding.path, binding.propertyName.Replace("blendShape.", string.Empty));
+                            if (_faceBlendShapesValues.ContainsKey(blendShape) && Mathf.Approximately(_faceBlendShapesValues[blendShape], value)) { continue; }
+
                             AnimationUtility.SetEditorCurve(lastFrame, binding, new AnimationCurve(new Keyframe(time: 0, value: value)));
                         }
                     }
