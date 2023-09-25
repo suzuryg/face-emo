@@ -560,7 +560,22 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 0);
 
-            var motion = GetMouthMorphCancelerAnimation(aV3Setting, aac, avatarDescriptor);
+            AacFlClip motion;
+            if (_aV3Setting.UseMouthMorphCancelClip)
+            {
+                if (_aV3Setting.MouthMorphCancelClip != null)
+                {
+                    motion = aac.CopyClip(_aV3Setting.MouthMorphCancelClip);
+                }
+                else
+                {
+                    motion = aac.NewClip();
+                }
+            }
+            else
+            {
+                motion = GetMouthMorphCancelerAnimation(aV3Setting, aac, avatarDescriptor);
+            }
             AV3Utility.SetMotion(animatorController, layerName, AV3Constants.StateName_MouthMorphCancelerEnabled, motion.Clip);
 
             EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Modifying \"{layerName}\" layer...", 1);

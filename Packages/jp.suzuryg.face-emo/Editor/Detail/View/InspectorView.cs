@@ -596,6 +596,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
 
             _av3Setting.Update();
+            var useMouthMorphCancelClip = _av3Setting.FindProperty(nameof(AV3Setting.UseMouthMorphCancelClip));
             var mouthMorphsProperty = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs));
             var mouthMorphs = GetValue<List<BlendShape>>(mouthMorphsProperty);
 
@@ -621,18 +622,29 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
             #pragma warning restore CS0612
 
-            _mouthMorphBlendShapes.list = mouthMorphs; // Is it necessary to get every frame?
-            _mouthMorphBlendShapes.DoLayoutList();
+            using (new EditorGUI.DisabledScope(useMouthMorphCancelClip.boolValue))
+            {
+                _mouthMorphBlendShapes.list = mouthMorphs; // Is it necessary to get every frame?
+                _mouthMorphBlendShapes.DoLayoutList();
+
+                EditorGUILayout.Space(10);
+
+                if (GUILayout.Button(_localizationTable.Common_DeleteAll) &&
+                    OptoutableDialog.Show(DomainConstants.SystemName,
+                        _localizationTable.InspectorView_Message_ClearMouthMorphBlendShapes,
+                        _localizationTable.Common_Delete, _localizationTable.Common_Cancel, isRiskyAction: true))
+                {
+                    _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs)).ClearArray();
+                    _av3Setting.ApplyModifiedProperties();
+                }
+            }
 
             EditorGUILayout.Space(10);
 
-            if (GUILayout.Button(_localizationTable.Common_DeleteAll) &&
-                OptoutableDialog.Show(DomainConstants.SystemName,
-                    _localizationTable.InspectorView_Message_ClearMouthMorphBlendShapes,
-                    _localizationTable.Common_Delete, _localizationTable.Common_Cancel, isRiskyAction: true))
+            TogglePropertyField(useMouthMorphCancelClip, _localizationTable.InspectorView_MouthMorphBlendShapes_SpecifyClip);
+            using (new EditorGUI.DisabledScope(!useMouthMorphCancelClip.boolValue))
             {
-                _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs)).ClearArray();
-                _av3Setting.ApplyModifiedProperties();
+                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.MouthMorphCancelClip)), new GUIContent(string.Empty));
             }
         }
 
