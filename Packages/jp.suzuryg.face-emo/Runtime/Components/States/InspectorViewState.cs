@@ -5,6 +5,7 @@ namespace Suzuryg.FaceEmo.Components.States
     public class InspectorViewState : ScriptableObject
     {
         public bool IsApplyingToMultipleAvatarsOpened = false;
+        public bool IsBlinkOpened = false;
         public bool IsMouthMorphBlendShapesOpened = false;
         public bool IsExcludedBlendShapesOpened = false;
         public bool IsAddtionalSkinnedMeshesOpened = false;

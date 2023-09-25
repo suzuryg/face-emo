@@ -196,6 +196,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Message_TargetAvatarIsInSubAvatars = "It includes the main target avatar.";
         public string InspectorView_Message_SubAvatarNotInScene = "It includes an avatar that is not in the scene.";
 
+        public string InspectorView_Blink = "Blink Settings";
+        public string InspectorView_Blink_SpecifyClip = "Specify AnimationClip for Blink";
+
         public string InspectorView_Thumbnail = "Expression Thumbnail Settings";
         public string InspectorView_Thumbnail_FOV = "FOV";
         public string InspectorView_Thumbnail_Distance = "Distance";

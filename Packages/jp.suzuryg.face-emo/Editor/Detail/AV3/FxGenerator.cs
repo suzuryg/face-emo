@@ -529,7 +529,21 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AacFlClip motion;
             if (_aV3Setting.ReplaceBlink)
             {
-                motion = GetBlinkAnimation(aac, avatarDescriptor);
+                if (_aV3Setting.UseBlinkClip)
+                {
+                    if (_aV3Setting.BlinkClip != null)
+                    {
+                        motion = aac.CopyClip(_aV3Setting.BlinkClip).Looping();
+                    }
+                    else
+                    {
+                        motion = aac.NewClip();
+                    }
+                }
+                else
+                {
+                    motion = GetBlinkAnimation(aac, avatarDescriptor);
+                }
             }
             else
             {

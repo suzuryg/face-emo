@@ -257,6 +257,17 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             EditorGUILayout.Space(10);
 
+            // Blink
+            var isBlinkOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsBlinkOpened));
+            isBlinkOpened.boolValue = EditorGUILayout.Foldout(isBlinkOpened.boolValue,
+                new GUIContent(_localizationTable.InspectorView_Blink));
+            if (isBlinkOpened.boolValue)
+            {
+                Field_Blink();
+            }
+
+            EditorGUILayout.Space(10);
+
             // Mouth Morph Blend Shapes
             var isMouthMorphBlendShapesOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsMouthMorphBlendShapesOpened));
             isMouthMorphBlendShapesOpened.boolValue = EditorGUILayout.Foldout(isMouthMorphBlendShapesOpened.boolValue,
@@ -558,6 +569,20 @@ namespace Suzuryg.FaceEmo.Detail.View
             SetValue(property, list);
 
             _av3Setting.ApplyModifiedProperties();
+        }
+
+        private void Field_Blink()
+        {
+            EditorGUILayout.Space(5);
+
+            var useBlinkClip = _av3Setting.FindProperty(nameof(AV3Setting.UseBlinkClip));
+
+            TogglePropertyField(useBlinkClip, _localizationTable.InspectorView_Blink_SpecifyClip);
+
+            using (new EditorGUI.DisabledScope(!useBlinkClip.boolValue))
+            {
+                EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.BlinkClip)), new GUIContent(string.Empty));
+            }
         }
 
         private void Field_MouthMorphBlendShape()

@@ -17,6 +17,9 @@ namespace Suzuryg.FaceEmo.Components.Settings
 
         public GameObject MARootObjectPrefab;
 
+        public bool UseBlinkClip = false;
+        public AnimationClip BlinkClip;
+
         [Obsolete]
         public List<string> MouthMorphBlendShapes = new List<string>();
         public List<BlendShape> MouthMorphs = new List<BlendShape>();
