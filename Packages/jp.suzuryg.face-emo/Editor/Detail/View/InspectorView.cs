@@ -246,20 +246,47 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Import button (test)
             using (new EditorGUI.DisabledScope(!canLaunch))
             {
-                if (GUILayout.Button("Import Expressions From Avatar") &&
+                if (GUILayout.Button("Import Expression Patterns From Avatar") &&
                     OptoutableDialog.Show(DomainConstants.SystemName,
-                        "Import Expressions?",
+                        "Import Expression Patterns?",
                         "Import", _localizationTable.Common_Cancel, isRiskyAction: false))
                 {
                     try
                     {
                         var menu = _menuRepository.Load(string.Empty);
-                        var importedAssetDir = "Assets/Suzuryg/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                        var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
                         var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir);
-                        importer.Import(avatarDescriptor);
+                        importer.ImportExpressionPatterns(avatarDescriptor);
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
-                        _menuRepository.Save(string.Empty, menu, "Import Expressions From Avatar");
+                        _menuRepository.Save(string.Empty, menu, "Import Expression Patterns From Avatar");
+                        _onMenuUpdated.OnNext((menu, isModified: true));
+
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Done!", "OK");
+                    }
+                    catch (Exception ex)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Error!", "OK");
+                        Debug.LogException(ex);
+                    }
+                }
+
+                EditorGUILayout.Space(5);
+
+                if (GUILayout.Button("Import Optional Settings From Avatar") &&
+                    OptoutableDialog.Show(DomainConstants.SystemName,
+                        "Import Optional Settings?",
+                        "Import", _localizationTable.Common_Cancel, isRiskyAction: false))
+                {
+                    try
+                    {
+                        var menu = _menuRepository.Load(string.Empty);
+                        var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir);
+                        importer.ImportOptionalClips(avatarDescriptor);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+
+                        _menuRepository.Save(string.Empty, menu, "Import Optional Settings From Avatar");
                         _onMenuUpdated.OnNext((menu, isModified: true));
 
                         EditorUtility.DisplayDialog(DomainConstants.SystemName, "Done!", "OK");

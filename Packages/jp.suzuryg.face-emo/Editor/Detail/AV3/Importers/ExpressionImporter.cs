@@ -3,6 +3,7 @@ using Suzuryg.FaceEmo.Detail.View.Element;
 using Suzuryg.FaceEmo.Domain;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -28,7 +29,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             _assetDir = assetDir;
         }
 
-        public void Import(VRCAvatarDescriptor avatarDescriptor)
+        public void ImportExpressionPatterns(VRCAvatarDescriptor avatarDescriptor)
         {
             // TODO: use additional meshes
             _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
@@ -45,6 +46,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             {
                 ImportNormal(fx);
             }
+        }
+
+        public void ImportOptionalClips(VRCAvatarDescriptor avatarDescriptor)
+        {
+            // TODO: use additional meshes
+            _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
+
+            var fx = GetFxLayer(avatarDescriptor);
+            if (fx == null) { return; }
+
+            ImportBlinkClip(fx);
+            ImportMouthMorphCancelClip(fx);
         }
 
         private AnimatorController GetFxLayer(VRCAvatarDescriptor avatarDescriptor)
@@ -475,6 +488,55 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     return new Condition(Hand.Left, HandGesture.ThumbsUp, ComparisonOperator.Equals);
                 default:
                     return null;
+            }
+        }
+
+        private void ImportBlinkClip(AnimatorController fx)
+        {
+            foreach (var layer in fx.layers)
+            {
+                if (Regex.IsMatch(layer.name, @"\bblink\b", RegexOptions.IgnoreCase))
+                {
+                    foreach (var state in layer.stateMachine.states)
+                    {
+                        if (state.state.motion is AnimationClip animationClip &&
+                            animationClip.isLooping &&
+                            IsFaceMotion(animationClip))
+                        {
+                            var clone = new AnimationClip();
+                            EditorUtility.CopySerialized(animationClip, clone);
+                            SaveClip(clone, clone.name);
+
+                            _av3Setting.UseBlinkClip = true;
+                            _av3Setting.BlinkClip = clone;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ImportMouthMorphCancelClip(AnimatorController fx)
+        {
+            foreach (var layer in fx.layers)
+            {
+                if (Regex.IsMatch(layer.name, @"\bmouth\s*morph\s*canceller\b", RegexOptions.IgnoreCase))
+                {
+                    foreach (var state in layer.stateMachine.states)
+                    {
+                        if (state.state.motion is AnimationClip animationClip &&
+                            IsFaceMotion(animationClip))
+                        {
+                            var clone = new AnimationClip();
+                            EditorUtility.CopySerialized(animationClip, clone);
+                            SaveClip(clone, clone.name);
+
+                            _av3Setting.UseMouthMorphCancelClip = true;
+                            _av3Setting.MouthMorphCancelClip = clone;
+                            return;
+                        }
+                    }
+                }
             }
         }
     }

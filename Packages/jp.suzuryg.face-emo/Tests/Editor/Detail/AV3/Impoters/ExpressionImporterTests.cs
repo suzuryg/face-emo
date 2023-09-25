@@ -48,7 +48,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
             var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
 
-            _importer.Import(avartarDescriptor);
+            _importer.ImportExpressionPatterns(avartarDescriptor);
 
             // animations
             var idle = AssertIdle(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/idol.anim"));
@@ -62,6 +62,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var zito2 = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito_(2).anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
             var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
+
+            // settings
+            Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.BlinkClip, Is.EqualTo(null));
+            Assert.That(_av3Setting.UseMouthMorphCancelClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.MouthMorphCancelClip, Is.EqualTo(null));
 
             // menu
             Assert.That(_menu.Registered.Count, Is.EqualTo(1));
@@ -115,6 +121,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.HandGun, dislike, false, false);
             AssertNormalBranch(mode.Branches[11], Hand.Left, HandGesture.ThumbsUp, wink, false, false);
 
+            _importer.ImportOptionalClips(avartarDescriptor);
+
+            // settings
+            Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.BlinkClip, Is.EqualTo(null));
+            Assert.That(_av3Setting.UseMouthMorphCancelClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.MouthMorphCancelClip, Is.EqualTo(null));
+
             GameObject.DestroyImmediate(avatarRoot);
         }
 
@@ -135,7 +149,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
 
-            _importer.Import(avartarDescriptor);
+            _importer.ImportExpressionPatterns(avartarDescriptor);
 
             // animations
             var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
@@ -148,6 +162,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var zito = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
             var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
+
+            // settings
+            Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.BlinkClip, Is.EqualTo(null));
+            Assert.That(_av3Setting.UseMouthMorphCancelClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.MouthMorphCancelClip, Is.EqualTo(null));
 
             // menu
             Assert.That(_menu.Registered.Count, Is.EqualTo(1));
@@ -203,6 +223,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssertNormalBranch(mode.Branches[12], Hand.Left, HandGesture.HandGun, sorrow, false, true);
             AssertNormalBranch(mode.Branches[13], Hand.Left, HandGesture.ThumbsUp, surprised, false, true);
 
+            _importer.ImportOptionalClips(avartarDescriptor);
+
+            // settings
+            Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.BlinkClip, Is.EqualTo(null));
+            Assert.That(_av3Setting.UseMouthMorphCancelClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.MouthMorphCancelClip, Is.EqualTo(null));
+
             GameObject.DestroyImmediate(avatarRoot);
         }
 
@@ -213,7 +241,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
             var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
 
-            _importer.Import(avartarDescriptor);
+            _importer.ImportExpressionPatterns(avartarDescriptor);
 
             // animations
             var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
@@ -225,6 +253,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var wink = AssertWink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
             var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
+
+            // settings
+            Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.BlinkClip, Is.EqualTo(null));
+            Assert.That(_av3Setting.UseMouthMorphCancelClip, Is.EqualTo(false));
+            Assert.That(_av3Setting.MouthMorphCancelClip, Is.EqualTo(null));
 
             // menu
             Assert.That(_menu.Registered.Count, Is.EqualTo(3));
@@ -336,6 +370,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             AssertCacBranch(mode3.Branches[2], Hand.Left, HandGesture.HandOpen, surprised, EyeTrackingControl.Animation, MouthTrackingControl.Tracking, false, true);
             AssertCacBranch(mode3.Branches[3], Hand.Left, HandGesture.RockNRoll, angry, EyeTrackingControl.Animation, MouthTrackingControl.Tracking, false, true);
+
+            _importer.ImportOptionalClips(avartarDescriptor);
+
+            // animations
+            var blink = AssertBlink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/blink_loop.anim"));
+            var mouthMorphCancel = AssertMouthMorphCancel(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/mouth_morph_cancel.anim"));
+
+            // settings
+            Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(true));
+            Assert.That(_av3Setting.BlinkClip, Is.EqualTo(blink));
+            Assert.That(_av3Setting.UseMouthMorphCancelClip, Is.EqualTo(true));
+            Assert.That(_av3Setting.MouthMorphCancelClip, Is.EqualTo(mouthMorphCancel));
 
             GameObject.DestroyImmediate(avatarRoot);
         }
@@ -464,6 +510,39 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_mabataki")), Is.EqualTo(100));
+
+            return clip;
+        }
+
+        private static AnimationClip AssertBlink(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(true));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings[0].path, Is.EqualTo("body_face"));
+            Assert.That(bindings[0].propertyName, Is.EqualTo("blendShape.e_blink"));
+
+            return clip;
+        }
+
+        private static AnimationClip AssertMouthMorphCancel(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(false));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(10));
+
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_aa")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_ch")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_ou")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_oh")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_niko")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_mu")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_heart")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_wa")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_bero")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_aaaa")), Is.EqualTo(0));
 
             return clip;
         }
