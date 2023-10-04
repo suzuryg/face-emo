@@ -48,7 +48,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
             var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
 
-            _importer.ImportExpressionPatterns(avartarDescriptor);
+            var importedPatterns = _importer.ImportExpressionPatterns(avartarDescriptor);
+            Assert.That(importedPatterns.Count, Is.EqualTo(1));
+            Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(12));
 
             // animations
             var idle = AssertIdle(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/idol.anim"));
@@ -121,7 +123,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.HandGun, dislike, false, false);
             AssertNormalBranch(mode.Branches[11], Hand.Left, HandGesture.ThumbsUp, wink, false, false);
 
-            _importer.ImportOptionalClips(avartarDescriptor);
+            var importedClips = _importer.ImportOptionalClips(avartarDescriptor);
+            Assert.That(importedClips.blink, Is.Null);
+            Assert.That(importedClips.mouthMorphCancel, Is.Null);
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -149,7 +153,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
 
-            _importer.ImportExpressionPatterns(avartarDescriptor);
+            var importedPatterns = _importer.ImportExpressionPatterns(avartarDescriptor);
+            Assert.That(importedPatterns.Count, Is.EqualTo(1));
+            Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(14));
 
             // animations
             var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
@@ -223,7 +229,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssertNormalBranch(mode.Branches[12], Hand.Left, HandGesture.HandGun, sorrow, false, true);
             AssertNormalBranch(mode.Branches[13], Hand.Left, HandGesture.ThumbsUp, surprised, false, true);
 
-            _importer.ImportOptionalClips(avartarDescriptor);
+            var importedClips = _importer.ImportOptionalClips(avartarDescriptor);
+            Assert.That(importedClips.blink, Is.Null);
+            Assert.That(importedClips.mouthMorphCancel, Is.Null);
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -241,7 +249,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
             var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
 
-            _importer.ImportExpressionPatterns(avartarDescriptor);
+            var importedPatterns = _importer.ImportExpressionPatterns(avartarDescriptor);
+            Assert.That(importedPatterns.Count, Is.EqualTo(3));
+            Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(14));
+            Assert.That(importedPatterns[1].Branches.Count, Is.EqualTo(4));
+            Assert.That(importedPatterns[2].Branches.Count, Is.EqualTo(4));
 
             // animations
             var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
@@ -371,7 +383,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssertCacBranch(mode3.Branches[2], Hand.Left, HandGesture.HandOpen, surprised, EyeTrackingControl.Animation, MouthTrackingControl.Tracking, false, true);
             AssertCacBranch(mode3.Branches[3], Hand.Left, HandGesture.RockNRoll, angry, EyeTrackingControl.Animation, MouthTrackingControl.Tracking, false, true);
 
-            _importer.ImportOptionalClips(avartarDescriptor);
+            var importedClips = _importer.ImportOptionalClips(avartarDescriptor);
+            Assert.That(importedClips.blink, Is.Not.Null);
+            Assert.That(importedClips.mouthMorphCancel, Is.Not.Null);
 
             // animations
             var blink = AssertBlink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/blink_loop.anim"));

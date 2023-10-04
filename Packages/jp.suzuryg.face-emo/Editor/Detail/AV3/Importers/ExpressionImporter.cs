@@ -29,35 +29,37 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             _assetDir = assetDir;
         }
 
-        public void ImportExpressionPatterns(VRCAvatarDescriptor avatarDescriptor)
+        public List<IMode> ImportExpressionPatterns(VRCAvatarDescriptor avatarDescriptor)
         {
             // TODO: use additional meshes
             _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
 
             var fx = GetFxLayer(avatarDescriptor);
-            if (fx == null) { return; }
+            if (fx == null) { return new List<IMode>(); }
 
             var cacLayer = GetCacLayer(fx);
             if (cacLayer != null)
             {
-                ImportCac(cacLayer);
+                return ImportCac(cacLayer);
             }
             else
             {
-                ImportNormal(fx);
+                return ImportNormal(fx);
             }
         }
 
-        public void ImportOptionalClips(VRCAvatarDescriptor avatarDescriptor)
+        public (AnimationClip blink, AnimationClip mouthMorphCancel) ImportOptionalClips(VRCAvatarDescriptor avatarDescriptor)
         {
             // TODO: use additional meshes
             _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
 
             var fx = GetFxLayer(avatarDescriptor);
-            if (fx == null) { return; }
+            if (fx == null) { return (null, null); }
 
-            ImportBlinkClip(fx);
-            ImportMouthMorphCancelClip(fx);
+            var blink = ImportBlinkClip(fx);
+            var mouthMorphCancel = ImportMouthMorphCancelClip(fx);
+
+            return (blink, mouthMorphCancel);
         }
 
         private AnimatorController GetFxLayer(VRCAvatarDescriptor avatarDescriptor)
@@ -74,7 +76,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             return null;
         }
 
-        private void ImportNormal(AnimatorController fx)
+        private List<IMode> ImportNormal(AnimatorController fx)
         {
             var layers = new List<List<IBranch>>();
             foreach (var layer in fx.layers)
@@ -98,6 +100,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     AddBranch(modeId, branch);
                 }
             }
+
+            return new List<IMode>() { _menu.GetMode(modeId) };
         }
 
         private List<IBranch> GetBranches(AnimatorStateMachine stateMachine)
@@ -354,7 +358,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             return null;
         }
 
-        private void ImportCac(AnimatorControllerLayer cacLayer)
+        private List<IMode> ImportCac(AnimatorControllerLayer cacLayer)
         {
             var transitions = cacLayer.stateMachine.stateMachines
                 .SelectMany(x => x.stateMachine.entryTransitions)
@@ -367,7 +371,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 .Select(x => (emoteIndex: (int)x.conditions.First().threshold - 1, transition: x))
                 .Where(x => x.emoteIndex >= 0)
                 .OrderBy(x => x.emoteIndex);
-            if (!transitions.Any()) { return; }
+            if (!transitions.Any()) { return new List<IMode>(); }
 
             var chunks = new Dictionary<int, List<(int emoteIndex, AnimatorTransition transition)>>();
             foreach (var item in transitions)
@@ -440,6 +444,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
 
+            var results = new List<IMode>();
             for (int i = 0; i < modes.Count; i++)
             {
                 var modeId = _menu.AddMode(Domain.Menu.RegisteredId);
@@ -451,7 +456,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 {
                     AddBranch(modeId, branch);
                 }
+
+                results.Add(_menu.GetMode(modeId));
             }
+
+            return results;
         }
 
         private Condition EmoteIndexToCondition(int emoteIndex)
@@ -491,7 +500,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             }
         }
 
-        private void ImportBlinkClip(AnimatorController fx)
+        private AnimationClip ImportBlinkClip(AnimatorController fx)
         {
             foreach (var layer in fx.layers)
             {
@@ -509,14 +518,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
                             _av3Setting.UseBlinkClip = true;
                             _av3Setting.BlinkClip = clone;
-                            return;
+                            return clone;
                         }
                     }
                 }
             }
+            return null;
         }
 
-        private void ImportMouthMorphCancelClip(AnimatorController fx)
+        private AnimationClip ImportMouthMorphCancelClip(AnimatorController fx)
         {
             foreach (var layer in fx.layers)
             {
@@ -533,11 +543,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
                             _av3Setting.UseMouthMorphCancelClip = true;
                             _av3Setting.MouthMorphCancelClip = clone;
-                            return;
+                            return clone;
                         }
                     }
                 }
             }
+            return null;
         }
     }
 }

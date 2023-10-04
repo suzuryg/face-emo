@@ -256,13 +256,26 @@ namespace Suzuryg.FaceEmo.Detail.View
                         var menu = _menuRepository.Load(string.Empty);
                         var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
                         var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir);
-                        importer.ImportExpressionPatterns(avatarDescriptor);
+                        var importedPatterns = importer.ImportExpressionPatterns(avatarDescriptor);
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
                         _menuRepository.Save(string.Empty, menu, "Import Expression Patterns From Avatar");
                         _onMenuUpdated.OnNext((menu, isModified: true));
 
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Done!", "OK");
+                        string message = string.Empty;
+                        if (importedPatterns.Any())
+                        {
+                            message = "The following expression patterns were imported.\n";
+                            foreach (var pattern in importedPatterns)
+                            {
+                                message += $"\n{pattern.DisplayName}: {pattern.Branches.Count} expressions";
+                            }
+                        }
+                        else
+                        {
+                            message = "No expression patterns were imported.";
+                        }
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, message, "OK");
                     }
                     catch (Exception ex)
                     {
@@ -283,13 +296,27 @@ namespace Suzuryg.FaceEmo.Detail.View
                         var menu = _menuRepository.Load(string.Empty);
                         var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
                         var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir);
-                        importer.ImportOptionalClips(avatarDescriptor);
+                        var importedClips = importer.ImportOptionalClips(avatarDescriptor);
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
                         _menuRepository.Save(string.Empty, menu, "Import Optional Settings From Avatar");
                         _onMenuUpdated.OnNext((menu, isModified: true));
 
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Done!", "OK");
+                        var messageItems = new List<string>();
+                        if (importedClips.blink != null) { messageItems.Add("Blink"); }
+                        if (importedClips.mouthMorphCancel != null) { messageItems.Add("MouthMorphCanceler"); }
+
+                        string message = string.Empty;
+                        if (messageItems.Any())
+                        {
+                            message = "The following optional settings were imported.\n\n";
+                            message += string.Join("\n", messageItems);
+                        }
+                        else
+                        {
+                            message = "No optional settings were imported.";
+                        }
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, message, "OK");
                     }
                     catch (Exception ex)
                     {
