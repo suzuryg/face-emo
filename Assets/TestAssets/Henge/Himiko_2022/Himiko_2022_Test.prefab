@@ -540,7 +540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7974910558160156079
 Transform:
   m_ObjectHideFlags: 0
@@ -1529,7 +1529,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6214263101777748760
 Transform:
   m_ObjectHideFlags: 0
@@ -1558,7 +1558,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rootTransform: {fileID: 0}
   shapeType: 0
-  radius: 0.5
+  radius: 0.005
   height: 2
   position: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0, w: 1}
@@ -2542,7 +2542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2739904087531924595
 Transform:
   m_ObjectHideFlags: 0

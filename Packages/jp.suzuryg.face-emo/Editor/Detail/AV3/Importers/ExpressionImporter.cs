@@ -34,7 +34,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             // TODO: use additional meshes
             _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
 
-            var fx = GetFxLayer(avatarDescriptor);
+            var fx = ImportUtility.GetFxLayer(avatarDescriptor);
             if (fx == null) { return new List<IMode>(); }
 
             var cacLayer = GetCacLayer(fx);
@@ -53,27 +53,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             // TODO: use additional meshes
             _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
 
-            var fx = GetFxLayer(avatarDescriptor);
+            var fx = ImportUtility.GetFxLayer(avatarDescriptor);
             if (fx == null) { return (null, null); }
 
             var blink = ImportBlinkClip(fx);
             var mouthMorphCancel = ImportMouthMorphCancelClip(fx);
 
             return (blink, mouthMorphCancel);
-        }
-
-        private AnimatorController GetFxLayer(VRCAvatarDescriptor avatarDescriptor)
-        {
-            foreach (var baseLayer in avatarDescriptor.baseAnimationLayers)
-            {
-                if (baseLayer.type == VRCAvatarDescriptor.AnimLayerType.FX &&
-                    baseLayer.animatorController != null &&
-                    baseLayer.animatorController is AnimatorController animatorController)
-                {
-                    return animatorController;
-                }
-            }
-            return null;
         }
 
         private List<IMode> ImportNormal(AnimatorController fx)
@@ -147,7 +133,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 !transition.mute &&
                 transition.conditions.Any(x => x.parameter == "GestureLeft" || x.parameter == "GestureRight") &&
                 transition.destinationState != null &&
-                IsFaceMotion(transition.destinationState.motion))
+                ImportUtility.IsFaceMotion(transition.destinationState.motion, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
             {
                 var branch = new Branch();
 
@@ -205,23 +191,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             {
                 return null;
             }
-        }
-
-        private bool IsFaceMotion(Motion motion)
-        {
-            if (motion == null) { return false; }
-            else if (motion is BlendTree blendTree && blendTree.children.Length > 0)
-            {
-                var first = blendTree.children.First().motion;
-                var last = blendTree.children.Last().motion;
-                return IsFaceMotion(first as AnimationClip) && IsFaceMotion(last as AnimationClip);
-            }
-            else if (motion is AnimationClip animationClip)
-            {
-                var bindings = new HashSet<EditorCurveBinding>(_faceBlendShapesValues.Select(x => new EditorCurveBinding { path = x.Key.Path, propertyName = $"blendShape.{x.Key.Name}", type = typeof(SkinnedMeshRenderer) }));
-                return AnimationUtility.GetCurveBindings(animationClip).Any(x => bindings.Contains(x));
-            }
-            else { return false; }
         }
 
         private Domain.Animation GetFirstFrame(Motion motion)
@@ -367,7 +336,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     x.conditions.Length == 1 &&
                     x.conditions.First().parameter == "SYNC_EM_EMOTE" &&
                     x.destinationState != null &&
-                    IsFaceMotion(x.destinationState.motion))
+                    ImportUtility.IsFaceMotion(x.destinationState.motion, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
                 .Select(x => (emoteIndex: (int)x.conditions.First().threshold - 1, transition: x))
                 .Where(x => x.emoteIndex >= 0)
                 .OrderBy(x => x.emoteIndex);
@@ -510,7 +479,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     {
                         if (state.state.motion is AnimationClip animationClip &&
                             animationClip.isLooping &&
-                            IsFaceMotion(animationClip))
+                            ImportUtility.IsFaceMotion(animationClip, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
                         {
                             var clone = new AnimationClip();
                             EditorUtility.CopySerialized(animationClip, clone);
@@ -535,7 +504,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     foreach (var state in layer.stateMachine.states)
                     {
                         if (state.state.motion is AnimationClip animationClip &&
-                            IsFaceMotion(animationClip))
+                            ImportUtility.IsFaceMotion(animationClip, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
                         {
                             var clone = new AnimationClip();
                             EditorUtility.CopySerialized(animationClip, clone);
