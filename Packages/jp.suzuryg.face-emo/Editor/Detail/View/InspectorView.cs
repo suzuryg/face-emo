@@ -2,9 +2,11 @@
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Components.States;
 using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Detail.AV3.Importers;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View.Element;
+using Suzuryg.FaceEmo.UseCase;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,6 +35,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Subject<Locale> _onLocaleChanged = new Subject<Locale>();
         private Subject<(IMenu menu, bool isModified)> _onMenuUpdated = new Subject<(IMenu menu, bool isModified)>();
 
+        private IMenuRepository _menuRepository;
         private ILocalizationSetting _localizationSetting;
         private InspectorThumbnailDrawer _thumbnailDrawer;
         private SerializedObject _inspectorViewState;
@@ -59,6 +62,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public InspectorView(
+            IMenuRepository menuRepository,
             ILocalizationSetting localizationSetting,
             InspectorThumbnailDrawer inspectorThumbnailDrawer,
             InspectorViewState inspectorViewState,
@@ -66,6 +70,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             ThumbnailSetting thumbnailSetting)
         {
             // Dependencies
+            _menuRepository = menuRepository;
             _localizationSetting = localizationSetting;
             _thumbnailDrawer = inspectorThumbnailDrawer;
             _inspectorViewState = new SerializedObject(inspectorViewState);
@@ -236,6 +241,37 @@ namespace Suzuryg.FaceEmo.Detail.View
                     _onLaunchButtonClicked.OnNext(Unit.Default);
                 }
             }
+            EditorGUILayout.Space(10);
+
+            // Import button (test)
+            using (new EditorGUI.DisabledScope(!canLaunch))
+            {
+                if (GUILayout.Button("Import Expressions From Avatar") &&
+                    OptoutableDialog.Show(DomainConstants.SystemName,
+                        "Import Expressions?",
+                        "Import", _localizationTable.Common_Cancel, isRiskyAction: false))
+                {
+                    try
+                    {
+                        var menu = _menuRepository.Load(string.Empty);
+                        var importedAssetDir = "Assets/Suzuryg/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir);
+                        importer.Import(avatarDescriptor);
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+
+                        _menuRepository.Save(string.Empty, menu, "Import Expressions From Avatar");
+                        _onMenuUpdated.OnNext((menu, isModified: true));
+
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Done!", "OK");
+                    }
+                    catch (Exception ex)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Error!", "OK");
+                        Debug.LogException(ex);
+                    }
+                }
+            }
+
             EditorGUILayout.Space(10);
 
             // Target avatar

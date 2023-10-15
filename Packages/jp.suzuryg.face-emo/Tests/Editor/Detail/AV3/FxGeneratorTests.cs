@@ -12,6 +12,7 @@ using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
+using static Suzuryg.FaceEmo.Detail.AV3.AV3TestUtility;
 
 namespace Suzuryg.FaceEmo.Detail.AV3
 {
@@ -1035,29 +1036,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var states = layer.stateMachine.states.Where(x => x.state.name == stateName);
             Assert.That(states.Count, Is.EqualTo(1));
             return states.First().state;
-        }
-
-        private static float? GetBlendShapeValue(AnimationClip clip, BlendShape blendShape)
-        {
-            var binding = new EditorCurveBinding { path = blendShape.Path, propertyName = $"blendShape.{blendShape.Name}", type = typeof(SkinnedMeshRenderer) };
-            var curve = AnimationUtility.GetEditorCurve(clip, binding);
-            if (curve is null)
-            {
-                return null;
-            }
-            else if (curve.keys.Length == 1)
-            {
-                return curve.keys[0].value;
-            }
-            else if (curve.keys.Length == 2)
-            {
-                Assert.That(curve.keys[0].value == curve.keys[1].value, Is.True);
-                return curve.keys[0].value;
-            }
-            else
-            {
-                return null;
-            }
         }
     }
 }
