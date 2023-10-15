@@ -275,8 +275,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 var blendShape = new BlendShape(path: transformPath, name: name);
 
                 var excluded = toBeExcluded.Contains(blendShape);
-                if (excludeLipSync && blendShape.Name.StartsWith("vrc.")) { excluded = true; }
-
                 if (!excluded)
                 {
                     var weight = skinnedMeshRenderer.GetBlendShapeWeight(i);
