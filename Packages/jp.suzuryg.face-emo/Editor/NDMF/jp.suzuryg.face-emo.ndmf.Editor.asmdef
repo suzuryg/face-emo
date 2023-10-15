@@ -1,0 +1,21 @@
+{
+    "name": "jp.suzuryg.face-emo.ndmf.Editor",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "",
+            "define": "USE_NDMF"
+        }
+    ],
+    "noEngineReferences": false
+}

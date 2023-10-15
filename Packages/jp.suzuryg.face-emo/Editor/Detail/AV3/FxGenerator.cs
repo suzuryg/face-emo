@@ -2,7 +2,7 @@
 using AnimatorAsCode.V0.Extensions.VRChat;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
-using Suzuryg.FaceEmo.Components.AV3;
+using Suzuryg.FaceEmo.NDMF;
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
