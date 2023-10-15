@@ -379,17 +379,25 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         public static void CombineExpressions(AnimationClip leftHand, AnimationClip rightHand, AnimationClip destination)
         {
+            var leftTransforms = new Dictionary<string, List<(EditorCurveBinding binding, float value)>>();
+            var rightTransforms = new Dictionary<string, List<(EditorCurveBinding binding, float value)>>();
+
             if (leftHand != null)
             {
                 foreach (var binding in AnimationUtility.GetCurveBindings(leftHand))
                 {
                     var leftCurve = AnimationUtility.GetEditorCurve(leftHand, binding);
-                    var oldCurve = AnimationUtility.GetEditorCurve(destination, binding);
 
                     var leftValue = leftCurve != null && leftCurve.keys.Length > 0 ? leftCurve.keys.Last().value : 0;
-                    var oldValue = oldCurve != null && oldCurve.keys.Length > 0 ? oldCurve.keys.Last().value : 0;
 
-                    var newCurve = new AnimationCurve(new Keyframe(time: 0, value: Math.Max(leftValue, oldValue)));
+                    if (binding.type == typeof(Transform))
+                    {
+                        if (!leftTransforms.ContainsKey(binding.path)) { leftTransforms[binding.path] = new List<(EditorCurveBinding binding, float value)>(); }
+                        leftTransforms[binding.path].Add((binding, leftValue));
+                        continue;
+                    }
+
+                    var newCurve = new AnimationCurve(new Keyframe(time: 0, value: leftValue));
                     AnimationUtility.SetEditorCurve(destination, binding, newCurve);
                 }
             }
@@ -404,8 +412,33 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     var rightValue = rightCurve != null && rightCurve.keys.Length > 0 ? rightCurve.keys.Last().value : 0;
                     var oldValue = oldCurve != null && oldCurve.keys.Length > 0 ? oldCurve.keys.Last().value : 0;
 
+                    if (binding.type == typeof(Transform))
+                    {
+                        if (!rightTransforms.ContainsKey(binding.path)) { rightTransforms[binding.path] = new List<(EditorCurveBinding binding, float value)>(); }
+                        rightTransforms[binding.path].Add((binding, rightValue));
+                        continue;
+                    }
+
                     var newCurve = new AnimationCurve(new Keyframe(time: 0, value: Math.Max(rightValue, oldValue)));
                     AnimationUtility.SetEditorCurve(destination, binding, newCurve);
+                }
+            }
+
+            // TODO: Priority should be determined based on the difference from the default value.
+            // For the time being, priority is given to the one selected later.
+            // (When called from the gesture table, the right hand is the second argument, and in many cases, the right hand has priority for expression control.)
+            var combinedTransforms = leftTransforms;
+            foreach (var key in rightTransforms.Keys)
+            {
+                combinedTransforms[key] = rightTransforms[key];
+            }
+
+            foreach (var list in combinedTransforms.Values)
+            {
+                foreach (var pair in list)
+                {
+                    var newCurve = new AnimationCurve(new Keyframe(time: 0, value: pair.value));
+                    AnimationUtility.SetEditorCurve(destination, pair.binding, newCurve);
                 }
             }
         }
