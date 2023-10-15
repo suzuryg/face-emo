@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
+using VRC.SDKBase;
 
 namespace Suzuryg.FaceEmo.NDMF
 {
     [DisallowMultipleComponent]
-    public class BlinkDisabler : RunBeforeModularAvatar
+    public class BlinkDisabler : MonoBehaviour, IEditorOnly
     {
-        public override void OnPreProcessAvatar()
-        {
-            var avatarDescriptor = GetAvatarDescriptor();
-            avatarDescriptor.customEyeLookSettings.eyelidType = VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.EyelidType.None;
-        }
     }
 }
