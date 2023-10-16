@@ -595,7 +595,6 @@ namespace Suzuryg.FaceEmo.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_ConfirmMouthMorphBlendShape);
             }
 
-            _av3Setting.Update();
             var useMouthMorphCancelClip = _av3Setting.FindProperty(nameof(AV3Setting.UseMouthMorphCancelClip));
             var mouthMorphsProperty = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs));
             var mouthMorphs = GetValue<List<BlendShape>>(mouthMorphsProperty);
@@ -635,7 +634,6 @@ namespace Suzuryg.FaceEmo.Detail.View
                         _localizationTable.Common_Delete, _localizationTable.Common_Cancel, isRiskyAction: true))
                 {
                     _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphs)).ClearArray();
-                    _av3Setting.ApplyModifiedProperties();
                 }
             }
 
@@ -656,7 +654,6 @@ namespace Suzuryg.FaceEmo.Detail.View
                 HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Hints_ExcludedBlendShapes);
             }
 
-            _av3Setting.Update();
             var excludedProperty = _av3Setting.FindProperty(nameof(AV3Setting.ExcludedBlendShapes));
             var excluded = GetValue<List<BlendShape>>(excludedProperty);
             _excludedBlendShapes.list = excluded; // Is it necessary to get every frame?
@@ -670,7 +667,6 @@ namespace Suzuryg.FaceEmo.Detail.View
                     _localizationTable.Common_Delete, _localizationTable.Common_Cancel, isRiskyAction: true))
             {
                 _av3Setting.FindProperty(nameof(AV3Setting.ExcludedBlendShapes)).ClearArray();
-                _av3Setting.ApplyModifiedProperties();
             }
         }
 
