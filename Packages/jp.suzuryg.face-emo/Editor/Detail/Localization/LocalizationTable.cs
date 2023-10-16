@@ -175,7 +175,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
         public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionMenu icons";
         public string InspectorView_GammaCorrectionValue = "Gamma correction value for expression thumbnails";
-        public string InspectorView_MouthMorphBlendShapes = "Mouth Morph Blend Shapes";
         public string InspectorView_ExcludedBlendShapes = "Excluded Blend Shapes";
         public string InspectorView_EmptyBlendShapes = "Press the + button to add blend shapes.";
         public string InspectorView_EmptyObjects = "Press the + button to add an object.";
@@ -195,6 +194,12 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Message_TargetAvatarNotInScene = "Please specify an avatar in the scene.";
         public string InspectorView_Message_TargetAvatarIsInSubAvatars = "It includes the main target avatar.";
         public string InspectorView_Message_SubAvatarNotInScene = "It includes an avatar that is not in the scene.";
+
+        public string InspectorView_Blink = "Blink Settings";
+        public string InspectorView_Blink_SpecifyClip = "Specify AnimationClip for Blink";
+
+        public string InspectorView_MouthMorphBlendShapes = "Mouth Morph Blend Shapes";
+        public string InspectorView_MouthMorphBlendShapes_SpecifyClip = "Specify AnimationClip for MouthMorphCanceler";
 
         public string InspectorView_Thumbnail = "Expression Thumbnail Settings";
         public string InspectorView_Thumbnail_FOV = "FOV";

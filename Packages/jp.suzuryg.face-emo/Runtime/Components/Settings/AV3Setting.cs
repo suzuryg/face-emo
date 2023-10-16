@@ -17,9 +17,15 @@ namespace Suzuryg.FaceEmo.Components.Settings
 
         public GameObject MARootObjectPrefab;
 
+        public bool UseBlinkClip = false;
+        public AnimationClip BlinkClip;
+
         [Obsolete]
         public List<string> MouthMorphBlendShapes = new List<string>();
         public List<BlendShape> MouthMorphs = new List<BlendShape>();
+        public bool UseMouthMorphCancelClip = false;
+        public AnimationClip MouthMorphCancelClip;
+
         public List<BlendShape> ExcludedBlendShapes = new List<BlendShape>();
 
         public List<SkinnedMeshRenderer> AdditionalSkinnedMeshes = new List<SkinnedMeshRenderer>();

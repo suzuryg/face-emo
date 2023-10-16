@@ -32,6 +32,19 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         {
             _av3Setting = ScriptableObject.CreateInstance<AV3Setting>();
             _av3Setting.AfkExitDurationSeconds = 3;
+            _av3Setting.MouthMorphs = new List<BlendShape>()
+            {
+                new BlendShape("body_face", "m_aa"),
+                new BlendShape("body_face", "m_ch"),
+                new BlendShape("body_face", "m_ou"),
+                new BlendShape("body_face", "m_oh"),
+                new BlendShape("body_face", "m_niko"),
+                new BlendShape("body_face", "m_mu"),
+                new BlendShape("body_face", "m_heart"),
+                new BlendShape("body_face", "m_wa"),
+                new BlendShape("body_face", "m_bero"),
+                new BlendShape("body_face", "m_aaaa"),
+            };
 
             var localizationSetting = new LocalizationSetting();
             var modeNameProvider = new ModeNameProvider(localizationSetting);
@@ -94,8 +107,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmoteControlLayer(generated.fx.layers[4]);
             AssertFaceEmoteSetControlLayer(generated.fx.layers[5]);
             AssertFaceEmotePlayerLayer(generated.fx.layers[6]);
-            AssertBlinkLayer(generated.fx.layers[7]);
-            AssertMouthMorphCancellerLayer(generated.fx.layers[8]);
+            AssertBlinkLayer(generated.fx.layers[7], isReplaced: false);
+            AssertMouthMorphCancellerLayer(generated.fx.layers[8], isReplaced: false);
             AssertLeftGestureWeightLayer(generated.fx.layers[9]);
             AssertRightGestureWeightLayer(generated.fx.layers[10]);
             AssertLeftGestureSmoothingLayer(generated.fx.layers[11]);
@@ -117,8 +130,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmoteControlLayer(generated.fx.layers[4]);
             AssertFaceEmoteSetControlLayer(generated.fx.layers[5]);
             AssertFaceEmotePlayerLayer(generated.fx.layers[6]);
-            AssertBlinkLayer(generated.fx.layers[7]);
-            AssertMouthMorphCancellerLayer(generated.fx.layers[8]);
+            AssertBlinkLayer(generated.fx.layers[7], isReplaced: false);
+            AssertMouthMorphCancellerLayer(generated.fx.layers[8], isReplaced: false);
             AssertLeftGestureWeightLayer(generated.fx.layers[9]);
             AssertRightGestureWeightLayer(generated.fx.layers[10]);
             AssertLeftGestureSmoothingLayer(generated.fx.layers[11]);
@@ -141,8 +154,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmoteControlLayer(generated.fx.layers[5]);
             AssertFaceEmoteSetControlLayer(generated.fx.layers[6]);
             AssertFaceEmotePlayerLayer(generated.fx.layers[7]);
-            AssertBlinkLayer(generated.fx.layers[8]);
-            AssertMouthMorphCancellerLayer(generated.fx.layers[9]);
+            AssertBlinkLayer(generated.fx.layers[8], isReplaced: false);
+            AssertMouthMorphCancellerLayer(generated.fx.layers[9], isReplaced: false);
             AssertLeftGestureWeightLayer(generated.fx.layers[10]);
             AssertRightGestureWeightLayer(generated.fx.layers[11]);
             AssertLeftGestureSmoothingLayer(generated.fx.layers[12]);
@@ -166,13 +179,40 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmoteControlLayer(generated.fx.layers[5]);
             AssertFaceEmoteSetControlLayer(generated.fx.layers[6]);
             AssertFaceEmotePlayerLayer(generated.fx.layers[7]);
-            AssertBlinkLayer(generated.fx.layers[8]);
-            AssertMouthMorphCancellerLayer(generated.fx.layers[9]);
+            AssertBlinkLayer(generated.fx.layers[8], isReplaced: false);
+            AssertMouthMorphCancellerLayer(generated.fx.layers[9], isReplaced: false);
             AssertLeftGestureWeightLayer(generated.fx.layers[10]);
             AssertRightGestureWeightLayer(generated.fx.layers[11]);
             AssertLeftGestureSmoothingLayer(generated.fx.layers[12]);
             AssertRightGestureSmoothingLayer(generated.fx.layers[13]);
             AssertBypassLayer(generated.fx.layers[14]);
+        }
+
+        [Test]
+        public void Generate_UseBlinkAndMouthMorphCancelClip()
+        {
+            _av3Setting.UseBlinkClip = true;
+            _av3Setting.BlinkClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/TestAssets/Henge/Himiko_2022/animm/wink_for_blink.anim");
+
+            _av3Setting.UseMouthMorphCancelClip = true;
+            _av3Setting.MouthMorphCancelClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/TestAssets/Henge/Himiko_2022/animm/face_cancel.anim");
+
+            _fxGenerator.Generate(_menu);
+            var generated = GetGeneratedAssets();
+            AssertDefaultFaceLayer(generated.fx.layers[0]);
+            AssertLeftInputConverterLayer(generated.fx.layers[1]);
+            AssertRightInputConverterLayer(generated.fx.layers[2]);
+            AssertFaceEmoteLockLayer(generated.fx.layers[3]);
+            AssertFaceEmoteControlLayer(generated.fx.layers[4]);
+            AssertFaceEmoteSetControlLayer(generated.fx.layers[5]);
+            AssertFaceEmotePlayerLayer(generated.fx.layers[6]);
+            AssertBlinkLayer(generated.fx.layers[7], isReplaced: true);
+            AssertMouthMorphCancellerLayer(generated.fx.layers[8], isReplaced: true);
+            AssertLeftGestureWeightLayer(generated.fx.layers[9]);
+            AssertRightGestureWeightLayer(generated.fx.layers[10]);
+            AssertLeftGestureSmoothingLayer(generated.fx.layers[11]);
+            AssertRightGestureSmoothingLayer(generated.fx.layers[12]);
+            AssertBypassLayer(generated.fx.layers[13]);
         }
 
         private static void AssertDefaultFaceLayer(AnimatorControllerLayer layer)
@@ -325,16 +365,142 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(bypassState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
         }
 
-        private static void AssertBlinkLayer(AnimatorControllerLayer layer)
+        private static void AssertBlinkLayer(AnimatorControllerLayer layer, bool isReplaced)
         {
             Assert.That(layer.name, Is.EqualTo("BLINK"));
-            // TODO: Check other properties
+            Assert.That(layer.defaultWeight, Is.EqualTo(1));
+            Assert.That(layer.stateMachine.states.Count, Is.EqualTo(2));
+            Assert.That(layer.stateMachine.stateMachines.Count, Is.EqualTo(0));
+            Assert.That(layer.stateMachine.entryTransitions.Count, Is.EqualTo(0));
+            Assert.That(layer.stateMachine.anyStateTransitions.Count, Is.EqualTo(0));
+
+            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("DISABLE"));
+
+            var disableState = GetState(layer, "DISABLE");
+            AssertNormalState(disableState);
+            AssertEmptyClip(disableState.motion as AnimationClip);
+            Assert.That(disableState.transitions.Count, Is.EqualTo(1));
+            Assert.That(disableState.behaviours.Count, Is.EqualTo(0));
+            AssertHandmadeTransition(disableState.transitions[0]);
+            Assert.That(disableState.transitions[0].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[0].conditions.Count, Is.EqualTo(2));
+            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_BLINK_ENABLE"));
+            Assert.That(disableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(disableState.transitions[0].conditions[1].parameter, Is.EqualTo("SYNC_CN_FORCE_BLINK_DISABLE"));
+            Assert.That(disableState.transitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+
+            var enableState = GetState(layer, "ENABLE");
+            AssertNormalState(enableState);
+            if (isReplaced)
+            {
+                AssertBlinkClip_Wink(enableState.motion as AnimationClip);
+            }
+            else
+            {
+                AssertBlinkClip(enableState.motion as AnimationClip);
+            }
+            Assert.That(enableState.transitions.Count, Is.EqualTo(2));
+            Assert.That(enableState.behaviours.Count, Is.EqualTo(0));
+            AssertHandmadeTransition(enableState.transitions[0]);
+            Assert.That(enableState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[0].duration, Is.EqualTo(0));
+            Assert.That(enableState.transitions[0].conditions.Count, Is.EqualTo(1));
+            Assert.That(enableState.transitions[0].conditions[0].parameter, Is.EqualTo("CN_BLINK_ENABLE"));
+            Assert.That(enableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            AssertHandmadeTransition(enableState.transitions[1]);
+            Assert.That(enableState.transitions[1].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[1].duration, Is.EqualTo(0));
+            Assert.That(enableState.transitions[1].conditions.Count, Is.EqualTo(1));
+            Assert.That(enableState.transitions[1].conditions[0].parameter, Is.EqualTo("SYNC_CN_FORCE_BLINK_DISABLE"));
+            Assert.That(enableState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
         }
 
-        private static void AssertMouthMorphCancellerLayer(AnimatorControllerLayer layer)
+        private static void AssertMouthMorphCancellerLayer(AnimatorControllerLayer layer, bool isReplaced)
         {
             Assert.That(layer.name, Is.EqualTo("MOUTH MORPH CANCELLER"));
-            // TODO: Check other properties
+            Assert.That(layer.defaultWeight, Is.EqualTo(1));
+            Assert.That(layer.stateMachine.states.Count, Is.EqualTo(2));
+            Assert.That(layer.stateMachine.stateMachines.Count, Is.EqualTo(0));
+            Assert.That(layer.stateMachine.entryTransitions.Count, Is.EqualTo(0));
+            Assert.That(layer.stateMachine.anyStateTransitions.Count, Is.EqualTo(0));
+
+            Assert.That(layer.stateMachine.defaultState.name, Is.EqualTo("DISABLE"));
+
+            var disableState = GetState(layer, "DISABLE");
+            AssertNormalState(disableState);
+            AssertEmptyClip(disableState.motion as AnimationClip);
+            Assert.That(disableState.transitions.Count, Is.EqualTo(2));
+            Assert.That(disableState.behaviours.Count, Is.EqualTo(0));
+            AssertHandmadeTransition(disableState.transitions[0]);
+            Assert.That(disableState.transitions[0].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[0].duration, Is.EqualTo(0.1).Within(0.001));
+            Assert.That(disableState.transitions[0].conditions.Count, Is.EqualTo(3));
+            Assert.That(disableState.transitions[0].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(disableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(disableState.transitions[0].conditions[1].parameter, Is.EqualTo("Voice"));
+            Assert.That(disableState.transitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.Greater));
+            Assert.That(disableState.transitions[0].conditions[1].threshold, Is.EqualTo(0.01).Within(0.001));
+            Assert.That(disableState.transitions[0].conditions[2].parameter, Is.EqualTo("CN_MOUTH_MORPH_CANCEL_ENABLE"));
+            Assert.That(disableState.transitions[0].conditions[2].mode, Is.EqualTo(AnimatorConditionMode.If));
+            AssertHandmadeTransition(disableState.transitions[1]);
+            Assert.That(disableState.transitions[1].destinationState.name, Is.EqualTo("ENABLE"));
+            Assert.That(disableState.transitions[1].duration, Is.EqualTo(0));
+            Assert.That(disableState.transitions[1].conditions.Count, Is.EqualTo(3));
+            Assert.That(disableState.transitions[1].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(disableState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(disableState.transitions[1].conditions[1].parameter, Is.EqualTo("Voice"));
+            Assert.That(disableState.transitions[1].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.Greater));
+            Assert.That(disableState.transitions[1].conditions[1].threshold, Is.EqualTo(0.01).Within(0.001));
+            Assert.That(disableState.transitions[1].conditions[2].parameter, Is.EqualTo("CN_MOUTH_MORPH_CANCEL_ENABLE"));
+            Assert.That(disableState.transitions[1].conditions[2].mode, Is.EqualTo(AnimatorConditionMode.If));
+
+            var enableState = GetState(layer, "ENABLE");
+            AssertNormalState(enableState);
+            if (isReplaced)
+            {
+                AssertFaceCancelClip(enableState.motion as AnimationClip);
+            }
+            else
+            {
+                AssertMouthMorphCancelClip(enableState.motion as AnimationClip);
+            }
+            Assert.That(enableState.transitions.Count, Is.EqualTo(4));
+            Assert.That(enableState.behaviours.Count, Is.EqualTo(0));
+            AssertHandmadeTransition(enableState.transitions[0]);
+            Assert.That(enableState.transitions[0].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[0].duration, Is.EqualTo(0.1).Within(0.001));
+            Assert.That(enableState.transitions[0].conditions.Count, Is.EqualTo(2));
+            Assert.That(enableState.transitions[0].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(enableState.transitions[0].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(enableState.transitions[0].conditions[1].parameter, Is.EqualTo("Voice"));
+            Assert.That(enableState.transitions[0].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.Less));
+            Assert.That(enableState.transitions[0].conditions[1].threshold, Is.EqualTo(0.01).Within(0.001));
+            AssertHandmadeTransition(enableState.transitions[1]);
+            Assert.That(enableState.transitions[1].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[1].duration, Is.EqualTo(0.1).Within(0.01));
+            Assert.That(enableState.transitions[1].conditions.Count, Is.EqualTo(2));
+            Assert.That(enableState.transitions[1].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(enableState.transitions[1].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.If));
+            Assert.That(enableState.transitions[1].conditions[1].parameter, Is.EqualTo("CN_MOUTH_MORPH_CANCEL_ENABLE"));
+            Assert.That(enableState.transitions[1].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            AssertHandmadeTransition(enableState.transitions[2]);
+            Assert.That(enableState.transitions[2].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[2].duration, Is.EqualTo(0));
+            Assert.That(enableState.transitions[2].conditions.Count, Is.EqualTo(2));
+            Assert.That(enableState.transitions[2].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(enableState.transitions[2].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[2].conditions[1].parameter, Is.EqualTo("CN_MOUTH_MORPH_CANCEL_ENABLE"));
+            Assert.That(enableState.transitions[2].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            AssertHandmadeTransition(enableState.transitions[3]);
+            Assert.That(enableState.transitions[3].destinationState.name, Is.EqualTo("DISABLE"));
+            Assert.That(enableState.transitions[3].duration, Is.EqualTo(0));
+            Assert.That(enableState.transitions[3].conditions.Count, Is.EqualTo(2));
+            Assert.That(enableState.transitions[3].conditions[0].parameter, Is.EqualTo("IsLocal"));
+            Assert.That(enableState.transitions[3].conditions[0].mode, Is.EqualTo(AnimatorConditionMode.IfNot));
+            Assert.That(enableState.transitions[3].conditions[1].parameter, Is.EqualTo("Voice"));
+            Assert.That(enableState.transitions[3].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.Less));
+            Assert.That(enableState.transitions[3].conditions[1].threshold, Is.EqualTo(0.01).Within(0.001));
         }
 
         private static void AssertLeftGestureWeightLayer(AnimatorControllerLayer layer)
@@ -718,6 +884,44 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
         }
 
+        private static void AssertMouthMorphCancelClip(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(false));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(10));
+
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_aa")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_ch")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_ou")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_oh")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_niko")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_mu")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_heart")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_wa")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_bero")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "m_aaaa")), Is.EqualTo(0));
+        }
+
+        private static AnimationClip AssertFaceCancelClip(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(false));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(8));
+
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(0));
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(0));
+
+            return clip;
+        }
+
         private static void AssertNormalLayer(AnimatorControllerLayer layer)
         {
             Assert.That(layer.avatarMask == null, Is.True);
@@ -750,6 +954,34 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(bindings[0].path, Is.EqualTo("_ignored"));
         }
 
+        private static void AssertEmptyClip(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(false));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(0));
+        }
+
+        private static void AssertBlinkClip(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(true));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings[0].path, Is.EqualTo("body_face"));
+            Assert.That(bindings[0].propertyName, Is.EqualTo("blendShape.e_blink"));
+        }
+
+        private static void AssertBlinkClip_Wink(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(true));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings[0].path, Is.EqualTo("body_face"));
+            Assert.That(bindings[0].propertyName, Is.EqualTo("blendShape.face_wink"));
+        }
+
         private static void AssertNormalStateTransition(AnimatorStateTransition transition)
         {
             Assert.That(transition.offset, Is.EqualTo(0));
@@ -757,6 +989,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(transition.hasExitTime, Is.EqualTo(false));
             Assert.That(transition.hasFixedDuration, Is.EqualTo(true));
             Assert.That(transition.canTransitionToSelf, Is.EqualTo(false));
+            AssertNormalBaseTransition(transition);
+        }
+
+        private static void AssertHandmadeTransition(AnimatorStateTransition transition)
+        {
+            Assert.That(transition.offset, Is.EqualTo(0));
+            Assert.That(transition.interruptionSource, Is.EqualTo(TransitionInterruptionSource.None));
+            Assert.That(transition.hasExitTime, Is.EqualTo(false));
+            Assert.That(transition.hasFixedDuration, Is.EqualTo(true));
             AssertNormalBaseTransition(transition);
         }
 
