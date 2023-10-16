@@ -38,6 +38,7 @@ namespace Suzuryg.FaceEmo.NDMF
                                 DisableTrackingControlRecursively(layer.stateMachine);
                             }
                         }
+                        MonoBehaviour.DestroyImmediate(obj);
                         Debug.Log($"[FaceEmo] Succeeded to disable tracking controls.");
                     }
                     catch (Exception ex)

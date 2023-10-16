@@ -27,6 +27,7 @@ namespace Suzuryg.FaceEmo.NDMF
                     try
                     {
                         ctx.AvatarDescriptor.customEyeLookSettings.eyelidType = VRCAvatarDescriptor.EyelidType.None;
+                        MonoBehaviour.DestroyImmediate(obj);
                         Debug.Log($"[FaceEmo] Succeeded to disable blink.");
                     }
                     catch (Exception ex)
