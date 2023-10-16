@@ -1,5 +1,17 @@
 {
   "dependencies": {
+    "com.anatawa12.avatar-optimizer": {
+      "version": "file:com.anatawa12.avatar-optimizer",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.anatawa12.custom-localization-for-editor-extension": {
+      "version": "file:com.anatawa12.custom-localization-for-editor-extension",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.burst": {
       "version": "1.4.11",
       "depth": 1,
