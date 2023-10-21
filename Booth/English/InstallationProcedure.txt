@@ -1,0 +1,30 @@
+--------------------------------------------------------------------------------
+
+Installation Procedure
+
+* It is recommended to close VCC before proceeding with the installation work.
+
+1. Please import "FaceEmo-1.x.x-installer.unitypackage" into your project.
+2. A confirmation dialog will be displayed, please click on "Install".
+
+* Modular Avatar by bd_ will be installed at the same time as this tool.
+https://modular-avatar.nadena.dev/
+
+* VPMPackageAutoInstaller by anatawa12 is used to create the installer.
+https://github.com/anatawa12/VPMPackageAutoInstaller
+
+* Instead of using the installer, you can also add repositories through links in the "_repos" folder.
+
+--------------------------------------------------------------------------------
+
+If the installation fails
+
+- Please install the latest version of Creator Companion.
+https://vrchat.com/home/download
+
+- Please move your Unity project to a shallower directory (such as directly under the drive).
+
+- If Radial Inventory System version 4.4 or lower is installed, please update to 4.5 or higher.
+  If version 4.4 or lower remains after the update, please remove it.
+
+--------------------------------------------------------------------------------
