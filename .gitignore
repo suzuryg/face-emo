@@ -70,4 +70,5 @@ Assets/Editor/*
 !Assets/TestAssets
 UIElementsSchema/*
 Thry/
+!Booth/*.unitypackage
 
