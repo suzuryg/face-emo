@@ -42,7 +42,7 @@ namespace Suzuryg.FaceEmo.NDMF
         private static void ShowErrorMessage(Exception ex)
         {
             string errorMessage = string.Empty;
-            var currentCulture = CultureInfo.CurrentCulture;
+            var currentCulture = CultureInfo.CurrentUICulture;
             if (currentCulture.Name == "ja-JP")
             {
                 errorMessage += "まばたきの無効化に失敗しました。\n" +
