@@ -5,7 +5,9 @@ Installation Procedure
 * It is recommended to close VCC before proceeding with the installation work.
 
 1. Please import "FaceEmo-1.x.x-installer.unitypackage" into your project.
-2. A confirmation dialog will be displayed, please click on "Install".
+2. A confirmation message box will be displayed, please click on "Install".
+
+* If a message appears asking you to update other tools, stop the installation once, open VCC, and update the other tools.
 
 * Modular Avatar by bd_ will be installed at the same time as this tool.
 https://modular-avatar.nadena.dev/
@@ -13,13 +15,15 @@ https://modular-avatar.nadena.dev/
 * VPMPackageAutoInstaller by anatawa12 is used to create the installer.
 https://github.com/anatawa12/VPMPackageAutoInstaller
 
-* Instead of using the installer, you can also add repositories through links in the "_repos" folder.
-
 --------------------------------------------------------------------------------
 
 If the installation fails
 
-- Please install the latest version of Creator Companion.
+- Please install this tool from VCC instead of using the installer.
+  The "_repos" folder contains links to add FaceEmo and Modular Avatar to VCC.
+  If the links do not work, please restart VCC.
+
+- Please install the latest version of VCC.
 https://vrchat.com/home/download
 
 - Please move your Unity project to a shallower directory (such as directly under the drive).
