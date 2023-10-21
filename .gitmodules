@@ -10,3 +10,7 @@
 [submodule "External/Extenject"]
 	path = External/Extenject
 	url = git@github.com:suzuryg/Extenject.git
+[submodule "External/VPMPackageAutoInstaller"]
+	path = External/VPMPackageAutoInstaller
+	url = git@github.com:suzuryg/VPMPackageAutoInstaller.git
+	branch = face-emo
