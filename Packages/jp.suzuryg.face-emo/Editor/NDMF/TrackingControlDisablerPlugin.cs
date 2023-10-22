@@ -30,6 +30,7 @@ namespace Suzuryg.FaceEmo.NDMF
                 {
                     try
                     {
+#if USE_MODULAR_AVATAR
                         var fx = GetFxLayer(ctx.AvatarDescriptor);
                         if (fx != null)
                         {
@@ -40,6 +41,9 @@ namespace Suzuryg.FaceEmo.NDMF
                         }
                         MonoBehaviour.DestroyImmediate(obj);
                         Debug.Log($"[FaceEmo] Succeeded to disable tracking controls.");
+#else
+                        throw new InvalidOperationException("Please install ModularAvatar!");
+#endif
                     }
                     catch (Exception ex)
                     {

@@ -22,6 +22,11 @@
             "name": "nadena.dev.ndmf",
             "expression": "",
             "define": "USE_NDMF"
+        },
+        {
+            "name": "nadena.dev.modular-avatar",
+            "expression": "",
+            "define": "USE_MODULAR_AVATAR"
         }
     ],
     "noEngineReferences": false
