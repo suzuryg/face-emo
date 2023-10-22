@@ -155,7 +155,16 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     var existing = subAvatar.gameObject.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
                     if (existing != null)
                     {
-                        UnityEngine.Object.DestroyImmediate(existing);
+                        // TODO: handle objects inside prefab
+                        try
+                        {
+                            UnityEngine.Object.DestroyImmediate(existing);
+                        }
+                        catch (InvalidOperationException ioe)
+                        {
+                            EditorUtility.DisplayDialog(DomainConstants.SystemName, GetPrefabErrorMessage() + "\n\n" + existing.GetFullPath(), "OK");
+                            throw new FaceEmoException("Failed to delete existing instance.", ioe);
+                        }
                     }
 
                     var instantiated = PrefabUtility.InstantiatePrefab(_aV3Setting.MARootObjectPrefab) as GameObject;
@@ -1040,7 +1049,16 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 var existing = rootObject.transform.Find(prefabName)?.gameObject;
                 if (existing != null)
                 {
-                    UnityEngine.Object.DestroyImmediate(existing);
+                    // TODO: handle objects inside prefab
+                    try
+                    {
+                        UnityEngine.Object.DestroyImmediate(existing);
+                    }
+                    catch (InvalidOperationException ioe)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, GetPrefabErrorMessage() + "\n\n" + existing.GetFullPath(), "OK");
+                        throw new FaceEmoException("Failed to delete existing instance.", ioe);
+                    }
                 }
 
                 // Check config
@@ -1507,6 +1525,19 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 #else
             Debug.LogError("Please install Modular Avatar!");
 #endif
+        }
+
+        // workaround (to be deleted)
+        private static string GetPrefabErrorMessage()
+        {
+            var locale = LocalizationSetting.GetLocale();
+            switch (locale)
+            {
+                case Locale.ja_JP:
+                    return "下記のオブジェクトがPrefab内にあるため、表情メニューをアバターに適用できません。\nFaceEmoPrefabを削除してから再度適用してください。";
+                default:
+                    return "The facial expression menu cannot be applied to the avatar because the following object is in the Prefab.\nPlease delete FaceEmoPrefab and apply the menu again.";
+            }
         }
     }
 }
