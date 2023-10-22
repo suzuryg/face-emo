@@ -98,7 +98,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
 
         private static Locale GetDefaultLocale()
         {
-            var currentCulture = CultureInfo.CurrentCulture;
+            var currentCulture = CultureInfo.CurrentUICulture;
             if (currentCulture.Name == "ja-JP")
             {
                 return Locale.ja_JP;
