@@ -12,6 +12,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Copy = "Copy";
         public string Common_Combine = "Combine";
         public string Common_Apply = "Apply";
+        public string Common_Import = "Import";
+        public string Common_Colon = ": ";
 
         public string Common_Neutral = "Neutral";
         public string Common_Fist = "Fist";
@@ -184,6 +186,12 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Message_ClearMouthMorphBlendShapes = "Delete all mouth morph blend shapes?";
         public string InspectorView_Message_ClearExcludedBlendShapes = "Delete all excluded blend shapes?";
 
+        public string InspectorView_ImportExpressionPatterns = "Import Expression Patterns From Avatar";
+        public string InspectorView_Message_ImportExpressionPatterns = "Import expression patterns from the avatar?";
+        public string InspectorView_Info_ImportExpressionPatterns = "If the avatar is not in standard configuration, the expression patterns may not load correctly.";
+        public string InspectorView_ImportOptionalSettings = "Import Optional Settings From Avatar";
+        public string InspectorView_Message_ImportOptionalSettings = "Import optional settings from the avatar?";
+
         public string InspectorView_ApplyingToMultipleAvatars = "Applying Facial Expression Menu to Multiple Avatars";
         public string InspectorView_MenuPrefab = "Facial Expression Menu Prefab";
         public string InspectorView_EmptyAvatars = "Press the + button to add an target avatar.";
@@ -339,6 +347,17 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string FxGenerator_Message_BlinkBlendShapeNotFound = "Blink blend shape was not found. To enable blink, set \"Eyelids Type\" in AvatarDescriptor to \"Blendshapes\" and set the blend shape for blink to \"Blink\".";
 
         public string ExpressionImporter_ExpressionPattern = "ExpressionPattern";
+        public string ExpressionImporter_Expressions= " Expressions";
+        public string ExpressionImporter_Blink = "Blink (AnimationClip)";
+        public string ExpressionImporter_MouthMorphCanceler = "MouthMorphCanceler (AnimationClip)";
+        public string ExpressionImporter_Contacts = "Contacts";
+        public string ExpressionImporter_Message_PatternsImported = "The following expression patterns were imported from the avatar.";
+        public string ExpressionImporter_Message_NoPatterns = "No importable expression patterns were found.";
+        public string ExpressionImporter_Info_BehaviorDifference = "Expression controls may behave differently from the original avatar.\n" +
+            "For example, facial expressions of the left and right hands are not automatically synthesized, so the post-composite facial expressions must be created in the gesture table.";
+        public string ExpressionImporter_Message_OptionalSettingsImported = "The following optional settings were imported from the avatar.";
+        public string ExpressionImporter_Message_NoOptionalSettings = "No importable optional settings were found.";
+        public string ExpressionImporter_Info_ChangeOptionalSettings = "If you want to change the optional settings, select the following object in the hierarchy and change the settings from the inspector.";
 
         public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please see the console for more details.";
 

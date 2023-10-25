@@ -243,88 +243,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
             EditorGUILayout.Space(10);
 
-            // Import button (test)
-            using (new EditorGUI.DisabledScope(!canLaunch))
-            {
-                if (GUILayout.Button("Import Expression Patterns From Avatar") &&
-                    OptoutableDialog.Show(DomainConstants.SystemName,
-                        "Import Expression Patterns?",
-                        "Import", _localizationTable.Common_Cancel, isRiskyAction: false))
-                {
-                    try
-                    {
-                        var menu = _menuRepository.Load(string.Empty);
-                        var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir, _localizationSetting);
-                        var importedPatterns = importer.ImportExpressionPatterns(avatarDescriptor);
-                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-
-                        _menuRepository.Save(string.Empty, menu, "Import Expression Patterns From Avatar");
-                        _onMenuUpdated.OnNext((menu, isModified: true));
-
-                        string message = string.Empty;
-                        if (importedPatterns.Any())
-                        {
-                            message = "The following expression patterns were imported.\n";
-                            foreach (var pattern in importedPatterns)
-                            {
-                                message += $"\n{pattern.DisplayName}: {pattern.Branches.Count} expressions";
-                            }
-                        }
-                        else
-                        {
-                            message = "No expression patterns were imported.";
-                        }
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, message, "OK");
-                    }
-                    catch (Exception ex)
-                    {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Error!", "OK");
-                        Debug.LogException(ex);
-                    }
-                }
-
-                EditorGUILayout.Space(5);
-
-                if (GUILayout.Button("Import Optional Settings From Avatar") &&
-                    OptoutableDialog.Show(DomainConstants.SystemName,
-                        "Import Optional Settings?",
-                        "Import", _localizationTable.Common_Cancel, isRiskyAction: false))
-                {
-                    try
-                    {
-                        var menu = _menuRepository.Load(string.Empty);
-                        var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir, _localizationSetting);
-                        var importedClips = importer.ImportOptionalClips(avatarDescriptor);
-                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
-
-                        _menuRepository.Save(string.Empty, menu, "Import Optional Settings From Avatar");
-                        _onMenuUpdated.OnNext((menu, isModified: true));
-
-                        var messageItems = new List<string>();
-                        if (importedClips.blink != null) { messageItems.Add("Blink"); }
-                        if (importedClips.mouthMorphCancel != null) { messageItems.Add("MouthMorphCanceler"); }
-
-                        string message = string.Empty;
-                        if (messageItems.Any())
-                        {
-                            message = "The following optional settings were imported.\n\n";
-                            message += string.Join("\n", messageItems);
-                        }
-                        else
-                        {
-                            message = "No optional settings were imported.";
-                        }
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, message, "OK");
-                    }
-                    catch (Exception ex)
-                    {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, "Error!", "OK");
-                        Debug.LogException(ex);
-                    }
-                }
-            }
+            // Import buttons
+            Field_ImportButtons();
 
             EditorGUILayout.Space(10);
 
@@ -527,6 +447,127 @@ namespace Suzuryg.FaceEmo.Detail.View
             else if (PackageVersionChecker.ModularAvatar == "1.5.0-beta-4" || PackageVersionChecker.ModularAvatar == "1.5.0")
             {
                 HelpBoxDrawer.ErrorLayout(_localizationTable.InspectorView_Message_MAVersionError_1_5_0);
+            }
+        }
+
+        private void Field_ImportButtons()
+        {
+            var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
+            var av3Setting = _av3Setting.targetObject as AV3Setting;
+            var canImport = avatarDescriptor != null && av3Setting != null;
+            using (new EditorGUI.DisabledScope(!canImport))
+            {
+                var defaultHeight = OptoutableDialog.GetHeightWithoutMessage();
+                var patternConfirms = new List<(MessageType type, string message)>()
+                {
+                    (MessageType.None, _localizationTable.InspectorView_Message_ImportExpressionPatterns),
+                    (MessageType.None, string.Empty),
+                    (MessageType.Info, _localizationTable.InspectorView_Info_ImportExpressionPatterns),
+                };
+
+                if (GUILayout.Button(_localizationTable.InspectorView_ImportExpressionPatterns) &&
+                    OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                        _localizationTable.Common_Import, _localizationTable.Common_Cancel, isRiskyAction: false,
+                        additionalMessages: patternConfirms, windowHeight: defaultHeight))
+                {
+                    try
+                    {
+                        var menu = _menuRepository.Load(string.Empty);
+                        var importer = new ExpressionImporter(menu, av3Setting, ImportUtility.GetNewAssetDir(), _localizationSetting);
+                        var importedPatterns = importer.ImportExpressionPatterns(avatarDescriptor);
+
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                        _menuRepository.Save(string.Empty, menu, "Import Expression Patterns");
+                        _onMenuUpdated.OnNext((menu, isModified: true));
+
+                        var patternResults = new List<(MessageType type, string message)>();
+                        if (importedPatterns.Any())
+                        {
+                            patternResults.Add((MessageType.None, _localizationTable.ExpressionImporter_Message_PatternsImported));
+                            patternResults.Add((MessageType.None, string.Empty));
+
+                            foreach (var pattern in importedPatterns)
+                            {
+                                patternResults.Add((MessageType.None, $"{pattern.DisplayName}{_localizationTable.Common_Colon}{pattern.Branches.Count}{_localizationTable.ExpressionImporter_Expressions}"));
+                            }
+
+                            patternResults.Add((MessageType.None, string.Empty));
+                            patternResults.Add((MessageType.Info, LocalizationSetting.InsertLineBreak(_localizationTable.ExpressionImporter_Info_BehaviorDifference)));
+                        }
+                        else
+                        {
+                            patternResults.Add((MessageType.None, _localizationTable.ExpressionImporter_Message_NoPatterns));
+                        }
+
+                        OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                            "OK", isRiskyAction: false,
+                            additionalMessages: patternResults, windowHeight: patternResults.Count > 1 ? defaultHeight : OptoutableDialog.DefaultWindowHeight);
+                    }
+                    catch (Exception ex)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ErrorHandler_Message_ErrorOccured + "\n\n" + ex?.Message, "OK");
+                        Debug.LogException(ex);
+                    }
+                }
+
+                EditorGUILayout.Space(5);
+
+                if (GUILayout.Button(_localizationTable.InspectorView_ImportOptionalSettings) &&
+                    OptoutableDialog.Show(DomainConstants.SystemName, _localizationTable.InspectorView_Message_ImportOptionalSettings,
+                        _localizationTable.Common_Import, _localizationTable.Common_Cancel, isRiskyAction: false))
+                {
+                    try
+                    {
+                        var menu = _menuRepository.Load(string.Empty);
+                        var importer = new ExpressionImporter(menu, av3Setting, ImportUtility.GetNewAssetDir(), _localizationSetting);
+                        var importedClips = importer.ImportOptionalClips(avatarDescriptor);
+
+                        var contactImporter = new ContactSettingImporter(av3Setting);
+                        var importedContacts = contactImporter.Import(avatarDescriptor);
+
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                        _onMenuUpdated.OnNext((menu, isModified: true));
+
+                        var optionResults = new List<(MessageType type, string message)>();
+                        if (importedClips.blink != null)
+                        {
+                            optionResults.Add((MessageType.None, string.Empty));
+                            optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_Blink}{_localizationTable.Common_Colon}{importedClips.blink.name}"));
+                        }
+                        if (importedClips.mouthMorphCancel != null)
+                        {
+                            optionResults.Add((MessageType.None, string.Empty));
+                            optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_MouthMorphCanceler}{_localizationTable.Common_Colon}{importedClips.mouthMorphCancel.name}"));
+                        }
+                        if (importedContacts.Any())
+                        {
+                            optionResults.Add((MessageType.None, string.Empty));
+                            optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_Contacts}{_localizationTable.Common_Colon}"));
+                            foreach (var contact in importedContacts)
+                            {
+                                optionResults.Add((MessageType.None, contact.name));
+                            }
+                        }
+
+                        if (optionResults.Any())
+                        {
+                            optionResults.Insert(0, (MessageType.None, _localizationTable.ExpressionImporter_Message_OptionalSettingsImported));
+                        }
+                        else
+                        {
+                            optionResults.Add((MessageType.None, _localizationTable.ExpressionImporter_Message_NoOptionalSettings));
+                        }
+
+                        OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                            "OK", isRiskyAction: false,
+                            additionalMessages: optionResults, windowHeight: optionResults.Count > 1 ? defaultHeight : OptoutableDialog.DefaultWindowHeight);
+                    }
+                    catch (Exception ex)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ErrorHandler_Message_ErrorOccured + "\n\n" + ex?.Message, "OK");
+                        Debug.LogException(ex);
+                    }
+                }
             }
         }
 

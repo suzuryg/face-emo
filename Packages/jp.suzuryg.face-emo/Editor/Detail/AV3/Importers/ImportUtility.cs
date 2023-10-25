@@ -1,5 +1,6 @@
 ﻿using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -60,6 +61,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
             return null;
+        }
+
+        public static string GetNewAssetDir()
+        {
+            return "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
         }
     }
 }
