@@ -48,6 +48,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
             var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
 
+            var subBody = avatarRoot.transform.Find("Copied/body_face").gameObject.GetComponent<SkinnedMeshRenderer>();
+            _av3Setting.AdditionalSkinnedMeshes.Add(subBody);
+
             var importedPatterns = _importer.ImportExpressionPatterns(avartarDescriptor);
             Assert.That(importedPatterns.Count, Is.EqualTo(1));
             Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(12));
@@ -64,6 +67,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var zito2 = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito_(2).anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
             var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
+            var subJoy = AssertSubJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sub_joy.anim"));
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -117,7 +121,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(mode.Branches[5].IsRightTriggerUsed, Is.EqualTo(false));
             Assert.That(mode.Branches[5].IsReachable, Is.EqualTo(true));
             AssertNormalBranch(mode.Branches[6], Hand.Left, HandGesture.HandOpen, fun, true, true);
-            AssertNormalBranch(mode.Branches[7], Hand.Left, HandGesture.Fingerpoint, surprised, false, false);
+            AssertNormalBranch(mode.Branches[7], Hand.Left, HandGesture.Fingerpoint, subJoy, false, false);
             AssertNormalBranch(mode.Branches[8], Hand.Left, HandGesture.Victory, joy, false, false);
             AssertNormalBranch(mode.Branches[9], Hand.Left, HandGesture.RockNRoll, zito, false, false);
             AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.HandGun, dislike, false, false);
@@ -524,6 +528,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_mabataki")), Is.EqualTo(100));
+
+            return clip;
+        }
+
+        private static AnimationClip AssertSubJoy(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(false));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(1));
+
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("Copied/body_face", "face_joy")), Is.EqualTo(100));
 
             return clip;
         }

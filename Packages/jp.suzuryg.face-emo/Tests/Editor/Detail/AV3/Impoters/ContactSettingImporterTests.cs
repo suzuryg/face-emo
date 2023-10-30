@@ -35,6 +35,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
             var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
 
+            var subBody = avatarRoot.transform.Find("Copied/body_face").gameObject.GetComponent<SkinnedMeshRenderer>();
+            _av3Setting.AdditionalSkinnedMeshes.Add(subBody);
+
             var externalFacePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TestAssets/Suzuryg/ExternalContacts/ExternalContact_Face.prefab");
             var externalFace = PrefabUtility.InstantiatePrefab(externalFacePrefab) as GameObject;
             externalFace.transform.parent = avatarRoot.transform;

@@ -1,4 +1,5 @@
-﻿using Suzuryg.FaceEmo.Domain;
+﻿using Suzuryg.FaceEmo.Components.Settings;
+using Suzuryg.FaceEmo.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -10,6 +11,26 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 {
     internal class ImportUtility
     {
+        public static Dictionary<BlendShape, float> GetAllFaceBlendShapeValues(VRCAvatarDescriptor avatarDescriptor, AV3Setting av3Setting)
+        {
+            var excludeBlink = false;
+            var excludeLipSync = false;
+
+            var faceBlendShapeValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
+
+            foreach (var mesh in av3Setting.AdditionalSkinnedMeshes)
+            {
+                var blendShapes = AV3Utility.GetBlendShapeValues(mesh, avatarDescriptor, excludeBlink, excludeLipSync);
+                foreach (var item in blendShapes) { faceBlendShapeValues[item.Key] = item.Value; }
+            }
+            foreach (var excluded in av3Setting.ExcludedBlendShapes)
+            {
+                while (faceBlendShapeValues.ContainsKey(excluded)) { faceBlendShapeValues.Remove(excluded); }
+            }
+
+            return faceBlendShapeValues;
+        }
+
         public static bool IsFaceMotion(Motion motion, IEnumerable<BlendShape> faceBlendShapes)
         {
             if (motion == null) { return false; }

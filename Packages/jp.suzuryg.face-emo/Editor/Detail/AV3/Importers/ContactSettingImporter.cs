@@ -27,8 +27,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         public List<VRCContactReceiver> Import(VRCAvatarDescriptor avatarDescriptor)
         {
-            // TODO: use additional meshes
-            _faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false).Select(x => x.Key).ToList();
+            _faceBlendShapes = ImportUtility.GetAllFaceBlendShapeValues(avatarDescriptor, _av3Setting).Select(x => x.Key).ToList();
 
             var found = avatarDescriptor.gameObject.GetComponentsInChildren(typeof(VRCContactReceiver), includeInactive: true);
             var paramToContacts = new Dictionary<string, List<VRCContactReceiver>>();

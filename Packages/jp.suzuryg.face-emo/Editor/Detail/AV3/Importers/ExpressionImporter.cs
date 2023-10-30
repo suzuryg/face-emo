@@ -31,8 +31,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         public List<IMode> ImportExpressionPatterns(VRCAvatarDescriptor avatarDescriptor)
         {
-            // TODO: use additional meshes
-            _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
+            _faceBlendShapesValues = ImportUtility.GetAllFaceBlendShapeValues(avatarDescriptor, _av3Setting);
 
             var fx = ImportUtility.GetFxLayer(avatarDescriptor);
             if (fx == null) { return new List<IMode>(); }
@@ -50,8 +49,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         public (AnimationClip blink, AnimationClip mouthMorphCancel) ImportOptionalClips(VRCAvatarDescriptor avatarDescriptor)
         {
-            // TODO: use additional meshes
-            _faceBlendShapesValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink: false, excludeLipSync: false);
+            _faceBlendShapesValues = ImportUtility.GetAllFaceBlendShapeValues(avatarDescriptor, _av3Setting);
 
             var fx = ImportUtility.GetFxLayer(avatarDescriptor);
             if (fx == null) { return (null, null); }
