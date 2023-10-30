@@ -38,7 +38,7 @@
       }
     },
     "com.anatawa12.avatar-optimizer": {
-      "version": "1.5.8",
+      "version": "1.5.10",
       "dependencies": {
         "com.anatawa12.custom-localization-for-editor-extension": "^1.0.0",
         "nadena.dev.ndmf": "^1.0.0",
