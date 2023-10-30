@@ -338,6 +338,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string FxGenerator_Message_FaceMeshNotFound = "Face mesh was not found. Default face and blink may not be properly animated.";
         public string FxGenerator_Message_BlinkBlendShapeNotFound = "Blink blend shape was not found. To enable blink, set \"Eyelids Type\" in AvatarDescriptor to \"Blendshapes\" and set the blend shape for blink to \"Blink\".";
 
+        public string ExpressionImporter_ExpressionPattern = "ExpressionPattern";
+
         public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please see the console for more details.";
 
         public string ExMenu_EmoteSelect = "Emote Select";

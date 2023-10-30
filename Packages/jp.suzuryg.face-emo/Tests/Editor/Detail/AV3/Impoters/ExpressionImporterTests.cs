@@ -19,6 +19,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         private Domain.Menu _menu;
         private AV3Setting _av3Setting;
+        private LocalizationSetting _localizationSetting;
 
         private Locale _locale;
 
@@ -27,18 +28,19 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         {
             _menu = new Domain.Menu();
             _av3Setting = ScriptableObject.CreateInstance<AV3Setting>();
+            _localizationSetting = new LocalizationSetting();
 
             AssetDatabase.DeleteAsset(AssetDirPath);
-            _importer = new ExpressionImporter(_menu, _av3Setting, AssetDirPath);
+            _importer = new ExpressionImporter(_menu, _av3Setting, AssetDirPath, _localizationSetting);
 
             _locale = LocalizationSetting.GetLocale();
-            new LocalizationSetting().SetLocale(Locale.en_US);
+            _localizationSetting.SetLocale(Locale.en_US);
         }
 
         [TearDown]
         public void TearDown()
         {
-            new LocalizationSetting().SetLocale(_locale);
+            _localizationSetting.SetLocale(_locale);
         }
 
         [Test]
@@ -83,7 +85,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var id = _menu.Registered.Order.First();
             var mode = _menu.Registered.GetMode(id);
             Assert.That(_menu.DefaultSelection, Is.EqualTo(id));
-            Assert.That(mode.DisplayName, Is.EqualTo("Imported"));
+            Assert.That(mode.DisplayName, Is.EqualTo("ExpressionPattern1"));
             Assert.That(mode.ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(mode.UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(mode.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
@@ -187,7 +189,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var id = _menu.Registered.Order.First();
             var mode = _menu.Registered.GetMode(id);
             Assert.That(_menu.DefaultSelection, Is.EqualTo(id));
-            Assert.That(mode.DisplayName, Is.EqualTo("Imported"));
+            Assert.That(mode.DisplayName, Is.EqualTo("ExpressionPattern1"));
             Assert.That(mode.ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(mode.UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(mode.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
@@ -287,7 +289,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(_menu.DefaultSelection, Is.EqualTo(id1));
 
             var mode1 = _menu.Registered.GetMode(id1);
-            Assert.That(mode1.DisplayName, Is.EqualTo("Imported_1"));
+            Assert.That(mode1.DisplayName, Is.EqualTo("ExpressionPattern1"));
             Assert.That(mode1.ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(mode1.UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(mode1.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
@@ -297,7 +299,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(mode1.Branches.Count, Is.EqualTo(14));
 
             var mode2 = _menu.Registered.GetMode(id2);
-            Assert.That(mode2.DisplayName, Is.EqualTo("Imported_2"));
+            Assert.That(mode2.DisplayName, Is.EqualTo("ExpressionPattern2"));
             Assert.That(mode2.ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(mode2.UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(mode2.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));
@@ -307,7 +309,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(mode2.Branches.Count, Is.EqualTo(4));
 
             var mode3 = _menu.Registered.GetMode(id3);
-            Assert.That(mode3.DisplayName, Is.EqualTo("Imported_3"));
+            Assert.That(mode3.DisplayName, Is.EqualTo("ExpressionPattern3"));
             Assert.That(mode3.ChangeDefaultFace, Is.EqualTo(false));
             Assert.That(mode3.UseAnimationNameAsDisplayName, Is.EqualTo(false));
             Assert.That(mode3.EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Tracking));

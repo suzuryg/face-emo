@@ -255,7 +255,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                     {
                         var menu = _menuRepository.Load(string.Empty);
                         var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir);
+                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir, _localizationSetting);
                         var importedPatterns = importer.ImportExpressionPatterns(avatarDescriptor);
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
@@ -295,7 +295,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                     {
                         var menu = _menuRepository.Load(string.Empty);
                         var importedAssetDir = "Assets/Suzuryg/FaceEmo/Imported/" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir);
+                        var importer = new ExpressionImporter(menu, _av3Setting.targetObject as AV3Setting, importedAssetDir, _localizationSetting);
                         var importedClips = importer.ImportOptionalClips(avatarDescriptor);
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 

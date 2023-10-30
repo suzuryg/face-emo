@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FaceEmo.Components.Settings;
+using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View.Element;
 using Suzuryg.FaceEmo.Domain;
 using System.Collections.Generic;
@@ -17,16 +18,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         private Domain.Menu _menu;
         private AV3Setting _av3Setting;
         private string _assetDir;
+        private IReadOnlyLocalizationSetting _localizationSetting;
 
         private Dictionary<BlendShape, float> _faceBlendShapesValues = new Dictionary<BlendShape, float>();
         private Dictionary<Motion, AnimationClip> _firstFrameCache = new Dictionary<Motion, AnimationClip>();
         private Dictionary<Motion, AnimationClip> _lastFrameCache = new Dictionary<Motion, AnimationClip>();
 
-        public ExpressionImporter(Domain.Menu menu, AV3Setting av3Setting, string assetDir)
+        public ExpressionImporter(Domain.Menu menu, AV3Setting av3Setting, string assetDir, IReadOnlyLocalizationSetting localizationSetting)
         {
             _menu = menu;
             _av3Setting = av3Setting;
             _assetDir = assetDir;
+            _localizationSetting = localizationSetting;
         }
 
         public List<IMode> ImportExpressionPatterns(VRCAvatarDescriptor avatarDescriptor)
@@ -74,8 +77,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             layers.Reverse();
 
             var modeId = _menu.AddMode(Domain.Menu.RegisteredId);
-            // TODO: localization
-            _menu.ModifyModeProperties(modeId, displayName: "Imported");
+            _menu.ModifyModeProperties(modeId, displayName: _localizationSetting.Table.ExpressionImporter_ExpressionPattern + "1");
 
             foreach (var layer in layers)
             {
@@ -416,8 +418,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             {
                 var modeId = _menu.AddMode(Domain.Menu.RegisteredId);
 
-                // TODO: localization
-                _menu.ModifyModeProperties(modeId, displayName: $"Imported_{i + 1}");
+                _menu.ModifyModeProperties(modeId, displayName: $"{_localizationSetting.Table.ExpressionImporter_ExpressionPattern}{i + 1}");
 
                 foreach (var branch in modes[i])
                 {
