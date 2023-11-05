@@ -39,6 +39,14 @@ By adding an expression pattern, you can set up switching of expression patterns
 For more about expression patterns, see [Reference > Expression Pattern](../../reference/pattern).
 :::
 
+Make sure that the "Default Selected Pattern" is set to "Smile".
+
+![Check Default Selected Pattern](check_default_pattern.png)
+
+:::tip
+If expression patterns have been imported from the avatar, change the "Default Selected Pattern" to "Smile" now.
+:::
+
 ---
 ## Adding an Expression
 
