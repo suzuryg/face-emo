@@ -404,5 +404,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "The changed window arrangement will be reflected the next time you start up.";
         public string Hints_ExpressionPreview = "The expression preview screen can be moved, rotated, and zoomed in and out in the same way as the scene view. " +
             "The camera settings (like FOV) of the expression preview screen inherit the settings from the scene view.";
+        public string Hints_SeparatedFaceMeshes = "If the face mesh is divided into several parts, some blend shapes may not be displayed. In this case, select the \"FaceEmo\" object in the Hierarchy and change the \"Additional Expression Meshes\" setting from the Inspector.";
     }
 }
