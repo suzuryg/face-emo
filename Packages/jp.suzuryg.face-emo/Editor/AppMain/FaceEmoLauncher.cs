@@ -1,6 +1,8 @@
-﻿using Suzuryg.FaceEmo.Domain;
+﻿using Suzuryg.FaceEmo.Detail.AV3.Importers;
+using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Components;
+using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Drawing;
@@ -8,7 +10,9 @@ using Suzuryg.FaceEmo.Detail.View;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using Suzuryg.FaceEmo.Detail.Localization;
 using UniRx;
 using VRC.SDK3.Avatars.Components;
@@ -45,6 +49,7 @@ namespace Suzuryg.FaceEmo.AppMain
                 _inspectorView = installer.Container.Resolve<InspectorView>().AddTo(_disposables);
                 _inspectorView.OnLaunchButtonClicked.Synchronize().Subscribe(_ => Launch(target as FaceEmoLauncherComponent)).AddTo(_disposables);
                 _inspectorView.OnLocaleChanged.Synchronize().Subscribe(ChangeLocale).AddTo(_disposables);
+                _inspectorView.OnMenuUpdated.Synchronize().Subscribe(x => UpdateMenu(x.menu, x.isModified)).AddTo(_disposables);
 
                 // Disposables
                 installer.Container.Resolve<InspectorThumbnailDrawer>().AddTo(_disposables);
@@ -93,6 +98,15 @@ namespace Suzuryg.FaceEmo.AppMain
 #else
             EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.GetTable(LocalizationSetting.GetLocale()).Common_Message_MAIsNotInstalled, "OK");
 #endif
+        }
+
+        private void UpdateMenu(IMenu menu, bool isModified)
+        {
+            var existingWindows = Resources.FindObjectsOfTypeAll<MainWindow>();
+            if (existingWindows.Any())
+            {
+                existingWindows.First().UpdateMenu(menu, isModified);
+            }
         }
 
         private void ChangeLocale(Locale locale)
@@ -212,33 +226,138 @@ namespace Suzuryg.FaceEmo.AppMain
                 if (!exists)
                 {
                     var launcherObject = Create(new MenuCommand(null, 0));
-                    new FaceEmoInstaller(launcherObject);
+                    var installer = new FaceEmoInstaller(launcherObject);
 
                     var launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
                     launcher.AV3Setting.TargetAvatar = avatarDescriptor;
-                    launcher.AV3Setting.ContactReceivers = GetContactReceivers(avatarDescriptor);
+
+                    try
+                    {
+                        ImportPatternsAndOptions(launcherObject, installer, avatarDescriptor);
+                    }
+                    catch (Exception ex)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Launcher_Message_ImportError + "\n\n" + ex?.Message, "OK");
+                        Debug.LogError(loc.Launcher_Message_ImportError + ex?.ToString());
+
+                        UnityEngine.Object.DestroyImmediate(launcher);
+
+                        installer = new FaceEmoInstaller(launcherObject);
+
+                        launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
+                        launcher.AV3Setting.TargetAvatar = avatarDescriptor;
+                    }
+
                     Launch(launcher);
                 }
             }
             GUI.DrawTexture(selectionRect, icon, ScaleMode.ScaleToFit, alphaBlend: true);
         }
 
-        private static List<MonoBehaviour> GetContactReceivers(VRCAvatarDescriptor avatarDescriptor)
+        private static void ImportPatternsAndOptions(GameObject rootObject, FaceEmoInstaller installer, VRCAvatarDescriptor avatarDescriptor)
         {
-            var components = avatarDescriptor.gameObject.GetComponentsInChildren(typeof(VRCContactReceiver), includeInactive: true);
-            var receivers = new List<MonoBehaviour>();
-            foreach (var item in components)
+            using (var disposables = new CompositeDisposable())
             {
-                if (item is VRCContactReceiver contactReceiver &&
-                    !contactReceiver.parameter.StartsWith("MPB_") && // exclude marshmallow pb
-                    contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_NADENADE_POINT &&
-                    contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L &&
-                    contactReceiver.parameter != AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R)
+                // resolve
+                var av3Setting = installer.Container.Resolve<AV3Setting>();
+                var menuRepository = installer.Container.Resolve<IMenuRepository>();
+                var selectionSynchronizer = installer.Container.Resolve<SelectionSynchronizer>().AddTo(disposables);
+                var localizationSetting = installer.Container.Resolve<IReadOnlyLocalizationSetting>();
+                var localizationTable = localizationSetting.Table;
+
+                // initialize
+                var menu = menuRepository.Load(string.Empty);
+                var expressionImporter = new ExpressionImporter(menu, av3Setting, ImportUtility.GetNewAssetDir(), localizationSetting);
+                var contactImporter = new ContactSettingImporter(av3Setting);
+
+                // import
+                var importedPatterns = expressionImporter.ImportExpressionPatterns(avatarDescriptor);
+                var importedClips = expressionImporter.ImportOptionalClips(avatarDescriptor);
+                var importedContacts = contactImporter.Import(avatarDescriptor);
+
+                // change selection
+                if (menu.Registered.Order.Any())
                 {
-                    receivers.Add(contactReceiver);
+                    selectionSynchronizer.ChangeMenuItemListViewSelection(menu.Registered.Order.First());
                 }
+
+                // save
+                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                menuRepository.Save(string.Empty, menu, "Import Expression Patterns");
+
+                // pattern results
+                var patternResults = new List<(MessageType type, string message)>();
+                if (importedPatterns.Any())
+                {
+                    patternResults.Add((MessageType.None, localizationTable.ExpressionImporter_Message_PatternsImported));
+                    patternResults.Add((MessageType.None, string.Empty));
+
+                    foreach (var pattern in importedPatterns)
+                    {
+                        patternResults.Add((MessageType.None, $"{pattern.DisplayName}{localizationTable.Common_Colon}{pattern.Branches.Count}{localizationTable.ExpressionImporter_Expressions}"));
+                    }
+
+                    patternResults.Add((MessageType.None, string.Empty));
+                    patternResults.Add((MessageType.Info, LocalizationSetting.InsertLineBreak(localizationTable.ExpressionImporter_Info_BehaviorDifference)));
+                }
+                else
+                {
+                    patternResults.Add((MessageType.None, localizationTable.ExpressionImporter_Message_NoPatterns));
+                }
+
+                // option results
+                var optionResults = new List<(MessageType type, string message)>();
+                if (importedClips.blink != null)
+                {
+                    optionResults.Add((MessageType.None, string.Empty));
+                    optionResults.Add((MessageType.None, $"{localizationTable.ExpressionImporter_Blink}{localizationTable.Common_Colon}{importedClips.blink.name}"));
+                }
+                if (importedClips.mouthMorphCancel != null)
+                {
+                    optionResults.Add((MessageType.None, string.Empty));
+                    optionResults.Add((MessageType.None, $"{localizationTable.ExpressionImporter_MouthMorphCanceler}{localizationTable.Common_Colon}{importedClips.mouthMorphCancel.name}"));
+                }
+                if (importedContacts.Any())
+                {
+                    optionResults.Add((MessageType.None, string.Empty));
+                    optionResults.Add((MessageType.None, $"{localizationTable.ExpressionImporter_Contacts}{localizationTable.Common_Colon}"));
+                    foreach (var contact in importedContacts)
+                    {
+                        optionResults.Add((MessageType.None, contact.name));
+                    }
+                }
+
+                if (optionResults.Any())
+                {
+                    optionResults.Insert(0, (MessageType.None, localizationTable.ExpressionImporter_Message_OptionalSettingsImported));
+
+                    if (rootObject != null)
+                    {
+                        var path = rootObject.GetFullPath();
+                        if (path.StartsWith("/"))
+                        {
+                            path = path.Substring(1);
+                        }
+                        optionResults.Add((MessageType.None, string.Empty));
+                        optionResults.Add((MessageType.Info, localizationTable.ExpressionImporter_Info_ChangeOptionalSettings + "\n\n" + path));
+                    }
+                }
+                else
+                {
+                    optionResults.Add((MessageType.None, localizationTable.ExpressionImporter_Message_NoOptionalSettings));
+                }
+
+                // show messages
+                var messages = new List<(MessageType type, string message)>(patternResults);
+                messages.Add((MessageType.None, string.Empty));
+                foreach (var item in optionResults)
+                {
+                    messages.Add(item);
+                }
+                OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                    "OK", isRiskyAction: false,
+                    additionalMessages: messages, windowHeight: OptoutableDialog.GetHeightWithoutMessage());
             }
-            return receivers;
         }
 
         private const string HideHierarchyIconPath = "FaceEmo/Hide Hierarchy Icon";

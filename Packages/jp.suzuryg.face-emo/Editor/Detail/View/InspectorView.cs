@@ -2,9 +2,11 @@
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Components.States;
 using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Detail.AV3.Importers;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View.Element;
+using Suzuryg.FaceEmo.UseCase;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,10 +29,13 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public IObservable<Unit> OnLaunchButtonClicked => _onLaunchButtonClicked.AsObservable();
         public IObservable<Locale> OnLocaleChanged => _onLocaleChanged.AsObservable();
+        public IObservable<(IMenu menu, bool isModified)> OnMenuUpdated => _onMenuUpdated.AsObservable(); 
 
         private Subject<Unit> _onLaunchButtonClicked = new Subject<Unit>();
         private Subject<Locale> _onLocaleChanged = new Subject<Locale>();
+        private Subject<(IMenu menu, bool isModified)> _onMenuUpdated = new Subject<(IMenu menu, bool isModified)>();
 
+        private IMenuRepository _menuRepository;
         private ILocalizationSetting _localizationSetting;
         private InspectorThumbnailDrawer _thumbnailDrawer;
         private SerializedObject _inspectorViewState;
@@ -57,6 +62,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public InspectorView(
+            IMenuRepository menuRepository,
             ILocalizationSetting localizationSetting,
             InspectorThumbnailDrawer inspectorThumbnailDrawer,
             InspectorViewState inspectorViewState,
@@ -64,6 +70,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             ThumbnailSetting thumbnailSetting)
         {
             // Dependencies
+            _menuRepository = menuRepository;
             _localizationSetting = localizationSetting;
             _thumbnailDrawer = inspectorThumbnailDrawer;
             _inspectorViewState = new SerializedObject(inspectorViewState);
@@ -234,6 +241,11 @@ namespace Suzuryg.FaceEmo.Detail.View
                     _onLaunchButtonClicked.OnNext(Unit.Default);
                 }
             }
+            EditorGUILayout.Space(10);
+
+            // Import buttons
+            Field_ImportButtons();
+
             EditorGUILayout.Space(10);
 
             // Target avatar
@@ -435,6 +447,127 @@ namespace Suzuryg.FaceEmo.Detail.View
             else if (PackageVersionChecker.ModularAvatar == "1.5.0-beta-4" || PackageVersionChecker.ModularAvatar == "1.5.0")
             {
                 HelpBoxDrawer.ErrorLayout(_localizationTable.InspectorView_Message_MAVersionError_1_5_0);
+            }
+        }
+
+        private void Field_ImportButtons()
+        {
+            var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
+            var av3Setting = _av3Setting.targetObject as AV3Setting;
+            var canImport = avatarDescriptor != null && av3Setting != null;
+            using (new EditorGUI.DisabledScope(!canImport))
+            {
+                var defaultHeight = OptoutableDialog.GetHeightWithoutMessage();
+                var patternConfirms = new List<(MessageType type, string message)>()
+                {
+                    (MessageType.None, _localizationTable.InspectorView_Message_ImportExpressionPatterns),
+                    (MessageType.None, string.Empty),
+                    (MessageType.Info, _localizationTable.InspectorView_Info_ImportExpressionPatterns),
+                };
+
+                if (GUILayout.Button(_localizationTable.InspectorView_ImportExpressionPatterns) &&
+                    OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                        _localizationTable.Common_Import, _localizationTable.Common_Cancel, isRiskyAction: false,
+                        additionalMessages: patternConfirms, windowHeight: defaultHeight))
+                {
+                    try
+                    {
+                        var menu = _menuRepository.Load(string.Empty);
+                        var importer = new ExpressionImporter(menu, av3Setting, ImportUtility.GetNewAssetDir(), _localizationSetting);
+                        var importedPatterns = importer.ImportExpressionPatterns(avatarDescriptor);
+
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                        _menuRepository.Save(string.Empty, menu, "Import Expression Patterns");
+                        _onMenuUpdated.OnNext((menu, isModified: true));
+
+                        var patternResults = new List<(MessageType type, string message)>();
+                        if (importedPatterns.Any())
+                        {
+                            patternResults.Add((MessageType.None, _localizationTable.ExpressionImporter_Message_PatternsImported));
+                            patternResults.Add((MessageType.None, string.Empty));
+
+                            foreach (var pattern in importedPatterns)
+                            {
+                                patternResults.Add((MessageType.None, $"{pattern.DisplayName}{_localizationTable.Common_Colon}{pattern.Branches.Count}{_localizationTable.ExpressionImporter_Expressions}"));
+                            }
+
+                            patternResults.Add((MessageType.None, string.Empty));
+                            patternResults.Add((MessageType.Info, LocalizationSetting.InsertLineBreak(_localizationTable.ExpressionImporter_Info_BehaviorDifference)));
+                        }
+                        else
+                        {
+                            patternResults.Add((MessageType.None, _localizationTable.ExpressionImporter_Message_NoPatterns));
+                        }
+
+                        OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                            "OK", isRiskyAction: false,
+                            additionalMessages: patternResults, windowHeight: patternResults.Count > 1 ? defaultHeight : OptoutableDialog.DefaultWindowHeight);
+                    }
+                    catch (Exception ex)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ErrorHandler_Message_ErrorOccured + "\n\n" + ex?.Message, "OK");
+                        Debug.LogException(ex);
+                    }
+                }
+
+                EditorGUILayout.Space(5);
+
+                if (GUILayout.Button(_localizationTable.InspectorView_ImportOptionalSettings) &&
+                    OptoutableDialog.Show(DomainConstants.SystemName, _localizationTable.InspectorView_Message_ImportOptionalSettings,
+                        _localizationTable.Common_Import, _localizationTable.Common_Cancel, isRiskyAction: false))
+                {
+                    try
+                    {
+                        var menu = _menuRepository.Load(string.Empty);
+                        var importer = new ExpressionImporter(menu, av3Setting, ImportUtility.GetNewAssetDir(), _localizationSetting);
+                        var importedClips = importer.ImportOptionalClips(avatarDescriptor);
+
+                        var contactImporter = new ContactSettingImporter(av3Setting);
+                        var importedContacts = contactImporter.Import(avatarDescriptor);
+
+                        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                        _onMenuUpdated.OnNext((menu, isModified: true));
+
+                        var optionResults = new List<(MessageType type, string message)>();
+                        if (importedClips.blink != null)
+                        {
+                            optionResults.Add((MessageType.None, string.Empty));
+                            optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_Blink}{_localizationTable.Common_Colon}{importedClips.blink.name}"));
+                        }
+                        if (importedClips.mouthMorphCancel != null)
+                        {
+                            optionResults.Add((MessageType.None, string.Empty));
+                            optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_MouthMorphCanceler}{_localizationTable.Common_Colon}{importedClips.mouthMorphCancel.name}"));
+                        }
+                        if (importedContacts.Any())
+                        {
+                            optionResults.Add((MessageType.None, string.Empty));
+                            optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_Contacts}{_localizationTable.Common_Colon}"));
+                            foreach (var contact in importedContacts)
+                            {
+                                optionResults.Add((MessageType.None, contact.name));
+                            }
+                        }
+
+                        if (optionResults.Any())
+                        {
+                            optionResults.Insert(0, (MessageType.None, _localizationTable.ExpressionImporter_Message_OptionalSettingsImported));
+                        }
+                        else
+                        {
+                            optionResults.Add((MessageType.None, _localizationTable.ExpressionImporter_Message_NoOptionalSettings));
+                        }
+
+                        OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                            "OK", isRiskyAction: false,
+                            additionalMessages: optionResults, windowHeight: optionResults.Count > 1 ? defaultHeight : OptoutableDialog.DefaultWindowHeight);
+                    }
+                    catch (Exception ex)
+                    {
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ErrorHandler_Message_ErrorOccured + "\n\n" + ex?.Message, "OK");
+                        Debug.LogException(ex);
+                    }
+                }
             }
         }
 

@@ -24,6 +24,7 @@ namespace Suzuryg.FaceEmo.AppMain
         private FaceEmoInstaller _installer;
         private ISubWindowManager _subWindowManager;
         private MainWindowProvider _mainWindowProvider;
+        private UpdateMenuSubject _updateMenuSubject;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -39,6 +40,11 @@ namespace Suzuryg.FaceEmo.AppMain
             {
                 _installer.Container.Resolve<ILocalizationSetting>().SetLocale(locale);
             }
+        }
+
+        public void UpdateMenu(IMenu menu, bool isModified)
+        {
+            _updateMenuSubject?.OnNext(menu, isModified);
         }
 
         private void Build()
@@ -76,15 +82,15 @@ namespace Suzuryg.FaceEmo.AppMain
 
                 // Initialize menu display
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();
-                var updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
-                updateMenuSubject.OnNext(menuRepository.Load(null), isModified: false);
+                _updateMenuSubject = _installer.Container.Resolve<UpdateMenuSubject>();
+                _updateMenuSubject.OnNext(menuRepository.Load(null), isModified: false);
 
                 // Register undo/redo callback
                 _undoRedoCallback = () =>
                 {
-                    if (menuRepository is MenuRepository && updateMenuSubject is UpdateMenuSubject)
+                    if (menuRepository is MenuRepository && _updateMenuSubject is UpdateMenuSubject)
                     {
-                        updateMenuSubject.OnNext(menuRepository.Load(null), isModified: false); // Do not set the dirty flag of the apply button when undo is performed
+                        _updateMenuSubject.OnNext(menuRepository.Load(null), isModified: false); // Do not set the dirty flag of the apply button when undo is performed
                     }
                 };
                 Undo.undoRedoPerformed += _undoRedoCallback;

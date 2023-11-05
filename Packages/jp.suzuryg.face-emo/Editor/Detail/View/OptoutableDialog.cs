@@ -1,4 +1,5 @@
 ﻿using Suzuryg.FaceEmo.Detail.Localization;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private static bool? _isOkLeft = null;
 
+        private static OptoutableDialog _window;
+
         private static bool _result;
         private static string _message;
         private static string _ok;
@@ -24,6 +27,9 @@ namespace Suzuryg.FaceEmo.Detail.View
         private static string _showDialogKey;
         private static bool _showDialogDefaultValue;
         private static bool _isRiskyAction;
+        private static float _minWindowWidth;
+        private static float _minWindowHeight;
+        private static IReadOnlyList<(MessageType type, string message)> _additionalMessages;
 
         private static Vector2 _scrollPosition;
 
@@ -46,7 +52,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             string cancel = null, string showDialogKey = null, bool showDialogDefaultValue = true,
             Vector2? centerPosition = null,
             bool isRiskyAction = false,
-            int windowWidth = DefaultWindowWidth, int windowHeight = DefaultWindowHeight)
+            IReadOnlyList<(MessageType type, string message)> additionalMessages = null,
+            float windowWidth = DefaultWindowWidth, float windowHeight = DefaultWindowHeight)
         {
             // Check optout value
             if (!EditorPrefs.GetBool(showDialogKey, showDialogDefaultValue)) { return true; }
@@ -62,11 +69,14 @@ namespace Suzuryg.FaceEmo.Detail.View
             _showDialogKey = showDialogKey;
             _showDialogDefaultValue = showDialogDefaultValue;
             _isRiskyAction = isRiskyAction;
+            _minWindowWidth = windowWidth;
+            _minWindowHeight = windowHeight;
+            _additionalMessages = additionalMessages;
 
             // Get window
-            var window = GetWindow<OptoutableDialog>();
-            window.titleContent = new GUIContent(title);
-            window.minSize = new Vector2(windowWidth, windowHeight);
+            _window = GetWindow<OptoutableDialog>();
+            _window.titleContent = new GUIContent(title);
+            _window.minSize = new Vector2(windowWidth, windowHeight);
 
             // Adjust size and position
             var pos = new Rect();
@@ -92,10 +102,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 pos.y = Screen.currentResolution.height - pos.height;
             }
-            window.position = pos;
+            _window.position = pos;
 
             // Show
-            window.ShowModalUtility();
+            _window.ShowModalUtility();
             return _result;
         }
 
@@ -167,6 +177,11 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
+        public static float GetHeightWithoutMessage()
+        {
+            return Padding + Padding + ButtonHeight + Padding + Padding;
+        }
+
         private static void SetTexture(ref Texture2D texture, Color dark, Color light)
         {
             if (texture == null)
@@ -193,11 +208,57 @@ namespace Suzuryg.FaceEmo.Detail.View
                 {
                     GUILayout.Space(Padding);
 
-                    // message
                     using (var scope = new GUILayout.ScrollViewScope(_scrollPosition))
                     {
                         _scrollPosition = scope.scrollPosition;
-                        GUILayout.Label(_message, _labelStyle);
+
+                        // message
+                        if (!string.IsNullOrEmpty(_message))
+                        {
+                            GUILayout.Label(_message, _labelStyle);
+                        }
+
+                        // additional messages
+                        if (!(_additionalMessages is null))
+                        {
+                            Vector2 minWindowSize = new Vector2(_minWindowWidth, _minWindowHeight);
+
+                            Rect prevRect = Rect.zero;
+                            Rect currentRect = Rect.zero;
+                            foreach (var message in _additionalMessages)
+                            {
+                                switch (message.type)
+                                {
+                                    case MessageType.Error:
+                                        currentRect = HelpBoxDrawer.ErrorLayout(message.message);
+                                        break;
+                                    case MessageType.Warning:
+                                        currentRect = HelpBoxDrawer.WarnLayout(message.message);
+                                        break;
+                                    case MessageType.Info:
+                                        currentRect = HelpBoxDrawer.InfoLayout(message.message);
+                                        break;
+                                    default:
+                                        var content = new GUIContent(message.message);
+                                        currentRect = GUILayoutUtility.GetRect(content, _labelStyle);
+                                        GUI.Label(currentRect, content, _labelStyle);
+                                        break;
+                                }
+
+                                if (currentRect == Rect.zero)
+                                {
+                                    minWindowSize = new Vector2(minWindowSize.x, minWindowSize.y + currentRect.height);
+                                }
+                                else
+                                {
+                                    minWindowSize = new Vector2(minWindowSize.x, minWindowSize.y + currentRect.y + currentRect.height - prevRect.y - prevRect.height);
+                                }
+
+                                prevRect = currentRect;
+                            }
+
+                            _window.minSize = minWindowSize;
+                        }
                     }
                     GUILayout.FlexibleSpace();
 

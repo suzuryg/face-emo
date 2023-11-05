@@ -20,14 +20,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         LocalizationTable GetCurrentLocaleTable();
     }
 
-    public interface ILocalizationSetting
+    public interface ILocalizationSetting : IReadOnlyLocalizationSetting
     {
-        Locale Locale { get; }
-        LocalizationTable Table { get; }
-        IObservable<LocalizationTable> OnTableChanged { get; }
-
         void SetLocale(Locale locale);
-        LocalizationTable GetCurrentLocaleTable();
     }
 
     public class LocalizationSetting : IReadOnlyLocalizationSetting, ILocalizationSetting
