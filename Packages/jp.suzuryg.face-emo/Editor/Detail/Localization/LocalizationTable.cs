@@ -56,6 +56,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "Trigger pressing is only valid when the right hand is in Fist.";
         public string Common_Tooltip_LaunchFromHierarchy = "Launch FaceEmo";
 
+        public string Launcher_Message_ImportError = "An error occurred while importing expression patterns and optional settings. The import will be canceled and FaceEmo will be newly started.";
+
         public string HierarchyView_Title = "Tree View";
         public string HierarchyView_RegisteredMenuItemList = "Expression Menu";
         public string HierarchyView_UnregisteredMenuItemList = "Archive";

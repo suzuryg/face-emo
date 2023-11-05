@@ -10,7 +10,7 @@ using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 {
-    internal class ImportUtility
+    public class ImportUtility
     {
         public static Dictionary<BlendShape, float> GetAllFaceBlendShapeValues(VRCAvatarDescriptor avatarDescriptor, AV3Setting av3Setting)
         {
