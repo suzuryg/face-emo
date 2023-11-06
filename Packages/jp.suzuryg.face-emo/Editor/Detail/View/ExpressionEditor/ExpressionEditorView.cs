@@ -225,7 +225,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 using (new EditorGUILayout.VerticalScope(GUILayout.Width(rightContentWidth), GUILayout.Height(contentHeight)))
                 {
                     Field_AddAllBlendShapes();
-                    Field_FaceBlendShapeDelimiter();
+                    Field_FaceBlendShapeDelimiter(rightContentWidth);
                     Field_ReflectInPreviewOnMouseOver();
                     using (var scope = new EditorGUILayout.ScrollViewScope(_rightScrollPosition))
                     {
@@ -382,15 +382,20 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             }
         }
 
-        private void Field_FaceBlendShapeDelimiter()
+        private void Field_FaceBlendShapeDelimiter(float contentWidth)
         {
-            using (var check = new EditorGUI.ChangeCheckScope())
+            using (new EditorGUILayout.HorizontalScope())
             {
-                EditorGUILayout.PropertyField(_expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter)),
-                    new GUIContent(_localizationTable.ExpressionEditorView_Delimiter, _localizationTable.ExpressionEditorView_Tooltip_Delimiter));
+                var label = new GUIContent(_localizationTable.ExpressionEditorView_Delimiter, _localizationTable.ExpressionEditorView_Tooltip_Delimiter);
+                var labelWidth = GUI.skin.label.CalcSize(label).x;
+                EditorGUILayout.LabelField(label, GUILayout.Width(labelWidth));
 
-                if (check.changed)
+                var property = _expressionEditorSetting.FindProperty(nameof(ExpressionEditorSetting.FaceBlendShapeDelimiter));
+                var newValue = EditorGUILayout.TextField(property.stringValue, GUILayout.Width(contentWidth - labelWidth));
+
+                if (property.stringValue != newValue)
                 {
+                    property.stringValue = newValue;
                     _expressionEditorSetting.ApplyModifiedProperties();
                     _expressionEditor.FetchProperties();
                 }
