@@ -12,11 +12,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 {
     public class ImportUtility
     {
-        public static Dictionary<BlendShape, float> GetAllFaceBlendShapeValues(VRCAvatarDescriptor avatarDescriptor, AV3Setting av3Setting)
+        public static Dictionary<BlendShape, float> GetAllFaceBlendShapeValues(VRCAvatarDescriptor avatarDescriptor, AV3Setting av3Setting, bool excludeBlink, bool excludeLipSync)
         {
-            var excludeBlink = false;
-            var excludeLipSync = false;
-
             var faceBlendShapeValues = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, excludeBlink, excludeLipSync);
 
             foreach (var mesh in av3Setting.AdditionalSkinnedMeshes)
