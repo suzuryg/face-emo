@@ -71,6 +71,11 @@ namespace Suzuryg.FaceEmo.AppMain
             canLaunch = false;
 #endif
 
+#if !VALID_VRCSDK3_AVATARS
+            EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.InsertLineBreak(loc.Launcher_Message_CheckVrcSdk3Avatars), "OK");
+            canLaunch = false;
+#endif
+
             return canLaunch;
         }
 

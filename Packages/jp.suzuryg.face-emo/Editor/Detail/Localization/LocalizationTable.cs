@@ -57,6 +57,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
 
         public string Launcher_Message_CheckModularAvatar = "Modular Avatar 1.8.0 or later must be installed to use FaceEmo.\n\n" +
             "If ModularAvatar is not installed, or if an older version is installed, please install the latest version.";
+        public string Launcher_Message_CheckVrcSdk3Avatars = "VRChat SDK Avatars 3.1.13 or later must be installed to use FaceEmo.\n\n" +
+            "If VRChat SDK Avatars is not installed, or if an older version is installed, please install the latest version.";
         public string Launcher_Message_ImportError = "An error occurred while importing expression patterns and optional settings. The import will be canceled and FaceEmo will be newly started.";
 
         public string HierarchyView_Title = "Tree View";
