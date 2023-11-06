@@ -25,7 +25,7 @@
         },
         {
             "name": "nadena.dev.modular-avatar",
-            "expression": "",
+            "expression": "1.8.0",
             "define": "USE_MODULAR_AVATAR"
         }
     ],

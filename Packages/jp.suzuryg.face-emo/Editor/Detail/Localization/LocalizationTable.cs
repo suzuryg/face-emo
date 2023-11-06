@@ -34,7 +34,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Message_NotSavedInPlayMode = "Changes in play mode are not saved.";
         public string Common_Message_NotPossibleInPlayMode = "This operation is not possible during Play mode.";
         public string Common_Message_GuidWasNotFound = "The selected asset does not exist in this project.";
-        public string Common_Message_MAIsNotInstalled = "Modular Avatar must be installed in order to use FaceEmo!";
         public string Common_Message_ErrorWhenClosingSubWindows = "An error occurred while closing the sub-windows, please restart Unity if FaceEmo is not working properly.";
         public string Common_Message_NotFullPath = " is not a full path.";
         public string Common_Message_LauncherObjectNotFound = " was not found. Please activate the GameObject.";
@@ -56,6 +55,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "Trigger pressing is only valid when the right hand is in Fist.";
         public string Common_Tooltip_LaunchFromHierarchy = "Launch FaceEmo";
 
+        public string Launcher_Message_CheckModularAvatar = "Modular Avatar 1.8.0 or later must be installed to use FaceEmo.\n\n" +
+            "If ModularAvatar is not installed, or if an older version is installed, please install the latest version.";
         public string Launcher_Message_ImportError = "An error occurred while importing expression patterns and optional settings. The import will be canceled and FaceEmo will be newly started.";
 
         public string HierarchyView_Title = "Tree View";
@@ -183,8 +184,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_EmptyBlendShapes = "Press the + button to add blend shapes.";
         public string InspectorView_EmptyObjects = "Press the + button to add an object.";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
-        public string InspectorView_Message_MAVersionError_NotFound = "Failed to retrieve the version of Modular Avatar.";
-        public string InspectorView_Message_MAVersionError_1_5_0 = "This tool is not compatible with Modular Avatar 1.5.0. Please use 1.5.1 or higher or 1.4.5.";
         public string InspectorView_Message_ClearMouthMorphBlendShapes = "Delete all mouth morph blend shapes?";
         public string InspectorView_Message_ClearExcludedBlendShapes = "Delete all excluded blend shapes?";
 
