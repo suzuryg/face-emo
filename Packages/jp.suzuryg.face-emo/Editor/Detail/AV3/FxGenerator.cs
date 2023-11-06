@@ -2,7 +2,6 @@
 using AnimatorAsCode.V0.Extensions.VRChat;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
-using Suzuryg.FaceEmo.NDMF;
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
@@ -24,6 +23,10 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 using Suzuryg.FaceEmo.Detail.Localization;
 using ExParam = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.Parameter;
 using ExType = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.ValueType;
+
+#if VALID_VRCSDK3_AVATARS
+using Suzuryg.FaceEmo.NDMF;
+#endif
 
 #if USE_MODULAR_AVATAR
 using nadena.dev.modular_avatar.core;
@@ -1242,6 +1245,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         private void AddBlinkDisablerComponent(GameObject rootObject)
         {
+#if VALID_VRCSDK3_AVATARS
             foreach (var component in rootObject.GetComponents<BlinkDisabler>())
             {
                 UnityEngine.Object.DestroyImmediate(component);
@@ -1251,10 +1255,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             {
                 rootObject.AddComponent<BlinkDisabler>();
             }
+#else
+            throw new FaceEmoException("Please install latest VRCSDK!");
+#endif
         }
 
         private void AddTrackingControlDisablerComponent(GameObject rootObject)
         {
+#if VALID_VRCSDK3_AVATARS
             foreach (var component in rootObject.GetComponents<TrackingControlDisabler>())
             {
                 UnityEngine.Object.DestroyImmediate(component);
@@ -1264,6 +1272,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             {
                 rootObject.AddComponent<TrackingControlDisabler>();
             }
+#else
+            throw new FaceEmoException("Please install latest VRCSDK!");
+#endif
         }
 
         private AacFlClip GetDefaultFaceAnimation(AacFlBase aac, VRCAvatarDescriptor avatarDescriptor)
