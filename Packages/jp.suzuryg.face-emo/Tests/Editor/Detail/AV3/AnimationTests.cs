@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
 using Suzuryg.FaceEmo.Domain;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FaceEmo.Detail.AV3
 {
@@ -230,6 +232,38 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(AV3TestUtility.GetScaleX(ear1, "Armature/Hips/Spine/Chest/Neck/Head/Hair.000/Ear_R.001"), Is.EqualTo(-1.1).Within(0.1));
             Assert.That(AV3TestUtility.GetScaleY(ear1, "Armature/Hips/Spine/Chest/Neck/Head/Hair.000/Ear_R.001"), Is.EqualTo(-1.2).Within(0.1));
             Assert.That(AV3TestUtility.GetScaleZ(ear1, "Armature/Hips/Spine/Chest/Neck/Head/Hair.000/Ear_R.001"), Is.EqualTo(-1.3).Within(0.1));
+        }
+
+        [Test]
+        public void ExcludeLipSyncBlendShape()
+        {
+            var avatarPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TestAssets/Henge/Himiko_2022/Himiko_2022_Test.prefab");
+            var avatarRoot = PrefabUtility.InstantiatePrefab(avatarPrefab) as GameObject;
+            var avartarDescriptor = avatarRoot.GetComponent<VRCAvatarDescriptor>();
+
+            var faceMesh = AV3Utility.GetFaceMesh(avartarDescriptor);
+
+            var lipSyncBlendShapes = new List<string>();
+            var otherBlendShapes = new List<string>();
+            for (int i = 0; i < faceMesh.sharedMesh.blendShapeCount; i++)
+            {
+                var name = faceMesh.sharedMesh.GetBlendShapeName(i);
+                if (AV3Utility.IsLipSyncBlendShapeName(name))
+                {
+                    lipSyncBlendShapes.Add(name);
+                }
+                else
+                {
+                    otherBlendShapes.Add(name);
+                }
+            }
+
+            Debug.Log($"LipSync({lipSyncBlendShapes.Count}): {string.Join(", ", lipSyncBlendShapes)}");
+            Debug.Log($"Others({otherBlendShapes.Count}): {string.Join(", ", otherBlendShapes)}");
+
+            Assert.That(lipSyncBlendShapes.Count, Is.EqualTo(15));
+            Assert.That(otherBlendShapes.Count, Is.EqualTo(46));
+            Assert.That(faceMesh.sharedMesh.blendShapeCount, Is.EqualTo(61));
         }
     }
 }

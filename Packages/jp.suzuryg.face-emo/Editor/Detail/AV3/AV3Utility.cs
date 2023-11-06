@@ -275,6 +275,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 var blendShape = new BlendShape(path: transformPath, name: name);
 
                 var excluded = toBeExcluded.Contains(blendShape);
+                if (excludeLipSync && IsLipSyncBlendShapeName(blendShape.Name)) { excluded = true; }
+
                 if (!excluded)
                 {
                     var weight = skinnedMeshRenderer.GetBlendShapeWeight(i);
@@ -486,6 +488,27 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var capacity = Domain.RegisteredMenuItemList.Capacity;
             if (av3Setting.AddConfig_EmoteSelect) { capacity--; }
             return capacity;
+        }
+
+        public static bool IsLipSyncBlendShapeName(string blendShapeName)
+        {
+            var lowerCase = blendShapeName.ToLower();
+
+            return lowerCase.Contains("vrc.v_sil") ||
+                lowerCase.Contains("vrc.v_pp") ||
+                lowerCase.Contains("vrc.v_ff") ||
+                lowerCase.Contains("vrc.v_th") ||
+                lowerCase.Contains("vrc.v_dd") ||
+                lowerCase.Contains("vrc.v_kk") ||
+                lowerCase.Contains("vrc.v_ch") ||
+                lowerCase.Contains("vrc.v_ss") ||
+                lowerCase.Contains("vrc.v_nn") ||
+                lowerCase.Contains("vrc.v_rr") ||
+                lowerCase.Contains("vrc.v_aa") ||
+                lowerCase.Contains("vrc.v_e") ||
+                lowerCase.Contains("vrc.v_ih") ||
+                lowerCase.Contains("vrc.v_oh") ||
+                lowerCase.Contains("vrc.v_ou");
         }
     }
 }
