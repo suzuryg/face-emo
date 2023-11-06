@@ -361,7 +361,9 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 animatorRoot.transform.position = positionCache;
                 animatorRoot.transform.rotation = rotationCache;
 
-                var texture = DrawingUtility.GetRenderedTexture(Width, Height, camera);
+                var scaledWidth = (int)Math.Round(Width * DetailConstants.UiScale, MidpointRounding.AwayFromZero);
+                var scaledHeight = (int)Math.Round(Height * DetailConstants.UiScale, MidpointRounding.AwayFromZero);
+                var texture = DrawingUtility.GetRenderedTexture(scaledWidth, scaledHeight, camera);
 
                 return texture;
             }

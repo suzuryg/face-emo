@@ -16,6 +16,8 @@ namespace Suzuryg.FaceEmo.Detail
         public static string IconDirectory => $"{ViewDirectory}/Icon";
         public static string LocalizationDirectory => $"{DetailDirectory}/Localization";
 
+        public static float UiScale = 1.0f;
+
         public static readonly string DragAndDropDataKey_MenuItemIds = $"{DomainConstants.SystemName}_MenuItemIds";
 
         public static readonly string KeyGroupDeleteConfirmation = $"{DomainConstants.SystemName}_GroupDeleteConfirmation";
