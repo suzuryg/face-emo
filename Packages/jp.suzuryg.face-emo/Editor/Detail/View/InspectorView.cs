@@ -439,15 +439,6 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (!PackageVersionChecker.IsCompleted) { return; }
 
             GUILayout.Label($"{DomainConstants.SystemName} {PackageVersionChecker.FaceEmo}", _versionLabelStyle);
-
-            if (string.IsNullOrEmpty(PackageVersionChecker.ModularAvatar))
-            {
-                HelpBoxDrawer.ErrorLayout(_localizationTable.InspectorView_Message_MAVersionError_NotFound);
-            }
-            else if (PackageVersionChecker.ModularAvatar == "1.5.0-beta-4" || PackageVersionChecker.ModularAvatar == "1.5.0")
-            {
-                HelpBoxDrawer.ErrorLayout(_localizationTable.InspectorView_Message_MAVersionError_1_5_0);
-            }
         }
 
         private void Field_ImportButtons()

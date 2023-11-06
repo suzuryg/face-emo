@@ -61,17 +61,30 @@ namespace Suzuryg.FaceEmo.AppMain
             }
         }
 
+        private static bool CanLaunch()
+        {
+            var canLaunch = true;
+            var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
+
+#if !USE_MODULAR_AVATAR
+            EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.InsertLineBreak(loc.Launcher_Message_CheckModularAvatar), "OK");
+            canLaunch = false;
+#endif
+
+#if !VALID_VRCSDK3_AVATARS
+            EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.InsertLineBreak(loc.Launcher_Message_CheckVrcSdk3Avatars), "OK");
+            canLaunch = false;
+#endif
+
+            return canLaunch;
+        }
+
         public static void Launch(FaceEmoLauncherComponent launcher)
         {
-#if USE_MODULAR_AVATAR
             var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
             try
             {
-                if (PackageVersionChecker.ModularAvatar == "1.5.0-beta-4" || PackageVersionChecker.ModularAvatar == "1.5.0")
-                {
-                    // Not blocking launch because only some behavior is faulty.
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.InspectorView_Message_MAVersionError_1_5_0, "OK");
-                }
+                if (!CanLaunch()) { return; }
 
                 var rootObject = launcher.gameObject;
 
@@ -95,9 +108,6 @@ namespace Suzuryg.FaceEmo.AppMain
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_FailedToLaunch + "\n" + loc.Common_Message_SeeConsole, "OK");
                 Debug.LogError(loc.Common_Message_FailedToLaunch + "\n" + ex?.ToString());
             }
-#else
-            EditorUtility.DisplayDialog(DomainConstants.SystemName, LocalizationSetting.GetTable(LocalizationSetting.GetLocale()).Common_Message_MAIsNotInstalled, "OK");
-#endif
         }
 
         private void UpdateMenu(IMenu menu, bool isModified)
@@ -212,6 +222,8 @@ namespace Suzuryg.FaceEmo.AppMain
             var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("b8710db71cc992745987c4e92d53fcd1")); // logo
             if (GUI.Button(selectionRect, new GUIContent(string.Empty, loc?.Common_Tooltip_LaunchFromHierarchy)))
             {
+                if (!CanLaunch()) { return; }
+
                 var exists = false;
                 foreach (var launcher in FindObjectsOfType<FaceEmoLauncherComponent>()?.OrderBy(x => x.name))
                 {
