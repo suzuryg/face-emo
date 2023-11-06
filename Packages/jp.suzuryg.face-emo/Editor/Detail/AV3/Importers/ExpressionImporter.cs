@@ -147,12 +147,17 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
                     HandGesture handGesture = (HandGesture)condition.threshold;
 
+                    // "NotEqual" is not normally used in expression transition conditions
                     ComparisonOperator comparisonOperator;
                     if (condition.mode == AnimatorConditionMode.Equals) { comparisonOperator = ComparisonOperator.Equals; }
-                    else if (condition.mode == AnimatorConditionMode.NotEqual) { comparisonOperator = ComparisonOperator.NotEqual; }
                     else { continue; }
 
                     branch.AddCondition(new Condition(hand, handGesture, comparisonOperator));
+                }
+
+                if (!branch.Conditions.Any())
+                {
+                    return null;
                 }
 
                 // tracking
