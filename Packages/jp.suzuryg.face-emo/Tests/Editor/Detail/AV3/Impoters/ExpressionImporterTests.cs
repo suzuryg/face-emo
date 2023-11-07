@@ -55,10 +55,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             var importedPatterns = _importer.ImportExpressionPatterns(avartarDescriptor);
             Assert.That(importedPatterns.Count, Is.EqualTo(1));
-            Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(12));
+            Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(11));
 
             // animations
-            var idle = AssertIdle(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/idol.anim"));
             var dislike = AssertDislike(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
             var fun = AssertFun(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
             var joy = AssertJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
@@ -68,7 +67,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var zito = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
             var zito2 = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito_(2).anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
-            var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
             var subJoy = AssertSubJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sub_joy.anim"));
 
             // settings
@@ -92,12 +90,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(mode.MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
             Assert.That(mode.BlinkEnabled, Is.EqualTo(true));
             Assert.That(mode.MouthMorphCancelerEnabled, Is.EqualTo(true));
-            Assert.That(mode.Branches.Count, Is.EqualTo(12));
+            Assert.That(mode.Branches.Count, Is.EqualTo(11));
 
             // branches
             Assert.That(mode.Branches[0].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode.Branches[0].Conditions.First(), Is.EqualTo(new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode.Branches[0].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(idle))));
+            Assert.That(mode.Branches[0].BaseAnimation, Is.Null);
             Assert.That(mode.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(wink))));
             Assert.That(mode.Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode.Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
@@ -106,28 +104,27 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(mode.Branches[0].IsLeftTriggerUsed, Is.EqualTo(false));
             Assert.That(mode.Branches[0].IsRightTriggerUsed, Is.EqualTo(true));
             Assert.That(mode.Branches[0].IsReachable, Is.EqualTo(true));
-            AssertNormalBranch(mode.Branches[1], Hand.Right, HandGesture.HandOpen, idle, true, true);
-            AssertNormalBranch(mode.Branches[2], Hand.Right, HandGesture.Fingerpoint, surprised, false, false);
-            AssertNormalBranch(mode.Branches[3], Hand.Right, HandGesture.RockNRoll, zito2, false, false);
-            AssertNormalBranch(mode.Branches[4], Hand.Right, HandGesture.HandGun, sorrow, false, false);
+            AssertNormalBranch(mode.Branches[1], Hand.Right, HandGesture.Fingerpoint, surprised, false, false);
+            AssertNormalBranch(mode.Branches[2], Hand.Right, HandGesture.RockNRoll, zito2, false, false);
+            AssertNormalBranch(mode.Branches[3], Hand.Right, HandGesture.HandGun, sorrow, false, false);
 
-            Assert.That(mode.Branches[5].Conditions.Count, Is.EqualTo(1));
-            Assert.That(mode.Branches[5].Conditions.First(), Is.EqualTo(new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode.Branches[5].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
-            Assert.That(mode.Branches[5].LeftHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
-            Assert.That(mode.Branches[5].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
-            Assert.That(mode.Branches[5].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
-            Assert.That(mode.Branches[5].BlinkEnabled, Is.EqualTo(false));
-            Assert.That(mode.Branches[5].MouthMorphCancelerEnabled, Is.EqualTo(true));
-            Assert.That(mode.Branches[5].IsLeftTriggerUsed, Is.EqualTo(true));
-            Assert.That(mode.Branches[5].IsRightTriggerUsed, Is.EqualTo(false));
-            Assert.That(mode.Branches[5].IsReachable, Is.EqualTo(true));
-            AssertNormalBranch(mode.Branches[6], Hand.Left, HandGesture.HandOpen, fun, true, true);
-            AssertNormalBranch(mode.Branches[7], Hand.Left, HandGesture.Fingerpoint, subJoy, false, false);
-            AssertNormalBranch(mode.Branches[8], Hand.Left, HandGesture.Victory, joy, false, false);
-            AssertNormalBranch(mode.Branches[9], Hand.Left, HandGesture.RockNRoll, zito, false, false);
-            AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.HandGun, dislike, false, false);
-            AssertNormalBranch(mode.Branches[11], Hand.Left, HandGesture.ThumbsUp, wink, false, false);
+            Assert.That(mode.Branches[4].Conditions.Count, Is.EqualTo(1));
+            Assert.That(mode.Branches[4].Conditions.First(), Is.EqualTo(new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)));
+            Assert.That(mode.Branches[4].BaseAnimation, Is.Null);
+            Assert.That(mode.Branches[4].LeftHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
+            Assert.That(mode.Branches[4].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
+            Assert.That(mode.Branches[4].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
+            Assert.That(mode.Branches[4].BlinkEnabled, Is.EqualTo(false));
+            Assert.That(mode.Branches[4].MouthMorphCancelerEnabled, Is.EqualTo(true));
+            Assert.That(mode.Branches[4].IsLeftTriggerUsed, Is.EqualTo(true));
+            Assert.That(mode.Branches[4].IsRightTriggerUsed, Is.EqualTo(false));
+            Assert.That(mode.Branches[4].IsReachable, Is.EqualTo(true));
+            AssertNormalBranch(mode.Branches[5], Hand.Left, HandGesture.HandOpen, fun, true, true);
+            AssertNormalBranch(mode.Branches[6], Hand.Left, HandGesture.Fingerpoint, subJoy, false, false);
+            AssertNormalBranch(mode.Branches[7], Hand.Left, HandGesture.Victory, joy, false, false);
+            AssertNormalBranch(mode.Branches[8], Hand.Left, HandGesture.RockNRoll, zito, false, false);
+            AssertNormalBranch(mode.Branches[9], Hand.Left, HandGesture.HandGun, dislike, false, false);
+            AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.ThumbsUp, wink, false, false);
 
             var importedClips = _importer.ImportOptionalClips(avartarDescriptor);
             Assert.That(importedClips.blink, Is.Null);
@@ -173,7 +170,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var wink = AssertWink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
             var zito = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
-            var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -201,7 +197,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             // branches
             Assert.That(mode.Branches[0].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode.Branches[0].Conditions.First(), Is.EqualTo(new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode.Branches[0].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
+            Assert.That(mode.Branches[0].BaseAnimation, Is.Null);
             Assert.That(mode.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
             Assert.That(mode.Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode.Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
@@ -219,7 +215,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             Assert.That(mode.Branches[7].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode.Branches[7].Conditions.First(), Is.EqualTo(new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode.Branches[7].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
+            Assert.That(mode.Branches[7].BaseAnimation, Is.Null);
             Assert.That(mode.Branches[7].LeftHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
             Assert.That(mode.Branches[7].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode.Branches[7].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
@@ -270,7 +266,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var surprised = AssertSurprized(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
             var wink = AssertWink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
-            var closeBase = AssertCloseBase(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_Base.anim"));
+            var closeFromHalf = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half.anim"));
+            var closeFromHalfBase = AssertCloseHalf(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half_Base.anim"));
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -321,8 +318,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             // branches (1)
             Assert.That(mode1.Branches[0].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode1.Branches[0].Conditions.First(), Is.EqualTo(new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode1.Branches[0].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
-            Assert.That(mode1.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
+            Assert.That(mode1.Branches[0].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeFromHalfBase))));
+            Assert.That(mode1.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeFromHalf))));
             Assert.That(mode1.Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode1.Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
             Assert.That(mode1.Branches[0].BlinkEnabled, Is.EqualTo(false));
@@ -339,7 +336,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             Assert.That(mode1.Branches[7].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode1.Branches[7].Conditions.First(), Is.EqualTo(new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode1.Branches[7].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
+            Assert.That(mode1.Branches[7].BaseAnimation, Is.Null);
             Assert.That(mode1.Branches[7].LeftHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
             Assert.That(mode1.Branches[7].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode1.Branches[7].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Animation));
@@ -361,7 +358,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             Assert.That(mode2.Branches[2].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode2.Branches[2].Conditions.First(), Is.EqualTo(new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode2.Branches[2].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
+            Assert.That(mode2.Branches[2].BaseAnimation, Is.Null);
             Assert.That(mode2.Branches[2].LeftHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
             Assert.That(mode2.Branches[2].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode2.Branches[2].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
@@ -375,7 +372,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             // branches (3)
             Assert.That(mode3.Branches[0].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode3.Branches[0].Conditions.First(), Is.EqualTo(new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals)));
-            Assert.That(mode3.Branches[0].BaseAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(closeBase))));
+            Assert.That(mode3.Branches[0].BaseAnimation, Is.Null);
             Assert.That(mode3.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(close))));
             Assert.That(mode3.Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode3.Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
@@ -404,16 +401,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(_av3Setting.MouthMorphCancelClip, Is.EqualTo(mouthMorphCancel));
 
             GameObject.DestroyImmediate(avatarRoot);
-        }
-
-        private static AnimationClip AssertIdle(AnimationClip clip)
-        {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
-
-            var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(0));
-
-            return clip;
         }
 
         private static AnimationClip AssertJoy(AnimationClip clip)
@@ -512,12 +499,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             return clip;
         }
 
-        private static AnimationClip AssertCloseBase(AnimationClip clip)
+        private static AnimationClip AssertCloseHalf(AnimationClip clip)
         {
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(0));
+            Assert.That(bindings.Length, Is.EqualTo(1));
+
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_mabataki")), Is.EqualTo(50));
 
             return clip;
         }

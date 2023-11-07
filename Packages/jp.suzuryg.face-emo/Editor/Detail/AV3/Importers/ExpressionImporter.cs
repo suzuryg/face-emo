@@ -190,7 +190,17 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     branch.SetAnimation(GetLastFrame(transition.destinationState.motion), BranchAnimationType.Base);
                 }
 
-                return branch;
+                if (branch.BaseAnimation is Domain.Animation ||
+                    branch.LeftHandAnimation is Domain.Animation ||
+                    branch.RightHandAnimation is Domain.Animation ||
+                    branch.BothHandsAnimation is Domain.Animation)
+                {
+                    return branch;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -217,8 +227,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     firstFrame = new AnimationClip();
 
                     var bindings = AnimationUtility.GetCurveBindings(animationClip);
+                    var accepted = new List<EditorCurveBinding>();
                     foreach (var binding in bindings)
                     {
+
                         var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
                         if (curve != null && curve.keys.Length > 0)
                         {
@@ -228,7 +240,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                             if (_faceBlendShapesValues.ContainsKey(blendShape) && Mathf.Approximately(_faceBlendShapesValues[blendShape], value)) { continue; }
 
                             AnimationUtility.SetEditorCurve(firstFrame, binding, new AnimationCurve(new Keyframe(time: 0, value: value)));
+                            accepted.Add(binding);
                         }
+                    }
+                    if (!accepted.Any())
+                    {
+                        return null;
                     }
                 }
                 else { return null; }
@@ -262,6 +279,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     lastFrame = new AnimationClip();
 
                     var bindings = AnimationUtility.GetCurveBindings(animationClip);
+                    var accepted = new List<EditorCurveBinding>();
                     foreach (var binding in bindings)
                     {
                         var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
@@ -273,7 +291,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                             if (_faceBlendShapesValues.ContainsKey(blendShape) && Mathf.Approximately(_faceBlendShapesValues[blendShape], value)) { continue; }
 
                             AnimationUtility.SetEditorCurve(lastFrame, binding, new AnimationCurve(new Keyframe(time: 0, value: value)));
+                            accepted.Add(binding);
                         }
+                    }
+                    if (!accepted.Any())
+                    {
+                        return null;
                     }
                 }
                 else { return null; }
