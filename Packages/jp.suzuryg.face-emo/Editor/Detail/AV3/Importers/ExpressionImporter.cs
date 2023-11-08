@@ -504,9 +504,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 {
                     foreach (var state in layer.stateMachine.states)
                     {
-                        if (state.state.motion is AnimationClip animationClip &&
-                            animationClip.isLooping &&
-                            ImportUtility.IsFaceMotion(animationClip, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
+                        if (state.state.motion is AnimationClip animationClip && IsBlinkClip(animationClip))
                         {
                             var clone = new AnimationClip();
                             EditorUtility.CopySerialized(animationClip, clone);
@@ -520,6 +518,20 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
             return null;
+        }
+
+        private bool IsBlinkClip(AnimationClip animationClip)
+        {
+            const float blendShapeValueThreshold = 10;
+
+            return animationClip.isLooping &&
+                ImportUtility.IsFaceMotion(animationClip, _faceBlendShapesValues.Select(blendShape => blendShape.Key)) &&
+                AnimationUtility.GetCurveBindings(animationClip).Any(binding =>
+                    binding.type == typeof(SkinnedMeshRenderer) &&
+                    binding.propertyName.StartsWith("blendShape.") &&
+                    AnimationUtility.GetEditorCurve(animationClip, binding) is AnimationCurve curve &&
+                    curve.length >= 3 &&
+                    curve.keys.Any(x => x.value >= blendShapeValueThreshold));
         }
 
         private AnimationClip ImportMouthMorphCancelClip(AnimatorController fx)
