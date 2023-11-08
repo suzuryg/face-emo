@@ -8,7 +8,9 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using VRC.Dynamics;
 using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
 
 namespace Suzuryg.FaceEmo.Detail.AV3.Importers
@@ -24,6 +26,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         private Dictionary<Motion, AnimationClip> _firstFrameCache = new Dictionary<Motion, AnimationClip>();
         private Dictionary<Motion, AnimationClip> _lastFrameCache = new Dictionary<Motion, AnimationClip>();
 
+        private HashSet<string> _contactReceiversParamsInFx = new HashSet<string>();
+        private HashSet<string> _physBoneParamsInFx = new HashSet<string>();
+
         public ExpressionImporter(Domain.Menu menu, AV3Setting av3Setting, string assetDir, IReadOnlyLocalizationSetting localizationSetting)
         {
             _menu = menu;
@@ -35,6 +40,32 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         public List<IMode> ImportExpressionPatterns(VRCAvatarDescriptor avatarDescriptor)
         {
             _faceBlendShapesValues = ImportUtility.GetAllFaceBlendShapeValues(avatarDescriptor, _av3Setting, excludeBlink: false, excludeLipSync: true);
+
+            _contactReceiversParamsInFx.Clear();
+            foreach (var item in avatarDescriptor.gameObject.GetComponentsInChildren(typeof(VRCContactReceiver), includeInactive: true))
+            {
+                if (item is VRCContactReceiver contactReceiver &&
+                    contactReceiver != null &&
+                    !string.IsNullOrEmpty(contactReceiver.parameter))
+                {
+                    _contactReceiversParamsInFx.Add(contactReceiver.parameter);
+                }
+            }
+
+            _physBoneParamsInFx.Clear();
+            foreach (var item in avatarDescriptor.gameObject.GetComponentsInChildren(typeof(VRCPhysBoneBase), includeInactive: true))
+            {
+                if (item is VRCPhysBoneBase physBone &&
+                    physBone != null &&
+                    !string.IsNullOrEmpty(physBone.parameter))
+                {
+                    _physBoneParamsInFx.Add(physBone.parameter + "_IsGrabbed");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_IsPosed");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_Angle");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_Stretch");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_Squish");
+                }
+            }
 
             var fx = ImportUtility.GetFxLayer(avatarDescriptor);
             if (fx == null) { return new List<IMode>(); }
@@ -79,9 +110,29 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var modeId = _menu.AddMode(Domain.Menu.RegisteredId);
             _menu.ModifyModeProperties(modeId, displayName: _localizationSetting.Table.ExpressionImporter_ExpressionPattern + "1");
 
+            var unusedBranches = new List<IBranch>();
             foreach (var layer in layers)
             {
                 foreach (var branch in layer)
+                {
+                    if (branch.Conditions.Any())
+                    {
+                        AddBranch(modeId, branch);
+                    }
+                    else
+                    {
+                        unusedBranches.Add(branch);
+                    }
+                }
+            }
+
+            foreach (var branch in unusedBranches)
+            {
+                if (branch.BaseAnimation is Domain.Animation &&
+                    !_menu.GetMode(modeId).Branches.Any(x =>
+                        x.BaseAnimation?.GUID == branch.BaseAnimation.GUID ||
+                        (x.IsLeftTriggerUsed && x.LeftHandAnimation?.GUID == branch.BaseAnimation.GUID) ||
+                        (x.IsRightTriggerUsed && x.RightHandAnimation?.GUID == branch.BaseAnimation.GUID)))
                 {
                     AddBranch(modeId, branch);
                 }
@@ -131,7 +182,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         {
             if (transition != null &&
                 !transition.mute &&
-                transition.conditions.Any(x => x.parameter == "GestureLeft" || x.parameter == "GestureRight") &&
                 transition.destinationState != null &&
                 ImportUtility.IsFaceMotion(transition.destinationState.motion, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
             {
@@ -157,7 +207,25 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
                 if (!branch.Conditions.Any())
                 {
-                    return null;
+                    // exclude face toggles
+                    var boolConditions = transition.conditions.Where(x => x.mode == AnimatorConditionMode.If || x.mode == AnimatorConditionMode.IfNot);
+                    if (boolConditions.Any() && transition.conditions.Count() == boolConditions.Count())
+                    {
+                        return null;
+                    }
+
+                    // exclude contact expressions
+                    if (transition.conditions.Any(x => _contactReceiversParamsInFx.Contains(x.parameter)))
+                    {
+                        return null;
+                    }
+
+                    // exclude phys-bone expressions
+                    if (transition.conditions.Any(x => _physBoneParamsInFx.Contains(x.parameter)) ||
+                        (transition.destinationState.timeParameterActive && _physBoneParamsInFx.Contains(transition.destinationState.timeParameter)))
+                    {
+                        return null;
+                    }
                 }
 
                 // tracking
