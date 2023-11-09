@@ -146,6 +146,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var branches = new List<IBranch>();
             if (stateMachine == null) { return branches; }
 
+            var defaultTransition = new AnimatorTransition();
+            defaultTransition.destinationState = stateMachine.defaultState;
+            branches.Add(GetBranch(defaultTransition));
+
             foreach (var transition in stateMachine.entryTransitions)
             {
                 branches.Add(GetBranch(transition));
