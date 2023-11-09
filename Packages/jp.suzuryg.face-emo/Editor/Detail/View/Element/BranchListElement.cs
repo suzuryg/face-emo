@@ -470,8 +470,17 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             }
             if (!branch.IsReachable)
             {
-                GUI.Label(new Rect(xWarning, yWarning, widthWarning, heightWarning),
-                    "⚠ " + _notReachableBranchText + "\n" + _localizationTable.BranchListView_NotReachableBranchAction, _warningStyle);
+                if (branch.Conditions.Any())
+                {
+                    GUI.Label(new Rect(xWarning, yWarning, widthWarning, heightWarning),
+                        "⚠ " + _notReachableBranchText + "\n" + _localizationTable.BranchListView_NotReachableBranchAction, _warningStyle);
+                }
+                else
+                {
+                    GUI.Label(new Rect(xWarning, yWarning, widthWarning, heightWarning),
+                        LocalizationSetting.InsertLineBreak(_localizationTable.BranchListView_NotReachableBranchWithNoConditions)
+                        .Replace("<0>", _localizationTable.ExMenu_EmoteSelect));
+                }
             }
 
             xCurrent += ConditionListElement.GetWidth() + upperHorizontalMargin;
