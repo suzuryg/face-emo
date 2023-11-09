@@ -138,7 +138,17 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
 
-            return new List<IMode>() { _menu.GetMode(modeId) };
+            var importedPatterns = new List<IMode>();
+            var mode = _menu.GetMode(modeId);
+            if (mode.Branches.Any())
+            {
+                importedPatterns.Add(mode);
+            }
+            else
+            {
+                _menu.RemoveMenuItem(modeId);
+            }
+            return importedPatterns;
         }
 
         private List<IBranch> GetBranches(AnimatorStateMachine stateMachine)
