@@ -97,6 +97,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string BranchListView_UseRightTrigger = "Use Right Trigger";
         public string BranchListView_NotReachableBranch = "This expression is not used.";
         public string BranchListView_NotReachableBranchAction = "Modify the conditions or order of the expression.";
+        public string BranchListView_NotReachableBranchWithNoConditions = "This expression is used only in \"<0>\" menu.\n" +
+            "If you want gesture support, please add conditions.";
         public string BranchListView_LeftTriggerAnimation = "Left Trigger";
         public string BranchListView_RightTriggerAnimation = "Right Trigger";
         public string BranchListView_BothTriggersAnimation = "Both Triggers";

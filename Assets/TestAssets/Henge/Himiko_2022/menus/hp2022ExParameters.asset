@@ -17,47 +17,59 @@ MonoBehaviour:
     valueType: 0
     saved: 0
     defaultValue: 0
+    networkSynced: 1
   - name: FloatX
     valueType: 1
     saved: 0
     defaultValue: 0
+    networkSynced: 1
   - name: FloatY
     valueType: 1
     saved: 0
     defaultValue: 0
+    networkSynced: 1
+  - name: small_eye_toggle
+    valueType: 2
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
+    networkSynced: 1
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
+    networkSynced: 1
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
+    networkSynced: 1
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
+    networkSynced: 1
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
+    networkSynced: 1
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
+    networkSynced: 1
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
+    networkSynced: 1
   - name: 
     valueType: 0
     saved: 1
     defaultValue: 0
-  - name: 
-    valueType: 0
-    saved: 1
-    defaultValue: 0
+    networkSynced: 1

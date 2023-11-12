@@ -8,7 +8,9 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using VRC.Dynamics;
 using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
 
 namespace Suzuryg.FaceEmo.Detail.AV3.Importers
@@ -24,6 +26,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         private Dictionary<Motion, AnimationClip> _firstFrameCache = new Dictionary<Motion, AnimationClip>();
         private Dictionary<Motion, AnimationClip> _lastFrameCache = new Dictionary<Motion, AnimationClip>();
 
+        private HashSet<string> _contactReceiversParamsInFx = new HashSet<string>();
+        private HashSet<string> _physBoneParamsInFx = new HashSet<string>();
+
         public ExpressionImporter(Domain.Menu menu, AV3Setting av3Setting, string assetDir, IReadOnlyLocalizationSetting localizationSetting)
         {
             _menu = menu;
@@ -35,6 +40,32 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         public List<IMode> ImportExpressionPatterns(VRCAvatarDescriptor avatarDescriptor)
         {
             _faceBlendShapesValues = ImportUtility.GetAllFaceBlendShapeValues(avatarDescriptor, _av3Setting, excludeBlink: false, excludeLipSync: true);
+
+            _contactReceiversParamsInFx.Clear();
+            foreach (var item in avatarDescriptor.gameObject.GetComponentsInChildren(typeof(VRCContactReceiver), includeInactive: true))
+            {
+                if (item is VRCContactReceiver contactReceiver &&
+                    contactReceiver != null &&
+                    !string.IsNullOrEmpty(contactReceiver.parameter))
+                {
+                    _contactReceiversParamsInFx.Add(contactReceiver.parameter);
+                }
+            }
+
+            _physBoneParamsInFx.Clear();
+            foreach (var item in avatarDescriptor.gameObject.GetComponentsInChildren(typeof(VRCPhysBoneBase), includeInactive: true))
+            {
+                if (item is VRCPhysBoneBase physBone &&
+                    physBone != null &&
+                    !string.IsNullOrEmpty(physBone.parameter))
+                {
+                    _physBoneParamsInFx.Add(physBone.parameter + "_IsGrabbed");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_IsPosed");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_Angle");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_Stretch");
+                    _physBoneParamsInFx.Add(physBone.parameter + "_Squish");
+                }
+            }
 
             var fx = ImportUtility.GetFxLayer(avatarDescriptor);
             if (fx == null) { return new List<IMode>(); }
@@ -79,21 +110,55 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var modeId = _menu.AddMode(Domain.Menu.RegisteredId);
             _menu.ModifyModeProperties(modeId, displayName: _localizationSetting.Table.ExpressionImporter_ExpressionPattern + "1");
 
+            var unusedBranches = new List<IBranch>();
             foreach (var layer in layers)
             {
                 foreach (var branch in layer)
+                {
+                    if (branch.Conditions.Any())
+                    {
+                        AddBranch(modeId, branch);
+                    }
+                    else
+                    {
+                        unusedBranches.Add(branch);
+                    }
+                }
+            }
+
+            foreach (var branch in unusedBranches)
+            {
+                if (branch.BaseAnimation is Domain.Animation &&
+                    !_menu.GetMode(modeId).Branches.Any(x =>
+                        x.BaseAnimation?.GUID == branch.BaseAnimation.GUID ||
+                        (x.IsLeftTriggerUsed && x.LeftHandAnimation?.GUID == branch.BaseAnimation.GUID) ||
+                        (x.IsRightTriggerUsed && x.RightHandAnimation?.GUID == branch.BaseAnimation.GUID)))
                 {
                     AddBranch(modeId, branch);
                 }
             }
 
-            return new List<IMode>() { _menu.GetMode(modeId) };
+            var importedPatterns = new List<IMode>();
+            var mode = _menu.GetMode(modeId);
+            if (mode.Branches.Any())
+            {
+                importedPatterns.Add(mode);
+            }
+            else
+            {
+                _menu.RemoveMenuItem(modeId);
+            }
+            return importedPatterns;
         }
 
         private List<IBranch> GetBranches(AnimatorStateMachine stateMachine)
         {
             var branches = new List<IBranch>();
             if (stateMachine == null) { return branches; }
+
+            var defaultTransition = new AnimatorTransition();
+            defaultTransition.destinationState = stateMachine.defaultState;
+            branches.Add(GetBranch(defaultTransition));
 
             foreach (var transition in stateMachine.entryTransitions)
             {
@@ -131,7 +196,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
         {
             if (transition != null &&
                 !transition.mute &&
-                transition.conditions.Any(x => x.parameter == "GestureLeft" || x.parameter == "GestureRight") &&
                 transition.destinationState != null &&
                 ImportUtility.IsFaceMotion(transition.destinationState.motion, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
             {
@@ -157,7 +221,25 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
                 if (!branch.Conditions.Any())
                 {
-                    return null;
+                    // exclude face toggles
+                    var boolConditions = transition.conditions.Where(x => x.mode == AnimatorConditionMode.If || x.mode == AnimatorConditionMode.IfNot);
+                    if (boolConditions.Any() && transition.conditions.Count() == boolConditions.Count())
+                    {
+                        return null;
+                    }
+
+                    // exclude contact expressions
+                    if (transition.conditions.Any(x => _contactReceiversParamsInFx.Contains(x.parameter)))
+                    {
+                        return null;
+                    }
+
+                    // exclude phys-bone expressions
+                    if (transition.conditions.Any(x => _physBoneParamsInFx.Contains(x.parameter)) ||
+                        (transition.destinationState.timeParameterActive && _physBoneParamsInFx.Contains(transition.destinationState.timeParameter)))
+                    {
+                        return null;
+                    }
                 }
 
                 // tracking
@@ -190,7 +272,17 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     branch.SetAnimation(GetLastFrame(transition.destinationState.motion), BranchAnimationType.Base);
                 }
 
-                return branch;
+                if (branch.BaseAnimation is Domain.Animation ||
+                    branch.LeftHandAnimation is Domain.Animation ||
+                    branch.RightHandAnimation is Domain.Animation ||
+                    branch.BothHandsAnimation is Domain.Animation)
+                {
+                    return branch;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -217,8 +309,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     firstFrame = new AnimationClip();
 
                     var bindings = AnimationUtility.GetCurveBindings(animationClip);
+                    var accepted = new List<EditorCurveBinding>();
                     foreach (var binding in bindings)
                     {
+
                         var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
                         if (curve != null && curve.keys.Length > 0)
                         {
@@ -228,7 +322,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                             if (_faceBlendShapesValues.ContainsKey(blendShape) && Mathf.Approximately(_faceBlendShapesValues[blendShape], value)) { continue; }
 
                             AnimationUtility.SetEditorCurve(firstFrame, binding, new AnimationCurve(new Keyframe(time: 0, value: value)));
+                            accepted.Add(binding);
                         }
+                    }
+                    if (!accepted.Any())
+                    {
+                        return null;
                     }
                 }
                 else { return null; }
@@ -262,6 +361,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     lastFrame = new AnimationClip();
 
                     var bindings = AnimationUtility.GetCurveBindings(animationClip);
+                    var accepted = new List<EditorCurveBinding>();
                     foreach (var binding in bindings)
                     {
                         var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
@@ -273,7 +373,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                             if (_faceBlendShapesValues.ContainsKey(blendShape) && Mathf.Approximately(_faceBlendShapesValues[blendShape], value)) { continue; }
 
                             AnimationUtility.SetEditorCurve(lastFrame, binding, new AnimationCurve(new Keyframe(time: 0, value: value)));
+                            accepted.Add(binding);
                         }
+                    }
+                    if (!accepted.Any())
+                    {
+                        return null;
                     }
                 }
                 else { return null; }
@@ -481,9 +586,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 {
                     foreach (var state in layer.stateMachine.states)
                     {
-                        if (state.state.motion is AnimationClip animationClip &&
-                            animationClip.isLooping &&
-                            ImportUtility.IsFaceMotion(animationClip, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
+                        if (state.state.motion is AnimationClip animationClip && IsBlinkClip(animationClip))
                         {
                             var clone = new AnimationClip();
                             EditorUtility.CopySerialized(animationClip, clone);
@@ -497,6 +600,20 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
             return null;
+        }
+
+        private bool IsBlinkClip(AnimationClip animationClip)
+        {
+            const float blendShapeValueThreshold = 10;
+
+            return animationClip.isLooping &&
+                ImportUtility.IsFaceMotion(animationClip, _faceBlendShapesValues.Select(blendShape => blendShape.Key)) &&
+                AnimationUtility.GetCurveBindings(animationClip).Any(binding =>
+                    binding.type == typeof(SkinnedMeshRenderer) &&
+                    binding.propertyName.StartsWith("blendShape.") &&
+                    AnimationUtility.GetEditorCurve(animationClip, binding) is AnimationCurve curve &&
+                    curve.length >= 3 &&
+                    curve.keys.Any(x => x.value >= blendShapeValueThreshold));
         }
 
         private AnimationClip ImportMouthMorphCancelClip(AnimatorController fx)
