@@ -42,7 +42,9 @@ namespace Suzuryg.FaceEmo.NDMF
                         MonoBehaviour.DestroyImmediate(obj);
                         Debug.Log($"[FaceEmo] Succeeded to disable tracking controls.");
 #else
-                        throw new InvalidOperationException("Please install ModularAvatar!");
+                        throw new InvalidOperationException("[Error]\n" +
+                            "Please install Modular Avatar 1.8.0 or later.\n" +
+                            "Modular Avatar 1.8.0 以降をインストールしてください。");
 #endif
                     }
                     catch (Exception ex)
