@@ -50,14 +50,14 @@
       "dependencies": {}
     },
     "nadena.dev.ndmf": {
-      "version": "1.2.2",
+      "version": "1.2.4",
       "dependencies": {}
     },
     "nadena.dev.modular-avatar": {
-      "version": "1.8.1",
+      "version": "1.8.2",
       "dependencies": {
         "com.vrchat.avatars": ">=3.2.0",
-        "nadena.dev.ndmf": ">=1.1.1 <2.0.0-a"
+        "nadena.dev.ndmf": ">=1.2.4 <2.0.0-a"
       }
     }
   }
