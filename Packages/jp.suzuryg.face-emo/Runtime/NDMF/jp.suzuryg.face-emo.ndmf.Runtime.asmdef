@@ -1,7 +1,7 @@
 {
     "name": "jp.suzuryg.face-emo.ndmf.Runtime",
     "references": [
-        "GUID:ad29c40ce7d8264468d6c7634e6a3a40"
+        "jp.suzuryg.face-emo.domain.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

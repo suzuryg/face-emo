@@ -1,14 +1,14 @@
 {
     "name": "jp.suzuryg.face-emo.detail.Editor",
     "references": [
-        "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
-        "GUID:df45ab4f3bbb8394987fc80e55e039ef",
-        "GUID:79c0d231dad4cc84e8226bd51341a07b",
-        "GUID:72867ff0427de1e41b1398a3d1680ff3",
-        "GUID:5759013b5d941f847b7a53f3f967d66a",
-        "GUID:0d0562413cdff7044981c47249bdf492",
-        "GUID:f68081a78616c494b81567c8b81d43c9",
-        "GUID:fc900867c0f47cd49b6e2ae4ef907300"
+        "jp.suzuryg.face-emo.domain.Runtime",
+        "jp.suzuryg.face-emo.usecase.Runtime",
+        "jp.suzuryg.face-emo.components.Runtime",
+        "jp.suzuryg.face-emo.ndmf.Runtime",
+        "jp.suzuryg.face-emo.external.hai.animator-as-code-framework.Editor",
+        "jp.suzuryg.face-emo.external.hai.combo-gesture-integrator.Editor",
+        "jp.suzuryg.face-emo.external.neuecc.unirx.Runtime",
+        "nadena.dev.modular-avatar.core"
     ],
     "includePlatforms": [
         "Editor"
