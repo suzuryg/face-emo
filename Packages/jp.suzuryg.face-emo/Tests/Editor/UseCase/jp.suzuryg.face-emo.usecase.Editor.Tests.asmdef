@@ -1,11 +1,11 @@
 {
     "name": "jp.suzuryg.face-emo.usecase.Editor.Tests",
     "references": [
-        "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
-        "GUID:df45ab4f3bbb8394987fc80e55e039ef",
-        "GUID:3a369c7d7783a1740996446681282216",
-        "GUID:79c0d231dad4cc84e8226bd51341a07b",
-        "GUID:f597f459d3af4524ab11c9bedb00b17f"
+        "jp.suzuryg.face-emo.domain.Runtime",
+        "jp.suzuryg.face-emo.usecase.Runtime",
+        "jp.suzuryg.face-emo.detail.Editor",
+        "jp.suzuryg.face-emo.components.Runtime",
+        "jp.suzuryg.face-emo.external.mathijs-bakker.extenject.Runtime"
     ],
     "includePlatforms": [
         "Editor"

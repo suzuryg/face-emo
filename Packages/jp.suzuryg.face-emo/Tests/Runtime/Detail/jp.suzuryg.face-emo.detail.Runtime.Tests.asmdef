@@ -1,9 +1,9 @@
 {
     "name": "jp.suzuryg.face-emo.detail.Runtime.Tests",
     "references": [
-        "GUID:ad29c40ce7d8264468d6c7634e6a3a40",
-        "GUID:3a369c7d7783a1740996446681282216",
-        "GUID:79c0d231dad4cc84e8226bd51341a07b"
+        "jp.suzuryg.face-emo.domain.Runtime",
+        "jp.suzuryg.face-emo.detail.Editor",
+        "jp.suzuryg.face-emo.components.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
