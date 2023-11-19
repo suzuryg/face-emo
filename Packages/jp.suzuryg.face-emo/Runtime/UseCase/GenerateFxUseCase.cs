@@ -7,7 +7,8 @@ namespace Suzuryg.FaceEmo.UseCase
 {
     public interface IGenerateFxUseCase
     {
-        void Handle(string menuId);
+        List<string> Prepare();
+        void Handle(string menuId, IEnumerable<string> editablePrefabPaths);
     }
 
     public interface IGenerateFxPresenter
@@ -19,7 +20,8 @@ namespace Suzuryg.FaceEmo.UseCase
 
     public interface IFxGenerator
     {
-        void Generate(IMenu menu);
+        List<string> GetParentPrefabPathOfMARootObjects();
+        void Generate(IMenu menu, IEnumerable<string> editablePrefabPaths);
     }
 
     public interface IBackupper : IDisposable
@@ -65,7 +67,12 @@ namespace Suzuryg.FaceEmo.UseCase
             _generateFxPresenter = generateFxPresenter;
         }
 
-        public void Handle(string menuId)
+        public List<string> Prepare()
+        {
+            return _fxGenerator.GetParentPrefabPathOfMARootObjects();
+        }
+
+        public void Handle(string menuId, IEnumerable<string> editablePrefabPaths)
         {
             try
             {
@@ -83,7 +90,7 @@ namespace Suzuryg.FaceEmo.UseCase
 
                 var menu = _menuRepository.Load(menuId);
 
-                _fxGenerator.Generate(menu);
+                _fxGenerator.Generate(menu, new HashSet<string>(editablePrefabPaths));
                 _backupper.AutoBackup();
 
                 _generateFxPresenter.Complete(GenerateFxResult.Succeeded);
