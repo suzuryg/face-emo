@@ -57,6 +57,8 @@ namespace Suzuryg.FaceEmo.AppMain
                 var AV3Setting = ScriptableObject.CreateInstance<AV3Setting>();
                 EditorUtility.CopySerialized(launcher.AV3Setting, AV3Setting);
                 launcher.AV3Setting = AV3Setting;
+                // Avoid sharing FaceEmoPrefab when the component is copied.
+                launcher.AV3Setting.MARootObjectPrefab = null;
 
                 var ExpressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>();
                 EditorUtility.CopySerialized(launcher.ExpressionEditorSetting, ExpressionEditorSetting);
