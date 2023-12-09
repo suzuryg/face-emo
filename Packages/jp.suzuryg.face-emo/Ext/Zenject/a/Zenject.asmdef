@@ -6,7 +6,6 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "jp.suzuryg.face-emo.external.mathijs-bakker.Zenject-usage.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],
