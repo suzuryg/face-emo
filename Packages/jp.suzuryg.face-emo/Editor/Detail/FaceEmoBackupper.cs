@@ -92,6 +92,8 @@ namespace Suzuryg.FaceEmo.Detail
             AssetDatabase.AddObjectToAsset(project.AV3Setting, project);
             EditorUtility.CopySerialized(_aV3Setting, project.AV3Setting);
             project.AV3Setting.name = nameof(AV3Setting);
+            // Avoid sharing FaceEmoPrefab when restored from backup.
+            project.AV3Setting.MARootObjectPrefab = null;
 
             project.ExpressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>();
             AssetDatabase.AddObjectToAsset(project.ExpressionEditorSetting, project);
