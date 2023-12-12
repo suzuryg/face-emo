@@ -63,6 +63,9 @@ def package_bundler(src_dir, dst_dir, config, symlink_logger, ignored_hierarchy_
             elif not any(file.endswith(ext) for ext in config.target_extensions):
                 ignored_file_logger.info(f'Ignored file: {root}/{file}')
                 continue
+            elif any(file == to_ignore for to_ignore in config.ignore_files):
+                ignored_file_logger.info(f'Ignored file: {root}/{file}')
+                continue
 
             create_symlink(Path(root) / file, dst_dir / file, symlink_logger)
 
