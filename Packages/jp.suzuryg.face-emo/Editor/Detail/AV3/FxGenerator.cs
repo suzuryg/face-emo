@@ -783,6 +783,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             if (!AssetDatabase.IsMainAsset(icon) && !AssetDatabase.IsSubAsset(icon)) // Do not save icons that have already been generated and error icons
             {
                 AssetDatabase.AddObjectToAsset(icon, container);
+                AssetDatabase.SaveAssets();
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(container));
             }
             return icon;
