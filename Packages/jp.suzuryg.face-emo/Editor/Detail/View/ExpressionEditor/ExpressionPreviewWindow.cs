@@ -116,7 +116,11 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
+#if UNITY_2019
         protected override void OnGUI()
+#else
+        protected override void OnSceneGUI()
+#endif
         {
             // When the animation changes are saved with Ctrl-S, the AnimationMode is stopped.
             // Therefore, the following process is performed to resume sampling.
@@ -128,7 +132,11 @@ namespace Suzuryg.FaceEmo.Detail.View
             // If in AnimationMode, draw SceneView.
             if (AnimationMode.InAnimationMode())
             {
+#if UNITY_2019
                 base.OnGUI();
+#else
+                base.OnSceneGUI();
+#endif
             }
             // If not in AnimationMode, draw the cache.
             else
@@ -136,7 +144,11 @@ namespace Suzuryg.FaceEmo.Detail.View
                 if (_renderCache != null)
                 {
                     var x = 0;
+#if UNITY_2019
                     var y = position.height - _renderCache.height / DetailConstants.UiScale;
+#else
+                    var y = 0;
+#endif
                     var width = _renderCache.width / DetailConstants.UiScale;
                     var height = _renderCache.height / DetailConstants.UiScale;
 
@@ -153,6 +165,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
+#if UNITY_2019
         private void OnLostFocus()
         {
             try
@@ -163,6 +176,16 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 _expressionEditor?.StopSampling();
             }
+        }
+#else
+        // In Unity2022, OnLostFocus() is executed when wheel-clicking or right-clicking on SceneView.
+        // Therefore, do not override OnLostFocus().
+#endif
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            _expressionEditor?.StopSampling();
         }
     }
 }
