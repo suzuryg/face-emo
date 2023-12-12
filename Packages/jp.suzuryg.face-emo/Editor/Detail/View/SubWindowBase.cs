@@ -11,9 +11,13 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             get
             {
+#if UNITY_2019
                 BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
                 MethodInfo method = GetType().GetProperty( "docked", flags ).GetGetMethod( true );
                 return (bool)method.Invoke( this, null );
+#else
+                return docked;
+#endif
             }
         }
 
