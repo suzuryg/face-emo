@@ -345,7 +345,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
 
             // Synthesize avatar pose
-            var synthesized = AV3Utility.SynthesizeAvatarPose(clip);
+            var synthesized = AV3Utility.SynthesizeAvatarPose(clip, _aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
 
             // Sample animation clip and render
             var positionCache = animatorRoot.transform.position;

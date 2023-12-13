@@ -346,15 +346,75 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             return aV3Setting.TargetAvatar.GetComponent<Animator>();
         }
 
-        public static AnimationClip GetAvatarPoseClip()
+        private static HumanPose _poseCache;
+        private static AnimationClip _poseClipCache;
+        public static AnimationClip GetAvatarPoseClip(VRCAvatarDescriptor avatarDescriptor)
         {
-            // TODO: Support for avatar posture other than T-pose
-            var tPose = AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(AV3Constants.GUID_TPoseClip));
-            if (tPose == null)
+            if (avatarDescriptor == null) { return null; }
+            var animator = avatarDescriptor.gameObject.GetComponent<Animator>();
+            if (animator == null || !animator.isHuman) { return null; }
+
+            var humanPoseHandler = new HumanPoseHandler(animator.avatar, animator.transform);
+            var humanPose = new HumanPose();
+            humanPoseHandler.GetHumanPose(ref humanPose);
+
+            if (_poseClipCache == null ||
+                !ArePosesSimilar(humanPose, _poseCache, float.Epsilon, float.Epsilon, float.Epsilon))
             {
-                Debug.LogError("T-pose animation clip not found.");
+                _poseCache = humanPose;
+                _poseClipCache = new AnimationClip() { legacy = false };
+                SetHumanPoseToClip(ref humanPose, _poseClipCache);
             }
-            return tPose;
+
+            return _poseClipCache;
+        }
+
+        private static bool ArePosesSimilar(HumanPose pose1, HumanPose pose2, float positionThreshold, float rotationThreshold, float muscleThreshold)
+        {
+            // Compare body position
+            if (Vector3.Distance(pose1.bodyPosition, pose2.bodyPosition) > positionThreshold)
+            {
+                return false;
+            }
+
+            // Compare body rotation
+            if (Quaternion.Angle(pose1.bodyRotation, pose2.bodyRotation) > rotationThreshold)
+            {
+                return false;
+            }
+
+            // Compare muscle values
+            for (int i = 0; i < pose1.muscles.Length; i++)
+            {
+                if (Mathf.Abs(pose1.muscles[i] - pose2.muscles[i]) > muscleThreshold)
+                {
+                    return false;
+                }
+            }
+
+            // If none of the values are beyond the thresholds, the poses are considered similar
+            return true;
+        }
+
+        private static void SetHumanPoseToClip(ref HumanPose humanPose, AnimationClip clip)
+        {
+            // Set body position and rotation
+            clip.SetCurve("", typeof(Animator), "RootT.x", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.x)));
+            clip.SetCurve("", typeof(Animator), "RootT.y", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.y)));
+            clip.SetCurve("", typeof(Animator), "RootT.z", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.z)));
+
+            clip.SetCurve("", typeof(Animator), "RootQ.x", new AnimationCurve(new Keyframe(0, humanPose.bodyRotation.x)));
+            clip.SetCurve("", typeof(Animator), "RootQ.y", new AnimationCurve(new Keyframe(0, humanPose.bodyRotation.y)));
+            clip.SetCurve("", typeof(Animator), "RootQ.z", new AnimationCurve(new Keyframe(0, humanPose.bodyRotation.z)));
+            clip.SetCurve("", typeof(Animator), "RootQ.w", new AnimationCurve(new Keyframe(0, humanPose.bodyRotation.w)));
+
+            // Set muscle values
+            for (int i = 0; i < humanPose.muscles.Length; i++)
+            {
+                string muscleName = HumanTrait.MuscleName[i];
+                float muscleValue = humanPose.muscles[i];
+                clip.SetCurve("", typeof(Animator), muscleName, new AnimationCurve(new Keyframe(0, muscleValue)));
+            }
         }
 
         public static AnimationClip SynthesizeClip(AnimationClip baseClip, AnimationClip additionalClip)
@@ -375,7 +435,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             return synthesized;
         }
 
-        public static AnimationClip SynthesizeAvatarPose(AnimationClip animationClip) => SynthesizeClip(GetAvatarPoseClip(), animationClip);
+        public static AnimationClip SynthesizeAvatarPose(AnimationClip animationClip, VRCAvatarDescriptor avatarDescriptor) => SynthesizeClip(GetAvatarPoseClip(avatarDescriptor), animationClip);
 
         public static void CombineExpressions(AnimationClip leftHand, AnimationClip rightHand, AnimationClip destination)
         {

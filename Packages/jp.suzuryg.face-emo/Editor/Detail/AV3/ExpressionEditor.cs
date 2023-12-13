@@ -176,7 +176,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public Vector3 GetAvatarViewPosition()
         {
             // Returns view position if previewable in T-pose.
-            if (AV3Utility.GetAvatarPoseClip() != null && (_aV3Setting?.TargetAvatar as VRCAvatarDescriptor)?.ViewPosition != null)
+            if (AV3Utility.GetAvatarPoseClip(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor) != null && (_aV3Setting?.TargetAvatar as VRCAvatarDescriptor)?.ViewPosition != null)
             {
                 return (_aV3Setting.TargetAvatar as VRCAvatarDescriptor).ViewPosition + new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
             }
@@ -199,7 +199,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     var animator = clonedAvatar.GetComponent<Animator>();
                     if (animator != null && animator.isHuman)
                     {
-                        var clip = AV3Utility.GetAvatarPoseClip();
+                        var clip = AV3Utility.GetAvatarPoseClip(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
                         if (clip == null) { clip = new AnimationClip(); }
                         AnimationMode.StartAnimationMode();
                         AnimationMode.BeginSampling();
@@ -566,7 +566,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         private void InitializePreviewClip()
         {
-            _previewClip = AV3Utility.SynthesizeAvatarPose(Clip);
+            _previewClip = AV3Utility.SynthesizeAvatarPose(Clip, _aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
             RenderPreviewClip();
         }
 
