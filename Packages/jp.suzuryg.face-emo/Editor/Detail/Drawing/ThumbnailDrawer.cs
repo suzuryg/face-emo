@@ -222,6 +222,8 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             {
                 // Clone avatar
                 clonedAvatar = UnityEngine.Object.Instantiate(avatarAnimator.gameObject);
+                // FIXME: Unable to support the case that avatar's body shape balance is tuned by root object's scale. (Is it necessary to assume this case...?)
+                clonedAvatar.transform.localScale = Vector3.one;
                 SceneManager.MoveGameObjectToScene(clonedAvatar, _previewScene);
                 clonedAvatar.transform.position = Vector3.zero;
                 clonedAvatar.transform.rotation = Quaternion.identity;
@@ -345,7 +347,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
 
             // Synthesize avatar pose
-            var synthesized = AV3Utility.SynthesizeAvatarPose(clip);
+            var synthesized = AV3Utility.SynthesizeAvatarPose(clip, _aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
 
             // Sample animation clip and render
             var positionCache = animatorRoot.transform.position;

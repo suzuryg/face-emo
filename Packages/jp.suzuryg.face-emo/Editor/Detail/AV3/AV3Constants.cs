@@ -90,8 +90,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly string Path_GeneratedDir = $"Assets/Suzuryg/{DomainConstants.SystemName}/Generated";
         public static readonly string Path_PrefabDir = $"Assets/Suzuryg/{DomainConstants.SystemName}/Prefabs";
 
-        public static readonly string GUID_TPoseClip = "645a7092829eff9478fb3a29f959a6fa";
-
         public static readonly IReadOnlyList<HandGesture> EmoteSelectToGesture = new List<HandGesture>()
         {
             HandGesture.Neutral,
