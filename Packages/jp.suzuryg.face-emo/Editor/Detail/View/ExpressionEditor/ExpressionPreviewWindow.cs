@@ -30,6 +30,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private AV3.ExpressionEditor _expressionEditor;
         private Texture2D _renderCache;
+        private SceneView _lastActiveSceneViewCache;
 
         public void Initialize(AV3.ExpressionEditor expressionEditor, SceneView lastActiveSceneView)
         {
@@ -159,15 +160,26 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void OnFocus()
         {
+            // When base.OnSceneGUI() is called, lastActiveSceneView becomes active, causing problems with viewpoint manipulation.
+            // To avoid this problem, change lastActiveSceneView.
+            // Due to compatibility issue with Hai AnimationViewer, control lastActiveSceneView in Unity2019 as well.
+            // Since reflection is used, limit the Unity version to 2019 and 2022.
+            // Even if this operation is not performed, basic expression editing can be performed with only some problems with zooming by dragging, etc.
+            if (lastActiveSceneView != null && !ReferenceEquals(lastActiveSceneView, this))
+            {
+                _lastActiveSceneViewCache = lastActiveSceneView;
+            }
+            SetLastActiveSceneView(this);
+
             if (_expressionEditor?.IsDisposed == false)
             {
                 _expressionEditor?.StartSampling();
             }
         }
 
-#if UNITY_2019
         private void OnLostFocus()
         {
+#if UNITY_2019
             try
             {
                 UpdateRenderCache();
@@ -176,16 +188,53 @@ namespace Suzuryg.FaceEmo.Detail.View
             {
                 _expressionEditor?.StopSampling();
             }
-        }
 #else
-        // In Unity2022, OnLostFocus() is executed when wheel-clicking or right-clicking on SceneView.
-        // Therefore, do not override OnLostFocus().
+            // In Unity2022, OnLostFocus() can be executed when wheel-clicking or right-clicking on SceneView.
+            // Therefore, do not stop sampling.
 #endif
+            if (_lastActiveSceneViewCache != null)
+            {
+                SetLastActiveSceneView(_lastActiveSceneViewCache);
+            }
+        }
 
         public override void OnDisable()
         {
             base.OnDisable();
             _expressionEditor?.StopSampling();
+
+            if (_lastActiveSceneViewCache != null)
+            {
+                SetLastActiveSceneView(_lastActiveSceneViewCache);
+            }
+        }
+
+        private static void SetLastActiveSceneView(SceneView sceneView)
+        {
+            if (ReferenceEquals(sceneView, lastActiveSceneView)) { return; }
+#if UNITY_2019
+            Type sceneViewType = typeof(SceneView);
+            FieldInfo lastActiveSceneViewInfo = sceneViewType.GetField("s_LastActiveSceneView", BindingFlags.NonPublic | BindingFlags.Static);
+            if (lastActiveSceneViewInfo != null)
+            {
+                lastActiveSceneViewInfo.SetValue(null, sceneView);
+            }
+            else
+            {
+                Debug.LogError("s_LastActiveSceneView field not found");
+            }
+#elif UNITY_2022
+            Type sceneViewType = typeof(SceneView);
+            PropertyInfo lastActiveSceneViewInfo = sceneViewType.GetProperty("lastActiveSceneView", BindingFlags.Public | BindingFlags.Static);
+            if (lastActiveSceneViewInfo != null)
+            {
+                lastActiveSceneViewInfo.SetValue(null, sceneView, null);
+            }
+            else
+            {
+                Debug.LogError("lastActiveSceneView property not found");
+            }
+#endif
         }
     }
 }
