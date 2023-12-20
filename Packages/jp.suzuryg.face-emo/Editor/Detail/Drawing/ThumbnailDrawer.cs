@@ -250,7 +250,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                             ThumbnailSetting.CameraPosXCoef * leftShoulder.position.x,
                             CameraPosX);
 
-                        var distance = Math.Abs(animator.GetBoneTransform(HumanBodyBones.Neck).position.y - targetAvatar.ViewPosition.y);
+                        var distance = Math.Abs(animator.GetBoneTransform(HumanBodyBones.Neck).position.y - targetAvatar.GetScaledViewPosition().y);
                         y = Mathf.Lerp(-distance, distance, CameraPosY);
                     }
                     else
@@ -265,9 +265,9 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 camera.orthographic = false;
                 camera.nearClipPlane = 0.01f;
                 camera.fieldOfView = FOV;
-                camera.transform.position = new Vector3(x, targetAvatar.ViewPosition.y + y, Distance);
+                camera.transform.position = new Vector3(x, targetAvatar.GetScaledViewPosition().y + y, Distance);
                 cameraRoot.transform.rotation = Quaternion.Euler(0, 180, 0);
-                camera.transform.RotateAround(targetAvatar.ViewPosition, Vector3.left, CameraAngleX);
+                camera.transform.RotateAround(targetAvatar.GetScaledViewPosition(), Vector3.left, CameraAngleX);
                 camera.transform.RotateAround(clonedAvatar.transform.position, Vector3.down, CameraAngleY);
 
                 // Generate thumbnails

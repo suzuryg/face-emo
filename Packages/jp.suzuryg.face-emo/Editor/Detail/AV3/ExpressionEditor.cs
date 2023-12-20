@@ -178,9 +178,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public Vector3 GetAvatarViewPosition()
         {
             // Returns view position if previewable in T-pose.
-            if (AV3Utility.GetAvatarPoseClip(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor) != null && (_aV3Setting?.TargetAvatar as VRCAvatarDescriptor)?.ViewPosition != null)
+            if (AV3Utility.GetAvatarPoseClip(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor) != null && (_aV3Setting?.TargetAvatar as VRCAvatarDescriptor)?.GetScaledViewPosition() != null)
             {
-                return (_aV3Setting.TargetAvatar as VRCAvatarDescriptor).ViewPosition + new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
+                return (_aV3Setting.TargetAvatar as VRCAvatarDescriptor).GetScaledViewPosition() + new Vector3(PreviewAvatarPosX, PreviewAvatarPosY, PreviewAvatarPosZ);
             }
             // Returns head position if not previewable in T-pose.
             else
