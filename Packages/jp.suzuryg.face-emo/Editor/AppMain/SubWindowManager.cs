@@ -17,7 +17,6 @@ namespace Suzuryg.FaceEmo.AppMain
     public class SubWindowManager : ISubWindowManager
     {
         private FaceEmoInstaller _installer;
-        private SceneView _lastActiveSceneView;
 
         private object _lockFindObjects = new object();
 
@@ -62,7 +61,7 @@ namespace Suzuryg.FaceEmo.AppMain
                         if (window is ExpressionPreviewWindow expressionPreviewWindow)
                         {
                             var expressionEditor = _installer.Container.Resolve<ExpressionEditor>();
-                            expressionPreviewWindow.Initialize(expressionEditor, _lastActiveSceneView);
+                            expressionPreviewWindow.Initialize(expressionEditor);
                         }
                     }
                     else if (typeof(T) == typeof(CombineClipsDialog))
@@ -128,8 +127,6 @@ namespace Suzuryg.FaceEmo.AppMain
 
             if (!window.IsInitialized)
             {
-                _lastActiveSceneView = SceneView.lastActiveSceneView;
-
                 if (initializeAction is Action<EditorWindow>)
                 {
                     initializeAction(window);
