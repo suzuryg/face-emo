@@ -32,28 +32,29 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Texture2D _renderCache;
         private SceneView _lastActiveSceneViewCache;
 
-        public void Initialize(AV3.ExpressionEditor expressionEditor, SceneView lastActiveSceneView)
+        public void Initialize(AV3.ExpressionEditor expressionEditor)
         {
             // Dependencies
             _expressionEditor = expressionEditor;
 
             // Initialization
-            if (lastActiveSceneView != null && lastActiveSceneView.cameraSettings != null)
+            // _lastActiveSceneViewCache is set when this window is opened.
+            if (_lastActiveSceneViewCache != null && _lastActiveSceneViewCache.cameraSettings != null)
             {
                 var copied = new CameraSettings();
 
-                copied.speed = lastActiveSceneView.cameraSettings.speed;
-                copied.speedNormalized = lastActiveSceneView.cameraSettings.speedNormalized;
-                copied.speedMin = lastActiveSceneView.cameraSettings.speedMin;
-                copied.speedMax = lastActiveSceneView.cameraSettings.speedMax;
-                copied.easingEnabled = lastActiveSceneView.cameraSettings.easingEnabled;
-                copied.easingDuration = lastActiveSceneView.cameraSettings.easingDuration;
-                copied.accelerationEnabled = lastActiveSceneView.cameraSettings.accelerationEnabled;
-                copied.fieldOfView = lastActiveSceneView.cameraSettings.fieldOfView;
-                copied.nearClip = lastActiveSceneView.cameraSettings.nearClip;
-                copied.farClip = lastActiveSceneView.cameraSettings.farClip;
-                copied.dynamicClip = lastActiveSceneView.cameraSettings.dynamicClip;
-                copied.occlusionCulling = lastActiveSceneView.cameraSettings.occlusionCulling;
+                copied.speed = _lastActiveSceneViewCache.cameraSettings.speed;
+                copied.speedNormalized = _lastActiveSceneViewCache.cameraSettings.speedNormalized;
+                copied.speedMin = _lastActiveSceneViewCache.cameraSettings.speedMin;
+                copied.speedMax = _lastActiveSceneViewCache.cameraSettings.speedMax;
+                copied.easingEnabled = _lastActiveSceneViewCache.cameraSettings.easingEnabled;
+                copied.easingDuration = _lastActiveSceneViewCache.cameraSettings.easingDuration;
+                copied.accelerationEnabled = _lastActiveSceneViewCache.cameraSettings.accelerationEnabled;
+                copied.fieldOfView = _lastActiveSceneViewCache.cameraSettings.fieldOfView;
+                copied.nearClip = _lastActiveSceneViewCache.cameraSettings.nearClip;
+                copied.farClip = _lastActiveSceneViewCache.cameraSettings.farClip;
+                copied.dynamicClip = _lastActiveSceneViewCache.cameraSettings.dynamicClip;
+                copied.occlusionCulling = _lastActiveSceneViewCache.cameraSettings.occlusionCulling;
 
                 cameraSettings = copied;
             }
