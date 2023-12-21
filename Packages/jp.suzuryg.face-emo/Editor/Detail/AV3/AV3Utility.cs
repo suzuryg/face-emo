@@ -193,6 +193,32 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             return toBeExcluded;
         }
 
+        // FIXME: This method should be merged with GetEyeLidsBlendShapes().
+        public static BlendShape GetBlinkBlendShape(VRCAvatarDescriptor avatarDescriptor)
+        {
+            if (avatarDescriptor != null &&
+                avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes != null &&
+                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh != null &&
+                avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh.sharedMesh != null)
+            {
+                var skinnedMesh = avatarDescriptor.customEyeLookSettings.eyelidsSkinnedMesh;
+                var transformPath = GetPathFromAvatarRoot(skinnedMesh.transform, avatarDescriptor);
+                if (transformPath == null) { return null; }
+
+                if (avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes.Length > 0)
+                {
+                    var index = avatarDescriptor.customEyeLookSettings.eyelidsBlendshapes[0];
+                    if (0 <= index && index < skinnedMesh.sharedMesh.blendShapeCount)
+                    {
+                        var name = skinnedMesh.sharedMesh.GetBlendShapeName(index);
+                        return new BlendShape(path: transformPath, name: name);
+                    }
+                }
+            }
+            return null;
+        }
+
+        // FIXME: Refactoring is needed because of confusion between "blink" and "eyelid" blend shapes in this method calls.
         public static List<BlendShape> GetEyeLidsBlendShapes(VRCAvatarDescriptor avatarDescriptor)
         {
             var ret = new List<BlendShape>();
