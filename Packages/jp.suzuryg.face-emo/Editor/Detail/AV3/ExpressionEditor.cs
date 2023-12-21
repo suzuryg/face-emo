@@ -265,7 +265,24 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 foreach (var item in blendShapes) { _faceBlendShapes[item.Key] = item.Value; }
             }
 
-            BlinkBlendShapes = new HashSet<BlendShape>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting.TargetAvatar as VRCAvatarDescriptor));
+            // TODO: Update the value when the blink setting is changed.
+            // TODO: Change the UI display between the Eyelids setting in AvatarDescriptor and the blink clip.
+            if (_aV3Setting.ReplaceBlink && _aV3Setting.UseBlinkClip)
+            {
+                if (_aV3Setting.BlinkClip != null)
+                {
+                    BlinkBlendShapes = new HashSet<BlendShape>(GetBlendShapeValues(_aV3Setting.BlinkClip, _faceBlendShapes.Keys).Keys);
+                }
+                else
+                {
+                    BlinkBlendShapes = new HashSet<BlendShape>();
+                }
+            }
+            else
+            {
+                BlinkBlendShapes = new HashSet<BlendShape>(AV3Utility.GetEyeLidsBlendShapes(_aV3Setting.TargetAvatar as VRCAvatarDescriptor));
+            }
+
             LipSyncBlendShapes = new HashSet<BlendShape>(AV3Utility.GetLipSyncBlendShapes(_aV3Setting.TargetAvatar as VRCAvatarDescriptor));
 
             var animatedBlendShapes = GetBlendShapeValues(Clip, _faceBlendShapes.Keys);
