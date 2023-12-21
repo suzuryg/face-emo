@@ -1359,10 +1359,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 return clip;
             }
 
-            var eyeLids = AV3Utility.GetEyeLidsBlendShapes(avatarDescriptor);
-            if (eyeLids.Count > 0)
+            var blink = AV3Utility.GetBlinkBlendShape(avatarDescriptor);
+            if (blink is BlendShape)
             {
-                clip = clip.BlendShape(faceMesh, eyeLids.First().Name, GetBlinkCurve());
+                clip = clip.BlendShape(faceMesh, blink.Name, GetBlinkCurve());
             }
             else
             {
