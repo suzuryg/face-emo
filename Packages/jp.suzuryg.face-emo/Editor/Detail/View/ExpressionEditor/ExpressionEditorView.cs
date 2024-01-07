@@ -3,14 +3,12 @@ using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Localization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using UniRx;
 
 namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
@@ -226,6 +224,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 {
                     Field_AddAllBlendShapes();
                     Field_FaceBlendShapeDelimiter(rightContentWidth);
+                    Field_FaceBlendShapeSearch(rightContentWidth);
                     Field_ReflectInPreviewOnMouseOver();
                     using (var scope = new EditorGUILayout.ScrollViewScope(_rightScrollPosition))
                     {
@@ -399,6 +398,19 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     _expressionEditorSetting.ApplyModifiedProperties();
                     _expressionEditor.FetchProperties();
                 }
+            }
+        }
+
+        private string _search = string.Empty;
+
+        private void Field_FaceBlendShapeSearch(float contentWidth)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var label = new GUIContent(_localizationTable.ExpressionEditorView_Search, _localizationTable.ExpressionEditorView_Tooltip_Delimiter);
+                var labelWidth = GUI.skin.label.CalcSize(label).x;
+                EditorGUILayout.LabelField(label, GUILayout.Width(labelWidth));
+                _search = EditorGUILayout.TextField(_search, GUILayout.Width(contentWidth - labelWidth));
             }
         }
 
@@ -699,6 +711,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             return fieldInputPerformed;
         }
 
+        private string _lastSearch;
+        
         private void Field_FaceBlendShapes()
         {
             // Get setting values
@@ -738,6 +752,22 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     }
                 }
             }
+
+            // Apply search
+            // this allows fast path (in MatchName) due to being able to compare references
+            if (_search == _lastSearch) _search = _lastSearch;
+            _lastSearch = _search;
+            if (!string.IsNullOrEmpty(_search))
+            {
+                foreach (KeyValuePair<string, List<BlendShape>> keyValuePair in categorized)
+                {
+                    keyValuePair.Value.RemoveAll(a => a.MatchName(_search) <= 0);
+                    keyValuePair.Value.Sort((a, b) => b.MatchName(_search).CompareTo(a.MatchName(_search)));
+                }
+            }
+
+            // Remove empty categories
+            categorized = categorized.Where(x => x.Value.Any()).ToDictionary(x => x.Key, x => x.Value);
 
             // Immediately after opening ExpressionEditor and if it has not been categorized, open the first category.
             var previousStates = new Dictionary<string, bool>(_faceBlendShapeFoldoutStates);

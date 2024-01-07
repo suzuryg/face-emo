@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Suzuryg.FaceEmo.Domain
@@ -23,6 +25,57 @@ namespace Suzuryg.FaceEmo.Domain
         {
             _path = path;
             _name = name;
+        }
+
+        private static readonly Regex _tokenizer = new Regex(@"(?<=[a-z])(?=[A-Z])|[_\-;:,./\\]|(?<=[A-Z])(?=[A-Z][a-z])", RegexOptions.Compiled);
+        private List<string> _cachedTokens;
+        private string _lastSearch;
+        private double _lastScore;
+
+        public double MatchName(string otherName)
+        {
+            if (ReferenceEquals(otherName, _lastSearch)) return _lastScore;
+            _lastSearch = otherName;
+            if (_name.Equals(otherName)) return _lastScore = 100;
+            if (_name.Equals(otherName, StringComparison.InvariantCultureIgnoreCase)) return _lastScore = 99.9;
+            if (_name.StartsWith(otherName, StringComparison.InvariantCultureIgnoreCase)) return _lastScore = 95;
+            otherName = otherName.ToLowerInvariant();
+            if (_name.ToLowerInvariant().Contains(otherName)) return _lastScore = otherName.Length * 8;
+
+            if (_cachedTokens == null || _cachedTokens.Count == 0)
+            {
+                _cachedTokens = new List<string>();
+                foreach (var s in _tokenizer.Split(_name))
+                {
+                    string clean = s.Trim().ToLowerInvariant();
+                    if (clean.Length == 0) continue;
+                    _cachedTokens.Add(clean);
+                }
+            }
+
+
+            int nameIndex = 0;
+            double score = 0;
+            for (var tokenIndex = 0; tokenIndex < _cachedTokens.Count; tokenIndex++)
+            {                
+                if (" _-,.;:/\\".IndexOf(otherName[nameIndex]) >= 0)
+                {
+                    nameIndex += 1;
+                    if (nameIndex >= otherName.Length) return _lastScore = score;
+                }
+                var cachedToken = _cachedTokens[tokenIndex];
+                int tokenCharIndex = 0;
+                while (cachedToken[tokenCharIndex] == otherName[nameIndex])
+                {
+                    score += 100.0 / (3 * (nameIndex + 1) + 2 * (tokenIndex + 1) + (tokenCharIndex + 1));
+                    tokenCharIndex += 1;
+                    nameIndex += 1;
+                    if (nameIndex >= otherName.Length) return _lastScore = score;
+                    if (tokenCharIndex >= cachedToken.Length) break;
+                }
+            }
+
+            return _lastScore = score;
         }
 
         public override string ToString()
@@ -61,4 +114,3 @@ namespace Suzuryg.FaceEmo.Domain
         }
     }
 }
-
