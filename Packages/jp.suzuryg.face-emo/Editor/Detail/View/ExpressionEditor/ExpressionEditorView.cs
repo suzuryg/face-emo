@@ -46,6 +46,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         private GUIStyle _warningTextStyle = new GUIStyle();
         private GUIStyle _normalPropertyStyle = new GUIStyle();
         private GUIStyle _warnedPropertyStyle = new GUIStyle();
+        private GUIStyle _normalLabelStyle = new GUIStyle();
+        private GUIStyle _highlightedLabelStyle = new GUIStyle();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -147,6 +149,15 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             _warnedPropertyStyle.normal.background = _redTexture;
             _warnedPropertyStyle.normal.scaledBackgrounds = new[] { _redTexture };
             _warnedPropertyStyle.normal.textColor = Color.black;
+
+            // Normal label
+            _normalLabelStyle = new GUIStyle(GUI.skin.label);
+
+            // Highlighted label
+            _highlightedLabelStyle = new GUIStyle(GUI.skin.label);
+            _highlightedLabelStyle.normal.background = _emphasizedTexture;
+            _highlightedLabelStyle.normal.scaledBackgrounds = new[] { _emphasizedTexture };
+            _highlightedLabelStyle.normal.textColor = ViewUtility.GetEmphasizedTextColor();
         }
 
         private void SetText(LocalizationTable localizationTable)
@@ -409,7 +420,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             {
                 var label = new GUIContent(_localizationTable.ExpressionEditorView_Search, _localizationTable.ExpressionEditorView_Tooltip_Search);
                 var labelWidth = GUI.skin.label.CalcSize(label).x;
-                EditorGUILayout.LabelField(label, GUILayout.Width(labelWidth));
+                var isHighlighted = !string.IsNullOrEmpty(_search);
+                EditorGUILayout.LabelField(label, isHighlighted ? _highlightedLabelStyle : _normalLabelStyle, GUILayout.Width(labelWidth));
                 _search = EditorGUILayout.TextField(_search, GUILayout.Width(contentWidth - labelWidth));
             }
         }
