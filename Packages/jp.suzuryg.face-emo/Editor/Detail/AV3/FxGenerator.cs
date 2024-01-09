@@ -114,19 +114,27 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 {
                     throw new FaceEmoException("Failed to get MA root object.");
                 }
-
+                                
+                var existingPrefabPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(rootObject);
+                var editableRootObject = rootObject;
+                if (!string.IsNullOrEmpty(existingPrefabPath))
+                {
+                    var existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(existingPrefabPath);
+                    editableRootObject = PrefabUtility.InstantiatePrefab(existingPrefab) as GameObject;
+                }
+                
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA components...", 0);
-                AddMergeAnimatorComponent(rootObject, animatorController);
-                AddMenuInstallerComponent(rootObject, exMenu);
-                AddParameterComponent(rootObject, defaultModeIndex);
+                AddMergeAnimatorComponent(editableRootObject, animatorController);
+                AddMenuInstallerComponent(editableRootObject, exMenu);
+                AddParameterComponent(editableRootObject, defaultModeIndex);
 
-                AddBlinkDisablerComponent(rootObject);
-                AddTrackingControlDisablerComponent(rootObject);
+                AddBlinkDisablerComponent(editableRootObject);
+                AddTrackingControlDisablerComponent(editableRootObject);
 
                 // Instantiate prefabs
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Instantiating prefabs...", 0);
-                ModifyExistingSubPrefabs(rootObject);
-                InstantiatePrefabs(rootObject);
+                ModifyExistingSubPrefabs(editableRootObject);
+                InstantiatePrefabs(editableRootObject);
 
                 // Update MA object prefab
                 string rootObjectPrefabPath = AssetDatabase.GetAssetPath(_aV3Setting.MARootObjectPrefab);
@@ -143,7 +151,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                     rootObjectPrefabPath = folderPath + "/" + AV3Constants.MARootObjectName + ".prefab";
                 }
-                _aV3Setting.MARootObjectPrefab = PrefabUtility.SaveAsPrefabAssetAndConnect(rootObject, rootObjectPrefabPath, InteractionMode.AutomatedAction);
+                _aV3Setting.MARootObjectPrefab = PrefabUtility.SaveAsPrefabAssetAndConnect(editableRootObject, rootObjectPrefabPath, InteractionMode.AutomatedAction);
+                if (editableRootObject != rootObject)
+                {
+                    UnityEngine.Object.DestroyImmediate(editableRootObject);
+                }
 
                 // Replace sub-avatar's MA objects
                 foreach (var subAvatar in _aV3Setting.SubTargetAvatars)
