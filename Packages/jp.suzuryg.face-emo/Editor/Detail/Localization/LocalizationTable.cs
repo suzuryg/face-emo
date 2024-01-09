@@ -323,6 +323,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_ShowOnlyDifferFromDefaultValue = "Show Only BlendShapes Different from the Scene";
         public string ExpressionEditorView_ReflectInPreviewOnMouseOver = "Reflect in Preview on Mouse Over";
         public string ExpressionEditorView_Delimiter = "Delimiter";
+        public string ExpressionEditorView_Search = "Search";
         public string ExpressionEditorView_AddAllBlendShapes = "Add All BlendShapes";
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
         public string ExpressionEditorView_AddtionalToggleObjects = "Addtional Objects (Toggle)";
@@ -338,6 +339,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_Message_NotInitialized = "Please open expression editor from main window of FaceEmo.";
         public string ExpressionEditorView_Tooltip_Delimiter = "By entering the delimiter for the blend shapes, you can display the blend shapes by category. " +
             "For example, if the category name is \"=====Eye=====\", please enter \"=====\".";
+        public string ExpressionEditorView_Tooltip_Search = "Simple blend shape search, enter part of the name or fist letters of each word. For example, \"eye_blink_right\" can be found by just typing ebr/eybr/ey b r etc...";
         public string ExpressionEditorView_Tooltip_AddAllBlendShapes = "All unadded blend shapes will be added to the animation clip. " +
             "The values of the added blend shapes will be the default values (the values set on the scene).";
 

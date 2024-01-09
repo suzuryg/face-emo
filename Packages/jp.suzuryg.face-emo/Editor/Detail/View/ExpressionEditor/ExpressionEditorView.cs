@@ -3,14 +3,12 @@ using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Localization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using UniRx;
 
 namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
@@ -48,6 +46,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         private GUIStyle _warningTextStyle = new GUIStyle();
         private GUIStyle _normalPropertyStyle = new GUIStyle();
         private GUIStyle _warnedPropertyStyle = new GUIStyle();
+        private GUIStyle _normalLabelStyle = new GUIStyle();
+        private GUIStyle _highlightedLabelStyle = new GUIStyle();
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -149,6 +149,15 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             _warnedPropertyStyle.normal.background = _redTexture;
             _warnedPropertyStyle.normal.scaledBackgrounds = new[] { _redTexture };
             _warnedPropertyStyle.normal.textColor = Color.black;
+
+            // Normal label
+            _normalLabelStyle = new GUIStyle(GUI.skin.label);
+
+            // Highlighted label
+            _highlightedLabelStyle = new GUIStyle(GUI.skin.label);
+            _highlightedLabelStyle.normal.background = _emphasizedTexture;
+            _highlightedLabelStyle.normal.scaledBackgrounds = new[] { _emphasizedTexture };
+            _highlightedLabelStyle.normal.textColor = ViewUtility.GetEmphasizedTextColor();
         }
 
         private void SetText(LocalizationTable localizationTable)
@@ -226,6 +235,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 {
                     Field_AddAllBlendShapes();
                     Field_FaceBlendShapeDelimiter(rightContentWidth);
+                    Field_FaceBlendShapeSearch(rightContentWidth);
                     Field_ReflectInPreviewOnMouseOver();
                     using (var scope = new EditorGUILayout.ScrollViewScope(_rightScrollPosition))
                     {
@@ -399,6 +409,20 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     _expressionEditorSetting.ApplyModifiedProperties();
                     _expressionEditor.FetchProperties();
                 }
+            }
+        }
+
+        private string _search = string.Empty;
+
+        private void Field_FaceBlendShapeSearch(float contentWidth)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var label = new GUIContent(_localizationTable.ExpressionEditorView_Search, _localizationTable.ExpressionEditorView_Tooltip_Search);
+                var labelWidth = GUI.skin.label.CalcSize(label).x;
+                var isHighlighted = !string.IsNullOrEmpty(_search);
+                EditorGUILayout.LabelField(label, isHighlighted ? _highlightedLabelStyle : _normalLabelStyle, GUILayout.Width(labelWidth));
+                _search = EditorGUILayout.TextField(_search, GUILayout.Width(contentWidth - labelWidth));
             }
         }
 
@@ -699,6 +723,8 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
             return fieldInputPerformed;
         }
 
+        private string _lastSearch;
+        
         private void Field_FaceBlendShapes()
         {
             // Get setting values
@@ -738,6 +764,22 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                     }
                 }
             }
+
+            // Apply search
+            // this allows fast path (in MatchName) due to being able to compare references
+            if (_search == _lastSearch) _search = _lastSearch;
+            _lastSearch = _search;
+            if (!string.IsNullOrEmpty(_search))
+            {
+                foreach (KeyValuePair<string, List<BlendShape>> keyValuePair in categorized)
+                {
+                    keyValuePair.Value.RemoveAll(a => a.MatchName(_search) <= 0);
+                    keyValuePair.Value.Sort((a, b) => b.MatchName(_search).CompareTo(a.MatchName(_search)));
+                }
+            }
+
+            // Remove empty categories
+            categorized = categorized.Where(x => x.Value.Any()).ToDictionary(x => x.Key, x => x.Value);
 
             // Immediately after opening ExpressionEditor and if it has not been categorized, open the first category.
             var previousStates = new Dictionary<string, bool>(_faceBlendShapeFoldoutStates);
