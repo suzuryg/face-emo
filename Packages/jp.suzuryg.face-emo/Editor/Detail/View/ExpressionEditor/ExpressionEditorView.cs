@@ -407,7 +407,7 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                var label = new GUIContent(_localizationTable.ExpressionEditorView_Search, _localizationTable.ExpressionEditorView_Tooltip_Delimiter);
+                var label = new GUIContent(_localizationTable.ExpressionEditorView_Search, _localizationTable.ExpressionEditorView_Tooltip_Search);
                 var labelWidth = GUI.skin.label.CalcSize(label).x;
                 EditorGUILayout.LabelField(label, GUILayout.Width(labelWidth));
                 _search = EditorGUILayout.TextField(_search, GUILayout.Width(contentWidth - labelWidth));
