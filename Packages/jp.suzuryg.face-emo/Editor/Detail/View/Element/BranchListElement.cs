@@ -32,6 +32,13 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private static readonly Color ActiveElementColor = new Color(0f, 0.5f, 1f, 0.4f);
         private static readonly Color FocusedElementColor = new Color(0f, 0.5f, 1f, 0.4f);
 
+#if UNITY_2022_1_OR_NEWER
+        // In Unity2022, the height of the element passed to the ReorderableList callback is not equal to the actual height of the element.
+        private static readonly float ElementHeightGap = 2;
+#else
+        private static readonly float ElementHeightGap = 0;
+#endif
+
         public IMenu Menu { get; private set; }
         public string SelectedModeId { get; private set; }
         public bool IsSimplified { get; set; } = false;
@@ -232,7 +239,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             float totalHeight = 0;
             for (int i = 0; i < _reorderableList.list.Count; i++)
             {
-                totalHeight += GetElementHeight(i);
+                totalHeight += GetElementHeight(i) + ElementHeightGap;
             }
             var viewRect = new Rect(rect.x, rect.y,
                 rect.width - EditorGUIUtility.singleLineHeight,
@@ -273,7 +280,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 var height = 0f;
                 for (int i = 0; i <= branchIndex; i++)
                 {
-                    height = GetElementHeight(i);
+                    height = GetElementHeight(i) + ElementHeightGap;
                     yBottom += height;
                 }
                 var yTop = yBottom - height;
