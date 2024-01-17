@@ -129,9 +129,9 @@ namespace Suzuryg.FaceEmo.AppMain
         }
 
         [MenuItem("FaceEmo/New Menu", false, 0)]
-        public static GameObject Create(MenuCommand menuCommand)
+        public static GameObject Create()
         {
-            var gameObject = GetLauncherObject(menuCommand);
+            var gameObject = GetLauncherObject();
 
             // Create GameObject which has unique name in acitive scene.
             var baseName = DomainConstants.SystemName;
@@ -148,7 +148,7 @@ namespace Suzuryg.FaceEmo.AppMain
         }
 
         [MenuItem("FaceEmo/Restore Menu", false, 1)]
-        public static void Restore(MenuCommand menuCommand)
+        public static void Restore()
         {
             var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: FaceEmoBackupper.BackupDir, filters: new[] { "FaceEmoProject" , "asset" });
             if (string.IsNullOrEmpty(selectedPath)) { return; }
@@ -156,7 +156,7 @@ namespace Suzuryg.FaceEmo.AppMain
             // OpenFilePanel path is in OS format, so convert it to Unity format
             var unityPath = PathConverter.ToUnityPath(selectedPath);
 
-            var gameObject = GetLauncherObject(menuCommand);
+            var gameObject = GetLauncherObject();
             var name = System.IO.Path.GetFileName(selectedPath).Replace(".asset", string.Empty);
             gameObject.name = name;
 
@@ -175,11 +175,11 @@ namespace Suzuryg.FaceEmo.AppMain
             }
         }
 
-        private static GameObject GetLauncherObject(MenuCommand menuCommand)
+        private static GameObject GetLauncherObject(MenuCommand menuCommand = null)
         {
             var gameObject = new GameObject();
             gameObject.AddComponent<FaceEmoLauncherComponent>();
-            GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject);
+            if (menuCommand != null) { GameObjectUtility.SetParentAndAlign(gameObject, menuCommand.context as GameObject); }
             Undo.RegisterCreatedObjectUndo(gameObject, $"Create {DomainConstants.SystemName} Object");
             Selection.activeObject = gameObject;
             UnityEditorInternal.InternalEditorUtility.SetIsInspectorExpanded(gameObject.GetComponent<FaceEmoLauncherComponent>(), true);
@@ -237,7 +237,7 @@ namespace Suzuryg.FaceEmo.AppMain
 
                 if (!exists)
                 {
-                    var launcherObject = Create(new MenuCommand(null, 0));
+                    var launcherObject = Create();
                     var installer = new FaceEmoInstaller(launcherObject);
 
                     var launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
