@@ -88,7 +88,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var fxPath = AssetDatabase.GetAssetPath(generated.fx);
             var exMenuPath = AssetDatabase.GetAssetPath(generated.exMenu);
 
-            _fxGenerator.Generate(_menu, forceOverLimitMode: false);
+            _fxGenerator.Generate(_menu, null, forceOverLimitMode: false);
             Assert.That(AssetDatabase.LoadAssetAtPath<AnimatorController>(fxPath) == null, Is.True);
             Assert.That(AssetDatabase.LoadAssetAtPath<VRCExpressionsMenu>(exMenuPath) == null, Is.True);
             Assert.That(AssetDatabase.IsValidFolder(generated.generatedDir), Is.False);
@@ -99,7 +99,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         [Test]
         public void Generate()
         {
-            _fxGenerator.Generate(_menu);
+            _fxGenerator.Generate(_menu, null);
             var generated = GetGeneratedAssets();
             AssertDefaultFaceLayer(generated.fx.layers[0]);
             AssertLeftInputConverterLayer(generated.fx.layers[1]);
@@ -122,7 +122,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         {
             _av3Setting.ChangeAfkFace = true;
 
-            _fxGenerator.Generate(_menu);
+            _fxGenerator.Generate(_menu, null);
             var generated = GetGeneratedAssets();
             AssertDefaultFaceLayer(generated.fx.layers[0]);
             AssertLeftInputConverterLayer(generated.fx.layers[1]);
@@ -145,7 +145,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         {
             _av3Setting.DisableFxDuringDancing = true;
 
-            _fxGenerator.Generate(_menu);
+            _fxGenerator.Generate(_menu, null);
             var generated = GetGeneratedAssets();
             AssertDefaultFaceLayer(generated.fx.layers[0]);
             AssertDanceGimmickControlLayer(generated.fx.layers[1]);
@@ -170,7 +170,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _av3Setting.DisableFxDuringDancing = false;
             _av3Setting.MatchAvatarWriteDefaults = false;
 
-            _fxGenerator.Generate(_menu);
+            _fxGenerator.Generate(_menu, null);
             var generated = GetGeneratedAssets();
             AssertDefaultFaceLayer(generated.fx.layers[0]);
             AssertDanceGimmickControlLayer(generated.fx.layers[1]);
@@ -198,7 +198,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _av3Setting.UseMouthMorphCancelClip = true;
             _av3Setting.MouthMorphCancelClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/TestAssets/Henge/Himiko_2022/animm/face_cancel.anim");
 
-            _fxGenerator.Generate(_menu);
+            _fxGenerator.Generate(_menu, null);
             var generated = GetGeneratedAssets();
             AssertDefaultFaceLayer(generated.fx.layers[0]);
             AssertLeftInputConverterLayer(generated.fx.layers[1]);

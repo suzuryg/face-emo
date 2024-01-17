@@ -13,6 +13,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Combine = "Combine";
         public string Common_Apply = "Apply";
         public string Common_Import = "Import";
+        public string Common_Proceed = "Proceed";
         public string Common_Colon = ": ";
 
         public string Common_Neutral = "Neutral";
@@ -145,6 +146,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "* To prevent interference between expressions, the expressions originally set on the avatar will be disabled on upload.\n" +
             "If you want to revert back to the original settings, delete the \"FaceEmoPrefab\" that will be added to the avatar.";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
+        public string SettingView_Message_FailedObtainPrefabs = "Failed to obtain prefab information.";
+        public string SettingView_Message_ReplaceFaceEmoPrefab = "\"<0>\" contained in the following prefabs will be replaced. Do you want to proceed?";
         public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
         public string SettingView_Tooltip_UnifyWriteDefaults = "If the avatar's WriteDefaults are unified with ON, FaceEmo's WriteDefaults will be ON.\n" +
             "If not unified, FaceEmo's WriteDefaults will be OFF.\n\n" +
@@ -263,6 +266,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_GroupDeleteConfirmation = "Confirm When Deleting Folder";
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
+        public string InspectorView_EditPrefabConfirmation = "Confirm When Making Changes to Prefab";
         public string InspectorView_ShowBlinkBlendShapes = "Show Blink Blend Shapes";
         public string InspectorView_ShowLipSyncBlendShapes = "Show Lip Sync Blend Shapes";
         public string InspectorView_HierarchyIconOffset = "\"Emo\" button position offset";

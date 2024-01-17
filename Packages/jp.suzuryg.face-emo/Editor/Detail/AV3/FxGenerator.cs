@@ -50,12 +50,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             _aV3Setting = aV3Setting;
         }
 
-        public void Generate(IMenu menu) => Generate(menu, false);
+        public void Generate(IMenu menu, IEnumerable<string> editablePrefabPaths) => Generate(menu, editablePrefabPaths, false);
 
-        public void Generate(IMenu menu, bool forceOverLimitMode = false)
+        public void Generate(IMenu menu, IEnumerable<string> editablePrefabPaths, bool forceOverLimitMode = false)
         {
             try
             {
+                if (editablePrefabPaths is null) { editablePrefabPaths = new HashSet<string>(); }
+
                 //UnityEngine.Profiling.Profiler.BeginSample("FxGenerator");
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Start FX controller generation.", 0);
 
@@ -108,46 +110,31 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating ExMenu...", 0);
                 var exMenu = GenerateExMenu(modes, menu, exMenuPath, useOverLimitMode);
 
-                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA root object...", 0);
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA objects...", 0);
                 var rootObject = GetMARootObject(avatarDescriptor);
-                if (rootObject == null)
+                var parentPrefabPath = GetParentPrefabPathOfMARootObject(rootObject);
+                if (!string.IsNullOrEmpty(parentPrefabPath) && editablePrefabPaths.Contains(parentPrefabPath))
                 {
-                    throw new FaceEmoException("Failed to get MA root object.");
-                }
-
-                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating MA components...", 0);
-                AddMergeAnimatorComponent(rootObject, animatorController);
-                AddMenuInstallerComponent(rootObject, exMenu);
-                AddParameterComponent(rootObject, defaultModeIndex);
-
-                AddBlinkDisablerComponent(rootObject);
-                AddTrackingControlDisablerComponent(rootObject);
-
-                // Instantiate prefabs
-                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Instantiating prefabs...", 0);
-                ModifyExistingSubPrefabs(rootObject);
-                InstantiatePrefabs(rootObject);
-
-                // Update MA object prefab
-                string rootObjectPrefabPath = AssetDatabase.GetAssetPath(_aV3Setting.MARootObjectPrefab);
-                if (string.IsNullOrEmpty(rootObjectPrefabPath))
-                {
-                    var parent = AV3Constants.Path_PrefabDir + "/" + _aV3Setting.TargetAvatar.name + "_";
-
-                    var folderPath = parent + Guid.NewGuid().ToString("N");
-                    while (AssetDatabase.IsValidFolder(folderPath))
+                    var parentPrefabInstance = PrefabUtility.LoadPrefabContents(parentPrefabPath);
+                    try
                     {
-                        folderPath = parent + Guid.NewGuid().ToString("N");
+                        rootObject = parentPrefabInstance.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
+                        GenerateMAObject(rootObject, animatorController, exMenu, defaultModeIndex);
                     }
-                    AV3Utility.CreateFolderRecursively(folderPath);
-
-                    rootObjectPrefabPath = folderPath + "/" + AV3Constants.MARootObjectName + ".prefab";
+                    finally
+                    {
+                        PrefabUtility.UnloadPrefabContents(parentPrefabInstance);
+                    }
                 }
-                _aV3Setting.MARootObjectPrefab = PrefabUtility.SaveAsPrefabAssetAndConnect(rootObject, rootObjectPrefabPath, InteractionMode.AutomatedAction);
+                else
+                {
+                    GenerateMAObject(rootObject, animatorController, exMenu, defaultModeIndex);
+                }
 
                 // Replace sub-avatar's MA objects
-                foreach (var subAvatar in _aV3Setting.SubTargetAvatars)
+                foreach (var item in _aV3Setting.SubTargetAvatars)
                 {
+                    var subAvatar = item as VRCAvatarDescriptor;
                     if (subAvatar == null ||
                         subAvatar.gameObject == null ||
                         ReferenceEquals(_aV3Setting.TargetAvatar, subAvatar))
@@ -155,23 +142,25 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                         continue;
                     }
 
-                    var existing = subAvatar.gameObject.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
-                    if (existing != null)
+                    var subRoot = GetMARootObject(subAvatar);
+                    var subParentPath = GetParentPrefabPathOfMARootObject(subRoot);
+                    if (!string.IsNullOrEmpty(subParentPath) && editablePrefabPaths.Contains(subParentPath))
                     {
-                        // TODO: handle objects inside prefab
+                        var subParentInstance = PrefabUtility.LoadPrefabContents(subParentPath);
                         try
                         {
-                            UnityEngine.Object.DestroyImmediate(existing);
+                            subRoot = subParentInstance.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
+                            ReplaceMAObject(subRoot);
                         }
-                        catch (InvalidOperationException ioe)
+                        finally
                         {
-                            EditorUtility.DisplayDialog(DomainConstants.SystemName, GetPrefabErrorMessage() + "\n\n" + existing.GetFullPath(), "OK");
-                            throw new FaceEmoException("Failed to delete existing instance.", ioe);
+                            PrefabUtility.UnloadPrefabContents(subParentInstance);
                         }
                     }
-
-                    var instantiated = PrefabUtility.InstantiatePrefab(_aV3Setting.MARootObjectPrefab) as GameObject;
-                    instantiated.transform.parent = subAvatar.gameObject.transform;
+                    else
+                    {
+                        ReplaceMAObject(subRoot);
+                    }
                 }
 
                 // Clean assets
@@ -1034,12 +1023,162 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 rootObject.transform.parent = avatarRoot.transform;
             }
 
+            return rootObject;
+        }
+
+        public List<string> GetParentPrefabPathOfMARootObjects()
+        {
+            return GetExistingMARootObjects()
+                .Select(x => GetParentPrefabPathOfMARootObject(x))
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Distinct()
+                .ToList();
+        }
+
+        private List<GameObject> GetExistingMARootObjects()
+        {
+            var maRootObjects = new List<GameObject>();
+
+            var targets = new List<Transform>();
+            if (_aV3Setting.TargetAvatar != null)
+            {
+                targets.Add(_aV3Setting.TargetAvatar.gameObject.transform);
+            }
+            foreach (var subAvatar in _aV3Setting.SubTargetAvatars)
+            {
+                if (subAvatar != null)
+                {
+                    targets.Add(subAvatar.gameObject.transform);
+                }
+            }
+
+            foreach (var transform in targets)
+            {
+                var found = transform.Find(AV3Constants.MARootObjectName);
+                if (found != null && !maRootObjects.Any(x => ReferenceEquals(x, found.gameObject)))
+                {
+                    maRootObjects.Add(found.gameObject);
+                }
+            }
+
+            return maRootObjects;
+        }
+
+        private static string GetParentPrefabPathOfMARootObject(GameObject rootObject)
+        {
+            if (rootObject == null ||
+                rootObject.transform.parent == null ||
+                !PrefabUtility.IsPartOfAnyPrefab(rootObject.transform.parent.gameObject))
+            {
+                return string.Empty;
+            }
+
+            var parentPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(rootObject.transform.parent.gameObject);
+            if (string.IsNullOrEmpty(parentPath))
+            {
+                return string.Empty;
+            }
+
+            var parent = PrefabUtility.LoadPrefabContents(parentPath);
+            try
+            {
+                var found = parent.transform.Find(AV3Constants.MARootObjectName);
+                if (found == null ||
+                    found.gameObject.transform.parent == null)
+                {
+                    return string.Empty;
+                }
+
+                if (PrefabUtility.IsPartOfAnyPrefab(found.gameObject.transform.parent.gameObject))
+                {
+                    var deeperParentPath = GetParentPrefabPathOfMARootObject(found.gameObject);
+                    if (!string.IsNullOrEmpty(deeperParentPath))
+                    {
+                        return deeperParentPath;
+                    }
+                    else
+                    {
+                        return parentPath;
+                    }
+                }
+                else
+                {
+                    return parentPath;
+                }
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(parent);
+            }
+        }
+
+        private void GenerateMAObject(GameObject rootObject, AnimatorController animatorController, VRCExpressionsMenu exMenu, int defaultModeIndex)
+        {
+            if (rootObject == null)
+            {
+                throw new FaceEmoException("Failed to get MA root object.");
+            }
+
             if (PrefabUtility.IsOutermostPrefabInstanceRoot(rootObject))
             {
                 PrefabUtility.UnpackPrefabInstance(rootObject, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
             }
 
-            return rootObject;
+            // Add MA components
+            AddMergeAnimatorComponent(rootObject, animatorController);
+            AddMenuInstallerComponent(rootObject, exMenu);
+            AddParameterComponent(rootObject, defaultModeIndex);
+
+            AddBlinkDisablerComponent(rootObject);
+            AddTrackingControlDisablerComponent(rootObject);
+
+            // Instantiate prefabs
+            ModifyExistingSubPrefabs(rootObject);
+            InstantiatePrefabs(rootObject);
+
+            // Update MA object prefab
+            string rootObjectPrefabPath = AssetDatabase.GetAssetPath(_aV3Setting.MARootObjectPrefab);
+            if (string.IsNullOrEmpty(rootObjectPrefabPath))
+            {
+                var parent = AV3Constants.Path_PrefabDir + "/" + _aV3Setting.TargetAvatar.name + "_";
+
+                var folderPath = parent + Guid.NewGuid().ToString("N");
+                while (AssetDatabase.IsValidFolder(folderPath))
+                {
+                    folderPath = parent + Guid.NewGuid().ToString("N");
+                }
+                AV3Utility.CreateFolderRecursively(folderPath);
+
+                rootObjectPrefabPath = folderPath + "/" + AV3Constants.MARootObjectName + ".prefab";
+            }
+            _aV3Setting.MARootObjectPrefab = PrefabUtility.SaveAsPrefabAssetAndConnect(rootObject, rootObjectPrefabPath, InteractionMode.AutomatedAction);
+        }
+
+        private void ReplaceMAObject(GameObject rootObject)
+        {
+            if (rootObject == null)
+            {
+                throw new FaceEmoException("Failed to get MA root object.");
+            }
+
+            var avatarRoot = rootObject.transform.parent.gameObject;
+            if (avatarRoot == null)
+            {
+                throw new FaceEmoException("Failed to get avatar root.");
+            }
+
+            try
+            {
+                UnityEngine.Object.DestroyImmediate(rootObject);
+            }
+            catch (InvalidOperationException ioe)
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, GetPrefabErrorMessage() + "\n\n" + rootObject.GetFullPath(), "OK");
+                throw new FaceEmoException("Failed to delete existing instance.", ioe);
+            }
+
+            var instantiated = PrefabUtility.InstantiatePrefab(_aV3Setting.MARootObjectPrefab) as GameObject;
+            instantiated.transform.parent = avatarRoot.transform;
         }
 
         private void InstantiatePrefabs(GameObject rootObject)
@@ -1053,7 +1192,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 var existing = rootObject.transform.Find(prefabName)?.gameObject;
                 if (existing != null)
                 {
-                    // TODO: handle objects inside prefab
                     try
                     {
                         UnityEngine.Object.DestroyImmediate(existing);

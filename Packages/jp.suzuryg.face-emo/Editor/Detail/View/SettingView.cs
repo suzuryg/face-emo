@@ -311,8 +311,39 @@ namespace Suzuryg.FaceEmo.Detail.View
                 windowWidth: dialogWidth, windowHeight: dialogHeight,
                 centerPosition: GetDialogCenterPosition()))
             {
-                _mainWindow?.Focus(); // DisplayProgressBar() is displayed in the center of the focused EditorWindow.
-                _generateFxUseCase.Handle("");
+                List<string> editablePrefabPaths;
+                try
+                {
+                    editablePrefabPaths = _generateFxUseCase.Prepare();
+                }
+                catch (Exception ex)
+                {
+                    editablePrefabPaths = new List<string>();
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.SettingView_Message_FailedObtainPrefabs
+                        + "\n\n" + ex?.Message, "OK");
+                    Debug.LogError(_localizationTable.SettingView_Message_FailedObtainPrefabs + "\n" + ex?.ToString());
+                }
+
+                var messages = new List<(MessageType type, string message)>()
+                {
+                    (MessageType.None, _localizationTable.SettingView_Message_ReplaceFaceEmoPrefab.Replace("<0>", AV3Constants.MARootObjectName)),
+                    (MessageType.None, string.Empty),
+                };
+                foreach (var path in editablePrefabPaths)
+                {
+                    messages.Add((MessageType.None, path));
+                }
+
+                if (!editablePrefabPaths.Any() ||
+                    OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                    _localizationTable.Common_Proceed, _localizationTable.Common_Cancel,
+                    DetailConstants.KeyEditPrefabsConfirmation, DetailConstants.DefaultEditPrefabsConfirmation,
+                    isRiskyAction: false, additionalMessages: messages,
+                    windowWidth: dialogWidth, windowHeight: OptoutableDialog.GetHeightWithoutMessage(), centerPosition: GetDialogCenterPosition()))
+                {
+                    _mainWindow?.Focus(); // DisplayProgressBar() is displayed in the center of the focused EditorWindow.
+                    _generateFxUseCase.Handle("", editablePrefabPaths);
+                }
             }
         }
 

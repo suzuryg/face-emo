@@ -1,0 +1,470 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &27562739588670085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9034459971522958909}
+  - component: {fileID: 3680334972806761925}
+  - component: {fileID: 8018867104071381903}
+  - component: {fileID: 2156487745370825328}
+  - component: {fileID: 7153000342269536517}
+  - component: {fileID: 5274780341274132401}
+  m_Layer: 0
+  m_Name: FaceEmoPrefab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9034459971522958909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27562739588670085}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 347704214594531827}
+  - {fileID: 5631088101213829880}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3680334972806761925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27562739588670085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb122659f724ebf85fe095ac02dc339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 9100000, guid: 94bee2b8b275c3944be763c5b6ad2c8f, type: 2}
+  layerType: 5
+  deleteAttachedAnimator: 1
+  pathMode: 1
+  matchAvatarWriteDefaults: 1
+--- !u!114 &8018867104071381903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27562739588670085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef83cb0c23d4d7c9d41021e544a1978, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuToAppend: {fileID: 11400000, guid: 84cdd5ba76ec257468331c9a346185cf, type: 2}
+  installTargetMenu: {fileID: 0}
+--- !u!114 &2156487745370825328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27562739588670085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a96d4ea0c344f39e277d82035bf9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+  - nameOrPrefix: CN_CONTROLLER_TYPE_QUEST
+    remapTo: FaceEmo_CN_CONTROLLER_TYPE_QUEST
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: CN_CONTROLLER_TYPE_INDEX
+    remapTo: FaceEmo_CN_CONTROLLER_TYPE_INDEX
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: CN_EMOTE_SELECT_SWAP_LR
+    remapTo: FaceEmo_CN_EMOTE_SELECT_SWAP_LR
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: CN_EMOTE_SELECT_DISABLE_LEFT
+    remapTo: FaceEmo_CN_EMOTE_SELECT_DISABLE_LEFT
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: CN_EMOTE_SELECT_DISABLE_RIGHT
+    remapTo: FaceEmo_CN_EMOTE_SELECT_DISABLE_RIGHT
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: CN_CONTACT_EMOTE_LOCK_ENABLE
+    remapTo: FaceEmo_CN_CONTACT_EMOTE_LOCK_ENABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: SYNC_CN_EMOTE_OVERRIDE_ENABLE
+    remapTo: FaceEmo_SYNC_CN_EMOTE_OVERRIDE_ENABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 1
+    saved: 1
+  - nameOrPrefix: SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE
+    remapTo: FaceEmo_SYNC_CN_WAIT_FACE_EMOTE_BY_VOICE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: EM_EMOTE_PATTERN
+    remapTo: FaceEmo_EM_EMOTE_PATTERN
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 1
+    localOnly: 0
+    defaultValue: 0
+    saved: 1
+  - nameOrPrefix: CN_EMOTE_LOCK_ENABLE
+    remapTo: FaceEmo_CN_EMOTE_LOCK_ENABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CN_EMOTE_PRELOCK_ENABLE
+    remapTo: FaceEmo_CN_EMOTE_PRELOCK_ENABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: SYNC_CN_FORCE_BLINK_DISABLE
+    remapTo: FaceEmo_SYNC_CN_FORCE_BLINK_DISABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: SYNC_CN_DANCE_GIMMICK_ENABLE
+    remapTo: FaceEmo_SYNC_CN_DANCE_GIMMICK_ENABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 3
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: SYNC_EM_EMOTE
+    remapTo: FaceEmo_SYNC_EM_EMOTE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 1
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: Dummy
+    remapTo: FaceEmo_Dummy
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: EM_EMOTE_SELECT_L
+    remapTo: FaceEmo_EM_EMOTE_SELECT_L
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: EM_EMOTE_SELECT_R
+    remapTo: FaceEmo_EM_EMOTE_SELECT_R
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: EM_EMOTE_PRESELECT
+    remapTo: FaceEmo_EM_EMOTE_PRESELECT
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CN_BLINK_ENABLE
+    remapTo: FaceEmo_CN_BLINK_ENABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CN_MOUTH_MORPH_CANCEL_ENABLE
+    remapTo: FaceEmo_CN_MOUTH_MORPH_CANCEL_ENABLE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CN_EMOTE_OVERRIDE
+    remapTo: FaceEmo_CN_EMOTE_OVERRIDE
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CN_BYPASS
+    remapTo: FaceEmo_CN_BYPASS
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: EV_PLAY_INDICATOR_SOUND
+    remapTo: FaceEmo_EV_PLAY_INDICATOR_SOUND
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CNST_TOUCH_NADENADE_POINT
+    remapTo: FaceEmo_CNST_TOUCH_NADENADE_POINT
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CNST_TOUCH_EMOTE_LOCK_TRIGGER_L
+    remapTo: FaceEmo_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+  - nameOrPrefix: CNST_TOUCH_EMOTE_LOCK_TRIGGER_R
+    remapTo: FaceEmo_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R
+    internalParameter: 0
+    isPrefix: 0
+    syncType: 0
+    localOnly: 0
+    defaultValue: 0
+    saved: 0
+--- !u!114 &7153000342269536517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27562739588670085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1cec12bf093dfe4f9580f58da3ec3cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5274780341274132401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27562739588670085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7295bd34fd3ed2d43a44ce3eb08bec9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &2731385400262249878
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 9034459971522958909}
+    m_Modifications:
+    - target: {fileID: 4843512441269474242, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_Name
+      value: FaceEmo_EmoteLocker
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a930c82b803f1ab40b03edb55045774a, type: 3}
+--- !u!4 &5631088101213829880 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7764892161486010222, guid: a930c82b803f1ab40b03edb55045774a,
+    type: 3}
+  m_PrefabInstance: {fileID: 2731385400262249878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6161856202804650322
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 9034459971522958909}
+    m_Modifications:
+    - target: {fileID: 4134143149242028709, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: matchAvatarWriteDefaults
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859188294283514018, guid: ff2776afeb0412e4595ffb3207ce4e74,
+        type: 3}
+      propertyPath: m_Name
+      value: FaceEmo_IndicatorSound
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ff2776afeb0412e4595ffb3207ce4e74, type: 3}
+--- !u!4 &347704214594531827 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5859188294283514017, guid: ff2776afeb0412e4595ffb3207ce4e74,
+    type: 3}
+  m_PrefabInstance: {fileID: 6161856202804650322}
+  m_PrefabAsset: {fileID: 0}
