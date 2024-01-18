@@ -725,6 +725,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             #pragma warning disable CS0612
             var obsoleteProperty = _av3Setting.FindProperty(nameof(AV3Setting.MouthMorphBlendShapes));
+            #pragma warning restore CS0612
             if (obsoleteProperty.arraySize > 0)
             {
                 var obsolete = GetValue<List<string>>(obsoleteProperty);
@@ -743,7 +744,6 @@ namespace Suzuryg.FaceEmo.Detail.View
                     SetValue(mouthMorphsProperty, mouthMorphs);
                 }
             }
-            #pragma warning restore CS0612
 
             using (new EditorGUI.DisabledScope(useMouthMorphCancelClip.boolValue))
             {
