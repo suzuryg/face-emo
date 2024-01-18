@@ -36,6 +36,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Subject<(IMenu menu, bool isModified)> _onMenuUpdated = new Subject<(IMenu menu, bool isModified)>();
 
         private IMenuRepository _menuRepository;
+        private IRestorer _restorer; 
         private ILocalizationSetting _localizationSetting;
         private InspectorThumbnailDrawer _thumbnailDrawer;
         private SerializedObject _inspectorViewState;
@@ -63,6 +64,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public InspectorView(
             IMenuRepository menuRepository,
+            IRestorer restorer,
             ILocalizationSetting localizationSetting,
             InspectorThumbnailDrawer inspectorThumbnailDrawer,
             InspectorViewState inspectorViewState,
@@ -71,6 +73,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             // Dependencies
             _menuRepository = menuRepository;
+            _restorer = restorer;
             _localizationSetting = localizationSetting;
             _thumbnailDrawer = inspectorThumbnailDrawer;
             _inspectorViewState = new SerializedObject(inspectorViewState);
@@ -245,6 +248,10 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Import buttons
             Field_ImportButtons();
+
+            EditorGUILayout.Space(10);
+
+            Field_Restore();
 
             EditorGUILayout.Space(10);
 
@@ -557,6 +564,38 @@ namespace Suzuryg.FaceEmo.Detail.View
                     {
                         EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ErrorHandler_Message_ErrorOccured + "\n\n" + ex?.Message, "OK");
                         Debug.LogException(ex);
+                    }
+                }
+            }
+        }
+
+        private void Field_Restore()
+        {
+            using (new EditorGUI.DisabledScope(!_restorer.CanRestore()))
+            {
+                if (GUILayout.Button(_localizationTable.InspectorView_Restore))
+                {
+                    var names = _restorer.GetNames();
+                    var messages = new List<(MessageType type, string message)>()
+                    {
+                        (MessageType.None, _localizationTable.InspectorView_Message_Restore),
+                        (MessageType.None, string.Empty),
+                        (MessageType.Info, _localizationTable.InspectorView_Help_Restore.Replace("<0>", names.backup).Replace("<1>", names.current)),
+                    };
+
+                    if (OptoutableDialog.Show(DomainConstants.SystemName, string.Empty,
+                        _localizationTable.Common_Restore, _localizationTable.Common_Cancel, isRiskyAction: false,
+                        additionalMessages: messages, windowHeight: OptoutableDialog.GetHeightWithoutMessage()))
+                    {
+                        try
+                        {
+                            _restorer.Restore();
+                        }
+                        catch (Exception ex)
+                        {
+                            EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.InspectorView_Message_RestoreError + "\n\n" + ex?.Message, "OK");
+                            Debug.LogError(_localizationTable.InspectorView_Message_RestoreError + ex?.ToString());
+                        }
                     }
                 }
             }

@@ -129,7 +129,7 @@ namespace Suzuryg.FaceEmo.AppMain
         }
 
         [MenuItem("FaceEmo/New Menu", false, 0)]
-        public static GameObject Create()
+        public static GameObject CreateCommand()
         {
             var gameObject = GetLauncherObject();
 
@@ -148,7 +148,7 @@ namespace Suzuryg.FaceEmo.AppMain
         }
 
         [MenuItem("FaceEmo/Restore Menu", false, 1)]
-        public static void Restore()
+        public static void RestoreCommand()
         {
             var selectedPath = EditorUtility.OpenFilePanelWithFilters(title: null, directory: FaceEmoBackupper.BackupDir, filters: new[] { "FaceEmoProject" , "asset" });
             if (string.IsNullOrEmpty(selectedPath)) { return; }
@@ -156,22 +156,57 @@ namespace Suzuryg.FaceEmo.AppMain
             // OpenFilePanel path is in OS format, so convert it to Unity format
             var unityPath = PathConverter.ToUnityPath(selectedPath);
 
-            var gameObject = GetLauncherObject();
-            var name = System.IO.Path.GetFileName(selectedPath).Replace(".asset", string.Empty);
-            gameObject.name = name;
-
-            var installer = new FaceEmoInstaller(gameObject);
-            var backupper = installer.Container.Resolve<IBackupper>();
             try
             {
-                backupper.Import(unityPath);
+                Restore(unityPath);
             }
             catch (Exception ex)
             {
                 var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_FailedToOpenProject + "\n" + loc.Common_Message_SeeConsole, "OK");
                 Debug.LogError(loc.Common_Message_FailedToOpenProject + "\n" + ex?.ToString());
+            }
+        }
+
+        public static bool CanRestore(RestorationCheckpoint restorationCheckpoint)
+        {
+            return
+                restorationCheckpoint != null &&
+                restorationCheckpoint.LatestBackup != null &&
+                !string.IsNullOrEmpty(AssetDatabase.GetAssetPath(restorationCheckpoint.LatestBackup));
+        }
+
+        public static GameObject Restore(RestorationCheckpoint restorationCheckpoint)
+        {
+            var launcherObject = Restore(AssetDatabase.GetAssetPath(restorationCheckpoint.LatestBackup));
+
+            restorationCheckpoint.gameObject.SetActive(false);
+            Selection.activeGameObject = launcherObject;
+
+            var newCheckpoint = launcherObject.GetComponent<RestorationCheckpoint>();
+            if (newCheckpoint == null) { launcherObject.AddComponent<RestorationCheckpoint>(); }
+            EditorUtility.CopySerialized(restorationCheckpoint, newCheckpoint);
+
+            return launcherObject;
+        }
+
+        private static GameObject Restore(string path)
+        {
+            var gameObject = GetLauncherObject();
+            var name = System.IO.Path.GetFileName(path).Replace(".asset", string.Empty);
+            gameObject.name = name;
+
+            var installer = new FaceEmoInstaller(gameObject);
+            var backupper = installer.Container.Resolve<IBackupper>();
+            try
+            {
+                backupper.Import(path);
+                return gameObject;
+            }
+            catch (Exception)
+            {
                 if (gameObject != null) { DestroyImmediate(gameObject); }
+                throw;
             }
         }
 
@@ -224,46 +259,77 @@ namespace Suzuryg.FaceEmo.AppMain
             {
                 if (!CanLaunch()) { return; }
 
-                var exists = false;
-                foreach (var launcher in FindObjectsOfType<FaceEmoLauncherComponent>()?.OrderBy(x => x.name))
+                if (TryLaunchFromExisting(avatarDescriptor)) { return; }
+
+                if (TryLaunchFromCheckpoint(avatarDescriptor, loc)) { return; }
+
+                LaunchFromNew(avatarDescriptor, loc);
+            }
+            GUI.DrawTexture(selectionRect, icon, ScaleMode.ScaleToFit, alphaBlend: true);
+        }
+
+        private static bool TryLaunchFromExisting(VRCAvatarDescriptor avatarDescriptor)
+        {
+            foreach (var launcher in FindObjectsOfType<FaceEmoLauncherComponent>()?.OrderBy(x => x.name))
+            {
+                if (ReferenceEquals(launcher?.AV3Setting?.TargetAvatar, avatarDescriptor))
                 {
-                    if (ReferenceEquals(launcher?.AV3Setting?.TargetAvatar, avatarDescriptor))
-                    {
-                        Launch(launcher);
-                        exists = true;
-                        break;
-                    }
+                    Launch(launcher);
+                    return true;
                 }
+            }
+            return false;
+        }
 
-                if (!exists)
+        private static bool TryLaunchFromCheckpoint(VRCAvatarDescriptor avatarDescriptor, LocalizationTable loc)
+        {
+            foreach (var checkpoint in FindObjectsOfType<RestorationCheckpoint>()?.OrderBy(x => x.name))
+            {
+                if (!ReferenceEquals(checkpoint.TargetAvatar, avatarDescriptor) || !CanRestore(checkpoint)) { continue; }
+
+                if (OptoutableDialog.Show(DomainConstants.SystemName, loc.Launcher_Message_Restore, "OK", isRiskyAction: false))
                 {
-                    var launcherObject = Create();
-                    var installer = new FaceEmoInstaller(launcherObject);
-
-                    var launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
-                    launcher.AV3Setting.TargetAvatar = avatarDescriptor;
-
                     try
                     {
-                        ImportPatternsAndOptions(launcherObject, installer, avatarDescriptor);
+                        var launcherObject = Restore(checkpoint);
+                        var launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
+                        Launch(launcher);
+                        return true;
                     }
                     catch (Exception ex)
                     {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Launcher_Message_ImportError + "\n\n" + ex?.Message, "OK");
-                        Debug.LogError(loc.Launcher_Message_ImportError + ex?.ToString());
-
-                        UnityEngine.Object.DestroyImmediate(launcher);
-
-                        installer = new FaceEmoInstaller(launcherObject);
-
-                        launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
-                        launcher.AV3Setting.TargetAvatar = avatarDescriptor;
+                        EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Launcher_Message_RestoreError + "\n\n" + ex?.Message, "OK");
+                        Debug.LogError(loc.Launcher_Message_RestoreError + ex?.ToString());
+                        return false;
                     }
-
-                    Launch(launcher);
                 }
             }
-            GUI.DrawTexture(selectionRect, icon, ScaleMode.ScaleToFit, alphaBlend: true);
+            return false;
+        }
+
+        private static void LaunchFromNew(VRCAvatarDescriptor avatarDescriptor, LocalizationTable loc)
+        {
+            var launcherObject = CreateCommand();
+            var installer = new FaceEmoInstaller(launcherObject);
+
+            var launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
+            launcher.AV3Setting.TargetAvatar = avatarDescriptor;
+
+            try
+            {
+                ImportPatternsAndOptions(launcherObject, installer, avatarDescriptor);
+            }
+            catch (Exception ex)
+            {
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Launcher_Message_ImportError + "\n\n" + ex?.Message, "OK");
+                Debug.LogError(loc.Launcher_Message_ImportError + ex?.ToString());
+
+                DestroyImmediate(launcher);
+                new FaceEmoInstaller(launcherObject);
+                launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
+                launcher.AV3Setting.TargetAvatar = avatarDescriptor;
+            }
+            Launch(launcher);
         }
 
         private static void ImportPatternsAndOptions(GameObject rootObject, FaceEmoInstaller installer, VRCAvatarDescriptor avatarDescriptor)

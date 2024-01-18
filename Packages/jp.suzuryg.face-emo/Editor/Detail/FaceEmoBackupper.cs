@@ -4,7 +4,7 @@ using Suzuryg.FaceEmo.Components.Data;
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Data;
-using Suzuryg.FaceEmo.Detail.Drawing;
+using Suzuryg.FaceEmo.Detail.View;
 using UnityEditor;
 using UnityEngine;
 using Suzuryg.FaceEmo.Domain;
@@ -25,24 +25,33 @@ namespace Suzuryg.FaceEmo.Detail
 
         private string _backupName;
         private IMenuBackupper _menuBackupper;
+        private IMenuRepository _menuRepository;
+        private SelectionSynchronizer _selectionSynchronizer;
         private AV3Setting _aV3Setting;
         private ExpressionEditorSetting _expressionEditorSetting;
         private ThumbnailSetting _thumbnailSetting;
+        private SerializedObject _restorationCheckpoint;
         private LocalizationTable _localizationTable;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public FaceEmoBackupper(
             IMenuBackupper menuBackupper,
+            IMenuRepository menuRepository,
+            SelectionSynchronizer selectionSynchronizer,
             AV3Setting aV3Setting,
             ExpressionEditorSetting expressionEditorSetting,
             ThumbnailSetting thumbnailSetting,
+            RestorationCheckpoint restorationCheckpoint,
             IReadOnlyLocalizationSetting localizationSetting)
         {
             _menuBackupper = menuBackupper;
+            _menuRepository = menuRepository;
+            _selectionSynchronizer = selectionSynchronizer;
             _aV3Setting = aV3Setting;
             _expressionEditorSetting = expressionEditorSetting;
             _thumbnailSetting = thumbnailSetting;
+            _restorationCheckpoint = new SerializedObject(restorationCheckpoint);
 
             // Localization table changed event handler
             localizationSetting.OnTableChanged.Synchronize().Subscribe(SetText).AddTo(_disposables);
@@ -73,10 +82,17 @@ namespace Suzuryg.FaceEmo.Detail
             }
 
             var path = $"{dir}/{_backupName}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.asset";
-            Export(path);
+            var project = SaveProject(path);
+
+            _restorationCheckpoint.Update();
+            _restorationCheckpoint.FindProperty(nameof(RestorationCheckpoint.TargetAvatar)).objectReferenceValue = _aV3Setting.TargetAvatar;
+            _restorationCheckpoint.FindProperty(nameof(RestorationCheckpoint.LatestBackup)).objectReferenceValue = project;
+            _restorationCheckpoint.ApplyModifiedProperties();
         }
-        
-        public void Export(string path)
+
+        public void Export(string path) => SaveProject(path);
+
+        public FaceEmoProject SaveProject(string path)
         {
             BackupPath();
 
@@ -106,6 +122,8 @@ namespace Suzuryg.FaceEmo.Detail
             project.ThumbnailSetting.name = nameof(ThumbnailSetting);
 
             AssetDatabase.SaveAssets();
+
+            return project;
         }
 
         public void Import(string path)
@@ -122,6 +140,12 @@ namespace Suzuryg.FaceEmo.Detail
             EditorUtility.CopySerialized(imported.ThumbnailSetting, _thumbnailSetting);
 
             RestorePath();
+
+            var menu = _menuRepository.Load(string.Empty);
+            if (menu.Registered.Order.Any())
+            {
+                _selectionSynchronizer.ChangeMenuItemListViewSelection(menu.Registered.Order.First());
+            }
         }
 
         private void SetText(LocalizationTable localizationTable)
