@@ -14,6 +14,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Apply = "Apply";
         public string Common_Import = "Import";
         public string Common_Proceed = "Proceed";
+        public string Common_Restore = "Restore";
         public string Common_Colon = ": ";
 
         public string Common_Neutral = "Neutral";
@@ -61,6 +62,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Launcher_Message_CheckVrcSdk3Avatars = "VRChat SDK Avatars 3.1.13 or later must be installed to use FaceEmo.\n\n" +
             "If VRChat SDK Avatars is not installed, or if an older version is installed, please install the latest version.";
         public string Launcher_Message_ImportError = "An error occurred while importing expression patterns and optional settings. The import will be canceled and FaceEmo will be newly started.";
+        public string Launcher_Message_Restore = "The facial expression setting for FaceEmo have been corrupted so it will be restored from the latest backup.";
+        public string Launcher_Message_RestoreError = "An error occurred while restoring from the backup. A new facial expression setting will be created.";
 
         public string HierarchyView_Title = "Tree View";
         public string HierarchyView_RegisteredMenuItemList = "Expression Menu";
@@ -199,6 +202,11 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Info_ImportExpressionPatterns = "If the avatar is not in standard configuration, the expression patterns may not load correctly.";
         public string InspectorView_ImportOptionalSettings = "Import Optional Settings From Avatar";
         public string InspectorView_Message_ImportOptionalSettings = "Import optional settings from the avatar?";
+
+        public string InspectorView_Restore = "Restore from AutoBackup";
+        public string InspectorView_Message_Restore = "Restore the facial expression setting for FaceEmo from the latest backup?";
+        public string InspectorView_Message_RestoreError = "An error occurred while restoring from the backup.";
+        public string InspectorView_Help_Restore = "A new \"<0>\" object is created and the current \"<1>\" object becomes inactive.";
 
         public string InspectorView_ApplyingToMultipleAvatars = "Applying Facial Expression Menu to Multiple Avatars";
         public string InspectorView_MenuPrefab = "Facial Expression Menu Prefab";

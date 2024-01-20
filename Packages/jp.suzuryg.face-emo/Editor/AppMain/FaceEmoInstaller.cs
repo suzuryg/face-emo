@@ -32,10 +32,8 @@ namespace Suzuryg.FaceEmo.AppMain
             RootObjectName = launcherObject.name;
 
             // Bind Monobehaviour instances
-            var menuRepositoryComponent = launcherObject.GetComponent<MenuRepositoryComponent>();
-            if (menuRepositoryComponent == null) { menuRepositoryComponent = launcherObject.AddComponent<MenuRepositoryComponent>(); }
-            menuRepositoryComponent.hideFlags = HideFlags.HideInInspector;
-            Container.Bind<MenuRepositoryComponent>().FromInstance(menuRepositoryComponent).AsSingle();
+            BindComponent<MenuRepositoryComponent>(launcherObject);
+            BindComponent<RestorationCheckpoint>(launcherObject);
 
             var launcher = launcherObject.GetComponent<FaceEmoLauncherComponent>();
             if (launcher == null) { launcher = launcherObject.AddComponent<FaceEmoLauncherComponent>(); }
@@ -158,6 +156,7 @@ namespace Suzuryg.FaceEmo.AppMain
             Container.Bind<DefaultsProviderGenerator>().AsTransient();
 
             Container.Bind<IFxGenerator>().To<FxGenerator>().AsTransient();
+            Container.Bind<IRestorer>().To<FaceEmoRestorer>().AsTransient();
 
             Container.Bind<MainView>().AsTransient();
             Container.Bind<HierarchyView>().AsTransient();
@@ -209,6 +208,14 @@ namespace Suzuryg.FaceEmo.AppMain
             }
 
             return new FaceEmoInstaller(launcherObject);
+        }
+
+        private void BindComponent<T>(GameObject gameObject) where T : MonoBehaviour
+        {
+            var component = gameObject.GetComponent<T>();
+            if (component == null) { component = gameObject.AddComponent<T>(); }
+            component.hideFlags = HideFlags.HideInInspector;
+            Container.Bind<T>().FromInstance(component).AsSingle();
         }
     }
 }

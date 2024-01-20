@@ -1,9 +1,13 @@
 ﻿using NUnit.Framework;
+using Suzuryg.FaceEmo.Components;
 using Suzuryg.FaceEmo.Components.Data;
 using Suzuryg.FaceEmo.Components.Settings;
+using Suzuryg.FaceEmo.Components.States;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Data;
 using Suzuryg.FaceEmo.Detail.Localization;
+using Suzuryg.FaceEmo.Detail.View;
+using Suzuryg.FaceEmo.UseCase;
 using UnityEditor;
 using UnityEngine;
 using VRC.Dynamics;
@@ -32,12 +36,18 @@ namespace Suzuryg.FaceEmo.Detail
             var menuRepository = new MenuRepository(menuRepositoryComponent);
             menuRepository.Save(string.Empty, new Domain.Menu(), string.Empty);
 
+            var updateMenuSubject = new UpdateMenuSubject();
+            var viewSelection = ScriptableObject.CreateInstance<ViewSelection>();
+            var selectionSynchronizer = new SelectionSynchronizer(menuRepository, updateMenuSubject, viewSelection);
+
+            var restorationCheckpoint = launcher.AddComponent<RestorationCheckpoint>();
+
             _av3Setting = ScriptableObject.CreateInstance<AV3Setting>();
             _expressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>();
             _thumbnailSetting = ScriptableObject.CreateInstance<ThumbnailSetting>();
             var localizationSetting = new LocalizationSetting();
 
-            _backupper = new FaceEmoBackupper(menuRepository, _av3Setting, _expressionEditorSetting, _thumbnailSetting, localizationSetting);
+            _backupper = new FaceEmoBackupper(menuRepository, menuRepository, selectionSynchronizer, _av3Setting, _expressionEditorSetting, _thumbnailSetting, restorationCheckpoint, localizationSetting);
 
             if (!AssetDatabase.IsValidFolder(TempDirPath))
             {

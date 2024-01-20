@@ -1538,6 +1538,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
             #pragma warning disable CS0612
             var obsolete = aV3Setting.MouthMorphBlendShapes;
+            #pragma warning restore CS0612
             if (obsolete.Any())
             {
                 var faceMesh = AV3Utility.GetFaceMesh(avatarDescriptor);
@@ -1553,7 +1554,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     EditorUtility.SetDirty(aV3Setting);
                 }
             }
-            #pragma warning restore CS0612
 
             var excludeBlink = false;
             var excludeLipSync = true;
