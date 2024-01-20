@@ -183,6 +183,10 @@ namespace Suzuryg.FaceEmo.AppMain
             restorationCheckpoint.gameObject.SetActive(false);
             Selection.activeGameObject = launcherObject;
 
+            // Close MainWindow to avoid users editing the old menu.
+            var mainWindow = EditorWindow.GetWindow<MainWindow>();
+            if (mainWindow != null) { mainWindow.Close(); }
+
             var newCheckpoint = launcherObject.GetComponent<RestorationCheckpoint>();
             if (newCheckpoint == null) { launcherObject.AddComponent<RestorationCheckpoint>(); }
             EditorUtility.CopySerialized(restorationCheckpoint, newCheckpoint);
