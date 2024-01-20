@@ -26,6 +26,8 @@ namespace Suzuryg.FaceEmo.AppMain
         private MainWindowProvider _mainWindowProvider;
         private UpdateMenuSubject _updateMenuSubject;
 
+        private string _errorMessage;
+
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public void Initialize(string launcherObjectPath)
@@ -52,7 +54,7 @@ namespace Suzuryg.FaceEmo.AppMain
             Clean();
             if (_launcherObjectPath is string)
             {
-                _installer = FaceEmoInstaller.GetInstaller(_launcherObjectPath);
+                _installer = FaceEmoInstaller.GetInstaller(_launcherObjectPath, out _errorMessage);
                 if (_installer == null) { Clean(); return; }
 
                 _mainWindowProvider = _installer.Container.Resolve<MainWindowProvider>();
@@ -99,6 +101,7 @@ namespace Suzuryg.FaceEmo.AppMain
 
         private void OnGUI()
         {
+            if (!string.IsNullOrEmpty(_errorMessage)) { GUILayout.Label(_errorMessage); }
             _mainWindowProvider?.OnGUI.OnNext(this);
         }
 
