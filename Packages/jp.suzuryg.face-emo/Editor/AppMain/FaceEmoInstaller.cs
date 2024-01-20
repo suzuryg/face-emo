@@ -179,12 +179,12 @@ namespace Suzuryg.FaceEmo.AppMain
             EditorUtility.SetDirty(Container.Resolve<InspectorViewState>());
         }
 
-        public static FaceEmoInstaller GetInstaller(string rootObjectPath)
+        public static FaceEmoInstaller GetInstaller(string rootObjectPath, out string errorMessage)
         {
             if (!rootObjectPath.StartsWith("/"))
             {
                 var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath}{loc.Common_Message_NotFullPath}", "OK");
+                errorMessage = $"{rootObjectPath}{loc.Common_Message_NotFullPath}";
                 return null;
             }
 
@@ -192,7 +192,7 @@ namespace Suzuryg.FaceEmo.AppMain
             if (launcherObject == null)
             {
                 var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath}{loc.Common_Message_LauncherObjectNotFound}", "OK");
+                errorMessage = $"{rootObjectPath}{loc.Common_Message_LauncherObjectNotFound}";
                 return null;
             }
 
@@ -203,10 +203,11 @@ namespace Suzuryg.FaceEmo.AppMain
             if (anotherObject != null)
             {
                 var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{rootObjectPath}{loc.Common_Message_DuplicatePath}", "OK");
+                errorMessage = $"{rootObjectPath}{loc.Common_Message_DuplicatePath}";
                 return null;
             }
 
+            errorMessage = string.Empty;
             return new FaceEmoInstaller(launcherObject);
         }
 
