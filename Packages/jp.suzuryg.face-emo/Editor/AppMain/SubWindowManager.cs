@@ -64,6 +64,14 @@ namespace Suzuryg.FaceEmo.AppMain
                             expressionPreviewWindow.Initialize(expressionEditor);
                         }
                     }
+                    else if (typeof(T) == typeof(InspectorWindow))
+                    {
+                        if (window is InspectorWindow InspectorWindow)
+                        {
+                            var inspectorView = _installer.Container.Resolve<InspectorView>();
+                            InspectorWindow.Initialize(inspectorView);
+                        }
+                    }
                     else if (typeof(T) == typeof(CombineClipsDialog))
                     {
                         // NOP
@@ -102,6 +110,7 @@ namespace Suzuryg.FaceEmo.AppMain
                 ProvideIfOpenedAlready<ExpressionEditorWindow>()?.CloseIfNotDocked();
                 ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.CloseIfNotDocked();
                 ProvideIfOpenedAlready<CombineClipsDialog>()?.Close();
+                ProvideIfOpenedAlready<InspectorWindow>()?.Close();
             }
             catch (NullReferenceException ex)
             {
