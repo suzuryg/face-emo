@@ -46,6 +46,19 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             else { return false; }
         }
 
+        public static bool AreAllValuesZero(AnimationClip animationClip, IEnumerable<BlendShape> blendShapes)
+        {
+            foreach (var binding in blendShapes.Select(x => new EditorCurveBinding { path = x.Path, propertyName = $"blendShape.{x.Name}", type = typeof(SkinnedMeshRenderer) }))
+            {
+                var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
+                if (curve != null && curve.keys.Any(x => Math.Abs(x.value) > 0))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public static AnimatorController GetFxLayer(VRCAvatarDescriptor avatarDescriptor)
         {
             foreach (var baseLayer in avatarDescriptor.baseAnimationLayers)
