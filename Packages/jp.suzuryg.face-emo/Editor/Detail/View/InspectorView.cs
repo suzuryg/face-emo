@@ -225,7 +225,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _disposables.Dispose();
         }
 
-        public void OnGUI()
+        public void OnGUI(bool hideLaunchButton = false)
         {
             _inspectorViewState.Update();
             _av3Setting.Update();
@@ -234,17 +234,20 @@ namespace Suzuryg.FaceEmo.Detail.View
             Field_CheckVersion();
 
             // Launch button
-            var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
-            var canLaunch = avatarDescriptor != null;
-            using (new EditorGUI.DisabledScope(!canLaunch))
+            if (!hideLaunchButton)
             {
-                var buttonText = canLaunch ? _localizationTable.InspectorView_Launch : _localizationTable.InspectorView_TargetAvatarIsNotSpecified;
-                if (GUILayout.Button(buttonText, _launchButtonStyle))
+                var avatarDescriptor = _av3Setting.FindProperty(nameof(AV3Setting.TargetAvatar)).objectReferenceValue as VRCAvatarDescriptor;
+                var canLaunch = avatarDescriptor != null;
+                using (new EditorGUI.DisabledScope(!canLaunch))
                 {
-                    _onLaunchButtonClicked.OnNext(Unit.Default);
+                    var buttonText = canLaunch ? _localizationTable.InspectorView_Launch : _localizationTable.InspectorView_TargetAvatarIsNotSpecified;
+                    if (GUILayout.Button(buttonText, _launchButtonStyle))
+                    {
+                        _onLaunchButtonClicked.OnNext(Unit.Default);
+                    }
                 }
+                EditorGUILayout.Space(10);
             }
-            EditorGUILayout.Space(10);
 
             // Import buttons
             Field_ImportButtons();

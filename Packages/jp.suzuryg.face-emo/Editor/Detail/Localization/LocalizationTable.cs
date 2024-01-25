@@ -43,6 +43,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Message_FailedToLaunch = "Failed to Launch FaceEmo.";
         public string Common_Message_FailedToOpenProject = "Failed to open FaceEmoProject.";
         public string Common_Message_SeeConsole = "Please see the console for more details.";
+        public string Common_Message_NotInitializedWindow = "This window is not initialized. Please open it again.";
         public string Common_Tooltip_EyeTracking = "You can set whether to use pseudo eye-tracking. This setting can be configured independently of the blinking setting.";
         public string Common_Tooltip_Blink = "You can set whether to blink. Please disable blinking for expressions where the eyes are closed.";
         public string Common_Tooltip_LipSync = "You can set whether to use lip-syncing. " +
@@ -144,6 +145,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string SettingView_UnifyWriteDefaults = "Unify WD (Gimmick Priority)";
         public string SettingView_DisableWriteDefaults = "Disable WD (Expression Priority)";
         public string SettingView_Manual = "Open Manual";
+        public string SettingView_Option = "Optional Settings";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
         public string SettingView_Message_ConfirmApplyToAvatar = "Apply facial expression menu to the avatar?\n\n\n" +
             "* To prevent interference between expressions, the expressions originally set on the avatar will be disabled on upload.\n" +

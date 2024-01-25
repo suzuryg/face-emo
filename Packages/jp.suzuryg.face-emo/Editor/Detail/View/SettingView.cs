@@ -32,6 +32,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private ILocalizationSetting _localizationSetting;
         private LocalizationTable _localizationTable;
 
+        private ISubWindowProvider _subWindowProvider;
         private ModeNameProvider _modeNameProvider;
         private UpdateMenuSubject _updateMenuSubject;
         private MainThumbnailDrawer _thumbnailDrawer;
@@ -50,10 +51,14 @@ namespace Suzuryg.FaceEmo.Detail.View
         private Button _openManualButton;
         private Image _openManualImage;
         private Label _openManualLabel;
+        private Button _openOptionButton;
+        private Image _openOptionImage;
+        private Label _openOptionLabel;
         private IMGUIContainer _writeDefaultsSettingArea;
         private Button _applyButton;
 
         private Texture2D _bookIcon;
+        private Texture2D _settingIcon;
 
         private string _unifyWriteDefaultsLabel;
         private string _disableWriteDefaultsLabel;
@@ -73,6 +78,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             IGenerateFxUseCase generateFxUseCase,
             IGenerateFxPresenter generateFxPresenter,
             ILocalizationSetting localizationSetting,
+            ISubWindowProvider subWindowProvider,
             ModeNameProvider modeNameProvider,
             MainWindowProvider mainWindowProvider,
             UpdateMenuSubject updateMenuSubject,
@@ -90,6 +96,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Others
             _localizationSetting = localizationSetting;
+            _subWindowProvider = subWindowProvider;
             _modeNameProvider = modeNameProvider;
             _updateMenuSubject = updateMenuSubject;
             _thumbnailDrawer = thumbnailDrawer;
@@ -111,6 +118,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Initialization
             _bookIcon = ViewUtility.GetIconTexture("menu_book_FILL0_wght400_GRAD200_opsz48.png");
+            _settingIcon = ViewUtility.GetIconTexture("settings_FILL0_wght400_GRAD200_opsz48.png");
         }
 
         public void Dispose()
@@ -144,10 +152,15 @@ namespace Suzuryg.FaceEmo.Detail.View
             _openManualButton = root.Q<Button>("OpenManualButton");
             _openManualImage = root.Q<Image>("OpenManualImage");
             _openManualLabel = root.Q<Label>("OpenManualLabel");
+            _openOptionButton = root.Q<Button>("OpenOptionButton");
+            _openOptionImage = root.Q<Image>("OpenOptionImage");
+            _openOptionLabel = root.Q<Label>("OpenOptionLabel");
             _writeDefaultsSettingArea = root.Q<IMGUIContainer>("WriteDefaultsSetting");
             _applyButton = root.Q<Button>("ApplyButton");
             NullChecker.Check(_thumbnailWidthLabel, _thumbnailHeightLabel, _thumbnailWidthSlider, _thumbnailHeightSlider, _updateThumbnailButton,
-               _defaultSelectionLabel, _defaultSelectionComboBoxArea, _showHintsToggle, _openManualButton, _openManualImage, _openManualLabel, _writeDefaultsSettingArea, _applyButton);
+               _defaultSelectionLabel, _defaultSelectionComboBoxArea, _showHintsToggle,
+               _openManualButton, _openManualImage, _openManualLabel, _openOptionButton, _openOptionImage, _openOptionLabel,
+               _writeDefaultsSettingArea, _applyButton);
 
             // Initialize fields
             _thumbnailSetting.Update();
@@ -170,6 +183,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             _showHintsToggle.value = showHints;
 
             _openManualImage.image = _bookIcon;
+            _openManualImage.scaleMode = ScaleMode.ScaleToFit;
+            _openOptionImage.image = _settingIcon;
+            _openOptionImage.scaleMode = ScaleMode.ScaleToFit;
 
             // Add event handlers
             // Delay event registration due to unstable slider values immediately after opening the window.
@@ -188,6 +204,8 @@ namespace Suzuryg.FaceEmo.Detail.View
                 .Synchronize().Subscribe(_ => DefaultSelectionComboBoxOnGUI()).AddTo(_disposables);
             Observable.FromEvent(x => _openManualButton.clicked += x, x => _openManualButton.clicked -= x)
                 .Synchronize().Subscribe(_ => OnOpenManualButtonClicked()).AddTo(_disposables);
+            Observable.FromEvent(x => _openOptionButton.clicked += x, x => _openOptionButton.clicked -= x)
+                .Synchronize().Subscribe(_ => OnOpenOptionButtonClicked()).AddTo(_disposables);
             Observable.FromEvent(x => _writeDefaultsSettingArea.onGUIHandler += x, x => _writeDefaultsSettingArea.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ => WriteDefaultsSettingOnGUI()).AddTo(_disposables);
 
@@ -211,6 +229,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             if (_showHintsToggle != null) { _showHintsToggle.text = localizationTable.SettingView_ShowHints; }
             if (_openManualLabel != null) { _openManualLabel.text = localizationTable.SettingView_Manual; }
+            if (_openOptionLabel != null) { _openOptionLabel.text = localizationTable.SettingView_Option; }
 
             _unifyWriteDefaultsLabel = localizationTable.SettingView_UnifyWriteDefaults;
             _disableWriteDefaultsLabel = localizationTable.SettingView_DisableWriteDefaults;
@@ -398,6 +417,11 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
             fullUrl += pageUrl;
             Application.OpenURL(fullUrl);
+        }
+
+        private void OnOpenOptionButtonClicked()
+        {
+            _subWindowProvider.Provide<InspectorWindow>()?.Focus();
         }
 
         private void WriteDefaultsSettingOnGUI()

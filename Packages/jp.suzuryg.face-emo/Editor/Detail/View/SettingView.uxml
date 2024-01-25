@@ -27,10 +27,17 @@
 
 		<engine:IMGUIContainer name="WriteDefaultsSetting"/>
 
-		<engine:Button name="OpenManualButton" class="Button">
-			<engine:Image name="OpenManualImage" class="Image"/>
-			<engine:Label name="OpenManualLabel" class="Label"/>
-		</engine:Button>
+		<engine:VisualElement>
+			<engine:Button name="OpenManualButton" class="Button">
+				<engine:Image name="OpenManualImage" class="Image"/>
+				<engine:Label name="OpenManualLabel" class="Label"/>
+			</engine:Button>
+
+			<engine:Button name="OpenOptionButton" class="Button">
+				<engine:Image name="OpenOptionImage" class="Image"/>
+				<engine:Label name="OpenOptionLabel" class="Label"/>
+			</engine:Button>
+		</engine:VisualElement>
 
 		<engine:Button name="ApplyButton" class="Button"/>
 	</engine:VisualElement>
