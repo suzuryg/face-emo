@@ -618,23 +618,32 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         private AnimationClip ImportMouthMorphCancelClip(AnimatorController fx)
         {
-            foreach (var layer in fx.layers)
-            {
-                if (Regex.IsMatch(layer.name, @"\bmouth\s*morph\s*canceller\b", RegexOptions.IgnoreCase))
-                {
-                    foreach (var state in layer.stateMachine.states)
-                    {
-                        if (state.state.motion is AnimationClip animationClip &&
-                            ImportUtility.IsFaceMotion(animationClip, _faceBlendShapesValues.Select(blendShape => blendShape.Key)))
-                        {
-                            var clone = new AnimationClip();
-                            EditorUtility.CopySerialized(animationClip, clone);
-                            SaveClip(clone, clone.name);
+            var blendShapes = _faceBlendShapesValues.Select(blendShape => blendShape.Key);
 
-                            _av3Setting.UseMouthMorphCancelClip = true;
-                            _av3Setting.MouthMorphCancelClip = clone;
-                            return clone;
-                        }
+            var patterns = new List<(string layerName, string stateName)>()
+            {
+                (@"\bmouth\s*morph\s*canceller\b", @"^enable$"),
+                (@"^lipsync\s*override$", @"^lipsyncing$"),
+            };
+
+            foreach (var pattern in patterns)
+            {
+                foreach (var matched in fx.layers
+                    .Where(layer => Regex.IsMatch(layer.name, pattern.layerName, RegexOptions.IgnoreCase))
+                    .SelectMany(layer => layer.stateMachine.states)
+                    .Where(state => Regex.IsMatch(state.state.name, pattern.stateName, RegexOptions.IgnoreCase)))
+                {
+                    if (matched.state.motion is AnimationClip animationClip &&
+                        ImportUtility.IsFaceMotion(animationClip, blendShapes) &&
+                        ImportUtility.AreAllValuesZero(animationClip, blendShapes))
+                    {
+                        var clone = new AnimationClip();
+                        EditorUtility.CopySerialized(animationClip, clone);
+                        SaveClip(clone, clone.name);
+
+                        _av3Setting.UseMouthMorphCancelClip = true;
+                        _av3Setting.MouthMorphCancelClip = clone;
+                        return clone;
                     }
                 }
             }
