@@ -64,7 +64,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public bool AddConfig_DanceGimmick = true;
         public bool AddConfig_ContactLock = true;
         public bool AddConfig_Override = true;
-        public bool AddConfig_Voice = true;
+        public bool AddConfig_Voice = false;
         public bool AddConfig_HandPattern_Swap = true;
         public bool AddConfig_HandPattern_DisableLeft = true;
         public bool AddConfig_HandPattern_DisableRight = true;
