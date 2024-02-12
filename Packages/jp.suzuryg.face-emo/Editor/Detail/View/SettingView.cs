@@ -338,9 +338,9 @@ namespace Suzuryg.FaceEmo.Detail.View
                 catch (Exception ex)
                 {
                     editablePrefabPaths = new List<string>();
-                    EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.SettingView_Message_FailedObtainPrefabs
+                    EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.SettingView_Message_FailedObtainPrefabs.Replace("<0>", AV3Constants.MARootObjectName)
                         + "\n\n" + ex?.Message, "OK");
-                    Debug.LogError(_localizationTable.SettingView_Message_FailedObtainPrefabs + "\n" + ex?.ToString());
+                    Debug.LogError(_localizationTable.SettingView_Message_FailedObtainPrefabs.Replace("<0>", AV3Constants.MARootObjectName) + "\n" + ex?.ToString());
                 }
 
                 var messages = new List<(MessageType type, string message)>()
