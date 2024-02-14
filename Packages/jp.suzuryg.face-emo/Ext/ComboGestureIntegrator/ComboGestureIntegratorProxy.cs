@@ -22,7 +22,6 @@ namespace Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator
         private readonly AnimatorController _animatorController;
         private readonly CgeConflictPrevention _conflictPrevention;
         private readonly CgeAssetContainer _assetContainer;
-        private readonly bool _universalAnalogSupport;
         private readonly AvatarMask _nothingMask;
 
         public ComboGestureCompilerInternal(AnimatorController animatorController, RuntimeAnimatorController assetContainer, bool writeDefaults)
@@ -31,29 +30,16 @@ namespace Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator
             _conflictPrevention = CgeConflictPrevention.OfIntegrator(writeDefaults);
 
             _assetContainer = CgeAssetContainer.FromExisting(assetContainer);
-            _universalAnalogSupport = false;
         }
 
         public void IntegrateWeightCorrection()
         {
-            CreateOrReplaceWeightCorrection(
-                _nothingMask,
-                _assetContainer,
-                _animatorController,
-                _conflictPrevention,
-                _universalAnalogSupport
-            );
             CreateOrReplaceSmoothing(_nothingMask, _assetContainer, _animatorController, _conflictPrevention);
 
             ReapAnimator(_animatorController);
 
             AssetDatabase.Refresh();
             EditorUtility.ClearProgressBar();
-        }
-
-        private static void CreateOrReplaceWeightCorrection(AvatarMask weightCorrectionAvatarMask, CgeAssetContainer assetContainer, AnimatorController animatorController, CgeConflictPrevention conflictPrevention, bool universalAnalogSupport)
-        {
-            new CgeLayerForWeightCorrection(assetContainer, animatorController, weightCorrectionAvatarMask, conflictPrevention.ShouldWriteDefaults, universalAnalogSupport).Create();
         }
 
         private static void CreateOrReplaceSmoothing(AvatarMask weightCorrectionAvatarMask, CgeAssetContainer assetContainer, AnimatorController animatorController, CgeConflictPrevention conflictPrevention)
