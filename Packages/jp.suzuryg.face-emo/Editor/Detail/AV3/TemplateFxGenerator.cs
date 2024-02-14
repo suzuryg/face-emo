@@ -90,6 +90,35 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
         }
 
+        [MenuItem("FaceEmo/Debug/ReplaceSmoothingLayer", false, 201)]
+        public static void ReplaceSmoothingLayer()
+        {
+            try
+            {
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Start replacing smoothing layer.", 0);
+
+                // Create container
+                var container = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_SmoothingLayerContainer);
+                if (container != null)
+                {
+                    AssetDatabase.DeleteAsset(AV3Constants.Path_SmoothingLayerContainer);
+                }
+                container = new AnimatorController();
+                AssetDatabase.CreateAsset(container, AV3Constants.Path_SmoothingLayerContainer);
+
+                // Replace smoothing layer
+                var withIntegrator = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate_WithIntegrator);
+                ComboGestureIntegratorProxy.DoGenerate(withIntegrator, container, writeDefaults: false);
+
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, "Generation Succeeded!", "OK");
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+        }
+
         private static void GenerateFaceEmoteControlLayer(AacFlBase aac, AnimatorController templateFx)
         {
             // Create or replace layer
