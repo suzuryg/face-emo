@@ -8,12 +8,12 @@ namespace Hai.ComboGesture.Scripts.Editor.Internal
 {
     class CgeSharedLayerUtils
     {
-        internal const string HaiGestureComboLeftWeightProxy = "_Hai_GestureLWProxy";
-        internal const string HaiGestureComboRightWeightProxy = "_Hai_GestureRWProxy";
-        internal const string HaiVirtualActivity = "_Hai_GestureVirtualActivity";
-        internal const string HaiGestureComboLeftWeightSmoothing = "_Hai_GestureLWSmoothing";
-        internal const string HaiGestureComboRightWeightSmoothing = "_Hai_GestureRWSmoothing";
-        internal const string HaiGestureComboSmoothingFactor = "_Hai_GestureSmoothingFactor";
+        internal const string HaiGestureComboLeftWeightProxy = "FaceEmo_Hai_GestureLWProxy";
+        internal const string HaiGestureComboRightWeightProxy = "FaceEmo_Hai_GestureRWProxy";
+        internal const string HaiVirtualActivity = "FaceEmo_Hai_GestureVirtualActivity";
+        internal const string HaiGestureComboLeftWeightSmoothing = "FaceEmo_Hai_GestureLWSmoothing";
+        internal const string HaiGestureComboRightWeightSmoothing = "FaceEmo_Hai_GestureRWSmoothing";
+        internal const string HaiGestureComboSmoothingFactor = "FaceEmo_Hai_GestureSmoothingFactor";
 
         public static IEnumerable<Motion> FindAllReachableClipsAndBlendTrees(AnimatorController animatorController)
         {

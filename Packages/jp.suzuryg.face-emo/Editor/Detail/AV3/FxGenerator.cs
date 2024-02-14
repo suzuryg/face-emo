@@ -1,5 +1,6 @@
 ﻿using AnimatorAsCode.V0;
 using AnimatorAsCode.V0.Extensions.VRChat;
+using Hai.ComboGesture.Scripts.Editor.Internal;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Components.Settings;
@@ -359,8 +360,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                         var leftAnimation = AV3Utility.GetAnimationClipWithName(branch.LeftHandAnimation);
                         var rightAnimation = AV3Utility.GetAnimationClipWithName(branch.RightHandAnimation);
                         var bothAnimation = AV3Utility.GetAnimationClipWithName(branch.BothHandsAnimation);
-                        var leftWeight = aV3Setting.SmoothAnalogFist ? AV3Constants.ParamName_GestureLWSmoothing : AV3Constants.ParamName_GestureLeftWeight;
-                        var rightWeight = aV3Setting.SmoothAnalogFist ? AV3Constants.ParamName_GestureRWSmoothing : AV3Constants.ParamName_GestureRightWeight;
+                        var leftWeight = aV3Setting.SmoothAnalogFist ? CgeSharedLayerUtils.HaiGestureComboLeftWeightSmoothing : AV3Constants.ParamName_GestureLeftWeight;
+                        var rightWeight = aV3Setting.SmoothAnalogFist ? CgeSharedLayerUtils.HaiGestureComboRightWeightSmoothing : AV3Constants.ParamName_GestureRightWeight;
 
                         // Both triggers used
                         if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)

@@ -65,8 +65,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly string ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R = "CNST_TOUCH_EMOTE_LOCK_TRIGGER_R";
         // public static readonly string ParamName_CN_IS_ACTION_ACTIVE = "CN_IS_ACTION_ACTIVE"; // Do not rename (to work with action layer)
         public static readonly string ParamName_CN_FORCE_BYPASS_ENABLE = "CN_FORCE_BYPASS_ENABLE"; // Do not rename (to work with external gimmicks)
-        public static readonly string ParamName_GestureLWSmoothing = "_Hai_GestureLWSmoothing"; // Do not rename (to work with blend tree)
-        public static readonly string ParamName_GestureRWSmoothing = "_Hai_GestureRWSmoothing"; // Do not rename (to work with blend tree)
 
         public static readonly string ParameterPrefix = "FaceEmo_";
 
