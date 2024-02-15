@@ -14,6 +14,7 @@ namespace Hai.ComboGesture.Scripts.Editor.Internal
         internal const string HaiGestureComboLeftWeightSmoothing = "FaceEmo_Hai_GestureLWSmoothing";
         internal const string HaiGestureComboRightWeightSmoothing = "FaceEmo_Hai_GestureRWSmoothing";
         internal const string HaiGestureComboSmoothingFactor = "FaceEmo_Hai_GestureSmoothingFactor";
+        internal const string HaiConstantZero = "FaceEmo_Hai_ConstantZero";
 
         public static IEnumerable<Motion> FindAllReachableClipsAndBlendTrees(AnimatorController animatorController)
         {
