@@ -1,13 +1,13 @@
-﻿using System.IO;
+﻿#if USE_MODULAR_AVATAR
+using nadena.dev.modular_avatar.core;
+#endif
+
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
 using Suzuryg.FaceEmo.Domain;
 using VRC.SDK3.Avatars.Components;
-
-#if USE_MODULAR_AVATAR
-using nadena.dev.modular_avatar.core;
-#endif
 
 namespace Suzuryg.FaceEmo.Detail.AV3
 {

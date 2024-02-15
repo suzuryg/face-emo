@@ -1,31 +1,4 @@
-﻿using AnimatorAsCode.V0;
-using AnimatorAsCode.V0.Extensions.VRChat;
-using Hai.ComboGesture.Scripts.Editor.Internal;
-using Suzuryg.FaceEmo.Domain;
-using Suzuryg.FaceEmo.UseCase;
-using Suzuryg.FaceEmo.Components.Settings;
-using Suzuryg.FaceEmo.Detail.Drawing;
-using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
-using System;
-using System.Linq;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
-using UnityEditor.Animations;
-using UnityEngine.UIElements;
-using UnityEditor.IMGUI.Controls;
-using UniRx;
-using VRC.Dynamics;
-using VRC.SDK3.Avatars.Components;
-using VRC.SDKBase;
-using VRC.SDK3.Avatars.ScriptableObjects;
-using Suzuryg.FaceEmo.Detail.Localization;
-using ExParam = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.Parameter;
-using ExType = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters.ValueType;
-
-#if VALID_VRCSDK3_AVATARS
+﻿#if VALID_VRCSDK3_AVATARS
 using Suzuryg.FaceEmo.NDMF;
 #endif
 
@@ -33,6 +6,27 @@ using Suzuryg.FaceEmo.NDMF;
 using nadena.dev.modular_avatar.core;
 using Sync = nadena.dev.modular_avatar.core.ParameterSyncType;
 #endif
+
+using AnimatorAsCode.V0;
+using AnimatorAsCode.V0.Extensions.VRChat;
+using Hai.ComboGesture.Scripts.Editor.Internal;
+using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.UseCase;
+using Suzuryg.FaceEmo.Components.Settings;
+using Suzuryg.FaceEmo.Detail.Drawing;
+using Suzuryg.FaceEmo.Detail.Localization;
+using System;
+using System.Linq;
+using System.IO;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using UnityEditor.Animations;
+using UniRx;
+using VRC.Dynamics;
+using VRC.SDK3.Avatars.Components;
+using VRC.SDKBase;
+using VRC.SDK3.Avatars.ScriptableObjects;
 
 namespace Suzuryg.FaceEmo.Detail.AV3
 {

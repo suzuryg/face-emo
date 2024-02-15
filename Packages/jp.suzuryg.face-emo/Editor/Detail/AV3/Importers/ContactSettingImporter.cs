@@ -1,4 +1,8 @@
-﻿using Suzuryg.FaceEmo.Components.Settings;
+﻿#if USE_MODULAR_AVATAR
+using nadena.dev.modular_avatar.core;
+#endif
+
+using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Domain;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +11,6 @@ using UnityEngine;
 using VRC.Dynamics;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Dynamics.Contact.Components;
-
-#if USE_MODULAR_AVATAR
-using nadena.dev.modular_avatar.core;
-#endif
 
 namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 {
