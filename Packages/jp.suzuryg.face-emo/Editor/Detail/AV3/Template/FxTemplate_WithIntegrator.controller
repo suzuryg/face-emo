@@ -1826,6 +1826,45 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-8847245686187755538
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+  - type: 0
+    name: FaceEmo_Hai_GestureSmoothingFactor
+    source: 
+    value: 0.7
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  - type: 0
+    name: FaceEmo_Hai_ConstantZero
+    source: 
+    value: 0
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  localOnly: 0
+  debugString: 
 --- !u!1101 &-8845534016664714450
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2774,6 +2813,31 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
+--- !u!1101 &-8642971928086935206
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 6
+    m_ConditionEvent: GestureRight
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 2194913886523338767}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1109 &-8640727745176642357
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -3494,6 +3558,34 @@ AnimatorTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 1
+--- !u!1107 &-8466683268109015392
+AnimatorStateMachine:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Hai_GestureSmoothingRight
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: 1866368637725394588}
+    m_Position: {x: 250, y: 70, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 2194913886523338767}
+    m_Position: {x: 250, y: 140, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -65550940259512979}
+    m_Position: {x: 500, y: 70, z: 0}
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 0, y: 490, z: 0}
+  m_EntryPosition: {x: 0, y: -70, z: 0}
+  m_ExitPosition: {x: 1750, y: -70, z: 0}
+  m_ParentStateMachinePosition: {x: 750, y: -70, z: 0}
+  m_DefaultState: {fileID: 1866368637725394588}
 --- !u!1101 &-8455084363400792157
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -5870,33 +5962,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
---- !u!114 &-7986807741352560095
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameters:
-  - type: 0
-    name: _Hai_GestureSmoothingFactor
-    source: 
-    value: 0.7
-    valueMin: 0
-    valueMax: 1
-    chance: 1
-    convertRange: 0
-    sourceMin: 0
-    sourceMax: 0
-    destMin: 0
-    destMax: 0
-  localOnly: 0
-  debugString: 
 --- !u!1101 &-7986110255750197832
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -7303,31 +7368,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1101 &-7657525733859429133
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 6
-    m_ConditionEvent: GestureLeft
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 5146936805875604593}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!1102 &-7656067616528023011
 AnimatorState:
   serializedVersion: 6
@@ -7515,33 +7555,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
---- !u!114 &-7635441847251778358
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameters:
-  - type: 0
-    name: _Hai_GestureSmoothingFactor
-    source: 
-    value: 0.7
-    valueMin: 0
-    valueMax: 1
-    chance: 1
-    convertRange: 0
-    sourceMin: 0
-    sourceMax: 0
-    destMin: 0
-    destMax: 0
-  localOnly: 0
-  debugString: 
 --- !u!1109 &-7630472429945320333
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -8496,30 +8509,30 @@ AnimatorStateMachine:
   - {fileID: 4467356809722130865}
   - {fileID: -6033082498915244449}
   m_StateMachineTransitions:
+  - first: {fileID: 6899549866909574451}
+    second:
+    - {fileID: -7974232227011779774}
   - first: {fileID: -7286678791156206890}
     second:
     - {fileID: 8875783656415319346}
-  - first: {fileID: -4839502967059358392}
+  - first: {fileID: 7276474527884041573}
     second:
-    - {fileID: -2946895273034036327}
+    - {fileID: -2581153528683854067}
   - first: {fileID: -3568115922358402164}
     second:
     - {fileID: -4613939870963310019}
   - first: {fileID: -3399267302795233685}
     second:
     - {fileID: -4576255930560763786}
+  - first: {fileID: -4839502967059358392}
+    second:
+    - {fileID: -2946895273034036327}
   - first: {fileID: 1896121635768145012}
     second:
     - {fileID: 6417244761587683773}
   - first: {fileID: 2469150362375140055}
     second:
     - {fileID: 4547672343608422416}
-  - first: {fileID: 6899549866909574451}
-    second:
-    - {fileID: -7974232227011779774}
-  - first: {fileID: 7276474527884041573}
-    second:
-    - {fileID: -2581153528683854067}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -8693,6 +8706,45 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!114 &-7354967417585412203
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+  - type: 0
+    name: FaceEmo_Hai_GestureSmoothingFactor
+    source: 
+    value: 0.7
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  - type: 0
+    name: FaceEmo_Hai_ConstantZero
+    source: 
+    value: 0
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  localOnly: 0
+  debugString: 
 --- !u!114 &-7348871534772056051
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9640,6 +9692,35 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
+--- !u!1102 &-7161706706492358789
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Listening
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: 5086404664691808157}
+  m_StateMachineBehaviours:
+  - {fileID: 3409768078781969565}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 0
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 1
+  m_Motion: {fileID: 3253633147231336910, guid: 204f7bcd2c9aade479f9593a612027e6,
+    type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: GestureLeftWeight
 --- !u!1109 &-7158352820472569625
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -9734,6 +9815,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-7147125884059456375
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 4
+    m_ConditionEvent: FaceEmo_Hai_ConstantZero
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -6188617701253816442}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.5
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 2
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1109 &-7144858934897694010
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -14163,6 +14269,35 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-6188617701253816442
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Reset
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -2277713449644793394}
+  m_StateMachineBehaviours:
+  - {fileID: 8614391370905698247}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 0
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 1
+  m_Motion: {fileID: 3253633147231336910, guid: 204f7bcd2c9aade479f9593a612027e6,
+    type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: FaceEmo_Hai_ConstantZero
 --- !u!114 &-6188524285829306626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15013,30 +15148,30 @@ AnimatorStateMachine:
   - {fileID: 8685475433434111656}
   - {fileID: 5582387981784061022}
   m_StateMachineTransitions:
-  - first: {fileID: -7944011464000680985}
-    second:
-    - {fileID: -7195709493897604619}
-  - first: {fileID: -4609215647330994332}
-    second:
-    - {fileID: -6372955366420832381}
-  - first: {fileID: -3044315457431440958}
-    second:
-    - {fileID: -5731405263869637740}
-  - first: {fileID: -2313950543592057016}
-    second:
-    - {fileID: 3467118222619797547}
   - first: {fileID: -571502444543144838}
     second:
     - {fileID: -2173733984434615895}
+  - first: {fileID: -3044315457431440958}
+    second:
+    - {fileID: -5731405263869637740}
+  - first: {fileID: -7944011464000680985}
+    second:
+    - {fileID: -7195709493897604619}
   - first: {fileID: 52963202118191648}
     second:
     - {fileID: 2098719691739857337}
-  - first: {fileID: 3787748598179261805}
-    second:
-    - {fileID: 5476190478606630011}
   - first: {fileID: 5863041038593253055}
     second:
     - {fileID: 8287833429663124278}
+  - first: {fileID: 3787748598179261805}
+    second:
+    - {fileID: 5476190478606630011}
+  - first: {fileID: -2313950543592057016}
+    second:
+    - {fileID: 3467118222619797547}
+  - first: {fileID: -4609215647330994332}
+    second:
+    - {fileID: -6372955366420832381}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -16102,34 +16237,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
---- !u!1102 &-5752730986160829251
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Listening
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -2680901406396707969}
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: -810802291354247502, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: GestureRightWeight
 --- !u!1101 &-5750107728405607674
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -18578,35 +18685,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
---- !u!1102 &-5155753425029511104
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Listening
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 8796085663235491727}
-  m_StateMachineBehaviours:
-  - {fileID: -7635441847251778358}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: -6982241162970876361, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: GestureRightWeight
 --- !u!114 &-5154831879568893724
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -19462,34 +19540,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &-4922493372043536280
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Waiting
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -1070837486378374871}
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: -8009163573418157610, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: _Hai_GestureRWProxy
 --- !u!1102 &-4918883052896319031
 AnimatorState:
   serializedVersion: 6
@@ -20125,21 +20175,21 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -4455969694951422956}
-    second:
-    - {fileID: -960742551964774924}
-    - {fileID: -3436949826664522401}
-    - {fileID: -5525260743017917842}
-  - first: {fileID: -1395853040431965260}
-    second:
-    - {fileID: -974499361698530575}
-    - {fileID: 1127217831410403639}
-    - {fileID: -8469893255450799103}
   - first: {fileID: 3286678712158875377}
     second:
     - {fileID: 5891986167744972020}
     - {fileID: -4182151157620328785}
     - {fileID: -2093280623147384160}
+  - first: {fileID: -1395853040431965260}
+    second:
+    - {fileID: -974499361698530575}
+    - {fileID: 1127217831410403639}
+    - {fileID: -8469893255450799103}
+  - first: {fileID: -4455969694951422956}
+    second:
+    - {fileID: -960742551964774924}
+    - {fileID: -3436949826664522401}
+    - {fileID: -5525260743017917842}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 120, y: 80, z: 0}
   m_EntryPosition: {x: 120, y: 130, z: 0}
@@ -21339,35 +21389,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1102 &-4551516314375431011
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Waiting
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -2033817385880554661}
-  m_StateMachineBehaviours:
-  - {fileID: -7986807741352560095}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: -6982241162970876361, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: _Hai_GestureRWProxy
 --- !u!1101 &-4545384171359986831
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -23119,30 +23140,30 @@ AnimatorStateMachine:
   - {fileID: -7068281889933886209}
   - {fileID: -8538555225390683385}
   m_StateMachineTransitions:
-  - first: {fileID: -9179454509625779437}
-    second:
-    - {fileID: 2180754725674244921}
-  - first: {fileID: -7480654210570835434}
-    second:
-    - {fileID: -3306210275803547415}
   - first: {fileID: -7412083873460813172}
     second:
     - {fileID: -1096954832127811391}
-  - first: {fileID: -5783474606412414561}
-    second:
-    - {fileID: 2747229640934711087}
-  - first: {fileID: 1739488137411104583}
-    second:
-    - {fileID: -1990867756272433831}
-  - first: {fileID: 5225389024314688126}
-    second:
-    - {fileID: 4941553865622693435}
-  - first: {fileID: 7236392827703444672}
-    second:
-    - {fileID: -4877521785554697195}
   - first: {fileID: 9092168189183078985}
     second:
     - {fileID: -8802265523831413452}
+  - first: {fileID: -9179454509625779437}
+    second:
+    - {fileID: 2180754725674244921}
+  - first: {fileID: 5225389024314688126}
+    second:
+    - {fileID: 4941553865622693435}
+  - first: {fileID: -5783474606412414561}
+    second:
+    - {fileID: 2747229640934711087}
+  - first: {fileID: 7236392827703444672}
+    second:
+    - {fileID: -4877521785554697195}
+  - first: {fileID: -7480654210570835434}
+    second:
+    - {fileID: -3306210275803547415}
+  - first: {fileID: 1739488137411104583}
+    second:
+    - {fileID: -1990867756272433831}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -24304,31 +24325,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1101 &-4075605287417808440
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 6
-    m_ConditionEvent: GestureLeft
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -2760171146843244655}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!1101 &-4075131388808598886
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -27394,30 +27390,30 @@ AnimatorStateMachine:
   - {fileID: 7975433868440545099}
   - {fileID: -1589001926704014339}
   m_StateMachineTransitions:
-  - first: {fileID: -7640653930169445340}
-    second:
-    - {fileID: 567128725071163256}
-  - first: {fileID: -5768754229269133078}
-    second:
-    - {fileID: -8384757461994807124}
-  - first: {fileID: -2538938017458645494}
-    second:
-    - {fileID: 4543573323621021171}
   - first: {fileID: -1470412717899953931}
     second:
     - {fileID: 7805379570531232942}
-  - first: {fileID: 656404732316859721}
+  - first: {fileID: -5768754229269133078}
     second:
-    - {fileID: 1706216491406714990}
+    - {fileID: -8384757461994807124}
   - first: {fileID: 1382811552379745812}
     second:
     - {fileID: 8023580030696383116}
-  - first: {fileID: 2027712069356984704}
+  - first: {fileID: -7640653930169445340}
     second:
-    - {fileID: 390803775403687598}
+    - {fileID: 567128725071163256}
   - first: {fileID: 5947484411760636817}
     second:
     - {fileID: 7636960308219790441}
+  - first: {fileID: 656404732316859721}
+    second:
+    - {fileID: 1706216491406714990}
+  - first: {fileID: 2027712069356984704}
+    second:
+    - {fileID: 390803775403687598}
+  - first: {fileID: -2538938017458645494}
+    second:
+    - {fileID: 4543573323621021171}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -28565,31 +28561,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
---- !u!1107 &-3132926106539702747
-AnimatorStateMachine:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Hai_GestureWeightRight
-  m_ChildStates:
-  - serializedVersion: 1
-    m_State: {fileID: -4922493372043536280}
-    m_Position: {x: 500, y: 70, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -5752730986160829251}
-    m_Position: {x: 500, y: 140, z: 0}
-  m_ChildStateMachines: []
-  m_AnyStateTransitions: []
-  m_EntryTransitions: []
-  m_StateMachineTransitions: {}
-  m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 0, y: 490, z: 0}
-  m_EntryPosition: {x: 0, y: -70, z: 0}
-  m_ExitPosition: {x: 1750, y: -70, z: 0}
-  m_ParentStateMachinePosition: {x: 750, y: -70, z: 0}
-  m_DefaultState: {fileID: -4922493372043536280}
 --- !u!114 &-3127643344270214507
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -30529,34 +30500,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &-2760171146843244655
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Listening
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 211940790890905408}
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: -7362327458410151403, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: GestureLeftWeight
 --- !u!114 &-2752878071749865238
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -30918,31 +30861,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1101 &-2680901406396707969
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 7
-    m_ConditionEvent: GestureRight
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -4922493372043536280}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!1101 &-2680272393335331780
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -32652,6 +32570,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-2277713449644793394
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 6
+    m_ConditionEvent: GestureLeft
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -7161706706492358789}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &-2273678369618169433
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -32905,6 +32848,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-2226773470979246507
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 7
+    m_ConditionEvent: GestureRight
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1866368637725394588}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &-2225013338935099296
 AnimatorState:
   serializedVersion: 6
@@ -33977,31 +33945,6 @@ AnimatorTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 1
---- !u!1101 &-2033817385880554661
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 6
-    m_ConditionEvent: GestureRight
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -5155753425029511104}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!1102 &-2033335604706155051
 AnimatorState:
   serializedVersion: 6
@@ -34784,35 +34727,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1102 &-1872164942985379382
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Waiting
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -7657525733859429133}
-  m_StateMachineBehaviours:
-  - {fileID: 2159858544732634456}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: 6536863841995589979, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: _Hai_GestureLWProxy
 --- !u!1101 &-1870939482591193423
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -38227,31 +38141,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1101 &-1070837486378374871
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 6
-    m_ConditionEvent: GestureRight
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -5752730986160829251}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!114 &-1063566925243932030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -39655,6 +39544,31 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
+--- !u!1101 &-800056180655050638
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 6
+    m_ConditionEvent: GestureLeft
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -7161706706492358789}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1109 &-798164055351824481
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -40422,6 +40336,45 @@ MonoBehaviour:
     destMin: 0
     destMax: 0
   localOnly: 1
+  debugString: 
+--- !u!114 &-616440616425504946
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+  - type: 0
+    name: FaceEmo_Hai_GestureSmoothingFactor
+    source: 
+    value: 0.7
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  - type: 0
+    name: FaceEmo_Hai_ConstantZero
+    source: 
+    value: 0
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  localOnly: 0
   debugString: 
 --- !u!1109 &-603668504463699626
 AnimatorTransition:
@@ -41460,6 +41413,34 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
+--- !u!1107 &-370723127306438275
+AnimatorStateMachine:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Hai_GestureSmoothingLeft
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: 794342441051856635}
+    m_Position: {x: 250, y: 70, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -7161706706492358789}
+    m_Position: {x: 250, y: 140, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -6188617701253816442}
+    m_Position: {x: 500, y: 70, z: 0}
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 0, y: 490, z: 0}
+  m_EntryPosition: {x: 0, y: -70, z: 0}
+  m_ExitPosition: {x: 1750, y: -70, z: 0}
+  m_ParentStateMachinePosition: {x: 750, y: -70, z: 0}
+  m_DefaultState: {fileID: 794342441051856635}
 --- !u!1109 &-369149211673412215
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -43025,6 +43006,35 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-65550940259512979
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Reset
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: 4129986020665062209}
+  m_StateMachineBehaviours:
+  - {fileID: -7354967417585412203}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 0
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 1
+  m_Motion: {fileID: 6319471520969294983, guid: 204f7bcd2c9aade479f9593a612027e6,
+    type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: FaceEmo_Hai_ConstantZero
 --- !u!1102 &-64508430970164447
 AnimatorState:
   serializedVersion: 6
@@ -43522,31 +43532,37 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: _Hai_GestureLWProxy
-    m_Type: 1
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: _Hai_GestureRWProxy
-    m_Type: 1
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: _Hai_GestureSmoothingFactor
+  - m_Name: FaceEmo_Hai_GestureSmoothingFactor
     m_Type: 1
     m_DefaultFloat: 0.7
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: _Hai_GestureLWSmoothing
+  - m_Name: FaceEmo_Hai_GestureLWSmoothing
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: _Hai_GestureRWSmoothing
+  - m_Name: FaceEmo_Hai_GestureLWProxy
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: FaceEmo_Hai_ConstantZero
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: FaceEmo_Hai_GestureRWSmoothing
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: FaceEmo_Hai_GestureRWProxy
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -43674,32 +43690,8 @@ AnimatorController:
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
-    m_Name: Hai_GestureWeightLeft
-    m_StateMachine: {fileID: 1060154654808459819}
-    m_Mask: {fileID: 0}
-    m_Motions: []
-    m_Behaviours: []
-    m_BlendingMode: 0
-    m_SyncedLayerIndex: -1
-    m_DefaultWeight: 1
-    m_IKPass: 0
-    m_SyncedLayerAffectsTiming: 0
-    m_Controller: {fileID: 9100000}
-  - serializedVersion: 5
-    m_Name: Hai_GestureWeightRight
-    m_StateMachine: {fileID: -3132926106539702747}
-    m_Mask: {fileID: 0}
-    m_Motions: []
-    m_Behaviours: []
-    m_BlendingMode: 0
-    m_SyncedLayerIndex: -1
-    m_DefaultWeight: 1
-    m_IKPass: 0
-    m_SyncedLayerAffectsTiming: 0
-    m_Controller: {fileID: 9100000}
-  - serializedVersion: 5
     m_Name: Hai_GestureSmoothingLeft
-    m_StateMachine: {fileID: 314570938964125140}
+    m_StateMachine: {fileID: -370723127306438275}
     m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
@@ -43711,7 +43703,7 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
     m_Name: Hai_GestureSmoothingRight
-    m_StateMachine: {fileID: 8774547559226416738}
+    m_StateMachine: {fileID: -8466683268109015392}
     m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
@@ -44618,31 +44610,6 @@ AnimatorTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 1
---- !u!1101 &211940790890905408
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 7
-    m_ConditionEvent: GestureLeft
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 8410690927868100078}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!1101 &213259909498219304
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -44841,31 +44808,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1107 &314570938964125140
-AnimatorStateMachine:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Hai_GestureSmoothingLeft
-  m_ChildStates:
-  - serializedVersion: 1
-    m_State: {fileID: -1872164942985379382}
-    m_Position: {x: 250, y: 70, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 5146936805875604593}
-    m_Position: {x: 250, y: 140, z: 0}
-  m_ChildStateMachines: []
-  m_AnyStateTransitions: []
-  m_EntryTransitions: []
-  m_StateMachineTransitions: {}
-  m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 0, y: 490, z: 0}
-  m_EntryPosition: {x: 0, y: -70, z: 0}
-  m_ExitPosition: {x: 1750, y: -70, z: 0}
-  m_ParentStateMachinePosition: {x: 750, y: -70, z: 0}
-  m_DefaultState: {fileID: -1872164942985379382}
 --- !u!114 &324048084927402537
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -47105,6 +47047,36 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
+--- !u!1102 &794342441051856635
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Waiting
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -800056180655050638}
+  - {fileID: -7147125884059456375}
+  m_StateMachineBehaviours:
+  - {fileID: -8847245686187755538}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 0
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 1
+  m_Motion: {fileID: 3253633147231336910, guid: 204f7bcd2c9aade479f9593a612027e6,
+    type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: FaceEmo_Hai_GestureLWProxy
 --- !u!1101 &805751653061402027
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -48209,31 +48181,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1107 &1060154654808459819
-AnimatorStateMachine:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Hai_GestureWeightLeft
-  m_ChildStates:
-  - serializedVersion: 1
-    m_State: {fileID: 8410690927868100078}
-    m_Position: {x: 500, y: 70, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -2760171146843244655}
-    m_Position: {x: 500, y: 140, z: 0}
-  m_ChildStateMachines: []
-  m_AnyStateTransitions: []
-  m_EntryTransitions: []
-  m_StateMachineTransitions: {}
-  m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 0, y: 490, z: 0}
-  m_EntryPosition: {x: 0, y: -70, z: 0}
-  m_ExitPosition: {x: 1750, y: -70, z: 0}
-  m_ParentStateMachinePosition: {x: 750, y: -70, z: 0}
-  m_DefaultState: {fileID: 8410690927868100078}
 --- !u!1102 &1075488931128758521
 AnimatorState:
   serializedVersion: 6
@@ -50670,30 +50617,30 @@ AnimatorStateMachine:
   - {fileID: -3673010888250822169}
   - {fileID: 8251126106001021061}
   m_StateMachineTransitions:
-  - first: {fileID: -7480813492081158317}
-    second:
-    - {fileID: 6160990967103480927}
-  - first: {fileID: -2809865581094744055}
-    second:
-    - {fileID: 3562712992850722564}
-  - first: {fileID: -1986563266334910743}
-    second:
-    - {fileID: -5815430790174457171}
-  - first: {fileID: 2690554963795283402}
-    second:
-    - {fileID: -7316818739113125860}
   - first: {fileID: 4918232372373350536}
     second:
     - {fileID: -3503813476947882162}
-  - first: {fileID: 6567604115528548105}
-    second:
-    - {fileID: -2073014272943978939}
-  - first: {fileID: 6936554136119233423}
-    second:
-    - {fileID: 4836402852194103211}
   - first: {fileID: 7450289968288768815}
     second:
     - {fileID: -6928796520920151236}
+  - first: {fileID: 6936554136119233423}
+    second:
+    - {fileID: 4836402852194103211}
+  - first: {fileID: -1986563266334910743}
+    second:
+    - {fileID: -5815430790174457171}
+  - first: {fileID: -2809865581094744055}
+    second:
+    - {fileID: 3562712992850722564}
+  - first: {fileID: -7480813492081158317}
+    second:
+    - {fileID: 6160990967103480927}
+  - first: {fileID: 2690554963795283402}
+    second:
+    - {fileID: -7316818739113125860}
+  - first: {fileID: 6567604115528548105}
+    second:
+    - {fileID: -2073014272943978939}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -52117,6 +52064,36 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
+--- !u!1102 &1866368637725394588
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Waiting
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -8642971928086935206}
+  - {fileID: 6977221482056325200}
+  m_StateMachineBehaviours:
+  - {fileID: 8417646486357665651}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 0
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 1
+  m_Motion: {fileID: 6319471520969294983, guid: 204f7bcd2c9aade479f9593a612027e6,
+    type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: FaceEmo_Hai_GestureRWProxy
 --- !u!114 &1871572944840408456
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -53489,33 +53466,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
---- !u!114 &2159858544732634456
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameters:
-  - type: 0
-    name: _Hai_GestureSmoothingFactor
-    source: 
-    value: 0.7
-    valueMin: 0
-    valueMax: 1
-    chance: 1
-    convertRange: 0
-    sourceMin: 0
-    sourceMax: 0
-    destMin: 0
-    destMax: 0
-  localOnly: 0
-  debugString: 
 --- !u!1101 &2170009382229124252
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -53714,6 +53664,35 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
+--- !u!1102 &2194913886523338767
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Listening
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: -2226773470979246507}
+  m_StateMachineBehaviours:
+  - {fileID: -616440616425504946}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 0
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 1
+  m_Motion: {fileID: 6319471520969294983, guid: 204f7bcd2c9aade479f9593a612027e6,
+    type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: GestureRightWeight
 --- !u!1102 &2208626370110315029
 AnimatorState:
   serializedVersion: 6
@@ -58680,6 +58659,45 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
+--- !u!114 &3409768078781969565
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+  - type: 0
+    name: FaceEmo_Hai_GestureSmoothingFactor
+    source: 
+    value: 0.7
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  - type: 0
+    name: FaceEmo_Hai_ConstantZero
+    source: 
+    value: 0
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  localOnly: 0
+  debugString: 
 --- !u!1102 &3414175434544022276
 AnimatorState:
   serializedVersion: 6
@@ -59861,33 +59879,6 @@ AnimatorTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 1
---- !u!114 &3676791594849196308
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameters:
-  - type: 0
-    name: _Hai_GestureSmoothingFactor
-    source: 
-    value: 0.7
-    valueMin: 0
-    valueMax: 1
-    chance: 1
-    convertRange: 0
-    sourceMin: 0
-    sourceMax: 0
-    destMin: 0
-    destMax: 0
-  localOnly: 0
-  debugString: 
 --- !u!1109 &3694417305515907089
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -61989,6 +61980,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &4129986020665062209
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 6
+    m_ConditionEvent: GestureRight
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 2194913886523338767}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1109 &4133038267650439019
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -66854,6 +66870,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &5086404664691808157
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 7
+    m_ConditionEvent: GestureLeft
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 794342441051856635}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &5104961964790679118
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -67059,35 +67100,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
---- !u!1102 &5146936805875604593
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Listening
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 9183829075582627426}
-  m_StateMachineBehaviours:
-  - {fileID: 3676791594849196308}
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: 6536863841995589979, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: GestureLeftWeight
 --- !u!114 &5150945569537950818
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -70160,30 +70172,30 @@ AnimatorStateMachine:
   - {fileID: 8517579388898096158}
   - {fileID: -675715856167848088}
   m_StateMachineTransitions:
-  - first: {fileID: -8078437461230719819}
-    second:
-    - {fileID: -3922027197082774373}
-  - first: {fileID: -7587594426096014874}
-    second:
-    - {fileID: 5488460083813835024}
-  - first: {fileID: -7218424682133865563}
-    second:
-    - {fileID: -86769954059246667}
-  - first: {fileID: -2868123850430165806}
-    second:
-    - {fileID: 3035699407466047437}
   - first: {fileID: 717576247019360659}
     second:
     - {fileID: 5839049110866896337}
-  - first: {fileID: 6062456195949819235}
-    second:
-    - {fileID: 4542413015631329846}
-  - first: {fileID: 6427387448433640500}
-    second:
-    - {fileID: 402542825708523166}
   - first: {fileID: 7274601768808192925}
     second:
     - {fileID: -3899195253891220887}
+  - first: {fileID: 6427387448433640500}
+    second:
+    - {fileID: 402542825708523166}
+  - first: {fileID: 6062456195949819235}
+    second:
+    - {fileID: 4542413015631329846}
+  - first: {fileID: -2868123850430165806}
+    second:
+    - {fileID: 3035699407466047437}
+  - first: {fileID: -8078437461230719819}
+    second:
+    - {fileID: -3922027197082774373}
+  - first: {fileID: -7218424682133865563}
+    second:
+    - {fileID: -86769954059246667}
+  - first: {fileID: -7587594426096014874}
+    second:
+    - {fileID: 5488460083813835024}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -75914,6 +75926,31 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
+--- !u!1101 &6977221482056325200
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 4
+    m_ConditionEvent: FaceEmo_Hai_ConstantZero
+    m_EventTreshold: 1
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -65550940259512979}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.5
+  m_TransitionOffset: 0
+  m_ExitTime: 0
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 2
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1101 &6981106350700009701
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -81068,30 +81105,30 @@ AnimatorStateMachine:
   - {fileID: -359665149642728939}
   - {fileID: 1219235448611953767}
   m_StateMachineTransitions:
-  - first: {fileID: -4854850710712136022}
-    second:
-    - {fileID: 5734612270712934123}
   - first: {fileID: -4447950712695858684}
     second:
     - {fileID: 3922102260988246382}
-  - first: {fileID: -3074851239664201166}
-    second:
-    - {fileID: -2878454519227485317}
   - first: {fileID: -220182482393682376}
     second:
     - {fileID: 6630991501820268950}
-  - first: {fileID: 119305566040757137}
-    second:
-    - {fileID: -5202054025389222211}
-  - first: {fileID: 2937013440600406313}
-    second:
-    - {fileID: -203399437898249890}
-  - first: {fileID: 7765921980241035176}
-    second:
-    - {fileID: 1656584351656463293}
   - first: {fileID: 7998769657010268591}
     second:
     - {fileID: -7144858934897694010}
+  - first: {fileID: 119305566040757137}
+    second:
+    - {fileID: -5202054025389222211}
+  - first: {fileID: -3074851239664201166}
+    second:
+    - {fileID: -2878454519227485317}
+  - first: {fileID: 7765921980241035176}
+    second:
+    - {fileID: 1656584351656463293}
+  - first: {fileID: -4854850710712136022}
+    second:
+    - {fileID: 5734612270712934123}
+  - first: {fileID: 2937013440600406313}
+    second:
+    - {fileID: -203399437898249890}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -81584,30 +81621,30 @@ AnimatorStateMachine:
   - {fileID: 4076120273543595624}
   - {fileID: -8208354609923094875}
   m_StateMachineTransitions:
-  - first: {fileID: -8676377241364422134}
-    second:
-    - {fileID: -8132090730090572486}
-  - first: {fileID: -3840394998989582517}
-    second:
-    - {fileID: -6482812806028230830}
-  - first: {fileID: -2114208574546472182}
-    second:
-    - {fileID: 1897549505904960154}
-  - first: {fileID: -1173430103061936285}
-    second:
-    - {fileID: 7329037063810885032}
-  - first: {fileID: -314481869363482514}
-    second:
-    - {fileID: -4033656578842335434}
   - first: {fileID: -300736182408353490}
     second:
     - {fileID: 675638787449159397}
+  - first: {fileID: -314481869363482514}
+    second:
+    - {fileID: -4033656578842335434}
+  - first: {fileID: -8676377241364422134}
+    second:
+    - {fileID: -8132090730090572486}
   - first: {fileID: 375203012633493461}
     second:
     - {fileID: 5912119952910364782}
   - first: {fileID: 1040150177942075938}
     second:
     - {fileID: 8724217591684547406}
+  - first: {fileID: -2114208574546472182}
+    second:
+    - {fileID: 1897549505904960154}
+  - first: {fileID: -1173430103061936285}
+    second:
+    - {fileID: 7329037063810885032}
+  - first: {fileID: -3840394998989582517}
+    second:
+    - {fileID: -6482812806028230830}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -70, z: 0}
   m_EntryPosition: {x: 0, y: 0, z: 0}
@@ -82299,16 +82336,16 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -6466047888488750641}
-    second:
-    - {fileID: -5788844767403808106}
-    - {fileID: 7791645948938331753}
-    - {fileID: 6816071622246432733}
   - first: {fileID: -6164828757873843170}
     second:
     - {fileID: 1848515312294854528}
     - {fileID: 7500964586563478511}
     - {fileID: 5185562133110062538}
+  - first: {fileID: -6466047888488750641}
+    second:
+    - {fileID: -5788844767403808106}
+    - {fileID: 7791645948938331753}
+    - {fileID: 6816071622246432733}
   - first: {fileID: 2806332042116109426}
     second:
     - {fileID: -6276490860911409610}
@@ -82660,34 +82697,45 @@ AnimatorTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 1
---- !u!1102 &8410690927868100078
-AnimatorState:
-  serializedVersion: 6
+--- !u!114 &8417646486357665651
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Waiting
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -4075605287417808440}
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 0
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
-  m_Motion: {fileID: -6571620334567871096, guid: 04df4256078d7b24aa7d944470ede4c1,
-    type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: _Hai_GestureLWProxy
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+  - type: 0
+    name: FaceEmo_Hai_GestureSmoothingFactor
+    source: 
+    value: 0.7
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  - type: 0
+    name: FaceEmo_Hai_ConstantZero
+    source: 
+    value: 0
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  localOnly: 0
+  debugString: 
 --- !u!1101 &8418464931456604103
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -82977,42 +83025,12 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -7406729399914697514}
-    second:
-    - {fileID: 4232417544027412995}
-    - {fileID: -6710565507804277475}
-    - {fileID: -8194475566827987150}
-    - {fileID: 599089684950824910}
-  - first: {fileID: -6002968618239643163}
-    second:
-    - {fileID: 8295228780627020653}
-    - {fileID: -577095698667753732}
-    - {fileID: 952688645567745076}
-    - {fileID: 2136019022951213830}
-  - first: {fileID: -4251502663703663396}
-    second:
-    - {fileID: 447759151514665243}
-    - {fileID: 1055503349157185163}
-    - {fileID: -6642354853871364526}
-    - {fileID: -8262395995428761259}
-  - first: {fileID: -3367223025925578127}
-    second:
-    - {fileID: -2877140167671057627}
-    - {fileID: -7630472429945320333}
-    - {fileID: 2468396955734169404}
-    - {fileID: 4795380921879189012}
   - first: {fileID: 1562840131391543787}
     second:
     - {fileID: 2010454987646931545}
     - {fileID: -1466104899630197615}
     - {fileID: -1009516221131211475}
     - {fileID: -523257237544037716}
-  - first: {fileID: 5898926610369275528}
-    second:
-    - {fileID: 6225421961818047660}
-    - {fileID: 7175243296517565591}
-    - {fileID: -2097730282221512485}
-    - {fileID: -8841997696872693123}
   - first: {fileID: 8061811699799004561}
     second:
     - {fileID: 7533622733779798560}
@@ -83025,6 +83043,36 @@ AnimatorStateMachine:
     - {fileID: 6251811549390084009}
     - {fileID: -323771545246415605}
     - {fileID: -4873631830792515121}
+  - first: {fileID: -3367223025925578127}
+    second:
+    - {fileID: -2877140167671057627}
+    - {fileID: -7630472429945320333}
+    - {fileID: 2468396955734169404}
+    - {fileID: 4795380921879189012}
+  - first: {fileID: -6002968618239643163}
+    second:
+    - {fileID: 8295228780627020653}
+    - {fileID: -577095698667753732}
+    - {fileID: 952688645567745076}
+    - {fileID: 2136019022951213830}
+  - first: {fileID: 5898926610369275528}
+    second:
+    - {fileID: 6225421961818047660}
+    - {fileID: 7175243296517565591}
+    - {fileID: -2097730282221512485}
+    - {fileID: -8841997696872693123}
+  - first: {fileID: -4251502663703663396}
+    second:
+    - {fileID: 447759151514665243}
+    - {fileID: 1055503349157185163}
+    - {fileID: -6642354853871364526}
+    - {fileID: -8262395995428761259}
+  - first: {fileID: -7406729399914697514}
+    second:
+    - {fileID: 4232417544027412995}
+    - {fileID: -6710565507804277475}
+    - {fileID: -8194475566827987150}
+    - {fileID: 599089684950824910}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 0, y: -140, z: 0}
   m_EntryPosition: {x: 0, y: -70, z: 0}
@@ -83571,6 +83619,45 @@ MonoBehaviour:
     destMin: 0
     destMax: 0
   localOnly: 1
+  debugString: 
+--- !u!114 &8614391370905698247
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -706344726, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameters:
+  - type: 0
+    name: FaceEmo_Hai_GestureSmoothingFactor
+    source: 
+    value: 0.7
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  - type: 0
+    name: FaceEmo_Hai_ConstantZero
+    source: 
+    value: 0
+    valueMin: 0
+    valueMax: 1
+    chance: 1
+    convertRange: 0
+    sourceMin: 0
+    sourceMax: 0
+    destMin: 0
+    destMax: 0
+  localOnly: 0
   debugString: 
 --- !u!1109 &8614537728519454668
 AnimatorTransition:
@@ -84328,31 +84415,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1107 &8774547559226416738
-AnimatorStateMachine:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Hai_GestureSmoothingRight
-  m_ChildStates:
-  - serializedVersion: 1
-    m_State: {fileID: -4551516314375431011}
-    m_Position: {x: 250, y: 70, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -5155753425029511104}
-    m_Position: {x: 250, y: 140, z: 0}
-  m_ChildStateMachines: []
-  m_AnyStateTransitions: []
-  m_EntryTransitions: []
-  m_StateMachineTransitions: {}
-  m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 0, y: 490, z: 0}
-  m_EntryPosition: {x: 0, y: -70, z: 0}
-  m_ExitPosition: {x: 1750, y: -70, z: 0}
-  m_ParentStateMachinePosition: {x: 750, y: -70, z: 0}
-  m_DefaultState: {fileID: -4551516314375431011}
 --- !u!1101 &8778511403002841266
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -84378,31 +84440,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1101 &8796085663235491727
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 7
-    m_ConditionEvent: GestureRight
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -4551516314375431011}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!1102 &8803534762604367617
 AnimatorState:
   serializedVersion: 6
@@ -86047,31 +86084,6 @@ MonoBehaviour:
     destMax: 0
   localOnly: 1
   debugString: 
---- !u!1101 &9183829075582627426
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 7
-    m_ConditionEvent: GestureLeft
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -1872164942985379382}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
 --- !u!1101 &9186901167819637289
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

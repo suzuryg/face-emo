@@ -20,8 +20,9 @@ In VRChat, you can get the analog input value of the trigger when the hand gestu
 ### Notes on trigger settings
 - Even if you reverse the left and right gestures in the "Gesture Settings" of the [Settings Menu](../setting-menu), the left and right of the trigger will not be reversed
 - Even if you disable the left and right gestures in the "Gesture Settings" of the [Settings Menu](../setting-menu), the change in trigger squeezing will not be disabled
-- If you change the gesture to something other than Fist while squeezing the trigger, the trigger squeezing value remains the same
+- If you change the gesture to something other than Fist while squeezing the trigger, the trigger squeezing value may remain the same
     - If you want to reset the trigger squeezing value to 0, slowly remove your hand from the trigger while keeping it in Fist
+    - Fixed in version 1.5.1 or later
 - If there are expressions that use both triggers, please enable "Smooth Analog Fist" in the "Avatar Application Settings"
     - "Smooth Analog Fist" is enabled by default
 :::

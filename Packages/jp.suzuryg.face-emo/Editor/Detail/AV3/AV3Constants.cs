@@ -65,8 +65,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly string ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R = "CNST_TOUCH_EMOTE_LOCK_TRIGGER_R";
         // public static readonly string ParamName_CN_IS_ACTION_ACTIVE = "CN_IS_ACTION_ACTIVE"; // Do not rename (to work with action layer)
         public static readonly string ParamName_CN_FORCE_BYPASS_ENABLE = "CN_FORCE_BYPASS_ENABLE"; // Do not rename (to work with external gimmicks)
-        public static readonly string ParamName_GestureLWSmoothing = "_Hai_GestureLWSmoothing"; // Do not rename (to work with blend tree)
-        public static readonly string ParamName_GestureRWSmoothing = "_Hai_GestureRWSmoothing"; // Do not rename (to work with blend tree)
 
         public static readonly string ParameterPrefix = "FaceEmo_";
 
@@ -83,6 +81,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static readonly string Path_FxTemplate_Basic = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplate_Basic.controller";
         public static readonly string Path_FxTemplate_WithIntegrator = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplate_WithIntegrator.controller";
         public static readonly string Path_TemplateContainer = $"{DetailConstants.DetailDirectory}/AV3/Template/FxTemplateContainer.controller";
+        public static readonly string Path_SmoothingLayerContainer = $"{DetailConstants.DetailDirectory}/AV3/Template/SmoothingLayerContainer.controller";
         public static readonly string Path_EmoteLocker = $"{DetailConstants.DetailDirectory}/AV3/Template/FaceEmo_EmoteLocker.prefab";
         public static readonly string Path_IndicatorSound = $"{DetailConstants.DetailDirectory}/AV3/Template/FaceEmo_IndicatorSound.prefab";
         public static readonly string Path_EmoteOverridePrefab = $"{DetailConstants.DetailDirectory}/AV3/Template/FaceEmo_EmoteOverrideExample.prefab";
