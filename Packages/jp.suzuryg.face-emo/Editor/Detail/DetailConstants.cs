@@ -50,7 +50,7 @@ namespace Suzuryg.FaceEmo.Detail
         public static readonly string Key_ExpressionEditor_ShowLipSyncBlendShapes = $"{DomainConstants.SystemName}_ExpressionEditor_ShowLipSyncBlendShapes";
         public static readonly bool Default_ExpressionEditor_ShowOnlyDifferFromDefaultValue = true;
         public static readonly bool Default_ExpressionEditor_ReflectInPreviewOnMouseOver = true;
-        public static readonly bool Default_ExpressionEditor_UseMouseWheel = true;
+        public static readonly bool Default_ExpressionEditor_UseMouseWheel = false;
         public static readonly bool Default_ExpressionEditor_ShowBlinkBlendShapes = true;
         public static readonly bool Default_ExpressionEditor_ShowLipSyncBlendShapes = false;
     }
