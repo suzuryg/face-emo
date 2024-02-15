@@ -151,7 +151,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "* To prevent interference between expressions, the expressions originally set on the avatar will be disabled on upload.\n" +
             "If you want to revert back to the original settings, delete the \"FaceEmoPrefab\" that will be added to the avatar.";
         public string SettingView_Message_Succeeded = "Facial expression menu generation is completed!\nThe facial expression menu is merged at the time of upload.";
-        public string SettingView_Message_FailedObtainPrefabs = "Failed to obtain prefab information.";
+        public string SettingView_Message_FailedObtainPrefabs = "Failed to obtain prefab information. This error may be resolved by removing \"<0>\" from the avatar.";
         public string SettingView_Message_ReplaceFaceEmoPrefab = "\"<0>\" contained in the following prefabs will be replaced. Do you want to proceed?";
         public string SettingView_Tooltip_DefaultSelectedMode = "You can change the expression pattern that is selected by default.";
         public string SettingView_Tooltip_UnifyWriteDefaults = "If the avatar's WriteDefaults are unified with ON, FaceEmo's WriteDefaults will be ON.\n" +

@@ -1074,7 +1074,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
 
             var parentPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(rootObject.transform.parent.gameObject);
-            if (string.IsNullOrEmpty(parentPath))
+            if (string.IsNullOrEmpty(parentPath) ||
+                !parentPath.ToLower().EndsWith(".prefab"))
             {
                 return string.Empty;
             }
