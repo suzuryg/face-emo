@@ -3,6 +3,7 @@ using nadena.dev.modular_avatar.core;
 #endif
 
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -17,7 +18,16 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         public static void Generate()
         {
 #if USE_MODULAR_AVATAR
-            var dirPath = AssetDatabase.GetAssetPath(Selection.activeObject);
+            string dirPath = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs.FirstOrDefault());
+            if (string.IsNullOrEmpty(dirPath))
+            {
+                dirPath = "Assets";
+            }
+            else if (Path.GetExtension(dirPath) != "")
+            {
+                dirPath = dirPath.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+            }
+
             var prefabPath = dirPath + "/" + Path.GetFileName(AV3Constants.Path_EmoteOverridePrefab);
             var controllerPath = dirPath + "/" + Path.GetFileName(AV3Constants.Path_EmoteOverrideController);
 
