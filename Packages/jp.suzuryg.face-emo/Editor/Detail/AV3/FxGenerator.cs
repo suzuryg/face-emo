@@ -115,6 +115,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     {
                         rootObject = parentPrefabInstance.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
                         GenerateMAObject(rootObject, animatorController, exMenu, defaultModeIndex);
+                        PrefabUtility.SaveAsPrefabAsset(parentPrefabInstance, parentPrefabPath);
                     }
                     finally
                     {
@@ -146,6 +147,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                         {
                             subRoot = subParentInstance.transform.Find(AV3Constants.MARootObjectName)?.gameObject;
                             ReplaceMAObject(subRoot);
+                            PrefabUtility.SaveAsPrefabAsset(subParentInstance, subParentPath);
                         }
                         finally
                         {
