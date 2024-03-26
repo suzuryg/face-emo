@@ -16,6 +16,7 @@ using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View;
 using Suzuryg.FaceEmo.Detail.View.Element;
 using Suzuryg.FaceEmo.Detail.View.ExpressionEditor;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using Zenject;
@@ -55,8 +56,6 @@ namespace Suzuryg.FaceEmo.AppMain
                 var AV3Setting = ScriptableObject.CreateInstance<AV3Setting>();
                 EditorUtility.CopySerialized(launcher.AV3Setting, AV3Setting);
                 launcher.AV3Setting = AV3Setting;
-                // Avoid sharing FaceEmoPrefab when the component is copied.
-                launcher.AV3Setting.MARootObjectPrefab = null;
 
                 var ExpressionEditorSetting = ScriptableObject.CreateInstance<ExpressionEditorSetting>();
                 EditorUtility.CopySerialized(launcher.ExpressionEditorSetting, ExpressionEditorSetting);
@@ -81,6 +80,16 @@ namespace Suzuryg.FaceEmo.AppMain
                 var InspectorViewState = ScriptableObject.CreateInstance<InspectorViewState>();
                 EditorUtility.CopySerialized(launcher.InspectorViewState, InspectorViewState);
                 launcher.InspectorViewState = InspectorViewState;
+
+                // Avoid sharing FaceEmoPrefab when the component is copied.
+                var others = UnityEngine.Object.FindObjectsOfType<FaceEmoLauncherComponent>().Where(x => x != null && x.InstanceId == launcher.InstanceId);
+                if (others.Count() > 1)
+                {
+                    foreach (var other in others.OrderBy(x => x.name).Skip(1))
+                    {
+                        other.AV3Setting.MARootObjectPrefab = null;
+                    }
+                }
 
                 launcher.InstanceId = instanceId;
             }
