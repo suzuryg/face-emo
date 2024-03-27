@@ -2,6 +2,7 @@
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Detail.AV3.Importers;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;
 using System;
@@ -17,6 +18,7 @@ using UnityEditor.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using UniRx;
+using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
@@ -317,6 +319,25 @@ namespace Suzuryg.FaceEmo.Detail.View
         private void OnApplyButtonClicked()
         {
             if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
+
+            try
+            {
+                if (_av3Setting.AddParameterPrefix &&
+                    !FxParameterChecker.CheckPrefixNeeds(_av3Setting.TargetAvatar as VRCAvatarDescriptor) &&
+                    OptoutableDialog.Show(DomainConstants.SystemName,
+                        _localizationTable.SettingView_Message_DisablePrefix,
+                        _localizationTable.SettingView_DisablePrefix, _localizationTable.SettingView_KeepPrefix,
+                        DetailConstants.KeyPrefixDisableConfirmation, DetailConstants.DefaultPrefixDisableConfirmation, isRiskyAction: false,
+                        centerPosition: GetDialogCenterPosition(), valueWhenSkipped: false))
+                {
+                    _av3Setting.AddParameterPrefix = false;
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(_localizationTable.SettingView_Message_FailedChangePrefixOption + "\n" + ex?.ToString());
+            }
 
             var dialogWidth = 550;
             var dialogHeight = 150;
