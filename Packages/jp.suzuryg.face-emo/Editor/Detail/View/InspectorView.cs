@@ -526,6 +526,9 @@ namespace Suzuryg.FaceEmo.Detail.View
                         var contactImporter = new ContactSettingImporter(av3Setting);
                         var importedContacts = contactImporter.Import(avatarDescriptor);
 
+                        var needsPrefix = FxParameterChecker.CheckPrefixNeeds(avatarDescriptor);
+                        av3Setting.AddParameterPrefix = needsPrefix;
+
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                         _onMenuUpdated.OnNext((menu, isModified: true));
 
@@ -549,6 +552,9 @@ namespace Suzuryg.FaceEmo.Detail.View
                                 optionResults.Add((MessageType.None, contact.name));
                             }
                         }
+
+                        optionResults.Add((MessageType.None, string.Empty));
+                        optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_Prefix}{_localizationTable.Common_Colon}" + (needsPrefix ? _localizationTable.Common_Enabled : _localizationTable.Common_Disabled)));
 
                         if (optionResults.Any())
                         {

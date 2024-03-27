@@ -15,6 +15,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Import = "Import";
         public string Common_Proceed = "Proceed";
         public string Common_Restore = "Restore";
+        public string Common_Enabled = "Enabled";
+        public string Common_Disabled = "Disabled";
         public string Common_Colon = ": ";
 
         public string Common_Neutral = "Neutral";
@@ -372,6 +374,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionImporter_Blink = "Blink (AnimationClip)";
         public string ExpressionImporter_MouthMorphCanceler = "MouthMorphCanceler (AnimationClip)";
         public string ExpressionImporter_Contacts = "Contacts";
+        public string ExpressionImporter_Prefix = "Parameter Prefix (FaceEmo_)";
         public string ExpressionImporter_Message_PatternsImported = "The following expression patterns were imported from the avatar.";
         public string ExpressionImporter_Message_NoPatterns = "No importable expression patterns were found.";
         public string ExpressionImporter_Info_BehaviorDifference = "Expression controls may behave differently from the original avatar.\n" +
