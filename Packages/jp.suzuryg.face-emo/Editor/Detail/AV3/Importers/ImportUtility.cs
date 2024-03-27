@@ -61,6 +61,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         public static AnimatorController GetFxLayer(VRCAvatarDescriptor avatarDescriptor)
         {
+            if (avatarDescriptor == null || avatarDescriptor.baseAnimationLayers == null)
+            {
+                return null;
+            }
+
             foreach (var baseLayer in avatarDescriptor.baseAnimationLayers)
             {
                 if (baseLayer.type == VRCAvatarDescriptor.AnimLayerType.FX &&
