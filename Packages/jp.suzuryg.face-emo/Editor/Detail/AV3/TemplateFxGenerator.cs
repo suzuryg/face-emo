@@ -316,6 +316,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 "CN_EMOTE_SELECT_PRIORITY_RIGHT",
                 "CN_EMOTE_SELECT_ONLY_LEFT",
                 "CN_EMOTE_SELECT_ONLY_RIGHT",
+                "Dummy",
             };
 
             foreach (var parameName in paramNames) { RemoveParameter(controller, parameName); }

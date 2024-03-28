@@ -2,6 +2,7 @@
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Detail.AV3.Importers;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;
 using System;
@@ -14,7 +15,10 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 using UniRx;
+using VRC.SDK3.Avatars.Components;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
@@ -37,7 +41,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private UpdateMenuSubject _updateMenuSubject;
         private MainThumbnailDrawer _thumbnailDrawer;
         private GestureTableThumbnailDrawer _gestureTableThumbnailDrawer;
-        private SerializedObject _av3Setting;
+        private AV3Setting _av3Setting;
         private SerializedObject _thumbnailSetting;
 
         private Label _thumbnailWidthLabel;
@@ -101,7 +105,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             _updateMenuSubject = updateMenuSubject;
             _thumbnailDrawer = thumbnailDrawer;
             _gestureTableThumbnailDrawer = gestureTableThumbnailDrawer;
-            _av3Setting = new SerializedObject(av3Setting);
+            _av3Setting = av3Setting;
             _thumbnailSetting = new SerializedObject(thumbnailSetting);
 
             // Update menu event handler
@@ -316,6 +320,25 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             if (EditorApplication.isPlaying) { EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.Common_Message_NotPossibleInPlayMode, "OK"); return; }
 
+            try
+            {
+                if (_av3Setting.AddParameterPrefix &&
+                    !FxParameterChecker.CheckPrefixNeeds(_av3Setting.TargetAvatar as VRCAvatarDescriptor) &&
+                    OptoutableDialog.Show(DomainConstants.SystemName,
+                        _localizationTable.SettingView_Message_DisablePrefix,
+                        _localizationTable.SettingView_DisablePrefix, _localizationTable.SettingView_KeepPrefix,
+                        DetailConstants.KeyPrefixDisableConfirmation, DetailConstants.DefaultPrefixDisableConfirmation, isRiskyAction: false,
+                        centerPosition: GetDialogCenterPosition(), valueWhenSkipped: false))
+                {
+                    _av3Setting.AddParameterPrefix = false;
+                    EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(_localizationTable.SettingView_Message_FailedChangePrefixOption + "\n" + ex?.ToString());
+            }
+
             var dialogWidth = 550;
             var dialogHeight = 150;
 
@@ -447,15 +470,12 @@ namespace Suzuryg.FaceEmo.Detail.View
                 new GUIContent(_disableWriteDefaultsLabel, _disableWriteDefaultsTooltip),
             };
 
-            _av3Setting.Update();
-            var wdProperty = _av3Setting.FindProperty(nameof(AV3Setting.MatchAvatarWriteDefaults));
-            var wdIndex = wdProperty.boolValue ? 0 : 1;
-
+            var wdIndex = _av3Setting.MatchAvatarWriteDefaults ? 0 : 1;
             var newValue = GUILayout.SelectionGrid(wdIndex, options, 1, _radioButtonStyle);
             if (newValue != wdIndex)
             {
-                wdProperty.boolValue = !wdProperty.boolValue;
-                _av3Setting.ApplyModifiedProperties();
+                _av3Setting.MatchAvatarWriteDefaults = !_av3Setting.MatchAvatarWriteDefaults;
+                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             }
         }
     }

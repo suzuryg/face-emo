@@ -526,6 +526,9 @@ namespace Suzuryg.FaceEmo.Detail.View
                         var contactImporter = new ContactSettingImporter(av3Setting);
                         var importedContacts = contactImporter.Import(avatarDescriptor);
 
+                        var needsPrefix = FxParameterChecker.CheckPrefixNeeds(avatarDescriptor);
+                        av3Setting.AddParameterPrefix = needsPrefix;
+
                         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
                         _onMenuUpdated.OnNext((menu, isModified: true));
 
@@ -549,6 +552,9 @@ namespace Suzuryg.FaceEmo.Detail.View
                                 optionResults.Add((MessageType.None, contact.name));
                             }
                         }
+
+                        optionResults.Add((MessageType.None, string.Empty));
+                        optionResults.Add((MessageType.None, $"{_localizationTable.ExpressionImporter_Prefix}{_localizationTable.Common_Colon}" + (needsPrefix ? _localizationTable.Common_Enabled : _localizationTable.Common_Disabled)));
 
                         if (optionResults.Any())
                         {
@@ -1256,6 +1262,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             ToggleEditorPrefsField(DetailConstants.KeyModeDeleteConfirmation, DetailConstants.DefaultModeDeleteConfirmation, _localizationTable.InspectorView_ModeDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, _localizationTable.InspectorView_BranchDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyEditPrefabsConfirmation, DetailConstants.DefaultEditPrefabsConfirmation, _localizationTable.InspectorView_EditPrefabConfirmation);
+            ToggleEditorPrefsField(DetailConstants.KeyPrefixDisableConfirmation, DetailConstants.DefaultPrefixDisableConfirmation, _localizationTable.InspectorView_DisablePrefixConfirmation);
             ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowBlinkBlendShapes, DetailConstants.Default_ExpressionEditor_ShowBlinkBlendShapes, _localizationTable.InspectorView_ShowBlinkBlendShapes);
             ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowLipSyncBlendShapes, DetailConstants.Default_ExpressionEditor_ShowLipSyncBlendShapes, _localizationTable.InspectorView_ShowLipSyncBlendShapes);
 

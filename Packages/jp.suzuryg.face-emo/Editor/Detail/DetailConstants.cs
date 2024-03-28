@@ -24,10 +24,12 @@ namespace Suzuryg.FaceEmo.Detail
         public static readonly string KeyModeDeleteConfirmation = $"{DomainConstants.SystemName}_ModeDeleteConfirmation";
         public static readonly string KeyBranchDeleteConfirmation = $"{DomainConstants.SystemName}_BranchDeleteConfirmation";
         public static readonly string KeyEditPrefabsConfirmation = $"{DomainConstants.SystemName}_EditPrefabsConfirmation";
+        public static readonly string KeyPrefixDisableConfirmation = $"{DomainConstants.SystemName}_PrefixDisableConfirmation";
         public static readonly bool DefaultGroupDeleteConfirmation = true;
         public static readonly bool DefaultModeDeleteConfirmation = true;
         public static readonly bool DefaultBranchDeleteConfirmation = true;
         public static readonly bool DefaultEditPrefabsConfirmation = true;
+        public static readonly bool DefaultPrefixDisableConfirmation = true;
 
         public static readonly string KeyShowHints = $"{DomainConstants.SystemName}_ShowHints";
         public static readonly bool DefaultShowHints = true;

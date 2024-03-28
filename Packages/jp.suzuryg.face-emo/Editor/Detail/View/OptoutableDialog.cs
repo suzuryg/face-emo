@@ -53,10 +53,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             Vector2? centerPosition = null,
             bool isRiskyAction = false,
             IReadOnlyList<(MessageType type, string message)> additionalMessages = null,
-            float windowWidth = DefaultWindowWidth, float windowHeight = DefaultWindowHeight)
+            float windowWidth = DefaultWindowWidth, float windowHeight = DefaultWindowHeight, bool valueWhenSkipped = true)
         {
             // Check optout value
-            if (!EditorPrefs.GetBool(showDialogKey, showDialogDefaultValue)) { return true; }
+            if (!EditorPrefs.GetBool(showDialogKey, showDialogDefaultValue)) { return valueWhenSkipped; }
 
             // Initialize
             _result = false;

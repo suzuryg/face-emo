@@ -15,6 +15,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Import = "Import";
         public string Common_Proceed = "Proceed";
         public string Common_Restore = "Restore";
+        public string Common_Enabled = "Enabled";
+        public string Common_Disabled = "Disabled";
         public string Common_Colon = ": ";
 
         public string Common_Neutral = "Neutral";
@@ -146,7 +148,11 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string SettingView_DisableWriteDefaults = "Disable WD (Expression Priority)";
         public string SettingView_Manual = "Open Manual";
         public string SettingView_Option = "Optional Settings";
+        public string SettingView_DisablePrefix = "Disable Prefix";
+        public string SettingView_KeepPrefix = "Keep Prefix";
         public string SettingView_ApplyToAvatar = "Apply to Avatar";
+        public string SettingView_Message_DisablePrefix = "You can reduce build time before upload by disabling the addition of the prefix (FaceEmo_) to parameters. Do you want to disable it?";
+        public string SettingView_Message_FailedChangePrefixOption = "An error occurred while changing the parameter prefix option.";
         public string SettingView_Message_ConfirmApplyToAvatar = "Apply facial expression menu to the avatar?\n\n\n" +
             "* To prevent interference between expressions, the expressions originally set on the avatar will be disabled on upload.\n" +
             "If you want to revert back to the original settings, delete the \"FaceEmoPrefab\" that will be added to the avatar.";
@@ -277,6 +283,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_ModeDeleteConfirmation = "Confirm When Deleting Expression Pattern";
         public string InspectorView_BranchDeleteConfirmation = "Confirm When Deleting Expression";
         public string InspectorView_EditPrefabConfirmation = "Confirm When Making Changes to Prefab";
+        public string InspectorView_DisablePrefixConfirmation = "Check If Prefix Addition Is Enabled Before Applying";
         public string InspectorView_ShowBlinkBlendShapes = "Show Blink Blend Shapes";
         public string InspectorView_ShowLipSyncBlendShapes = "Show Lip Sync Blend Shapes";
         public string InspectorView_HierarchyIconOffset = "\"Emo\" button position offset";
@@ -372,6 +379,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionImporter_Blink = "Blink (AnimationClip)";
         public string ExpressionImporter_MouthMorphCanceler = "MouthMorphCanceler (AnimationClip)";
         public string ExpressionImporter_Contacts = "Contacts";
+        public string ExpressionImporter_Prefix = "Parameter Prefix (FaceEmo_)";
         public string ExpressionImporter_Message_PatternsImported = "The following expression patterns were imported from the avatar.";
         public string ExpressionImporter_Message_NoPatterns = "No importable expression patterns were found.";
         public string ExpressionImporter_Info_BehaviorDifference = "Expression controls may behave differently from the original avatar.\n" +

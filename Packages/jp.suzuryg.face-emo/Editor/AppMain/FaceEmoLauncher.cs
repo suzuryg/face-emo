@@ -357,6 +357,9 @@ namespace Suzuryg.FaceEmo.AppMain
                 var importedClips = expressionImporter.ImportOptionalClips(avatarDescriptor);
                 var importedContacts = contactImporter.Import(avatarDescriptor);
 
+                var needsPrefix = FxParameterChecker.CheckPrefixNeeds(avatarDescriptor);
+                av3Setting.AddParameterPrefix = needsPrefix;
+
                 // change selection
                 if (menu.Registered.Order.Any())
                 {
@@ -408,6 +411,9 @@ namespace Suzuryg.FaceEmo.AppMain
                         optionResults.Add((MessageType.None, contact.name));
                     }
                 }
+
+                optionResults.Add((MessageType.None, string.Empty));
+                optionResults.Add((MessageType.None, $"{localizationTable.ExpressionImporter_Prefix}{localizationTable.Common_Colon}" + (needsPrefix ? localizationTable.Common_Enabled : localizationTable.Common_Disabled)));
 
                 if (optionResults.Any())
                 {
