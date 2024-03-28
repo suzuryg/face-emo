@@ -429,7 +429,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 if (layer != null &&
                     layer.stateMachine != null &&
                     layer.stateMachine.stateMachines != null &&
-                    layer.stateMachine.stateMachines.SelectMany(x => x.stateMachine.entryTransitions).Any(y => y.conditions.First().parameter == "SYNC_EM_EMOTE"))
+                    layer.stateMachine.stateMachines.SelectMany(x => x.stateMachine.entryTransitions).Any(y => y.conditions.Any() && y.conditions.First().parameter == "SYNC_EM_EMOTE"))
                 {
                     return layer;
                 }
