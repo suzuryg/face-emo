@@ -25,7 +25,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
             else if (Path.GetExtension(dirPath) != "")
             {
-                dirPath = dirPath.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+                var fileName = Path.GetFileName(dirPath);
+                dirPath = dirPath.Replace(fileName, "");
+
+                if (string.IsNullOrEmpty(dirPath))
+                {
+                    dirPath = "Assets";
+                }
             }
 
             var prefabPath = dirPath + "/" + Path.GetFileName(AV3Constants.Path_EmoteOverridePrefab);
