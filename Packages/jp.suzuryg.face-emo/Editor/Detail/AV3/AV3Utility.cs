@@ -452,9 +452,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         private static void SetHumanPoseToClip(ref HumanPose humanPose, AnimationClip clip)
         {
             // Set body position and rotation
+#if UNITY_2022_1_OR_NEWER
             clip.SetCurve("", typeof(Animator), "RootT.x", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.x)));
             clip.SetCurve("", typeof(Animator), "RootT.y", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.y)));
             clip.SetCurve("", typeof(Animator), "RootT.z", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.z)));
+#else
+            clip.SetCurve("", typeof(Animator), "RootT.x", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.normalized.x)));
+            clip.SetCurve("", typeof(Animator), "RootT.y", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.normalized.y)));
+            clip.SetCurve("", typeof(Animator), "RootT.z", new AnimationCurve(new Keyframe(0, humanPose.bodyPosition.normalized.z)));
+#endif
 
             clip.SetCurve("", typeof(Animator), "RootQ.x", new AnimationCurve(new Keyframe(0, humanPose.bodyRotation.x)));
             clip.SetCurve("", typeof(Animator), "RootQ.y", new AnimationCurve(new Keyframe(0, humanPose.bodyRotation.y)));
