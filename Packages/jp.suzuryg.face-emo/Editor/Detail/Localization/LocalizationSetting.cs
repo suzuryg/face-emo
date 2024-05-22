@@ -35,6 +35,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
 
         private Subject<LocalizationTable> _onTableChanged = new Subject<LocalizationTable>();
 
+        private static LocalizationTable en_us;
+
         public LocalizationSetting()
         {
             var locale = GetLocale();
@@ -87,7 +89,9 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             else
             {
                 // en_US has the table in source code, not asset.
-                return ScriptableObject.CreateInstance<LocalizationTable>();
+                en_us = en_us != null ? en_us : ScriptableObject.CreateInstance<LocalizationTable>();
+
+                return en_us;
             }
         }
 
