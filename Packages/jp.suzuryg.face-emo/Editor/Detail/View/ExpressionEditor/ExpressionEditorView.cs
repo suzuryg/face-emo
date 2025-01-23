@@ -774,7 +774,11 @@ namespace Suzuryg.FaceEmo.Detail.View.ExpressionEditor
                 foreach (KeyValuePair<string, List<BlendShape>> keyValuePair in categorized)
                 {
                     keyValuePair.Value.RemoveAll(a => a.MatchName(_search) <= 0);
-                    keyValuePair.Value.Sort((a, b) => b.MatchName(_search).CompareTo(a.MatchName(_search)));
+                    keyValuePair.Value.Sort((a, b) =>
+                    {
+                        var compareTo = b.MatchName(_search).CompareTo(a.MatchName(_search));
+                        return compareTo == 0 ? string.CompareOrdinal(a.Name, b.Name) : compareTo;
+                    });
                 }
             }
 
