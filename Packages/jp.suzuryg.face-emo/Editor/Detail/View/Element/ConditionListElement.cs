@@ -15,7 +15,6 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 {
     public class ConditionListElement : IDisposable
     {
-        private static readonly int ScrollBottomMargin = 10;
         private static readonly int ScrollRightMargin = 5;
         private static readonly int Padding = 0;
         private static readonly int Margin = 2;
@@ -165,15 +164,9 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public void OnGUI(Rect rect)
         {
-            float totalHeight = 0;
-            totalHeight += _reorderableList.headerHeight;
-            for (int i = 0; i < _reorderableList.list.Count; i++)
-            {
-                totalHeight += GetElementHeight(i);
-            }
             var viewRect = new Rect(rect.x, rect.y,
                 rect.width - EditorGUIUtility.singleLineHeight,
-                totalHeight + EditorGUIUtility.singleLineHeight + ScrollBottomMargin);
+                _reorderableList.GetHeight());
 
             using (var scope = new GUI.ScrollViewScope(rect, _scrollPosition, viewRect))
             {
