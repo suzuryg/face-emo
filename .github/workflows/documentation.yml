@@ -21,7 +21,7 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./docs/build
 
