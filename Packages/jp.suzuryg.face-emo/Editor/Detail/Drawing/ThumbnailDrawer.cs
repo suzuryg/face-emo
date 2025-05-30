@@ -1,4 +1,4 @@
-﻿using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.View;
@@ -275,26 +275,6 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 foreach (var guid in requests)
                 {
                     _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera);
-
-                    // Apply gamma correction if necessary
-                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
-                        !ReferenceEquals(_cache[guid], _hourglassIcon) && !ReferenceEquals(_cache[guid], _errorIcon) &&
-                        !Mathf.Approximately(_aV3Setting.GammaCorrectionValueForExMenuThumbnails, 1.0f))
-                    {
-                        DrawingUtility.ApplyGammaCorrectionGPU(_cache[guid], _aV3Setting.GammaCorrectionValueForExMenuThumbnails);
-                    }
-
-                    // Padding if necessary
-                    if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
-                        !ReferenceEquals(_cache[guid], _hourglassIcon) && !ReferenceEquals(_cache[guid], _errorIcon))
-                    {
-                        _cache[guid] = DrawingUtility.PaddingWithTransparentPixels(_cache[guid], ThumbnailSetting.ExMenu_OuterWidth, ThumbnailSetting.ExMenu_OuterHeight);
-                    }
-
-                    // Reset animator status
-                    clonedAvatar.SetActive(false);
-                    clonedAvatar.SetActive(true);
-
                     _requests.Remove(guid);
                     yield return null;
                 }
@@ -319,6 +299,8 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         {
             // Open scene
             _previewScene = EditorSceneManager.NewPreviewScene();
+            // Remove skybox for transparency
+            RenderSettings.skybox = null;
 
             // Add light
             var light = new GameObject();
@@ -346,35 +328,70 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 return _errorIcon;
             }
 
-            // Synthesize avatar pose
+            // Synthesize avatar pose and sample animation
             var synthesized = AV3Utility.SynthesizeAvatarPose(clip, _aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
+            AnimationMode.StartAnimationMode();
+            AnimationMode.BeginSampling();
+            AnimationMode.SampleAnimationClip(animatorRoot, synthesized, synthesized.length);
+            AnimationMode.EndSampling();
+            AnimationMode.StopAnimationMode();
 
-            // Sample animation clip and render
-            var positionCache = animatorRoot.transform.position;
-            var rotationCache = animatorRoot.transform.rotation;
-            try
+            // Compute render size
+            int w = Mathf.RoundToInt(Width * DetailConstants.UiScale);
+            int h = Mathf.RoundToInt(Height * DetailConstants.UiScale);
+
+            // Grab a temporary ARGB32 RenderTexture and clear it
+            var rt = RenderTexture.GetTemporary(w, h, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB, antiAliasing: 1);
+            var prevActive = RenderTexture.active;
+            RenderTexture.active = rt;
+            GL.Clear(true, true, Color.clear);
+            RenderTexture.active = prevActive;
+
+            // Cache camera state and enforce transparent clear
+            var oldRt     = camera.targetTexture;
+            var oldAsp    = camera.aspect;
+            var oldFlags  = camera.clearFlags;
+            var oldBg     = camera.backgroundColor;
+            camera.targetTexture   = rt;
+            camera.aspect          = (float)w / h;
+            camera.clearFlags      = CameraClearFlags.SolidColor;
+            camera.backgroundColor = Color.clear;
+
+            // Render avatar
+            camera.Render();
+
+            // Restore camera state
+            camera.targetTexture   = oldRt;
+            camera.aspect          = oldAsp;
+            camera.clearFlags      = oldFlags;
+            camera.backgroundColor = oldBg;
+
+            // Read back into Texture2D
+            RenderTexture.active = rt;
+            var tex = new Texture2D(w, h, TextureFormat.ARGB32, false);
+            tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+            tex.Apply();
+            RenderTexture.ReleaseTemporary(rt);
+            RenderTexture.active = null;
+
+            // Un-premultiply alpha
+            var pixels = tex.GetPixels();
+            for (int i = 0; i < pixels.Length; i++)
             {
-                AnimationMode.StartAnimationMode();
-                AnimationMode.BeginSampling();
-                AnimationMode.SampleAnimationClip(animatorRoot, synthesized, synthesized.length);
-                AnimationMode.EndSampling();
-
-                // When sampling, the object relocates to the origin, so it must be restored to its initial position
-                animatorRoot.transform.position = positionCache;
-                animatorRoot.transform.rotation = rotationCache;
-
-                var scaledWidth = (int)Math.Round(Width * DetailConstants.UiScale, MidpointRounding.AwayFromZero);
-                var scaledHeight = (int)Math.Round(Height * DetailConstants.UiScale, MidpointRounding.AwayFromZero);
-                var texture = DrawingUtility.GetRenderedTexture(scaledWidth, scaledHeight, camera);
-
-                return texture;
+                float a = pixels[i].a;
+                if (a > 0f)
+                {
+                    pixels[i].r /= a;
+                    pixels[i].g /= a;
+                    pixels[i].b /= a;
+                }
             }
-            finally
-            {
-                AnimationMode.StopAnimationMode();
-                animatorRoot.transform.position = positionCache;
-                animatorRoot.transform.rotation = rotationCache;
-            }
+            tex.SetPixels(pixels);
+            tex.Apply();
+
+            // Mark texture as transparency
+            tex.alphaIsTransparency = true;
+            return tex;
         }
     }
 }
