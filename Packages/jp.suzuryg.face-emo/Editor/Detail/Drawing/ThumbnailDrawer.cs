@@ -1,4 +1,4 @@
-using Suzuryg.FaceEmo.Domain;
+﻿using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.View;
