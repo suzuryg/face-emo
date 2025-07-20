@@ -25,6 +25,10 @@ namespace Suzuryg.FaceEmo.Components.Settings
         [NonSerialized] public static readonly float DefaultCameraAngleV = -5;
         [NonSerialized] public static readonly float MaxCameraAngleV = 30;
 
+        [NonSerialized] public static readonly float DefaultAnimationProgress = 1f;
+        [NonSerialized] public static readonly float MinAnimationProgress = 0f;
+        [NonSerialized] public static readonly float MaxAnimationProgress = 1f;
+
         public int Main_Width = 180;
         public int Main_Height = 150;
         public float Main_FOV = DefaultFOV;
@@ -33,6 +37,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public float Main_CameraPosY = DefaultCameraPosY;
         public float Main_CameraAngleH = DefaultCameraAngleH;
         public float Main_CameraAngleV = DefaultCameraAngleV;
+        public float Main_AnimationProgress = DefaultAnimationProgress;
 
         [NonSerialized] public static readonly int Main_MinWidth = 125;
         [NonSerialized] public static readonly int Main_MaxWidth = 300;

@@ -27,6 +27,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
         protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
+        protected override float AnimationProgress => _thumbnailSetting.Main_AnimationProgress;
         public MainThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
@@ -40,6 +41,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
         protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
+        protected override float AnimationProgress => _thumbnailSetting.Main_AnimationProgress;
         public GestureTableThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
@@ -53,6 +55,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
         protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
+        protected override float AnimationProgress => _thumbnailSetting.Main_AnimationProgress;
         public ExMenuThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
@@ -66,6 +69,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         protected override float CameraPosY => _thumbnailSetting.Main_CameraPosY;
         protected override float CameraAngleX => _thumbnailSetting.Main_CameraAngleV;
         protected override float CameraAngleY => _thumbnailSetting.Main_CameraAngleH;
+        protected override float AnimationProgress => _thumbnailSetting.Main_AnimationProgress;
         public InspectorThumbnailDrawer(AV3Setting aV3Setting, ThumbnailSetting thumbnailSetting) : base(aV3Setting, thumbnailSetting) { }
     }
 
@@ -83,6 +87,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
         protected abstract float CameraPosY { get; }
         protected abstract float CameraAngleX { get; }
         protected abstract float CameraAngleY { get; }
+        protected abstract float AnimationProgress { get; }
 
         // Observables
         public IObservable<Unit> OnThumbnailUpdated => _onThumbnailUpdated.AsObservable();
@@ -274,7 +279,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 var requests = new List<string>(_requests);
                 foreach (var guid in requests)
                 {
-                    _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera);
+                    _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera, AnimationProgress);
 
                     // Apply gamma correction if necessary
                     if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
@@ -327,7 +332,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             SceneManager.MoveGameObjectToScene(light, _previewScene);
         }
 
-        private Texture2D RenderAnimatedAvatar(string clipGUID, GameObject animatorRoot, Camera camera)
+        private Texture2D RenderAnimatedAvatar(string clipGUID, GameObject animatorRoot, Camera camera, float animationProgress = 0f)
         {
             // Get animation clip
             AnimationClip clip;
@@ -356,7 +361,11 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             {
                 AnimationMode.StartAnimationMode();
                 AnimationMode.BeginSampling();
-                AnimationMode.SampleAnimationClip(animatorRoot, synthesized, synthesized.length);
+                
+                // Set sample time
+                float sampleTime = synthesized.length * animationProgress;
+                AnimationMode.SampleAnimationClip(animatorRoot, synthesized, sampleTime);
+                
                 AnimationMode.EndSampling();
 
                 // When sampling, the object relocates to the origin, so it must be restored to its initial position

@@ -1054,6 +1054,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 _localizationTable.InspectorView_Thumbnail_VerticalPosition,
                 _localizationTable.InspectorView_Thumbnail_HorizontalAngle,
                 _localizationTable.InspectorView_Thumbnail_VerticalAngle,
+                _localizationTable.InspectorView_Thumbnail_AnimationProgress,
             };
             var labelWidth = labelTexts
                 .Select(text => GUI.skin.label.CalcSize(new GUIContent(text)).x)
@@ -1084,6 +1085,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             var vAngle = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_CameraAngleV));
             Field_Slider(_localizationTable.InspectorView_Thumbnail_VerticalAngle, vAngle.floatValue, ThumbnailSetting.MaxCameraAngleV * -1, ThumbnailSetting.MaxCameraAngleV,
                 value => { vAngle.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
+
+            var animProgress = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_AnimationProgress));
+            Field_Slider(_localizationTable.InspectorView_Thumbnail_AnimationProgress, animProgress.floatValue, ThumbnailSetting.MinAnimationProgress, ThumbnailSetting.MaxAnimationProgress,
+                value => { animProgress.floatValue = value; _thumbnailDrawer.RequestUpdateAll(); }, labelWidth);
 
             EditorGUILayout.Space(10);
 
