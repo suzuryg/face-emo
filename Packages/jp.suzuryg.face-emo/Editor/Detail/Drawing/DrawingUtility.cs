@@ -6,7 +6,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
     {
         public static Texture2D GetRenderedTexture(int width, int height, Camera camera)
         {
-            var texture = new Texture2D(width, height, TextureFormat.RGB24, mipChain: false);
+            var texture = new Texture2D(width, height, TextureFormat.ARGB32, mipChain: false);
 
             var renderTexture = RenderTexture.GetTemporary(texture.width, texture.height,
                 format: RenderTextureFormat.ARGB32, readWrite: RenderTextureReadWrite.sRGB, depthBuffer: 24, antiAliasing: 8);
@@ -15,8 +15,39 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                 renderTexture.wrapMode = TextureWrapMode.Clamp;
                 renderTexture.filterMode = FilterMode.Bilinear;
 
-                RenderCamera(renderTexture, camera);
-                CopyRenderTexture(renderTexture, texture);
+                // Clear render target to transparent
+                var prevActive = RenderTexture.active;
+                RenderTexture.active = renderTexture;
+                GL.Clear(true, true, Color.clear);
+                RenderTexture.active = prevActive;
+
+                // Force camera to clear with transparent background
+                var oldRt    = camera.targetTexture;
+                var oldFlags = camera.clearFlags;
+                var oldBg    = camera.backgroundColor;
+                var oldAsp   = camera.aspect;
+
+                camera.targetTexture   = renderTexture;
+                camera.clearFlags      = CameraClearFlags.SolidColor;
+                camera.backgroundColor = Color.clear;
+                camera.aspect          = (float)width / height;
+
+                // Render
+                camera.Render();
+
+                // Restore camera settings
+                camera.targetTexture   = oldRt;
+                camera.clearFlags      = oldFlags;
+                camera.backgroundColor = oldBg;
+                camera.aspect          = oldAsp;
+
+                // Copy into Texture2D including alpha
+                var activeBefore = RenderTexture.active;
+                RenderTexture.active = renderTexture;
+                texture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                texture.alphaIsTransparency = true;
+                texture.Apply();
+                RenderTexture.active = activeBefore;
             }
             finally
             {
@@ -24,38 +55,6 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
 
             return texture;
-        }
-
-        private static void RenderCamera(RenderTexture renderTexture, Camera camera)
-        {
-            var targetTextureCache = camera.targetTexture;
-            var aspectCache = camera.aspect;
-            try
-            {
-                camera.targetTexture = renderTexture;
-                camera.aspect = (float) renderTexture.width / renderTexture.height;
-                camera.Render();
-            }
-            finally
-            {
-                camera.targetTexture = targetTextureCache;
-                camera.aspect = aspectCache;
-            }
-        }
-
-        private static void CopyRenderTexture(RenderTexture source, Texture2D destination)
-        {
-            var activeRenderTextureCache = RenderTexture.active;
-            try
-            {
-                RenderTexture.active = source;
-                destination.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0, recalculateMipMaps: false);
-                destination.Apply();
-            }
-            finally
-            {
-                RenderTexture.active = activeRenderTextureCache;
-            }
         }
 
         public static Texture2D PaddingWithTransparentPixels(Texture2D original, int outerWidth, int outerHeight)
@@ -78,6 +77,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
 
             result.Apply();
+            result.alphaIsTransparency = true;
             return result;
         }
 
@@ -105,6 +105,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
 
             // Apply the changes to the texture.
+            texture.alphaIsTransparency = true;
             texture.Apply();
         }
 
@@ -122,12 +123,17 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
             GammaCorrectionMaterial.SetFloat("_Gamma", gamma);
 
-            RenderTexture renderTexture = RenderTexture.GetTemporary(texture.width, texture.height);
+            RenderTexture renderTexture = RenderTexture.GetTemporary(texture.width, texture.height, 0, RenderTextureFormat.ARGB32);
+            var prevActive = RenderTexture.active;
             Graphics.Blit(texture, renderTexture, GammaCorrectionMaterial);
 
             RenderTexture.active = renderTexture;
             texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+            texture.alphaIsTransparency = true;
             texture.Apply();
+            RenderTexture.active = prevActive;
+
+            RenderTexture.ReleaseTemporary(renderTexture);
         }
     }
 }
