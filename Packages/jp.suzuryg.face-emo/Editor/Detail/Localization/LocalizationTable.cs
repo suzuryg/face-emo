@@ -240,6 +240,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Thumbnail_VerticalPosition = "Position (Vertical)";
         public string InspectorView_Thumbnail_HorizontalAngle = "Angle (Horizontal)";
         public string InspectorView_Thumbnail_VerticalAngle = "Angle (Vertical)";
+        public string InspectorView_Thumbnail_AnimationProgress = "Animation Progress";
         public string InspectorView_Thumbnail_Reset = "Reset";
 
         public string InspectorView_Dance = "Dance Gimmick Settings";
