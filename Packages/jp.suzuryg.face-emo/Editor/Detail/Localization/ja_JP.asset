@@ -226,7 +226,7 @@ MonoBehaviour:
   InspectorView_Thumbnail_VerticalPosition: "\u4F4D\u7F6E\uFF08\u5782\u76F4\uFF09"
   InspectorView_Thumbnail_HorizontalAngle: "\u89D2\u5EA6\uFF08\u6C34\u5E73\uFF09"
   InspectorView_Thumbnail_VerticalAngle: "\u89D2\u5EA6\uFF08\u5782\u76F4\uFF09"
-  InspectorView_Thumbnail_AnimationProgress: "\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u9032\u6357"
+  InspectorView_Thumbnail_AnimationProgress: "\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u9032\u884C\u5EA6"
   InspectorView_Thumbnail_Reset: "\u30EA\u30BB\u30C3\u30C8"
   InspectorView_Dance: "\u30C0\u30F3\u30B9\u30AE\u30DF\u30C3\u30AF\u8A2D\u5B9A"
   InspectorView_Dance_DisableExpressionLayers: "\u8868\u60C5\u30EC\u30A4\u30E4\u30FC\u306E\u307F\u7121\u52B9\u5316"
