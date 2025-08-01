@@ -13,7 +13,8 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
             bool? blinkEnabled = null,
             bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
-            bool? isRightTriggerUsed = null);
+            bool? isRightTriggerUsed = null,
+            bool? showInEmoteSelect = null);
     }
 
     public interface IModifyBranchPropertiesPresenter
@@ -63,7 +64,8 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
             bool? blinkEnabled = null,
             bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
-            bool? isRightTriggerUsed = null)
+            bool? isRightTriggerUsed = null,
+            bool? showInEmoteSelect = null)
         {
             try
             {
@@ -87,7 +89,7 @@ namespace Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode
                     return;
                 }
 
-                menu.ModifyBranchProperties(modeId, branchIndex, eyeTrackingControl, mouthTrackingControl, blinkEnabled, mouthMorphCancelerEnabled, isLeftTriggerUsed, isRightTriggerUsed);
+                menu.ModifyBranchProperties(modeId, branchIndex, eyeTrackingControl, mouthTrackingControl, blinkEnabled, mouthMorphCancelerEnabled, isLeftTriggerUsed, isRightTriggerUsed, showInEmoteSelect);
 
                 _menuRepository.Save(menuId, menu, "ModifyBranchProperties");
                 _modifyBranchPropertiesPresenter.Complete(ModifyBranchPropertiesResult.Succeeded, menu);
