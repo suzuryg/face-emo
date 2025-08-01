@@ -8,11 +8,13 @@ on:
   release:
      types: [published, created, edited, unpublished, deleted, released]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
  
+# Allow one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -30,15 +32,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      
-      - uses: actions/checkout@v4 
-      - uses: actions/checkout@v4 
+      - uses: actions/checkout@v4 # check out this repo
+      - uses: actions/checkout@v4 # check out automation repo
         with:
           repository: vrchat-community/package-list-action
           path: ${{env.pathToCi}}
-          clean: false 
+          clean: false # otherwise the local repo will no longer be checked out
          
       - name: Restore Cache
-        uses: actions/cache@v4 
+        uses: actions/cache@v4
         with:
           path: |
             ${{env.pathToCi}}/.nuke/temp
@@ -51,13 +53,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
  
       - name: Setup Pages
-        uses: actions/configure-pages@v4 
+        uses: actions/configure-pages@v4
        
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3 
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ${{env.listPublishDirectory}}
          
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4
