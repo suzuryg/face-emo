@@ -62,7 +62,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "When disabled, the expression can only be triggered by gestures.";
         public string Common_Tooltip_LaunchFromHierarchy = "Launch FaceEmo";
         public string Common_ShowInEmoteSelect = "Show in Emote Select";
-        public string Common_Tooltip_ShowInEmoteSelect = "Include this expression in the manual emote selection menu. When disabled, the expression can only be triggered by gestures.";
         public string Launcher_Message_CheckModularAvatar = "Modular Avatar 1.8.0 or later must be installed to use FaceEmo.\n\n" +
             "If ModularAvatar is not installed, or if an older version is installed, please install the latest version.";
         public string Launcher_Message_CheckVrcSdk3Avatars = "VRChat SDK Avatars 3.1.13 or later must be installed to use FaceEmo.\n\n" +
