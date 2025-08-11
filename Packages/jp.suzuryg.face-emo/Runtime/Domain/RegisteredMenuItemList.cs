@@ -7,7 +7,7 @@ namespace Suzuryg.FaceEmo.Domain
     public class RegisteredMenuItemList : MenuItemListBase
     {
         // Setting menu uses one slot.
-        public static readonly int Capacity = DomainConstants.MenuItemNums - 1;
+        public static readonly int Capacity = 32;
 
         public override bool IsFull => Order.Count >= Capacity;
 

@@ -691,8 +691,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var logo = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("617fecc28d6cb5a459d1297801b9213e")); // logo
             var lockIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AV3Constants.Path_BearsDenIcons + "/Lock.png");
 
-            // Mode select
-            GenerateSubMenuRecursive(rootMenu, menu.Registered, idToModeIndex, container);
+            // Mode select → move into "Expressions" submenu
+            var expressionsMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+            expressionsMenu.name = "Expressions";
+            rootMenu.controls.Add(CreateSubMenuControl("Expressions", expressionsMenu, folderIcon));
+            GenerateSubMenuRecursive(expressionsMenu, menu.Registered, idToModeIndex, container);
+            AssetDatabase.AddObjectToAsset(expressionsMenu, container);
 
             // Emote select
             if (_aV3Setting.AddConfig_EmoteSelect)
@@ -725,14 +729,46 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
         private void GenerateSubMenuRecursive(VRCExpressionsMenu parent, IMenuItemList menuItemList, Dictionary<string, int> idToModeIndex, VRCExpressionsMenu container)
         {
+            var loc = _localizationSetting.GetCurrentLocaleTable();
+            var folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59"));
+            
+            // First, add all groups
             foreach (var id in menuItemList.Order)
             {
-                var type = menuItemList.GetType(id);
-                if (type == MenuItemType.Mode)
+                if (menuItemList.GetType(id) == MenuItemType.Group)
                 {
+                    var group = menuItemList.GetGroup(id);
+                    var subMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                    subMenu.name = group.DisplayName;
+                    parent.controls.Add(CreateSubMenuControl(group.DisplayName, subMenu, folderIcon));
+                    GenerateSubMenuRecursive(subMenu, group, idToModeIndex, container);
+                    AssetDatabase.AddObjectToAsset(subMenu, container);
+                }
+            }
+            
+            // Then handle modes with pagination (7 per page max, 8th slot for "More")
+            var modes = menuItemList.Order.Where(id => menuItemList.GetType(id) == MenuItemType.Mode).ToList();
+            
+            if (modes.Count == 0) return;
+            
+            const int itemsPerPage = 7; // Leave 8th slot for "More" if needed
+            var currentMenu = parent;
+            var modeIndex = 0;
+            
+            while (modeIndex < modes.Count)
+            {
+                var remainingModes = modes.Count - modeIndex;
+                var modesThisPage = Math.Min(itemsPerPage, remainingModes);
+                var needsMoreMenu = remainingModes > itemsPerPage;
+                
+                // Add modes to current page
+                for (int i = 0; i < modesThisPage; i++)
+                {
+                    var id = modes[modeIndex + i];
+                    var mode = new ModeExInner(menuItemList.GetMode(id));
+                    
                     EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating pattern selection controls...", (float)idToModeIndex[id] / idToModeIndex.Count);
 
-                    var mode = new ModeExInner(menuItemList.GetMode(id));
                     var control = CreateIntToggleControl(_modeNameProvider.Provide(mode), AV3Constants.ParamName_EM_EMOTE_PATTERN, idToModeIndex[id], icon: null);
 
                     Texture2D icon = null;
@@ -742,23 +778,23 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     }
                     else
                     {
-                        icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("af1ba8919b0ccb94a99caf43ac36f97d")); // face smile
+                        icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("af1ba8919b0ccb94a99caf43ac36f97d"));
                     }
                     control.icon = icon;
 
-                    parent.controls.Add(control);
+                    currentMenu.controls.Add(control);
                 }
-                else
+                
+                modeIndex += modesThisPage;
+                
+                // Create "More" submenu if there are remaining modes
+                if (needsMoreMenu)
                 {
-                    var group = menuItemList.GetGroup(id);
-
-                    var subMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
-                    subMenu.name = group.DisplayName;
-                    var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
-                    parent.controls.Add(CreateSubMenuControl(group.DisplayName, subMenu, icon));
-
-                    GenerateSubMenuRecursive(subMenu, group, idToModeIndex, container);
-                    AssetDatabase.AddObjectToAsset(subMenu, container);
+                    var moreMenu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                    moreMenu.name = "More";
+                    currentMenu.controls.Add(CreateSubMenuControl("More", moreMenu, folderIcon));
+                    AssetDatabase.AddObjectToAsset(moreMenu, container);
+                    currentMenu = moreMenu;
                 }
             }
         }
