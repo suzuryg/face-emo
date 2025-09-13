@@ -789,7 +789,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                     // Get branches
                     var mode = new ModeExInner(menuItemList.GetMode(id));
-                    var numOfBranches = mode.Branches.Count;
+                    var numOfBranches = mode.Branches.Count(b => b.ShowInEmoteSelect);
                     if (mode.ChangeDefaultFace) { numOfBranches++; }
                     if (numOfBranches <= 0) { continue; }
 
@@ -845,6 +845,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                             else
                             {
                                 if (branchIndex >= mode.Branches.Count) { continue; }
+                                
+                                // Skip branches that shouldn't show in emote select menu
+                                if (!mode.Branches[branchIndex].ShowInEmoteSelect) continue;
+                                
                                 guid = mode.Branches[branchIndex].BaseAnimation;
                             }
                             var emoteIndex = GetEmoteIndex(branchIndex, idToModeEx[id], useOverLimitMode);

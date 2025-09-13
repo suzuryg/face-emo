@@ -102,7 +102,8 @@ namespace Suzuryg.FaceEmo.Domain
             bool? blinkEnabled = null,
             bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
-            bool? isRightTriggerUsed = null)
+            bool? isRightTriggerUsed = null,
+            bool? showInEmoteSelect = null)
         {
             var branch = _branches[branchIndex];
             branch.EyeTrackingControl = eyeTrackingControl ?? branch.EyeTrackingControl;
@@ -111,6 +112,7 @@ namespace Suzuryg.FaceEmo.Domain
             branch.MouthMorphCancelerEnabled = mouthMorphCancelerEnabled ?? branch.MouthMorphCancelerEnabled;
             branch.IsLeftTriggerUsed = isLeftTriggerUsed ?? branch.IsLeftTriggerUsed;
             branch.IsRightTriggerUsed = isRightTriggerUsed ?? branch.IsRightTriggerUsed;
+            branch.ShowInEmoteSelect = showInEmoteSelect ?? branch.ShowInEmoteSelect;
         }
 
         public void ChangeBranchOrder(int from, int to)

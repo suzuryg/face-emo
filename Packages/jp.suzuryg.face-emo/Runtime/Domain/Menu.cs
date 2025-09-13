@@ -472,9 +472,10 @@ namespace Suzuryg.FaceEmo.Domain
             bool? blinkEnabled = null,
             bool? mouthMorphCancelerEnabled = null,
             bool? isLeftTriggerUsed = null,
-            bool? isRightTriggerUsed = null)
+            bool? isRightTriggerUsed = null,
+            bool? showInEmoteSelect = null)
         {
-            _modes[modeId].ModifyBranchProperties(branchIndex, eyeTrackingControl, mouthTrackingControl, blinkEnabled, mouthMorphCancelerEnabled, isLeftTriggerUsed, isRightTriggerUsed);
+            _modes[modeId].ModifyBranchProperties(branchIndex, eyeTrackingControl, mouthTrackingControl, blinkEnabled, mouthMorphCancelerEnabled, isLeftTriggerUsed, isRightTriggerUsed, showInEmoteSelect);
         }
 
         public bool CanChangeBranchOrder(string modeId, int from) => ContainsBranch(modeId, from);

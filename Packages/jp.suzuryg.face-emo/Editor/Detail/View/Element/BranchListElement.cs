@@ -55,7 +55,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             bool? blinkEnabled,
             bool? mouthMorphCancelerEnabled,
             bool? isLeftTriggerUsed,
-            bool? isRightTriggerUsed)> OnModifyBranchPropertiesButtonClicked => _onModifyBranchPropertiesButtonClicked.AsObservable();
+            bool? isRightTriggerUsed,
+            bool? showInEmoteSelect)> OnModifyBranchPropertiesButtonClicked => _onModifyBranchPropertiesButtonClicked.AsObservable();
         public IObservable<(string modeId, int from, int to)> OnBranchOrderChanged => _onBranchOrderChanged.AsObservable();
 
         public IObservable<(string modeId, int branchIndex, Condition condition)> OnAddConditionButtonClicked => _onAddConditionButtonClicked.AsObservable();
@@ -76,7 +77,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             bool? blinkEnabled,
             bool? mouthMorphCancelerEnabled,
             bool? isLeftTriggerUsed,
-            bool? isRightTriggerUsed)> _onModifyBranchPropertiesButtonClicked = new Subject<(string modeId, int branchIndex, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? blinkEnabled, bool? mouthMorphCancelerEnabled, bool? isLeftTriggerUsed, bool? isRightTriggerUsed)>();
+            bool? isRightTriggerUsed,
+            bool? showInEmoteSelect)> _onModifyBranchPropertiesButtonClicked = new Subject<(string modeId, int branchIndex, EyeTrackingControl? eyeTrackingControl, MouthTrackingControl? mouthTrackingControl, bool? blinkEnabled, bool? mouthMorphCancelerEnabled, bool? isLeftTriggerUsed, bool? isRightTriggerUsed, bool? showInEmoteSelect)>();
         private Subject<(string modeId, int from, int to)> _onBranchOrderChanged = new Subject<(string modeId, int from, int to)>();
 
         private Subject<(string modeId, int branchIndex, Condition condition)> _onAddConditionButtonClicked = new Subject<(string modeId, int branchIndex, Condition condition)>();
@@ -106,6 +108,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private string _emptyText;
         private string _useLeftTriggerText;
         private string _useRightTriggerText;
+        private string _showInEmoteSelectText;
         private string _notReachableBranchText;
         private string _leftTriggerAnimationText;
         private string _rightTriggerAnimationText;
@@ -321,6 +324,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             _emptyText = localizationTable.BranchListView_EmptyBranch;
             _useLeftTriggerText = localizationTable.BranchListView_UseLeftTrigger;
             _useRightTriggerText = localizationTable.BranchListView_UseRightTrigger;
+            _showInEmoteSelectText = localizationTable.Common_ShowInEmoteSelect;
             _notReachableBranchText = localizationTable.BranchListView_NotReachableBranch;
             _leftTriggerAnimationText = localizationTable.BranchListView_LeftTriggerAnimation;
             _rightTriggerAnimationText = localizationTable.BranchListView_RightTriggerAnimation;
@@ -507,7 +511,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                     new GUIContent(_eyeTrackingText, _localizationTable.Common_Tooltip_EyeTracking));
                 if (eyeTracking != eyeToBool(branch.EyeTrackingControl))
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null));
+                    _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, boolToEye(eyeTracking), null, null, null, null, null, null));
                 }
 
                 yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
@@ -526,7 +530,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                         new GUIContent(_blinkText, _localizationTable.Common_Tooltip_Blink));
                     if (blink != branch.BlinkEnabled)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, blink, null, null, null));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, blink, null, null, null, null));
                     }
                 }
 
@@ -546,7 +550,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                     new GUIContent(_mouthTrackingText, _localizationTable.Common_Tooltip_LipSync));
                 if (mouthTracking != mouthToBool(branch.MouthTrackingControl))
                 {
-                    _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null));
+                    _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, boolToMouth(mouthTracking), null, null, null, null, null));
                 }
 
                 yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
@@ -565,7 +569,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                         new GUIContent(_mouthMorphCancelerText, _localizationTable.Common_Tooltip_MouthMorphCanceler));
                     if (mouthMorphCancel != branch.MouthMorphCancelerEnabled)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, mouthMorphCancel, null, null));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, mouthMorphCancel, null, null, null));
                     }
                 }
                 else
@@ -589,7 +593,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                         new GUIContent(_useLeftTriggerText, _localizationTable.Common_Tooltip_LeftTrigger));
                     if (useLeftTrigger != branch.IsLeftTriggerUsed)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, useLeftTrigger, null));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, useLeftTrigger, null, null));
                     }
                 }
                 else
@@ -613,7 +617,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                         new GUIContent(_useRightTriggerText, _localizationTable.Common_Tooltip_RightTrigger));
                     if (useRightTrigger != branch.IsRightTriggerUsed)
                     {
-                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, null, useRightTrigger));
+                        _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, null, useRightTrigger, null));
                     }
                 }
                 else
@@ -623,7 +627,20 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
                 yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
             }
+            // Show in Emote Select
+            if (!IsSimplified && _aV3Setting.AddConfig_EmoteSelect)
+            {
+                var toggleRect = new Rect(xCurrent, yCurrent, ToggleWidth, EditorGUIUtility.singleLineHeight);
+                var showInEmoteSelect = GUI.Toggle(toggleRect, branch.ShowInEmoteSelect, string.Empty);
+                GUI.Label(new Rect(xCurrent + ToggleWidth, yCurrent, PropertiesWidth - ToggleWidth, EditorGUIUtility.singleLineHeight),
+                    new GUIContent(_showInEmoteSelectText, _localizationTable.Common_Tooltip_ShowInEmoteSelect));
+                if (showInEmoteSelect != branch.ShowInEmoteSelect)
+                {
+                    _onModifyBranchPropertiesButtonClicked.OnNext((SelectedModeId, index, null, null, null, null, null, null, showInEmoteSelect));
+                }
 
+                yCurrent += EditorGUIUtility.singleLineHeight + VerticalMargin;
+            }
             xCurrent += PropertiesWidth + upperHorizontalMargin;
             yCurrent = yBegin;
 
