@@ -6,6 +6,9 @@ namespace Suzuryg.FaceEmo.Components.Data
 {
     public class SerializableBranch : ScriptableObject
     {
+        private static readonly int CurrentSchemaVersion = 1;
+
+        public int SchemaVersion;
         public EyeTrackingControl EyeTrackingControl;
         public MouthTrackingControl MouthTrackingControl;
         public bool BlinkEnabled;
@@ -22,6 +25,7 @@ namespace Suzuryg.FaceEmo.Components.Data
 
         public void Save(IBranch branch, bool isAsset)
         {
+            SchemaVersion = CurrentSchemaVersion;
             EyeTrackingControl = branch.EyeTrackingControl;
             MouthTrackingControl = branch.MouthTrackingControl;
             BlinkEnabled = branch.BlinkEnabled;
@@ -92,6 +96,12 @@ namespace Suzuryg.FaceEmo.Components.Data
 
         public void Load(Domain.Menu menu, string id, int index)
         {
+            // migration
+            if (SchemaVersion < 1)
+            {
+                ShowInEmoteSelect = true;
+            }
+
             menu.ModifyBranchProperties(id, index,
                 eyeTrackingControl: EyeTrackingControl,
                 mouthTrackingControl: MouthTrackingControl,
