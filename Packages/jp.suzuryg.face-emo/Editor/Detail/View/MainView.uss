@@ -28,7 +28,7 @@
     flex-wrap: nowrap;
     align-content: stretch;
     align-items: stretch;
-    justify-content: center;
+    justify-content: flex-start;
 
     flex-grow: 1;
     flex-shrink: 0;
@@ -42,6 +42,7 @@
     flex-shrink: 1.0;
     flex-basis: auto;
     align-self: auto;
+    display: none;
 }
 
 #MenuItemListView

@@ -55,6 +55,14 @@
     font-size: 16px;
 }
 
+#HierarchyViewToggle
+{
+    margin-left: -3px;
+    margin-top: -15px;
+    margin-bottom: 10px;
+    width: 120px;
+}
+
 .Button
 {
 }

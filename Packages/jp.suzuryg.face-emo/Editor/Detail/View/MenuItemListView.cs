@@ -46,6 +46,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private MenuItemListViewState _menuItemListViewState;
 
         private Label _titleLabel;
+        private Toggle _hierarchyViewToggle;
         private Button _addModeButton;
         private Button _addGroupButton;
         private Button _copyButton;
@@ -140,7 +141,8 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public void Dispose()
         {
-            _treeViewContainer.UnregisterCallback<MouseLeaveEvent>(OnMouseLeft);
+            _treeViewContainer?.UnregisterCallback<MouseLeaveEvent>(OnMouseLeft);
+            _hierarchyViewToggle?.UnregisterValueChangedCallback(OnHierarchyViewToggleValueChanged);
             _disposables.Dispose();
             _treeElementDisposables.Dispose();
         }
@@ -157,6 +159,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             // Query elements
             _titleLabel = root.Q<Label>("TitleLabel");
+            _hierarchyViewToggle = root.Q<Toggle>("HierarchyViewToggle");
             _addModeButton = root.Q<Button>("AddModeButton");
             _addGroupButton = root.Q<Button>("AddGroupButton");
             _copyButton = root.Q<Button>("CopyButton");
@@ -179,6 +182,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             Observable.FromEvent(x => _treeViewContainer.onGUIHandler += x, x => _treeViewContainer.onGUIHandler -= x)
                 .Synchronize().Subscribe(_ => _menuItemTreeElement?.OnGUI(_treeViewContainer.contentRect)).AddTo(_disposables);
             _treeViewContainer.RegisterCallback<MouseLeaveEvent>(OnMouseLeft);
+
+            _hierarchyViewToggle.value = EditorPrefsStore.HierarchyViewVisible;
+            _hierarchyViewToggle.RegisterValueChangedCallback(OnHierarchyViewToggleValueChanged);
 
             // Set icon
             SetIcon();
@@ -225,6 +231,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         {
             _localizationTable = localizationTable;
             if (_titleLabel != null) { _titleLabel.text = localizationTable.MenuItemListView_Title; }
+            if (_hierarchyViewToggle != null) { _hierarchyViewToggle.text = localizationTable.MenuItemListView_TreeViewToggle; }
 
             if (_addModeButton != null) { _addModeButton.tooltip = localizationTable.MenuItemListView_Tooltip_AddMode; }
             if (_addGroupButton != null) { _addGroupButton.tooltip = localizationTable.MenuItemListView_Tooltip_AddGroup; }
@@ -545,6 +552,11 @@ namespace Suzuryg.FaceEmo.Detail.View
 
                 _selectionSynchronizer.ChangeMenuItemListViewSelection(id);
             }
+        }
+
+        private void OnHierarchyViewToggleValueChanged(ChangeEvent<bool> changeEvent)
+        {
+            EditorPrefsStore.HierarchyViewVisible = changeEvent.newValue;
         }
     }
 }

@@ -18,6 +18,7 @@
 				<engine:Button name="RemoveButton" class="Button"/>
 			</engine:VisualElement>
 		</engine:VisualElement>
+		<engine:Toggle name="HierarchyViewToggle"/>
 		<engine:IMGUIContainer name="AddressBarContainer"/>
 		<engine:IMGUIContainer name="TreeViewContainer"/>
 	</engine:VisualElement>

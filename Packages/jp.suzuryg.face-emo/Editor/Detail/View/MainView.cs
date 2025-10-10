@@ -97,13 +97,23 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void OnGUI(EditorWindow mainWindow)
         {
-            var hierarchyViewWidth = _hierarchyView != null ? _hierarchyView.GetWidth() : 100;
+            var hierarchyViewWidth = _hierarchyView != null && EditorPrefsStore.HierarchyViewVisible
+                ? _hierarchyView.GetWidth()
+                : 0;
             var menuItemListViewWidth = _menuItemListView != null ? _menuItemListView.GetWidth() : 100;
             var branchListViewWidth = _branchListView != null ? _branchListView.GetWidth() : 100;
 
             if (_hierarchyArea != null)
             {
-                _hierarchyArea.style.minWidth = hierarchyViewWidth;
+                if (EditorPrefsStore.HierarchyViewVisible)
+                {
+                    _hierarchyArea.style.display = DisplayStyle.Flex;
+                    _hierarchyArea.style.minWidth = hierarchyViewWidth;
+                }
+                else
+                {
+                    _hierarchyArea.style.display = DisplayStyle.None;
+                }
             }
             if (_menuItemListArea != null)
             {
@@ -118,6 +128,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             var width = Padding + hierarchyViewWidth + menuItemListViewWidth + branchListViewWidth + Padding;
             mainWindow.minSize = new Vector2(width, MinHeight);
+            mainWindow.maxSize = new Vector2(width, 99999);
         }
     }
 }
