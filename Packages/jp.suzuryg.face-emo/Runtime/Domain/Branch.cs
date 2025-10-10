@@ -12,7 +12,7 @@ namespace Suzuryg.FaceEmo.Domain
         bool MouthMorphCancelerEnabled { get; }
         bool IsLeftTriggerUsed { get; }
         bool IsRightTriggerUsed { get; }
-        bool ShowInEmoteSelect { get; }
+
         IReadOnlyList<Condition> Conditions { get; }
         bool IsReachable { get; }
         bool CanLeftTriggerUsed { get; }
@@ -32,7 +32,7 @@ namespace Suzuryg.FaceEmo.Domain
         public bool MouthMorphCancelerEnabled { get; set; } = true;
         public bool IsLeftTriggerUsed { get; set; } = false;
         public bool IsRightTriggerUsed { get; set; } = false;
-        public bool ShowInEmoteSelect { get; set; } = true;
+
         public IReadOnlyList<Condition> Conditions => _conditions;
         public bool IsReachable { get; set; } = false;
         public bool CanLeftTriggerUsed { get; set; } = false;
