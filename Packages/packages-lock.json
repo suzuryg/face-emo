@@ -4,7 +4,9 @@
       "version": "file:com.anatawa12.avatar-optimizer",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.burst": "1.8.7"
+      }
     },
     "com.unity.ai.navigation": {
       "version": "1.1.5",
@@ -218,7 +220,9 @@
       "version": "file:nadena.dev.ndmf",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.modules.animation": "1.0.0"
+      }
     },
     "vrchat.blackstartx.gesture-manager": {
       "version": "file:vrchat.blackstartx.gesture-manager",

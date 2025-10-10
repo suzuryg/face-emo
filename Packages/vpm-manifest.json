@@ -35,27 +35,27 @@
       }
     },
     "vrchat.blackstartx.gesture-manager": {
-      "version": "3.8.9",
+      "version": "3.9.5",
       "dependencies": {
-        "com.vrchat.avatars": "3.2.x || 3.3.x || 3.4.x || 3.5.x"
+        "com.vrchat.avatars": ">=3.5.2 <3.10.X"
       }
     },
     "com.anatawa12.avatar-optimizer": {
-      "version": "1.7.4",
+      "version": "1.8.14",
       "dependencies": {
-        "com.vrchat.avatars": ">=3.3.0 <3.7.0",
-        "nadena.dev.ndmf": "^1.3.0"
+        "com.vrchat.avatars": ">=3.7.0 <3.10.0",
+        "nadena.dev.ndmf": "^1.6.0"
       }
     },
     "nadena.dev.ndmf": {
-      "version": "1.4.1",
+      "version": "1.9.4",
       "dependencies": {}
     },
     "nadena.dev.modular-avatar": {
-      "version": "1.9.13",
+      "version": "1.14.3",
       "dependencies": {
-        "com.vrchat.avatars": ">=3.4.0",
-        "nadena.dev.ndmf": ">=1.4.1 <2.0.0-a"
+        "com.vrchat.avatars": ">=3.7.4",
+        "nadena.dev.ndmf": ">=1.9.2 <2.0.0-a"
       }
     }
   }
