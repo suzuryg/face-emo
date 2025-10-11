@@ -71,4 +71,6 @@ Assets/Editor/*
 UIElementsSchema/*
 Thry/
 !Booth/*.unitypackage
+UserSettings/
+ProjectSettings/SceneTemplateSettings.json
 
