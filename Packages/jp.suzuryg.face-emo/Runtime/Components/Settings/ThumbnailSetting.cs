@@ -29,8 +29,8 @@ namespace Suzuryg.FaceEmo.Components.Settings
         [NonSerialized] public static readonly float MinAnimationProgress = 0f;
         [NonSerialized] public static readonly float MaxAnimationProgress = 1f;
 
-        public int Main_Width = 180;
-        public int Main_Height = 150;
+        public int Main_Width = Main_MinWidth;
+        public int Main_Height = Main_MinHeight;
         public float Main_FOV = DefaultFOV;
         public float Main_Distance = DefaultDistance;
         public float Main_CameraPosX = DefaultCameraPosX;
