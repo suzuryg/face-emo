@@ -16,7 +16,6 @@ namespace Suzuryg.FaceEmo.Detail.View
 {
     public class MainView : IDisposable
     {
-        private static readonly float Padding = 20;
         private static readonly float MinHeight = 330;
 
         private HierarchyView _hierarchyView;
@@ -97,6 +96,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private void OnGUI(EditorWindow mainWindow)
         {
+            var padding = EditorPrefsStore.HierarchyViewVisible ? 20 : 10;
             var hierarchyViewWidth = _hierarchyView != null && EditorPrefsStore.HierarchyViewVisible
                 ? _hierarchyView.GetWidth()
                 : 0;
@@ -126,7 +126,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 _branchListArea.style.maxWidth = branchListViewWidth;
             }
 
-            var width = Padding + hierarchyViewWidth + menuItemListViewWidth + branchListViewWidth + Padding;
+            var width = padding + hierarchyViewWidth + menuItemListViewWidth + branchListViewWidth + padding;
             mainWindow.minSize = new Vector2(width, MinHeight);
             mainWindow.maxSize = new Vector2(width, 99999);
         }
