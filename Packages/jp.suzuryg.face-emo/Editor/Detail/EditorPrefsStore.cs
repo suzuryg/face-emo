@@ -34,5 +34,58 @@ namespace Suzuryg.FaceEmo.Detail
             EditorPrefs.SetInt(KeyGestureTableThumbnailWidth, GestureTableThumbnailWidthInMemory);
         public static void SaveGestureTableThumbnailHeight() =>
             EditorPrefs.SetInt(KeyGestureTableThumbnailHeight, GestureTableThumbnailHeightInMemory);
+
+        public static class ExpressionEditorSettings
+        {
+            private static readonly string KeyShowOnlyDifferFromDefaultValue =
+                $"{DomainConstants.SystemName}_ExpressionEditor_ShowOnlyDifferFromDefaultValue";
+            private static bool _showOnlyDifferFromDefaultValue =
+                EditorPrefs.GetBool(KeyShowOnlyDifferFromDefaultValue, true);
+            public static bool ShowOnlyDifferFromDefaultValue
+            {
+                get => _showOnlyDifferFromDefaultValue;
+                set => EditorPrefs.SetBool(KeyShowOnlyDifferFromDefaultValue, _showOnlyDifferFromDefaultValue = value);
+            }
+
+            private static readonly string KeyReflectInPreviewOnMouseOver =
+                $"{DomainConstants.SystemName}_ExpressionEditor_ReflectInPreviewOnMouseOver";
+            private static bool _reflectInPreviewOnMouseOver =
+                EditorPrefs.GetBool(KeyReflectInPreviewOnMouseOver, true);
+            public static bool ReflectInPreviewOnMouseOver
+            {
+                get => _reflectInPreviewOnMouseOver;
+                set => EditorPrefs.SetBool(KeyReflectInPreviewOnMouseOver, _reflectInPreviewOnMouseOver = value);
+            }
+
+            private static readonly string KeyUseMouseWheel =
+                $"{DomainConstants.SystemName}_ExpressionEditor_UseMouseWheel";
+            private static bool _useMouseWheel =
+                EditorPrefs.GetBool(KeyUseMouseWheel, false);
+            public static bool UseMouseWheel
+            {
+                get => _useMouseWheel;
+                set => EditorPrefs.SetBool(KeyUseMouseWheel, _useMouseWheel = value);
+            }
+
+            private static readonly string KeyShowBlinkBlendShapes =
+                $"{DomainConstants.SystemName}_ExpressionEditor_ShowBlinkBlendShapes";
+            private static bool _showBlinkBlendShapes =
+                EditorPrefs.GetBool(KeyShowBlinkBlendShapes, true);
+            public static bool ShowBlinkBlendShapes
+            {
+                get => _showBlinkBlendShapes;
+                set => EditorPrefs.SetBool(KeyShowBlinkBlendShapes, _showBlinkBlendShapes = value);
+            }
+
+            private static readonly string KeyShowLipSyncBlendShapes =
+                $"{DomainConstants.SystemName}_ExpressionEditor_ShowLipSyncBlendShapes";
+            private static bool _showLipSyncBlendShapes =
+                EditorPrefs.GetBool(KeyShowLipSyncBlendShapes, false);
+            public static bool ShowLipSyncBlendShapes
+            {
+                get => _showLipSyncBlendShapes;
+                set => EditorPrefs.SetBool(KeyShowLipSyncBlendShapes, _showLipSyncBlendShapes = value);
+            }
+        }
     }
 }

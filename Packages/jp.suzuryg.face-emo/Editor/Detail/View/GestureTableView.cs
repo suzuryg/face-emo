@@ -18,6 +18,7 @@ using UniRx;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode;
 using Suzuryg.FaceEmo.UseCase.ModifyMenu.ModifyMode.ModifyAnimation;
 using System.Linq;
+using Suzuryg.FaceEmo.Detail.ExpressionEditor;
 
 namespace Suzuryg.FaceEmo.Detail.View
 {
@@ -36,7 +37,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         private GestureTableElement _gestureTableElement;
         private AnimationElement _animationElement;
-        private AV3.ExpressionEditor _expressionEditor;
+        private IExpressionEditor _expressionEditor;
 
         private IMGUIContainer _gestureTableContainer;
         private Label _thumbnailWidthLabel;
@@ -63,7 +64,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             GestureTableThumbnailDrawer thumbnailDrawer,
             GestureTableElement gestureTableElement,
             AnimationElement animationElement,
-            AV3.ExpressionEditor expressionEditor,
+            IExpressionEditor expressionEditor,
             ThumbnailSetting thumbnailSetting)
         {
             // Usecases

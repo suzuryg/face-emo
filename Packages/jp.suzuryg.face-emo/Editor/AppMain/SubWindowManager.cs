@@ -1,10 +1,8 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
-using Suzuryg.FaceEmo.Detail.AV3;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View;
 using Suzuryg.FaceEmo.Detail.View.Element;
-using Suzuryg.FaceEmo.Detail.View.ExpressionEditor;
 using System;
 using System.Linq;
 using UniRx;
@@ -45,24 +43,6 @@ namespace Suzuryg.FaceEmo.AppMain
                     {
                         var gestureTableView = _installer.Container.Resolve<GestureTableView>().AddTo(_disposables);
                         gestureTableView.Initialize(window.rootVisualElement);
-                    }
-                    else if (typeof(T) == typeof(ExpressionEditorWindow))
-                    {
-                        if (window is ExpressionEditorWindow expressionEditorWindow)
-                        {
-                            expressionEditorWindow.SetProvider(this);
-                        }
-
-                        var expressionEditorView = _installer.Container.Resolve<ExpressionEditorView>().AddTo(_disposables);
-                        expressionEditorView.Initialize(window.rootVisualElement);
-                    }
-                    else if (typeof(T) == typeof(ExpressionPreviewWindow))
-                    {
-                        if (window is ExpressionPreviewWindow expressionPreviewWindow)
-                        {
-                            var expressionEditor = _installer.Container.Resolve<ExpressionEditor>();
-                            expressionPreviewWindow.Initialize(expressionEditor);
-                        }
                     }
                     else if (typeof(T) == typeof(InspectorWindow))
                     {
@@ -107,8 +87,6 @@ namespace Suzuryg.FaceEmo.AppMain
             try
             {
                 ProvideIfOpenedAlready<GestureTableWindow>()?.CloseIfNotDocked();
-                ProvideIfOpenedAlready<ExpressionEditorWindow>()?.CloseIfNotDocked();
-                ProvideIfOpenedAlready<ExpressionPreviewWindow>()?.CloseIfNotDocked();
                 ProvideIfOpenedAlready<CombineClipsDialog>()?.Close();
                 ProvideIfOpenedAlready<InspectorWindow>()?.Close();
             }

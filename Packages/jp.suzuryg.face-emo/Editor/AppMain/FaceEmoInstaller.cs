@@ -15,8 +15,9 @@ using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View;
 using Suzuryg.FaceEmo.Detail.View.Element;
-using Suzuryg.FaceEmo.Detail.View.ExpressionEditor;
 using System.Linq;
+using Suzuryg.FaceEmo.Detail.ExpressionEditor;
+using Suzuryg.FaceEmo.Detail.ExpressionEditor.Presenters;
 using UnityEngine;
 using UnityEditor;
 using Zenject;
@@ -157,7 +158,6 @@ namespace Suzuryg.FaceEmo.AppMain
             Container.Bind<InspectorThumbnailDrawer>().AsSingle();
             Container.Bind<ModeNameProvider>().AsSingle();
             Container.Bind<AnimationElement>().AsSingle();
-            Container.Bind<ExpressionEditor>().AsSingle();
             Container.Bind<MainWindowProvider>().AsSingle();
 
             Container.Bind<BranchListElement>().AsTransient();
@@ -174,8 +174,9 @@ namespace Suzuryg.FaceEmo.AppMain
             Container.Bind<SettingView>().AsTransient();
             Container.Bind<GestureTableView>().AsTransient();
             Container.Bind<InspectorView>().AsTransient();
-            Container.Bind<ExpressionEditorView>().AsTransient();
             Container.Bind<UseCaseErrorHandler>().AsTransient();
+
+            Container.Bind<IExpressionEditor>().To<ExpressionEditorPresenter>().AsSingle();
         }
 
         public void SaveUIStates()

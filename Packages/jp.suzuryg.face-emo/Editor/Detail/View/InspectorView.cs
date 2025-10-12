@@ -1275,8 +1275,12 @@ namespace Suzuryg.FaceEmo.Detail.View
             ToggleEditorPrefsField(DetailConstants.KeyBranchDeleteConfirmation, DetailConstants.DefaultBranchDeleteConfirmation, _localizationTable.InspectorView_BranchDeleteConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyEditPrefabsConfirmation, DetailConstants.DefaultEditPrefabsConfirmation, _localizationTable.InspectorView_EditPrefabConfirmation);
             ToggleEditorPrefsField(DetailConstants.KeyPrefixDisableConfirmation, DetailConstants.DefaultPrefixDisableConfirmation, _localizationTable.InspectorView_DisablePrefixConfirmation);
-            ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowBlinkBlendShapes, DetailConstants.Default_ExpressionEditor_ShowBlinkBlendShapes, _localizationTable.InspectorView_ShowBlinkBlendShapes);
-            ToggleEditorPrefsField(DetailConstants.Key_ExpressionEditor_ShowLipSyncBlendShapes, DetailConstants.Default_ExpressionEditor_ShowLipSyncBlendShapes, _localizationTable.InspectorView_ShowLipSyncBlendShapes);
+            ToggleEditorPrefsField(EditorPrefsStore.ExpressionEditorSettings.ShowBlinkBlendShapes,
+                x => EditorPrefsStore.ExpressionEditorSettings.ShowBlinkBlendShapes = x,
+                _localizationTable.InspectorView_ShowBlinkBlendShapes);
+            ToggleEditorPrefsField(EditorPrefsStore.ExpressionEditorSettings.ShowLipSyncBlendShapes,
+                x => EditorPrefsStore.ExpressionEditorSettings.ShowLipSyncBlendShapes = x,
+                _localizationTable.InspectorView_ShowLipSyncBlendShapes);
 
             using (new EditorGUILayout.HorizontalScope())
             {
@@ -1313,6 +1317,19 @@ namespace Suzuryg.FaceEmo.Detail.View
                 if (newValue != oldValue)
                 {
                     EditorPrefs.SetBool(key, newValue);
+                }
+                GUILayout.Label(label);
+            }
+        }
+
+        private static void ToggleEditorPrefsField(bool current, Action<bool> setAction, string label)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                var newValue = EditorGUILayout.Toggle(string.Empty, current, GUILayout.Width(ToggleWidth));
+                if (newValue != current)
+                {
+                    setAction(newValue);
                 }
                 GUILayout.Label(label);
             }
