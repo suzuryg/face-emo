@@ -60,6 +60,8 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public bool MatchAvatarWriteDefaults = true;
 
         public bool AddConfig_EmoteSelect = true;
+        public bool EmoteSelect_UseFolderInsteadOfPager;
+
         public bool AddConfig_BlinkOff = true;
         public bool AddConfig_DanceGimmick = true;
         public bool AddConfig_ContactLock = true;
