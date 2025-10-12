@@ -68,6 +68,7 @@ Assets/*
 !Assets/Editor
 Assets/Editor/*
 !Assets/TestAssets
+!Assets/FaceEmoDevTools
 UIElementsSchema/*
 Thry/
 !Booth/*.unitypackage
