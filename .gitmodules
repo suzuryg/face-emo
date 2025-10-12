@@ -1,6 +1,3 @@
-[submodule "External/combo-gesture-expressions-av3"]
-	path = External/combo-gesture-expressions-av3
-	url = git@github.com:suzuryg/combo-gesture-expressions-av3.git
 [submodule "External/av3-animator-as-code"]
 	path = External/av3-animator-as-code
 	url = git@github.com:suzuryg/av3-animator-as-code.git

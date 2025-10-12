@@ -272,7 +272,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Settings";
         public string InspectorView_EmoteSelect = "Generate Emote Select Menu";
         public string InspectorView_EmoteSelect_UseFolderInsteadOfPager = "Automatically Create Folders When More Than 8 Expressions";
-        public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
         public string InspectorView_TransitionDuration = "Transition Duration (sec)";
         public string InspectorView_AddExpressionParameterPrefix = "Add Expression Parameter Prefix (FaceEmo_)";
         public string InspectorView_ReplaceBlink = "Replace blink with animation at build time (recommended)";
