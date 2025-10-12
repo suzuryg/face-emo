@@ -5,6 +5,7 @@ using UnityEditor.Animations;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 using Suzuryg.FaceEmo.Domain;
+using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -40,11 +41,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 {
                     throw new FaceEmoException("Original template was not found.");
                 }
-                else if (!AssetDatabase.CopyAsset(AV3Constants.Path_BearsDenFx, AV3Constants.Path_FxTemplate))
+                else if (!AssetDatabase.CopyAsset(AV3Constants.Path_BearsDenFx, AV3Constants.Path_FxTemplate_Basic))
                 {
                     throw new FaceEmoException("Failed to copy FX template (basic).");
                 }
-                var animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate);
+                var animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate_Basic);
 
                 // Create container
                 var templateContainer = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_TemplateContainer);
@@ -71,6 +72,43 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 // Remove unused parameters
                 RemoveParameters(animatorController);
+
+                // Add integrator
+                if (!AssetDatabase.CopyAsset(AV3Constants.Path_FxTemplate_Basic, AV3Constants.Path_FxTemplate_WithIntegrator))
+                {
+                    throw new FaceEmoException("Failed to copy FX template (with integrator).");
+                }
+                var withIntegrator = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate_WithIntegrator);
+                ComboGestureIntegratorProxy.DoGenerate(withIntegrator, templateContainer, writeDefaults: false);
+
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
+                EditorUtility.DisplayDialog(DomainConstants.SystemName, "Generation Succeeded!", "OK");
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+        }
+
+        [MenuItem("FaceEmo/Debug/ReplaceSmoothingLayer", false, 201)]
+        public static void ReplaceSmoothingLayer()
+        {
+            try
+            {
+                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Start replacing smoothing layer.", 0);
+
+                // Create container
+                var container = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_SmoothingLayerContainer);
+                if (container != null)
+                {
+                    AssetDatabase.DeleteAsset(AV3Constants.Path_SmoothingLayerContainer);
+                }
+                container = new AnimatorController();
+                AssetDatabase.CreateAsset(container, AV3Constants.Path_SmoothingLayerContainer);
+
+                // Replace smoothing layer
+                var withIntegrator = AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate_WithIntegrator);
+                ComboGestureIntegratorProxy.DoGenerate(withIntegrator, container, writeDefaults: false);
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
                 EditorUtility.DisplayDialog(DomainConstants.SystemName, "Generation Succeeded!", "OK");
