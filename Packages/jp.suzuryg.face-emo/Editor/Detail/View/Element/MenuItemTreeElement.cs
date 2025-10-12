@@ -106,8 +106,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             _animationElement = animationElement;
             _aV3Setting = aV3Setting;
             _thumbnailSetting = thumbnailSetting;
-            _previousThumbnailWidth = _thumbnailSetting.Main_Width;
-            _previousThumbnailHeight = _thumbnailSetting.Main_Height;
+            _previousThumbnailWidth = EditorPrefsStore.MainViewThumbnailWidthInMemory;
+            _previousThumbnailHeight = EditorPrefsStore.MainViewThumbnailHeightInMemory;
 
             // Set icon
             _folderIcon = ViewUtility.GetIconTexture("folder_FILL0_wght400_GRAD200_opsz48.png");
@@ -190,12 +190,11 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             }
 
             // To update row height.
-            var thumbnailWidth = _thumbnailSetting.Main_Width;
-            var thumbnailHeight = _thumbnailSetting.Main_Height;
-            if (thumbnailWidth != _previousThumbnailWidth || thumbnailHeight != _previousThumbnailHeight)
+            if (!Mathf.Approximately(EditorPrefsStore.MainViewThumbnailWidthInMemory , _previousThumbnailWidth) ||
+                !Mathf.Approximately(EditorPrefsStore.MainViewThumbnailHeightInMemory, _previousThumbnailHeight))
             {
-                _previousThumbnailWidth = thumbnailWidth;
-                _previousThumbnailHeight = thumbnailHeight;
+                _previousThumbnailWidth = EditorPrefsStore.MainViewThumbnailWidthInMemory;
+                _previousThumbnailHeight = EditorPrefsStore.MainViewThumbnailHeightInMemory;
                 Reload();
             }
         }
@@ -547,8 +546,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
                 GUILayout.Space(ThumbnailMargin);
 
                 // Animation
-                var thumbnailWidth = _thumbnailSetting.Main_Width;
-                var thumbnailHeight = _thumbnailSetting.Main_Height;
+                var thumbnailWidth = EditorPrefsStore.MainViewThumbnailWidthInMemory;
+                var thumbnailHeight = EditorPrefsStore.MainViewThumbnailHeightInMemory;
 
                 var modeName = _modeNameProvider.Provide(mode);
                 var defaultClipName = modeName != _localizationTable.ModeNameProvider_NewMode && !mode.UseAnimationNameAsDisplayName ? modeName : string.Empty;
@@ -591,7 +590,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public float GetMinWidth()
         {
-            return Padding + LeftMargin + ToggleWidth + _maxLabelWidth + ThumbnailMargin + AmountOfThumbnailShift + _thumbnailSetting.Main_Width + RightMargin + Padding;
+            return Padding + LeftMargin + ToggleWidth + _maxLabelWidth + ThumbnailMargin + AmountOfThumbnailShift +
+                   EditorPrefsStore.MainViewThumbnailWidthInMemory + RightMargin + Padding;
         }
 
         public IMenuItemList GetRootMenuItemList()

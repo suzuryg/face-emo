@@ -153,12 +153,12 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         private float GetThumbnailWidth()
         {
-            return _thumbnailSetting.GestureTable_Width;
+            return EditorPrefsStore.GestureTableThumbnailWidthInMemory;
         }
 
         private float GetThumbnailHeight()
         {
-            return _thumbnailSetting.GestureTable_Height;
+            return EditorPrefsStore.GestureTableThumbnailHeightInMemory;
         }
 
         private float GetElementWidth()

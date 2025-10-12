@@ -106,8 +106,10 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public void Dispose()
         {
-            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
-            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSizeChanged);
+            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailWidthSliderValueChanged);
+            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailHeightSliderValueChanged);
+            _thumbnailWidthSlider.UnregisterCallback<PointerCaptureOutEvent>(OnThumbnailWidthSliderCaptureOut);
+            _thumbnailHeightSlider.UnregisterCallback<PointerCaptureOutEvent>(OnThumbnailHeightSliderCaptureOut);
             _showClipFieldToggle.UnregisterValueChangedCallback(OnShowClipFieldValueChanged);
             _disposables.Dispose();
         }
@@ -147,19 +149,13 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Initialize fields
             _thumbnailSetting.Update();
 
-            _thumbnailWidthSlider.lowValue = ThumbnailSetting.GestureTable_MinWidth;
-            _thumbnailWidthSlider.highValue = ThumbnailSetting.GestureTable_MaxWidth;
-            _thumbnailWidthSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Width)).intValue;
+            _thumbnailWidthSlider.lowValue = DetailConstants.GestureTableThumbnailMinWidth;
+            _thumbnailWidthSlider.highValue = DetailConstants.GestureTableThumbnailMaxWidth;
+            _thumbnailWidthSlider.value = EditorPrefsStore.GestureTableThumbnailWidthInMemory;
 
-            _thumbnailWidthSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Width);
-            _thumbnailWidthSlider.BindProperty(_thumbnailSetting);
-
-            _thumbnailHeightSlider.lowValue = ThumbnailSetting.GestureTable_MinHeight;
-            _thumbnailHeightSlider.highValue = ThumbnailSetting.GestureTable_MaxHeight;
-            _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.GestureTable_Height)).intValue;
-
-            _thumbnailHeightSlider.bindingPath = nameof(ThumbnailSetting.GestureTable_Height);
-            _thumbnailHeightSlider.BindProperty(_thumbnailSetting);
+            _thumbnailHeightSlider.lowValue = DetailConstants.GestureTableThumbnailMinHeight;
+            _thumbnailHeightSlider.highValue = DetailConstants.GestureTableThumbnailMaxHeight;
+            _thumbnailHeightSlider.value = EditorPrefsStore.GestureTableThumbnailHeightInMemory;
 
             _showClipFieldToggle.value = EditorPrefs.GetBool(DetailConstants.KeyShowClipFieldInGestureTable, DetailConstants.DefaultShowClipFieldInGestureTable);
 
@@ -167,8 +163,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Delay event registration due to unstable slider values immediately after opening the window.
             Observable.Timer(TimeSpan.FromMilliseconds(100)).ObserveOnMainThread().Subscribe(_ =>
             {
-                _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
-                _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSizeChanged);
+                _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailWidthSliderValueChanged);
+                _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailHeightSliderValueChanged);
+                _thumbnailWidthSlider.RegisterCallback<PointerCaptureOutEvent>(OnThumbnailWidthSliderCaptureOut);
+                _thumbnailHeightSlider.RegisterCallback<PointerCaptureOutEvent>(OnThumbnailHeightSliderCaptureOut);
             }).AddTo(_disposables);
             _showClipFieldToggle.RegisterValueChangedCallback(OnShowClipFieldValueChanged);
 
@@ -221,9 +219,21 @@ namespace Suzuryg.FaceEmo.Detail.View
             UpdateDisplay();
         }
 
-        private void OnThumbnailSizeChanged(ChangeEvent<int> changeEvent)
+        private static void OnThumbnailWidthSliderValueChanged(ChangeEvent<int> changeEvent) =>
+            EditorPrefsStore.GestureTableThumbnailWidthInMemory = changeEvent.newValue;
+
+        private static void OnThumbnailHeightSliderValueChanged(ChangeEvent<int> changeEvent) =>
+            EditorPrefsStore.GestureTableThumbnailHeightInMemory = changeEvent.newValue;
+
+        private void OnThumbnailWidthSliderCaptureOut(PointerCaptureOutEvent _)
         {
-            // TODO: Reduce unnecessary redrawing
+            EditorPrefsStore.SaveGestureTableThumbnailWidth();
+            _thumbnailDrawer.RequestUpdateAll();
+        }
+
+        private void OnThumbnailHeightSliderCaptureOut(PointerCaptureOutEvent _)
+        {
+            EditorPrefsStore.SaveGestureTableThumbnailHeight();
             _thumbnailDrawer.RequestUpdateAll();
         }
 

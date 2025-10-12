@@ -81,8 +81,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             bool canCombine = true, Domain.Animation leftCombine = null, Domain.Animation rightCombine = null)
         {
             // Thumbnail
-            var thumbnailWidth = _thumbnailSetting.Main_Width;
-            var thumbnailHeight = _thumbnailSetting.Main_Height;
+            var thumbnailWidth = EditorPrefsStore.MainViewThumbnailWidthInMemory;
+            var thumbnailHeight = EditorPrefsStore.MainViewThumbnailHeightInMemory;
 
             Rect thumbnailRect = new Rect(rect.x, rect.y, thumbnailWidth, thumbnailHeight);
             float xCurrent = rect.x;
@@ -194,13 +194,13 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public float GetWidth()
         {
-            var thumbnailWidth = _thumbnailSetting.Main_Width;
+            var thumbnailWidth = EditorPrefsStore.MainViewThumbnailWidthInMemory;
             return thumbnailWidth;
         }
 
         public float GetHeight()
         {
-            var thumbnailHeight = _thumbnailSetting.Main_Height;
+            var thumbnailHeight = EditorPrefsStore.MainViewThumbnailHeightInMemory;
             return thumbnailHeight + EditorGUIUtility.singleLineHeight;
         }
 
