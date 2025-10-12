@@ -1218,7 +1218,15 @@ namespace Suzuryg.FaceEmo.Detail.View
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), label);
             EditorGUIUtility.labelWidth = oldLabelWidth;
 
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteSelect)), _localizationTable.InspectorView_EmoteSelect, tooltip: _localizationTable.InspectorView_Tooltip_Application_EmoteSelect);
+            var emoteSelect = _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteSelect));
+            TogglePropertyField(emoteSelect, _localizationTable.InspectorView_EmoteSelect,
+                tooltip: _localizationTable.InspectorView_Tooltip_Application_EmoteSelect);
+            using (new EditorGUI.DisabledScope(!emoteSelect.boolValue))
+                TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.EmoteSelect_UseFolderInsteadOfPager)),
+                    _localizationTable.InspectorView_EmoteSelect_UseFolderInsteadOfPager,
+                    tooltip: _localizationTable.InspectorView_Tooltip_Application_EmoteSelect_UseFolderInsteadOfPager,
+                    space: ToggleWidth);
+
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GenerateExMenuThumbnails)), _localizationTable.InspectorView_GenerateModeThumbnails);
             using (new EditorGUI.DisabledScope(!_av3Setting.FindProperty(nameof(AV3Setting.GenerateExMenuThumbnails)).boolValue))
             using (new EditorGUILayout.HorizontalScope())
@@ -1283,10 +1291,11 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
-        private static void TogglePropertyField(SerializedProperty serializedProperty, string label, string tooltip = null)
+        private static void TogglePropertyField(SerializedProperty serializedProperty, string label, string tooltip = null, float space = 0)
         {
             using (new EditorGUILayout.HorizontalScope())
             {
+                if (space > 0) EditorGUILayout.LabelField(string.Empty, GUILayout.Width(space));
                 var value = EditorGUILayout.Toggle(string.Empty, serializedProperty.boolValue, GUILayout.Width(ToggleWidth));
                 if (value != serializedProperty.boolValue)
                 {

@@ -702,7 +702,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 emoteSelectMenu.controls.Add(CreateBoolToggleControl(loc.ExMenu_EmoteLock, AV3Constants.ParamName_CN_EMOTE_LOCK_ENABLE, lockIcon));
 
-                GenerateEmoteSelectMenuRecursive(emoteSelectMenu, menu.Registered, idToModeIndex, container, idToModeEx, useOverLimitMode);
+                GenerateEmoteSelectMenuRecursive(emoteSelectMenu, menu.Registered, idToModeIndex, container, idToModeEx,
+                    useOverLimitMode, _aV3Setting.EmoteSelect_UseFolderInsteadOfPager);
 
                 var emoteSelectControl = CreateSubMenuControl(loc.ExMenu_EmoteSelect, emoteSelectMenu, folderIcon);
                 emoteSelectControl.parameter = new VRCExpressionsMenu.Control.Parameter() { name = AV3Constants.ParamName_CN_EMOTE_PRELOCK_ENABLE };
@@ -776,9 +777,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         }
 
         private void GenerateEmoteSelectMenuRecursive(VRCExpressionsMenu parent, IMenuItemList menuItemList, Dictionary<string, int> idToModeIndex, VRCExpressionsMenu container,
-            Dictionary<string, ModeEx> idToModeEx, bool useOverLimitMode)
+            Dictionary<string, ModeEx> idToModeEx, bool useOverLimitMode, bool useFolderInsteadOfPager)
         {
             var loc = _localizationSetting.GetCurrentLocaleTable();
+
+            var folderIconPath = AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59"); // item folder
+            var folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(folderIconPath);
+
+            var createModeFolder = useOverLimitMode || menuItemList.Count > 1 ||
+                                   menuItemList.Order.Any(id => menuItemList.GetType(id) == MenuItemType.Group);
 
             foreach (var id in menuItemList.Order)
             {
@@ -794,16 +801,19 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     if (numOfBranches <= 0) { continue; }
 
                     // Create mode folder
-                    var modeFolder = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
-                    modeFolder.name = _modeNameProvider.Provide(mode);
-                    var folderIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
-                    var modeControl = CreateSubMenuControl(_modeNameProvider.Provide(mode), modeFolder, folderIcon);
-                    if (useOverLimitMode)
+                    var modeFolder = parent;
+                    if (createModeFolder)
                     {
-                        modeControl.parameter = new VRCExpressionsMenu.Control.Parameter() { name = AV3Constants.ParamName_EM_EMOTE_PATTERN };
-                        modeControl.value = idToModeIndex[id];
+                        modeFolder = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
+                        modeFolder.name = _modeNameProvider.Provide(mode);
+                        var modeControl = CreateSubMenuControl(_modeNameProvider.Provide(mode), modeFolder, folderIcon);
+                        if (useOverLimitMode)
+                        {
+                            modeControl.parameter = new VRCExpressionsMenu.Control.Parameter() { name = AV3Constants.ParamName_EM_EMOTE_PATTERN };
+                            modeControl.value = idToModeIndex[id];
+                        }
+                        parent.controls.Add(modeControl);
                     }
-                    parent.controls.Add(modeControl);
 
                     // Calculate num of branch folders
                     const int itemLimit = 8;
@@ -818,8 +828,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                         // Create branch folder
                         var branchFolder = modeFolder;
-                        var createFolder = numOfBranchFolders > 1;
-                        if (createFolder)
+                        var createBranchFolder = useFolderInsteadOfPager && numOfBranchFolders > 1;
+                        if (createBranchFolder)
                         {
                             var branchFolderName = $"{startBranchIndex + 1} - {Math.Min(endBranchIndex + 1, numOfBranches)}";
                             branchFolder = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
@@ -865,9 +875,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                             branchFolder.controls.Add(control);
                         }
 
-                        if (createFolder) { AssetDatabase.AddObjectToAsset(branchFolder, container); }
+                        if (createBranchFolder) { AssetDatabase.AddObjectToAsset(branchFolder, container); }
                     }
-                    AssetDatabase.AddObjectToAsset(modeFolder, container);
+                    if (createModeFolder) AssetDatabase.AddObjectToAsset(modeFolder, container);
                 }
                 else
                 {
@@ -878,7 +888,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("a06282136d558c54aa15d533f163ff59")); // item folder
                     parent.controls.Add(CreateSubMenuControl(group.DisplayName, subMenu, icon));
 
-                    GenerateEmoteSelectMenuRecursive(subMenu, group, idToModeIndex, container, idToModeEx, useOverLimitMode);
+                    GenerateEmoteSelectMenuRecursive(subMenu, group, idToModeIndex, container, idToModeEx,
+                        useOverLimitMode, useFolderInsteadOfPager);
                     AssetDatabase.AddObjectToAsset(subMenu, container);
                 }
             }
