@@ -5,7 +5,6 @@ using UnityEditor.Animations;
 using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 using Suzuryg.FaceEmo.Domain;
-using Suzuryg.FaceEmo.External.Hai.ComboGestureIntegrator;
 using System.Collections.Generic;
 using System;
 using System.Linq;

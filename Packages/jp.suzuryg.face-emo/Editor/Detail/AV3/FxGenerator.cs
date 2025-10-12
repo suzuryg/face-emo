@@ -9,7 +9,6 @@ using Sync = nadena.dev.modular_avatar.core.ParameterSyncType;
 
 using AnimatorAsCode.V0;
 using AnimatorAsCode.V0.Extensions.VRChat;
-using Hai.ComboGesture.Scripts.Editor.Internal;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Components.Settings;
