@@ -78,6 +78,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string HierarchyView_Tooltip_Delete = "Delete the selected expression pattern or folder.";
 
         public string MenuItemListView_Title = "Expression Patterns";
+        public string MenuItemListView_TreeViewToggle = "Show Tree View";
         public string MenuItemListView_ChangeDefaultFace = "Change Default Face";
         public string MenuItemListView_UseAnimationNameAsDisplayName = "Use ClipName As PatternName";
         public string MenuItemListView_Tooltip_AddMode = "Create a new expression pattern in the current hierarchy.";
@@ -94,7 +95,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string MenuItemListView_Blink = "Enable Blink";
         public string MenuItemListView_MouthMorphCanceler = "Mouth Morph Canceler";
         public string MenuItemListView_Empty = "You can add an expression pattern by pressing the button\nat the top of the view.";
-        public string MenuItemListView_SelectFolder = "Please select a folder on the left panel.";
+        public string MenuItemListView_SelectFolder = "Please select a folder from the tree view.";
 
         public string BranchListView_Title = "Expressions";
         public string BranchListView_Simplify = "Simplify";
