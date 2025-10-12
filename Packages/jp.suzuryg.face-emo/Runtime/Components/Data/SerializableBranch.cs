@@ -6,16 +6,13 @@ namespace Suzuryg.FaceEmo.Components.Data
 {
     public class SerializableBranch : ScriptableObject
     {
-        private static readonly int CurrentSchemaVersion = 1;
-
-        public int SchemaVersion;
         public EyeTrackingControl EyeTrackingControl;
         public MouthTrackingControl MouthTrackingControl;
         public bool BlinkEnabled;
         public bool MouthMorphCancelerEnabled;
         public bool IsLeftTriggerUsed;
         public bool IsRightTriggerUsed;
-        public bool ShowInEmoteSelect;
+
         public SerializableAnimation BaseAnimation;
         public SerializableAnimation LeftHandAnimation;
         public SerializableAnimation RightHandAnimation;
@@ -25,14 +22,12 @@ namespace Suzuryg.FaceEmo.Components.Data
 
         public void Save(IBranch branch, bool isAsset)
         {
-            SchemaVersion = CurrentSchemaVersion;
             EyeTrackingControl = branch.EyeTrackingControl;
             MouthTrackingControl = branch.MouthTrackingControl;
             BlinkEnabled = branch.BlinkEnabled;
             MouthMorphCancelerEnabled = branch.MouthMorphCancelerEnabled;
             IsLeftTriggerUsed = branch.IsLeftTriggerUsed;
             IsRightTriggerUsed = branch.IsRightTriggerUsed;
-            ShowInEmoteSelect = branch.ShowInEmoteSelect;
 
             if (branch.BaseAnimation is Domain.Animation)
             {
@@ -96,20 +91,13 @@ namespace Suzuryg.FaceEmo.Components.Data
 
         public void Load(Domain.Menu menu, string id, int index)
         {
-            // migration
-            if (SchemaVersion < 1)
-            {
-                ShowInEmoteSelect = true;
-            }
-
             menu.ModifyBranchProperties(id, index,
                 eyeTrackingControl: EyeTrackingControl,
                 mouthTrackingControl: MouthTrackingControl,
                 blinkEnabled: BlinkEnabled,
                 mouthMorphCancelerEnabled: MouthMorphCancelerEnabled,
                 isLeftTriggerUsed: IsLeftTriggerUsed,
-                isRightTriggerUsed: IsRightTriggerUsed,
-                showInEmoteSelect: ShowInEmoteSelect);
+                isRightTriggerUsed: IsRightTriggerUsed);
 
             menu.SetAnimation(BaseAnimation?.Load(), id, index, BranchAnimationType.Base);
             menu.SetAnimation(LeftHandAnimation?.Load(), id, index, BranchAnimationType.Left);
