@@ -6,6 +6,7 @@
         "jp.suzuryg.face-emo.components.Runtime",
         "jp.suzuryg.face-emo.ndmf.Runtime",
         "jp.suzuryg.face-emo.external.hai.animator-as-code-framework.Editor",
+        "jp.suzuryg.face-emo.external.hai.combo-gesture-integrator.Editor",
         "jp.suzuryg.face-emo.external.neuecc.unirx.Runtime",
         "nadena.dev.modular-avatar.core"
     ],
