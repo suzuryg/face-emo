@@ -29,8 +29,6 @@ namespace Suzuryg.FaceEmo.Components.Settings
         [NonSerialized] public static readonly float MinAnimationProgress = 0f;
         [NonSerialized] public static readonly float MaxAnimationProgress = 1f;
 
-        public int Main_Width = Main_MinWidth;
-        public int Main_Height = Main_MinHeight;
         public float Main_FOV = DefaultFOV;
         public float Main_Distance = DefaultDistance;
         public float Main_CameraPosX = DefaultCameraPosX;
@@ -39,25 +37,12 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public float Main_CameraAngleV = DefaultCameraAngleV;
         public float Main_AnimationProgress = DefaultAnimationProgress;
 
-        [NonSerialized] public static readonly int Main_MinWidth = 125;
-        [NonSerialized] public static readonly int Main_MaxWidth = 300;
-        [NonSerialized] public static readonly int Main_MinHeight = 125;
-        [NonSerialized] public static readonly int Main_MaxHeight = 300;
-
-        public int GestureTable_Width = 110;
-        public int GestureTable_Height = 85;
-
-        [NonSerialized] public static readonly int GestureTable_MinWidth = 70;
-        [NonSerialized] public static readonly int GestureTable_MaxWidth = 250;
-        [NonSerialized] public static readonly int GestureTable_MinHeight = 70;
-        [NonSerialized] public static readonly int GestureTable_MaxHeight = 250;
-
-        [NonSerialized] public static readonly int ExMenu_InnerWidth = 208;
-        [NonSerialized] public static readonly int ExMenu_InnerHeight = 208;
-        [NonSerialized] public static readonly int ExMenu_OuterWidth = 256;
-        [NonSerialized] public static readonly int ExMenu_OuterHeight = 256;
-
         public int Inspector_Width = 256;
         public int Inspector_Height = 256;
+
+        [Obsolete] public int Main_Width;
+        [Obsolete] public int Main_Height;
+        [Obsolete] public int GestureTable_Width;
+        [Obsolete] public int GestureTable_Height;
     }
 }

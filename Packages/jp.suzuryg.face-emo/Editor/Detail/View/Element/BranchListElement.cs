@@ -438,8 +438,8 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
             var xCurrent = xBegin;
             var yCurrent = yBegin;
 
-            var thumbnailWidth = _thumbnailSetting.Main_Width;
-            var thumbnailHeight = _thumbnailSetting.Main_Height;
+            var thumbnailWidth = EditorPrefsStore.MainViewThumbnailWidthInMemory;
+            var thumbnailHeight = EditorPrefsStore.MainViewThumbnailHeightInMemory;
 
             var upperHorizontalMargin = GetUpperHorizontalMargin();
             var lowerHorizontalMargin = GetLowerHorizontalMargin();

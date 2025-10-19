@@ -19,8 +19,8 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
 {
     public class MainThumbnailDrawer : ThumbnailDrawerBase
     {
-        protected override int Width => _thumbnailSetting.Main_Width;
-        protected override int Height => _thumbnailSetting.Main_Height;
+        protected override int Width => EditorPrefsStore.MainViewThumbnailWidthInMemory;
+        protected override int Height => EditorPrefsStore.MainViewThumbnailHeightInMemory;
         protected override float FOV => _thumbnailSetting.Main_FOV;
         protected override float Distance => _thumbnailSetting.Main_Distance;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
@@ -33,8 +33,8 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
 
     public class GestureTableThumbnailDrawer : ThumbnailDrawerBase
     {
-        protected override int Width => _thumbnailSetting.GestureTable_Width;
-        protected override int Height => _thumbnailSetting.GestureTable_Height;
+        protected override int Width => EditorPrefsStore.GestureTableThumbnailWidthInMemory;
+        protected override int Height => EditorPrefsStore.GestureTableThumbnailHeightInMemory;
         protected override float FOV => _thumbnailSetting.Main_FOV;
         protected override float Distance => _thumbnailSetting.Main_Distance;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
@@ -47,8 +47,8 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
 
     public class ExMenuThumbnailDrawer : ThumbnailDrawerBase
     {
-        protected override int Width => ThumbnailSetting.ExMenu_InnerWidth;
-        protected override int Height => ThumbnailSetting.ExMenu_InnerHeight;
+        protected override int Width => DetailConstants.ExMenuThumbnailInnerWidth;
+        protected override int Height => DetailConstants.ExMenuThumbnailInnerHeight;
         protected override float FOV => _thumbnailSetting.Main_FOV;
         protected override float Distance => _thumbnailSetting.Main_Distance;
         protected override float CameraPosX => _thumbnailSetting.Main_CameraPosX;
@@ -293,7 +293,8 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
                     if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
                         !ReferenceEquals(_cache[guid], _hourglassIcon) && !ReferenceEquals(_cache[guid], _errorIcon))
                     {
-                        _cache[guid] = DrawingUtility.PaddingWithTransparentPixels(_cache[guid], ThumbnailSetting.ExMenu_OuterWidth, ThumbnailSetting.ExMenu_OuterHeight);
+                        _cache[guid] = DrawingUtility.PaddingWithTransparentPixels(_cache[guid],
+                            DetailConstants.ExMenuThumbnailOuterWidth, DetailConstants.ExMenuThumbnailOuterHeight);
                     }
 
                     // Reset animator status

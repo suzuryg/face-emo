@@ -55,5 +55,18 @@ namespace Suzuryg.FaceEmo.Detail
         public static readonly bool Default_ExpressionEditor_UseMouseWheel = false;
         public static readonly bool Default_ExpressionEditor_ShowBlinkBlendShapes = true;
         public static readonly bool Default_ExpressionEditor_ShowLipSyncBlendShapes = false;
+
+        public static readonly int MainViewThumbnailMinWidth = 125;
+        public static readonly int MainViewThumbnailMaxWidth = 300;
+        public static readonly int MainViewThumbnailMinHeight = 125;
+        public static readonly int MainViewThumbnailMaxHeight = 300;
+        public static readonly int GestureTableThumbnailMinWidth = 70;
+        public static readonly int GestureTableThumbnailMaxWidth = 250;
+        public static readonly int GestureTableThumbnailMinHeight = 70;
+        public static readonly int GestureTableThumbnailMaxHeight = 250;
+        public static readonly int ExMenuThumbnailInnerWidth = 208;
+        public static readonly int ExMenuThumbnailInnerHeight = 208;
+        public static readonly int ExMenuThumbnailOuterWidth = 256;
+        public static readonly int ExMenuThumbnailOuterHeight = 256;
     }
 }

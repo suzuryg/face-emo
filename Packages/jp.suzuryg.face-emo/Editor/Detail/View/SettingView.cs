@@ -127,8 +127,10 @@ namespace Suzuryg.FaceEmo.Detail.View
 
         public void Dispose()
         {
-            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
-            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailSettingChanged);
+            _thumbnailWidthSlider.UnregisterValueChangedCallback(OnThumbnailWidthSliderValueChanged);
+            _thumbnailHeightSlider.UnregisterValueChangedCallback(OnThumbnailHeightSliderValueChanged);
+            _thumbnailWidthSlider.UnregisterCallback<PointerCaptureOutEvent>(OnThumbnailWidthSliderCaptureOut);
+            _thumbnailHeightSlider.UnregisterCallback<PointerCaptureOutEvent>(OnThumbnailHeightSliderCaptureOut);
             _showHintsToggle.UnregisterValueChangedCallback(OnShowHintsValueChanged);
 
             _disposables.Dispose();
@@ -169,19 +171,13 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Initialize fields
             _thumbnailSetting.Update();
 
-            _thumbnailWidthSlider.lowValue = ThumbnailSetting.Main_MinWidth;
-            _thumbnailWidthSlider.highValue = ThumbnailSetting.Main_MaxWidth;
-            _thumbnailWidthSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Width)).intValue;
+            _thumbnailWidthSlider.lowValue = DetailConstants.MainViewThumbnailMinWidth;
+            _thumbnailWidthSlider.highValue = DetailConstants.MainViewThumbnailMaxWidth;
+            _thumbnailWidthSlider.value = EditorPrefsStore.MainViewThumbnailWidthInMemory;
 
-            _thumbnailWidthSlider.bindingPath = nameof(ThumbnailSetting.Main_Width);
-            _thumbnailWidthSlider.BindProperty(_thumbnailSetting);
-
-            _thumbnailHeightSlider.lowValue = ThumbnailSetting.Main_MinHeight;
-            _thumbnailHeightSlider.highValue = ThumbnailSetting.Main_MaxHeight;
-            _thumbnailHeightSlider.value = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Main_Height)).intValue;
-
-            _thumbnailHeightSlider.bindingPath = nameof(ThumbnailSetting.Main_Height);
-            _thumbnailHeightSlider.BindProperty(_thumbnailSetting);
+            _thumbnailHeightSlider.lowValue = DetailConstants.MainViewThumbnailMinHeight;
+            _thumbnailHeightSlider.highValue = DetailConstants.MainViewThumbnailMaxHeight;
+            _thumbnailHeightSlider.value = EditorPrefsStore.MainViewThumbnailHeightInMemory;
 
             var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
             _showHintsToggle.value = showHints;
@@ -195,8 +191,10 @@ namespace Suzuryg.FaceEmo.Detail.View
             // Delay event registration due to unstable slider values immediately after opening the window.
             Observable.Timer(TimeSpan.FromMilliseconds(100)).ObserveOnMainThread().Subscribe(_ =>
             {
-                _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
-                _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailSettingChanged);
+                _thumbnailWidthSlider.RegisterValueChangedCallback(OnThumbnailWidthSliderValueChanged);
+                _thumbnailHeightSlider.RegisterValueChangedCallback(OnThumbnailHeightSliderValueChanged);
+                _thumbnailWidthSlider.RegisterCallback<PointerCaptureOutEvent>(OnThumbnailWidthSliderCaptureOut);
+                _thumbnailHeightSlider.RegisterCallback<PointerCaptureOutEvent>(OnThumbnailHeightSliderCaptureOut);
             }).AddTo(_disposables);
             _showHintsToggle.RegisterValueChangedCallback(OnShowHintsValueChanged);
 
@@ -299,9 +297,21 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
         }
 
-        private void OnThumbnailSettingChanged<T>(ChangeEvent<T> changeEvent)
+        private static void OnThumbnailWidthSliderValueChanged(ChangeEvent<int> changeEvent) =>
+            EditorPrefsStore.MainViewThumbnailWidthInMemory = changeEvent.newValue;
+
+        private static void OnThumbnailHeightSliderValueChanged(ChangeEvent<int> changeEvent) =>
+            EditorPrefsStore.MainViewThumbnailHeightInMemory = changeEvent.newValue;
+
+        private void OnThumbnailWidthSliderCaptureOut(PointerCaptureOutEvent _)
         {
-            // TODO: Reduce unnecessary redrawing
+            EditorPrefsStore.SaveMainViewThumbnailWidth();
+            _thumbnailDrawer.RequestUpdateAll();
+        }
+
+        private void OnThumbnailHeightSliderCaptureOut(PointerCaptureOutEvent _)
+        {
+            EditorPrefsStore.SaveMainViewThumbnailHeight();
             _thumbnailDrawer.RequestUpdateAll();
         }
 
