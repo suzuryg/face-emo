@@ -1,8 +1,10 @@
-﻿using Suzuryg.FaceEmo.Components.Settings;
+﻿using System;
+using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View.Element;
 using Suzuryg.FaceEmo.Domain;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -12,6 +14,7 @@ using VRC.Dynamics;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
+using Object = UnityEngine.Object;
 
 namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 {
@@ -28,6 +31,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
         private HashSet<string> _contactReceiversParamsInFx = new HashSet<string>();
         private HashSet<string> _physBoneParamsInFx = new HashSet<string>();
+
+        private readonly Dictionary<Motion, Domain.Animation> _duplicatedAnimations = new();
 
         public ExpressionImporter(Domain.Menu menu, AV3Setting av3Setting, string assetDir, IReadOnlyLocalizationSetting localizationSetting)
         {
@@ -269,7 +274,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
                 else
                 {
-                    branch.SetAnimation(GetLastFrame(transition.destinationState.motion), BranchAnimationType.Base);
+                    branch.SetAnimation(GetDuplicatedAnimation(transition.destinationState.motion), BranchAnimationType.Base);
                 }
 
                 if (branch.BaseAnimation is Domain.Animation ||
@@ -403,6 +408,55 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssetDatabase.CreateAsset(clip, _assetDir + "/" + AnimationElement.GetNewAnimationName(_assetDir, name));
         }
 
+        private Domain.Animation GetDuplicatedAnimation(Motion motion)
+        {
+            if (motion == null) return null;
+            if (_duplicatedAnimations.TryGetValue(motion, out var cached)) return cached;
+
+            if (motion is AnimationClip sourceClip)
+            {
+                if (sourceClip.name.Contains("blink", StringComparison.OrdinalIgnoreCase)) return null;
+                if (!HasFaceDifferences(sourceClip)) return null;
+
+                if (!AssetDatabase.IsValidFolder(_assetDir)) AV3Utility.CreateFolderRecursively(_assetDir);
+
+                var baseName = string.IsNullOrEmpty(sourceClip.name) ? "NoName" : sourceClip.name;
+                var fileName = AnimationElement.GetNewAnimationName(_assetDir, baseName);
+                var destPath = $"{_assetDir}/{fileName}";
+
+                var duplicatedClip = Object.Instantiate(sourceClip);
+                duplicatedClip.name = Path.GetFileNameWithoutExtension(fileName);
+                AssetDatabase.CreateAsset(duplicatedClip, destPath);
+
+                var guid = AssetDatabase.AssetPathToGUID(destPath);
+                if (!string.IsNullOrEmpty(guid))
+                {
+                    var duplicated = new Domain.Animation(guid);
+                    _duplicatedAnimations[motion] = duplicated;
+                    return duplicated;
+                }
+            }
+
+            return GetLastFrame(motion);
+
+            bool HasFaceDifferences(AnimationClip animationClip)
+            {
+                var bindings = AnimationUtility.GetCurveBindings(animationClip);
+                foreach (var binding in bindings)
+                {
+                    var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
+                    if (curve == null || curve.keys.Length <= 0) continue;
+
+                    var blendShape = new BlendShape(binding.path,
+                        binding.propertyName.Replace("blendShape.", string.Empty));
+                    if (!_faceBlendShapesValues.TryGetValue(blendShape, out var faceValue)) continue;
+
+                    if (curve.keys.Any(x => !Mathf.Approximately(x.value, faceValue))) return true;
+                }
+                return false;
+            }
+        }
+
         private void AddBranch(string modeId, IBranch branch)
         {
             _menu.AddBranch(modeId, conditions: branch.Conditions);
@@ -511,7 +565,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     }
                     else
                     {
-                        branch.SetAnimation(GetLastFrame(item.transition.destinationState.motion), BranchAnimationType.Base);
+                        branch.SetAnimation(GetDuplicatedAnimation(item.transition.destinationState.motion), BranchAnimationType.Base);
                     }
 
                     mode.Add(branch);
