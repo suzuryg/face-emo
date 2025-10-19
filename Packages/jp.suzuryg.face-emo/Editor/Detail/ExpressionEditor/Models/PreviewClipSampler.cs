@@ -63,6 +63,11 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _previewAvatar = Object.Instantiate(avatarRoot);
             if (_previewAvatar == null) return;
 
+            var animator = _previewAvatar.GetComponent<Animator>();
+            var desc = _previewAvatar.GetComponent<VRCAvatarDescriptor>();
+            AvatarViewPosition = GetAvatarViewPosition(_previewAvatar, animator, desc);
+            if (desc != null) Object.DestroyImmediate(desc);
+
             // FIXME: Unable to support the case that avatar's body shape balance is tuned by root object's scale.
             // (Is it necessary to assume this case...?)
             _previewAvatar.transform.position = Origin;
@@ -70,11 +75,6 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _previewAvatar.transform.localScale = Vector3.one;
             _previewAvatar.hideFlags = HideFlags.HideAndDontSave;
             _previewAvatar.SetActive(true);
-
-            var animator = _previewAvatar?.GetComponent<Animator>();
-            var desc = _previewAvatar?.GetComponent<VRCAvatarDescriptor>();
-            AvatarViewPosition = GetAvatarViewPosition(_previewAvatar, animator, desc);
-            if (desc != null) Object.DestroyImmediate(desc);
             return;
 
             static Vector3 GetAvatarViewPosition(GameObject clonedAvatar, Animator animator, VRCAvatarDescriptor desc)
