@@ -58,7 +58,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _previewClipGenerator.OpenTargetClip(clip);
         }
 
-        public Vector3 GetAvatarViewPosition() => _previewClipSampler.GetAvatarViewPosition();
+        public Vector3 GetAvatarViewPosition() => _previewClipSampler.AvatarViewPosition;
 
         public void SetBlendShapeValue(BlendShape blendShape, float value)
         {

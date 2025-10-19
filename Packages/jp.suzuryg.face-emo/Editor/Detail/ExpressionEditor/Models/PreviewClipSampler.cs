@@ -13,6 +13,8 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
     {
         private static readonly Vector3 Origin = new(100, 100, 100);
 
+        public Vector3 AvatarViewPosition { get; private set; } = Origin;
+
         private readonly AV3Setting _av3Setting;
 
         [CanBeNull] private GameObject _previewAvatar;
@@ -68,38 +70,41 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _previewAvatar.transform.localScale = Vector3.one;
             _previewAvatar.hideFlags = HideFlags.HideAndDontSave;
             _previewAvatar.SetActive(true);
-        }
 
-        public Vector3 GetAvatarViewPosition()
-        {
-            var avatarDescriptor = _previewAvatar?.GetComponent<VRCAvatarDescriptor>();
-            if (avatarDescriptor == null) return Origin;
-
-            // Returns view position if previewable in T-pose.
-            if (AV3Utility.GetAvatarPoseClip(avatarDescriptor) != null)
-                return avatarDescriptor.GetScaledViewPosition() + Origin;
-
-            // Returns head position if not previewable in T-pose.
-            return GetAvatarHeadPosition();
-        }
-
-        private Vector3 GetAvatarHeadPosition()
-        {
             var animator = _previewAvatar?.GetComponent<Animator>();
-            var avatarDescriptor = _previewAvatar?.GetComponent<VRCAvatarDescriptor>();
-            if (animator == null || !animator.isHuman || avatarDescriptor == null) return Origin;
+            var desc = _previewAvatar?.GetComponent<VRCAvatarDescriptor>();
+            AvatarViewPosition = GetAvatarViewPosition(_previewAvatar, animator, desc);
+            if (desc != null) Object.DestroyImmediate(desc);
+            return;
 
-            var clip = AV3Utility.GetAvatarPoseClip(_av3Setting?.TargetAvatar as VRCAvatarDescriptor);
-            if (clip == null) clip = new AnimationClip();
+            static Vector3 GetAvatarViewPosition(GameObject clonedAvatar, Animator animator, VRCAvatarDescriptor desc)
+            {
+                if (desc == null) return Origin;
 
-            AnimationMode.StartAnimationMode();
-            AnimationMode.BeginSampling();
-            AnimationMode.SampleAnimationClip(_previewAvatar, clip, clip.length);
-            AnimationMode.EndSampling();
+                // Returns view position if previewable in T-pose.
+                if (AV3Utility.GetAvatarPoseClip(desc) != null)
+                    return desc.GetScaledViewPosition() + Origin;
 
-            _previewAvatar.transform.position = Origin;
-            _previewAvatar.transform.rotation = Quaternion.identity;
-            return animator.GetBoneTransform(HumanBodyBones.Head).position;
+                // Returns head position if not previewable in T-pose.
+                return GetAvatarHeadPosition(clonedAvatar, animator, desc);
+            }
+
+            static Vector3 GetAvatarHeadPosition(GameObject clonedAvatar, Animator animator, VRCAvatarDescriptor desc)
+            {
+                if (animator == null || !animator.isHuman || desc == null) return Origin;
+
+                var clip = AV3Utility.GetAvatarPoseClip(desc);
+                if (clip == null) clip = new AnimationClip();
+
+                AnimationMode.StartAnimationMode();
+                AnimationMode.BeginSampling();
+                AnimationMode.SampleAnimationClip(clonedAvatar, clip, clip.length);
+                AnimationMode.EndSampling();
+
+                clonedAvatar.transform.position = Origin;
+                clonedAvatar.transform.rotation = Quaternion.identity;
+                return animator.GetBoneTransform(HumanBodyBones.Head).position;
+            }
         }
     }
 }
