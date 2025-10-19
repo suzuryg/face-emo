@@ -36,7 +36,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             {
                 var first = blendTree.children.First().motion;
                 var last = blendTree.children.Last().motion;
-                return IsFaceMotion(first as AnimationClip, faceBlendShapes) && IsFaceMotion(last as AnimationClip, faceBlendShapes);
+                return IsFaceMotion(first as AnimationClip, faceBlendShapes) || IsFaceMotion(last as AnimationClip, faceBlendShapes);
             }
             else if (motion is AnimationClip animationClip)
             {
