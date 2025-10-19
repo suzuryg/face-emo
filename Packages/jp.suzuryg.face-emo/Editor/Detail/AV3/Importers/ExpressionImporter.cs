@@ -678,6 +678,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             {
                 (@"\bmouth\s*morph\s*canceller\b", @"^enable$"),
                 (@"^lipsync\s*override$", @"^lipsyncing$"),
+                (@"^lipSynk$", @"^mouse0$"),
+                (@"^lipSync\s*control$", @"^lipsyncon.*$"),
             };
 
             foreach (var pattern in patterns)
