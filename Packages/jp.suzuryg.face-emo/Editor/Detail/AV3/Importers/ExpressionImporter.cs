@@ -143,17 +143,52 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
             }
 
+            DivideMode(modeId, 2);
+
             var importedPatterns = new List<IMode>();
-            var mode = _menu.GetMode(modeId);
-            if (mode.Branches.Any())
+            var idsToRemove = new List<string>();
+            foreach (var id in _menu.Registered.Order)
             {
-                importedPatterns.Add(mode);
+                if (!_menu.ContainsMode(id)) continue;
+                var mode = _menu.GetMode(id);
+                if (mode.Branches.Any()) importedPatterns.Add(mode);
+                else idsToRemove.Add(id);
             }
-            else
-            {
-                _menu.RemoveMenuItem(modeId);
-            }
+            foreach (var id in idsToRemove) _menu.RemoveMenuItem(id);
+
             return importedPatterns;
+
+            void DivideMode(string prevModeId, int count)
+            {
+                if (count > DomainConstants.MenuItemNums) return;
+
+                var currentModeId = _menu.AddMode(Domain.Menu.RegisteredId);
+                _menu.ModifyModeProperties(currentModeId,
+                    displayName: _localizationSetting.Table.ExpressionImporter_ExpressionPattern + count);
+                var branches = _menu.GetMode(prevModeId).Branches.ToArray();
+                var indicesToRemove = new List<int>();
+                for(var i = 0; i < branches.Length; i++)
+                {
+                    var branch = branches[i];
+                    if (branch.Conditions.Any() && !branch.IsReachable)
+                    {
+                        AddBranch(currentModeId, branch);
+                        indicesToRemove.Add(i);
+                    }
+                }
+
+                if (!indicesToRemove.Any())
+                {
+                    _menu.RemoveMenuItem(currentModeId);
+                    return;
+                }
+
+                indicesToRemove.Reverse();
+                foreach (var index in indicesToRemove) _menu.RemoveBranch(prevModeId, index);
+
+                if (_menu.GetMode(currentModeId).Branches.Any(x => x.Conditions.Any() && !x.IsReachable))
+                    DivideMode(currentModeId, count + 1);
+            }
         }
 
         private List<IBranch> GetBranches(AnimatorStateMachine stateMachine)
