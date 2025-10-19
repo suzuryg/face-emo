@@ -40,9 +40,9 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public int Inspector_Width = 256;
         public int Inspector_Height = 256;
 
-        [Obsolete] public int Main_Width;
-        [Obsolete] public int Main_Height;
-        [Obsolete] public int GestureTable_Width;
-        [Obsolete] public int GestureTable_Height;
+        [Obsolete] public int Main_Width = 180;
+        [Obsolete] public int Main_Height = 150;
+        [Obsolete] public int GestureTable_Width = 110;
+        [Obsolete] public int GestureTable_Height = 85;
     }
 }
