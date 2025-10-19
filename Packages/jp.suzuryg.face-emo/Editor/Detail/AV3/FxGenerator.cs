@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -31,6 +32,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 {
     public class FxGenerator : IFxGenerator
     {
+        private static readonly string FxAssetName = "FaceEmo_FX.controller";
+        private static readonly string ExMenuAssetName = "FaceEmo_ExMenu.asset";
+
         private IReadOnlyLocalizationSetting _localizationSetting;
         private ModeNameProvider _modeNameProvider;
         private ExMenuThumbnailDrawer _exMenuThumbnailDrawer;
@@ -59,8 +63,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 var generatedDir = AV3Constants.Path_GeneratedDir + DateTime.Now.ToString("/yyyyMMdd_HHmmss");
                 AV3Utility.CreateFolderRecursively(generatedDir);
 
-                var fxPath = generatedDir + "/FaceEmo_FX.controller";
-                var exMenuPath = generatedDir + "/FaceEmo_ExMenu.asset";
+                var fxPath = generatedDir + "/" + FxAssetName;
+                var exMenuPath = generatedDir + "/" + ExMenuAssetName;
 
                 // Copy template FX controller
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Creating fx controller...", 0);
@@ -157,10 +161,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                         ReplaceMAObject(subRoot);
                     }
                 }
-
-                // Clean assets
-                EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Cleaning assets...", 0);
-                CleanAssets();
 
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, "Done!", 1);
             }
@@ -1268,6 +1268,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 #if USE_MODULAR_AVATAR
             foreach (var component in rootObject.GetComponents<ModularAvatarMergeAnimator>())
             {
+                try
+                {
+                    DeleteOldFxAsset(component);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Failed to delete old FX asset: " + e);
+                }
+
                 UnityEngine.Object.DestroyImmediate(component);
             }
             var modularAvatarMergeAnimator = rootObject.AddComponent<ModularAvatarMergeAnimator>();
@@ -1279,6 +1288,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             modularAvatarMergeAnimator.matchAvatarWriteDefaults = _aV3Setting.MatchAvatarWriteDefaults;
 
             EditorUtility.SetDirty(modularAvatarMergeAnimator);
+            return;
+
+            void DeleteOldFxAsset(ModularAvatarMergeAnimator component)
+            {
+                var path = AssetDatabase.GetAssetPath(component.animator);
+                if (!IsGeneratedAssetPath(path, FxAssetName)) return;
+                AssetDatabase.DeleteAsset(path);
+                DeleteParentDirectoryIfEmpty(path);
+            }
 #else
             Debug.LogError("Please install Modular Avatar!");
 #endif
@@ -1289,6 +1307,15 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 #if USE_MODULAR_AVATAR
             foreach (var component in rootObject.GetComponents<ModularAvatarMenuInstaller>())
             {
+                try
+                {
+                    DeleteOldMenuAsset(component);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Failed to delete old menu asset: " + e);
+                }
+
                 UnityEngine.Object.DestroyImmediate(component);
             }
             var modularAvatarMenuInstaller = rootObject.AddComponent<ModularAvatarMenuInstaller>();
@@ -1296,9 +1323,39 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             modularAvatarMenuInstaller.menuToAppend = expressionsMenu;
 
             EditorUtility.SetDirty(modularAvatarMenuInstaller);
+            return;
+
+            void DeleteOldMenuAsset(ModularAvatarMenuInstaller component)
+            {
+                var path = AssetDatabase.GetAssetPath(component.menuToAppend);
+                if (!IsGeneratedAssetPath(path, ExMenuAssetName)) return;
+                AssetDatabase.DeleteAsset(path);
+                DeleteParentDirectoryIfEmpty(path);
+            }
 #else
             Debug.LogError("Please install Modular Avatar!");
 #endif
+        }
+
+        private static bool IsGeneratedAssetPath(string path, string assetName)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+
+            var normalized = path.Replace("\\", "/");
+            var pattern = "^" + Regex.Escape(AV3Constants.Path_GeneratedDir) + @"/\d{8}_\d{6}/" +
+                          Regex.Escape(assetName) + "$";
+            return Regex.IsMatch(normalized, pattern, RegexOptions.CultureInvariant);
+        }
+
+        private static void DeleteParentDirectoryIfEmpty(string assetPath)
+        {
+            var parentDir = Path.GetDirectoryName(assetPath);
+            if (string.IsNullOrEmpty(parentDir)) return;
+
+            parentDir = parentDir.Replace("\\", "/");
+            if (Directory.Exists(parentDir) &&
+                Directory.GetFiles(parentDir).Length == 0 &&
+                Directory.GetDirectories(parentDir).Length == 0) AssetDatabase.DeleteAsset(parentDir);
         }
 
         private void AddParameterComponent(GameObject rootObject, int defaultModeIndex)
@@ -1646,42 +1703,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                 if (branchIndex < 0) { return mode.DefaultEmoteIndex; }
                 else { return mode.DefaultEmoteIndex + branchIndex + 1; }
             }
-        }
-
-        private static void CleanAssets()
-        {
-#if USE_MODULAR_AVATAR
-            // To include inactive objects, Resources.FindObjectsOfTypeAll<T>() must be used in Unity 2019.
-            var referencedFxGUIDs = new HashSet<string>();
-            foreach (var anim in Resources.FindObjectsOfTypeAll<ModularAvatarMergeAnimator>())
-            {
-                referencedFxGUIDs.Add(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(anim.animator)));
-            }
-
-            // Delete dateDir which is not referenced.
-            foreach (var dateDir in AssetDatabase.GetSubFolders(AV3Constants.Path_GeneratedDir))
-            {
-                var referenced = false;
-                foreach (var guid in AssetDatabase.FindAssets($"t:{nameof(AnimatorController)}", new[] { dateDir }))
-                {
-                    if (referencedFxGUIDs.Contains(guid))
-                    {
-                        referenced = true;
-                        break;
-                    }
-                }
-
-                if (!referenced)
-                {
-                    if (!AssetDatabase.DeleteAsset(dateDir))
-                    {
-                        throw new FaceEmoException($"Failed to clean assets in {dateDir}");
-                    }
-                }
-            }
-#else
-            Debug.LogError("Please install Modular Avatar!");
-#endif
         }
 
         // workaround (to be deleted)
