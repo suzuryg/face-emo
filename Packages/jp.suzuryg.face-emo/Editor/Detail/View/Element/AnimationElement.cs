@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Suzuryg.FaceEmo.Detail.ExpressionEditor;
 using UnityEngine;
 using UnityEditor;
 using UniRx;
@@ -16,7 +17,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 {
     public class AnimationElement : IDisposable
     {
-        private AV3.ExpressionEditor _expressionEditor;
+        private IExpressionEditor _expressionEditor;
         private AV3Setting _aV3Setting;
         private ThumbnailSetting _thumbnailSetting;
         private SerializedObject _aV3Object;
@@ -31,7 +32,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         public AnimationElement(
-            AV3.ExpressionEditor expressionEditor,
+            IExpressionEditor expressionEditor,
             IReadOnlyLocalizationSetting localizationSetting,
             AV3Setting aV3Setting,
             ThumbnailSetting thumbnailSetting)

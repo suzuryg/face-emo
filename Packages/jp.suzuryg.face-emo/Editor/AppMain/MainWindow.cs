@@ -9,6 +9,7 @@ using Suzuryg.FaceEmo.Detail.View;
 using Suzuryg.FaceEmo.Detail.View.Element;
 using System;
 using System.Linq;
+using Suzuryg.FaceEmo.Detail.ExpressionEditor;
 using UnityEngine;
 using UnityEditor;
 using UniRx;
@@ -77,10 +78,7 @@ namespace Suzuryg.FaceEmo.AppMain
                 _installer.Container.Resolve<InspectorThumbnailDrawer>().AddTo(_disposables);
                 _installer.Container.Resolve<ModeNameProvider>().AddTo(_disposables);
                 _installer.Container.Resolve<AnimationElement>().AddTo(_disposables);
-                _installer.Container.Resolve<ExpressionEditor>().AddTo(_disposables);
-
-                var expressionEditor = _installer.Container.Resolve<ExpressionEditor>().AddTo(_disposables);
-                expressionEditor.OnClipUpdated.Synchronize().ObserveOnMainThread().Subscribe(_ => Repaint()).AddTo(_disposables);
+                _installer.Container.Resolve<IExpressionEditor>().AddTo(_disposables);
 
                 // Initialize menu display
                 var menuRepository = _installer.Container.Resolve<IMenuRepository>();

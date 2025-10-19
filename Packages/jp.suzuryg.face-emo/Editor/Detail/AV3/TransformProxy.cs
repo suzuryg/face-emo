@@ -1,94 +1,42 @@
-﻿using Suzuryg.FaceEmo.Domain;
-using Suzuryg.FaceEmo.Detail.View;
-using Suzuryg.FaceEmo.Detail.Drawing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEditor;
-using UniRx;
+﻿using UnityEngine;
 
 namespace Suzuryg.FaceEmo.Detail.AV3
 {
-    public class TransformProxy
+    public sealed class TransformProxy
     {
-        public GameObject GameObject { get; set; }
+        public GameObject GameObject { get; private set; }
+        public Vector3 Position { get; private set; }
+        public Vector3 Rotation { get; private set; }
+        public Vector3 Scale { get; private set; }
 
-        public float PositionX { get; set; }
-        public float PositionY { get; set; }
-        public float PositionZ { get; set; }
-
-        public float RotationX { get; set; }
-        public float RotationY { get; set; }
-        public float RotationZ { get; set; }
-
-        public float ScaleX { get; set; }
-        public float ScaleY { get; set; }
-        public float ScaleZ { get; set; }
-
-        public TransformProxy Copy()
+        public TransformProxy(GameObject gameObject, Vector3 position, Vector3 rotation, Vector3 scale)
         {
-            var copied = new TransformProxy();
-
-            copied.GameObject = GameObject;
-
-            copied.PositionX = PositionX;
-            copied.PositionY = PositionY;
-            copied.PositionZ = PositionZ;
-
-            copied.RotationX = RotationX;
-            copied.RotationY = RotationY;
-            copied.RotationZ = RotationZ;
-
-            copied.ScaleX = ScaleX;
-            copied.ScaleY = ScaleY;
-            copied.ScaleZ = ScaleZ;
-
-            return copied;
-        }
-
-        public static bool IsUpdated(TransformProxy oldValue, TransformProxy newValue)
-        {
-            if (!Mathf.Approximately(oldValue.PositionX, newValue.PositionX) ||
-                !Mathf.Approximately(oldValue.PositionY, newValue.PositionY) ||
-                !Mathf.Approximately(oldValue.PositionZ, newValue.PositionZ) ||
-                !Mathf.Approximately(oldValue.RotationX, newValue.RotationX) ||
-                !Mathf.Approximately(oldValue.RotationY, newValue.RotationY) ||
-                !Mathf.Approximately(oldValue.RotationZ, newValue.RotationZ) ||
-                !Mathf.Approximately(oldValue.ScaleX, newValue.ScaleX) ||
-                !Mathf.Approximately(oldValue.ScaleY, newValue.ScaleY) ||
-                !Mathf.Approximately(oldValue.ScaleZ, newValue.ScaleZ))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            GameObject = gameObject;
+            Position = position;
+            Rotation = rotation;
+            Scale = scale;
         }
 
         public static TransformProxy FromGameObject(GameObject gameObject)
         {
-            var proxy = new TransformProxy();
-
-            proxy.GameObject = gameObject;
-
-            proxy.PositionX = gameObject.transform.localPosition.x;
-            proxy.PositionY = gameObject.transform.localPosition.y;
-            proxy.PositionZ = gameObject.transform.localPosition.z;
-
-            proxy.RotationX = WrapAngle(gameObject.transform.localEulerAngles.x);
-            proxy.RotationY = WrapAngle(gameObject.transform.localEulerAngles.y);
-            proxy.RotationZ = WrapAngle(gameObject.transform.localEulerAngles.z);
-
-            proxy.ScaleX = gameObject.transform.localScale.x;
-            proxy.ScaleY = gameObject.transform.localScale.y;
-            proxy.ScaleZ = gameObject.transform.localScale.z;
-
-            return proxy;
+            return new TransformProxy(
+                gameObject,
+                new Vector3(
+                    gameObject.transform.localPosition.x,
+                    gameObject.transform.localPosition.y,
+                    gameObject.transform.localPosition.z),
+                new Vector3(
+                    WrapAngle(gameObject.transform.localEulerAngles.x),
+                    WrapAngle(gameObject.transform.localEulerAngles.y),
+                    WrapAngle(gameObject.transform.localEulerAngles.z)),
+                new Vector3(
+                    gameObject.transform.localScale.x,
+                    gameObject.transform.localScale.y,
+                    gameObject.transform.localScale.z)
+            );
         }
 
-        public static float WrapAngle(float angle)
+        private static float WrapAngle(float angle)
         {
             angle %= 360;
             if (angle > 180) { angle -= 360;}

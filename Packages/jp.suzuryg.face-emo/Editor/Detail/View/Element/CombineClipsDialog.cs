@@ -12,6 +12,7 @@ using UniRx;
 using Suzuryg.FaceEmo.Detail.Drawing;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.Detail.AV3;
+using Suzuryg.FaceEmo.Detail.ExpressionEditor;
 using Suzuryg.FaceEmo.Detail.Localization;
 
 namespace Suzuryg.FaceEmo.Detail.View.Element
@@ -29,7 +30,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
         private static MainThumbnailDrawer _mainThumbnailDrawer;
         private static int _thumbnailWidth;
         private static int _thumbnailHeight;
-        private static AV3.ExpressionEditor _expressionEditor;
+        private static IExpressionEditor _expressionEditor;
         private static Action<string> _setAnimationClipAction;
 
         private static Domain.Animation _leftAnimation;
@@ -51,7 +52,7 @@ namespace Suzuryg.FaceEmo.Detail.View.Element
 
         public static void Show(AnimationElement animationElement, MainThumbnailDrawer mainThumbnailDrawer,
             int thumbnailWidth, int thumbnailHeight,
-            AV3.ExpressionEditor expressionEditor, Action<string> setAnimationClipAction,
+            IExpressionEditor expressionEditor, Action<string> setAnimationClipAction,
             Domain.Animation leftAnimation = null, Domain.Animation rightAnimation = null)
         {
             // Initialize
