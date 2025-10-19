@@ -58,17 +58,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(12));
 
             // animations
-            var dislike = AssertDislike(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
-            var fun = AssertFun(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
-            var joy = AssertJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
-            var sorrow = AssertSorrow(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
-            var surprised = AssertSurprized(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
-            var wink = AssertWink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
-            var zito = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
-            var zito2 = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito_(2).anim"));
+            var dislike = AssertDislikeClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
+            var fun = AssertFunClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
+            var joy = AssertJoyClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
+            var sorrow = AssertSorrowClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
+            var surprised = AssertSurprizedClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
+            var wink = AssertWinkClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
+            var wink2 = AssertWinkLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink_(2).anim"));
+            var zito = AssertZitoClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
+            var zito2 = AssertZitoClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito_(2).anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
             var subJoy = AssertSubJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sub_joy.anim"));
-            var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
+            var angry = AssertAngryClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -97,7 +98,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(mode.Branches[0].Conditions.Count, Is.EqualTo(1));
             Assert.That(mode.Branches[0].Conditions.First(), Is.EqualTo(new Condition(Hand.Right, HandGesture.Fist, ComparisonOperator.Equals)));
             Assert.That(mode.Branches[0].BaseAnimation, Is.Null);
-            Assert.That(mode.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(wink))));
+            Assert.That(mode.Branches[0].RightHandAnimation.GUID, Is.EqualTo(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(wink2))));
             Assert.That(mode.Branches[0].EyeTrackingControl, Is.EqualTo(EyeTrackingControl.Animation));
             Assert.That(mode.Branches[0].MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
             Assert.That(mode.Branches[0].BlinkEnabled, Is.EqualTo(false));
@@ -164,14 +165,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(14));
 
             // animations
-            var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
-            var dislike = AssertDislike(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
-            var fun = AssertFun(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
-            var joy = AssertJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
-            var sorrow = AssertSorrow(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
-            var surprised = AssertSurprized(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
-            var wink = AssertWink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
-            var zito = AssertZito(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
+            var angry = AssertAngryClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
+            var dislike = AssertDislikeClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
+            var fun = AssertFunClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
+            var joy = AssertJoyClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
+            var sorrow = AssertSorrowClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
+            var surprised = AssertSurprizedClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
+            var wink = AssertWinkClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
+            var zito = AssertZitoClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
 
             // settings
@@ -261,13 +262,13 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(importedPatterns[2].Branches.Count, Is.EqualTo(4));
 
             // animations
-            var angry = AssertAngry(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
-            var dislike = AssertDislike(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
-            var fun = AssertFun(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
-            var joy = AssertJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
-            var sorrow = AssertSorrow(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
-            var surprised = AssertSurprized(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
-            var wink = AssertWink(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
+            var angry = AssertAngryClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
+            var dislike = AssertDislikeClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
+            var fun = AssertFunClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/fun.anim"));
+            var joy = AssertJoyClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/joy.anim"));
+            var sorrow = AssertSorrowClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
+            var surprised = AssertSurprizedClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
+            var wink = AssertWinkClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
             var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
             var closeFromHalf = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half.anim"));
             var closeFromHalfBase = AssertCloseHalf(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half_Base.anim"));
@@ -406,67 +407,79 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             GameObject.DestroyImmediate(avatarRoot);
         }
 
-        private static AnimationClip AssertJoy(AnimationClip clip)
+        private static AnimationClip AssertJoyClone(AnimationClip clip)
         {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
+            Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings.Length, Is.EqualTo(8));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(100));
 
             return clip;
         }
 
-        private static AnimationClip AssertAngry(AnimationClip clip)
+        private static AnimationClip AssertAngryClone(AnimationClip clip)
         {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
+            Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings.Length, Is.EqualTo(8));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(100));
 
             return clip;
         }
 
-        private static AnimationClip AssertSorrow(AnimationClip clip)
+        private static AnimationClip AssertSorrowClone(AnimationClip clip)
         {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
+            Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings.Length, Is.EqualTo(8));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(100));
 
             return clip;
         }
 
-        private static AnimationClip AssertFun(AnimationClip clip)
+        private static AnimationClip AssertFunClone(AnimationClip clip)
         {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
+            Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings.Length, Is.EqualTo(8));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(100));
 
             return clip;
         }
 
-        private static AnimationClip AssertZito(AnimationClip clip)
+        private static AnimationClip AssertZitoClone(AnimationClip clip)
         {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
+            Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings.Length, Is.EqualTo(8));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(100));
 
             return clip;
         }
 
-        private static AnimationClip AssertWink(AnimationClip clip)
+        private static AnimationClip AssertWinkClone(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(true));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(8));
+
+            Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(100));
+
+            return clip;
+        }
+
+        private static AnimationClip AssertWinkLastFrame(AnimationClip clip)
         {
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
@@ -478,24 +491,24 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             return clip;
         }
 
-        private static AnimationClip AssertSurprized(AnimationClip clip)
+        private static AnimationClip AssertSurprizedClone(AnimationClip clip)
         {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
+            Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings.Length, Is.EqualTo(8));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(100));
 
             return clip;
         }
 
-        private static AnimationClip AssertDislike(AnimationClip clip)
+        private static AnimationClip AssertDislikeClone(AnimationClip clip)
         {
-            Assert.That(clip.isLooping, Is.EqualTo(false));
+            Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(1));
+            Assert.That(bindings.Length, Is.EqualTo(8));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(100));
 
