@@ -14,6 +14,7 @@ using UniRx;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using VRC.SDK3.Avatars.Components;
+using Object = UnityEngine.Object;
 
 namespace Suzuryg.FaceEmo.Detail.Drawing
 {
@@ -226,7 +227,11 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             try
             {
                 // Clone avatar
-                clonedAvatar = UnityEngine.Object.Instantiate(avatarAnimator.gameObject);
+                clonedAvatar = Object.Instantiate(avatarAnimator.gameObject);
+
+                var desc = clonedAvatar.GetComponent<VRCAvatarDescriptor>();
+                if (desc != null) Object.DestroyImmediate(desc);
+
                 // FIXME: Unable to support the case that avatar's body shape balance is tuned by root object's scale. (Is it necessary to assume this case...?)
                 clonedAvatar.transform.localScale = Vector3.one;
                 SceneManager.MoveGameObjectToScene(clonedAvatar, _previewScene);
