@@ -143,6 +143,13 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             _disposables?.Dispose();
         }
 
+        public Texture2D GetCachedThumbnailOrNull(Domain.Animation animation)
+        {
+            var guid = GetGUID(animation);
+
+            return _cache.GetValueOrDefault(guid, null);
+        }
+
         public Texture2D GetThumbnail(Domain.Animation animation)
         {
             var guid = GetGUID(animation);

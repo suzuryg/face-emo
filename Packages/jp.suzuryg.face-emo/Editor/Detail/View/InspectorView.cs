@@ -1032,15 +1032,23 @@ namespace Suzuryg.FaceEmo.Detail.View
             Rect textureRect = GUILayoutUtility.GetRect(textureWidth, textureHeight, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false));
             var width = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Inspector_Width));
             var height = _thumbnailSetting.FindProperty(nameof(ThumbnailSetting.Inspector_Height));
+
+            var thumbnailAnimation = new Domain.Animation(string.Empty);
+            // TODO: this method can be executed from different instances of the inspectors of different sizes
             if (width.intValue != textureWidth ||
                 height.intValue != textureHeight)
             {
                 width.intValue = textureWidth;
                 height.intValue = textureHeight;
-                _thumbnailDrawer.RequestUpdateAll();
+                
+                var cachedThumbnail = _thumbnailDrawer.GetCachedThumbnailOrNull(thumbnailAnimation);
+                if (cachedThumbnail != null && (cachedThumbnail.width < width.intValue || cachedThumbnail.height < height.intValue))
+                {
+                    _thumbnailDrawer.RequestUpdateAll();
+                }
             }
             _thumbnailDrawer.Update();
-            var texture = _thumbnailDrawer.GetThumbnail(new Domain.Animation(string.Empty));
+            var texture = _thumbnailDrawer.GetThumbnail(thumbnailAnimation);
             GUI.DrawTexture(textureRect, texture);
 
             EditorGUILayout.Space(10);
