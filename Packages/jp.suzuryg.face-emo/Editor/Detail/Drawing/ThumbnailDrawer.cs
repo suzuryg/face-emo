@@ -282,9 +282,10 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
 
                 // Generate thumbnails
                 var requests = new List<string>(_requests);
+                AnimationClip poseClip = AV3Utility.GetAvatarPoseClip(_aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
                 foreach (var guid in requests)
                 {
-                    _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera, AnimationProgress);
+                    _cache[guid] = RenderAnimatedAvatar(guid, clonedAvatar, camera, poseClip, AnimationProgress);
 
                     // Apply gamma correction if necessary
                     if (this is ExMenuThumbnailDrawer && _cache[guid] != null &&
@@ -338,7 +339,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             SceneManager.MoveGameObjectToScene(light, _previewScene);
         }
 
-        private Texture2D RenderAnimatedAvatar(string clipGUID, GameObject animatorRoot, Camera camera, float animationProgress = 0f)
+        private Texture2D RenderAnimatedAvatar(string clipGUID, GameObject animatorRoot, Camera camera, AnimationClip poseClip, float animationProgress = 0f)
         {
             // Get animation clip
             AnimationClip clip;
@@ -358,7 +359,7 @@ namespace Suzuryg.FaceEmo.Detail.Drawing
             }
 
             // Synthesize avatar pose
-            var synthesized = AV3Utility.SynthesizeAvatarPose(clip, _aV3Setting?.TargetAvatar as VRCAvatarDescriptor);
+            var synthesized = AV3Utility.SynthesizeClip(clip, poseClip);
 
             // Sample animation clip and render
             var positionCache = animatorRoot.transform.position;
