@@ -105,7 +105,8 @@ namespace Suzuryg.FaceEmo.AppMain
             }
             catch (Exception ex)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_FailedToLaunch + "\n" + loc.Common_Message_SeeConsole, "OK");
+                ReadableErrorWindow.Open(DomainConstants.SystemName,
+                    loc.Common_Message_FailedToLaunch + "\n" + loc.Common_Message_SeeConsole, ex.ToString());
                 Debug.LogError(loc.Common_Message_FailedToLaunch + "\n" + ex?.ToString());
             }
         }
@@ -163,7 +164,8 @@ namespace Suzuryg.FaceEmo.AppMain
             catch (Exception ex)
             {
                 var loc = LocalizationSetting.GetTable(LocalizationSetting.GetLocale());
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Common_Message_FailedToOpenProject + "\n" + loc.Common_Message_SeeConsole, "OK");
+                ReadableErrorWindow.Open(DomainConstants.SystemName,
+                    loc.Common_Message_FailedToOpenProject + "\n" + loc.Common_Message_SeeConsole, ex.ToString());
                 Debug.LogError(loc.Common_Message_FailedToOpenProject + "\n" + ex?.ToString());
             }
         }
@@ -302,8 +304,9 @@ namespace Suzuryg.FaceEmo.AppMain
                     }
                     catch (Exception ex)
                     {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Launcher_Message_RestoreError + "\n\n" + ex?.Message, "OK");
-                        Debug.LogError(loc.Launcher_Message_RestoreError + ex?.ToString());
+                        ReadableErrorWindow.Open(DomainConstants.SystemName, loc.Launcher_Message_RestoreError,
+                            ex.ToString());
+                        Debug.LogError(loc.Launcher_Message_RestoreError + ex);
                         return false;
                     }
                 }
@@ -325,8 +328,8 @@ namespace Suzuryg.FaceEmo.AppMain
             }
             catch (Exception ex)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, loc.Launcher_Message_ImportError + "\n\n" + ex?.Message, "OK");
-                Debug.LogError(loc.Launcher_Message_ImportError + ex?.ToString());
+                ReadableErrorWindow.Open(DomainConstants.SystemName, loc.Launcher_Message_ImportError, ex.ToString());
+                Debug.LogError(loc.Launcher_Message_ImportError + ex);
 
                 DestroyImmediate(launcher);
                 new FaceEmoInstaller(launcherObject);

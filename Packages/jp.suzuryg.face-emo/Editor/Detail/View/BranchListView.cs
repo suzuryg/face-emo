@@ -359,7 +359,9 @@ namespace Suzuryg.FaceEmo.Detail.View
             }
             catch (Exception ex)
             {
-                EditorUtility.DisplayDialog(DomainConstants.SystemName, $"{_localizationTable.ErrorHandler_Message_ErrorOccured}\n{nameof(OnCopyBranchButtonClicked)}: Error", "OK");
+                ReadableErrorWindow.Open(DomainConstants.SystemName,
+                    $"{_localizationTable.ErrorHandler_Message_ErrorOccured}\n{nameof(OnCopyBranchButtonClicked)}: Error",
+                    ex.ToString());
                 Debug.LogException(ex);
             }
         }
