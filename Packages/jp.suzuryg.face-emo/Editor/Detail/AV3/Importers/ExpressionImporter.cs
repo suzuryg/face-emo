@@ -256,6 +256,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     branch.AddCondition(new Condition(hand, handGesture, comparisonOperator));
                 }
 
+                // avoid filling neutral row or col
+                if (branch.Conditions.Count == 1 && branch.Conditions.First() == new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals))
+                    branch.AddCondition(new Condition(Hand.Right, HandGesture.Neutral, ComparisonOperator.Equals));
+                else if (branch.Conditions.Count == 1 && branch.Conditions.First() == new Condition(Hand.Right, HandGesture.Neutral, ComparisonOperator.Equals))
+                    branch.AddCondition(new Condition(Hand.Left, HandGesture.Neutral, ComparisonOperator.Equals));
+
                 if (!branch.Conditions.Any())
                 {
                     // exclude face toggles
