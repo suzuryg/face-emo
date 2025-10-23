@@ -110,7 +110,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmotePlayerLayer(generated.fx.layers[6]);
             AssertBlinkLayer(generated.fx.layers[7], isReplaced: false);
             AssertMouthMorphCancellerLayer(generated.fx.layers[8], isReplaced: false);
-            AssertBypassLayer(generated.fx.layers[9]);
+            AssertLeftGestureSmoothingLayer(generated.fx.layers[9]);
+            AssertRightGestureSmoothingLayer(generated.fx.layers[10]);
+            AssertBypassLayer(generated.fx.layers[11]);
         }
 
         [Test]
@@ -129,7 +131,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmotePlayerLayer(generated.fx.layers[6]);
             AssertBlinkLayer(generated.fx.layers[7], isReplaced: false);
             AssertMouthMorphCancellerLayer(generated.fx.layers[8], isReplaced: false);
-            AssertBypassLayer_ChangeAfkFace(generated.fx.layers[9]);
+            AssertLeftGestureSmoothingLayer(generated.fx.layers[9]);
+            AssertRightGestureSmoothingLayer(generated.fx.layers[10]);
+            AssertBypassLayer_ChangeAfkFace(generated.fx.layers[11]);
         }
 
         [Test]
@@ -149,7 +153,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmotePlayerLayer(generated.fx.layers[7]);
             AssertBlinkLayer(generated.fx.layers[8], isReplaced: false);
             AssertMouthMorphCancellerLayer(generated.fx.layers[9], isReplaced: false);
-            AssertBypassLayer(generated.fx.layers[10]);
+            AssertLeftGestureSmoothingLayer(generated.fx.layers[10]);
+            AssertRightGestureSmoothingLayer(generated.fx.layers[11]);
+            AssertBypassLayer(generated.fx.layers[12]);
         }
 
         [Test]
@@ -170,7 +176,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmotePlayerLayer(generated.fx.layers[7]);
             AssertBlinkLayer(generated.fx.layers[8], isReplaced: false);
             AssertMouthMorphCancellerLayer(generated.fx.layers[9], isReplaced: false);
-            AssertBypassLayer(generated.fx.layers[10]);
+            AssertLeftGestureSmoothingLayer(generated.fx.layers[10]);
+            AssertRightGestureSmoothingLayer(generated.fx.layers[11]);
+            AssertBypassLayer(generated.fx.layers[12]);
         }
 
         [Test]
@@ -193,7 +201,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssertFaceEmotePlayerLayer(generated.fx.layers[6]);
             AssertBlinkLayer(generated.fx.layers[7], isReplaced: true);
             AssertMouthMorphCancellerLayer(generated.fx.layers[8], isReplaced: true);
-            AssertBypassLayer(generated.fx.layers[9]);
+            AssertLeftGestureSmoothingLayer(generated.fx.layers[9]);
+            AssertRightGestureSmoothingLayer(generated.fx.layers[10]);
+            AssertBypassLayer(generated.fx.layers[11]);
         }
 
         private static void AssertDefaultFaceLayer(AnimatorControllerLayer layer)
@@ -482,6 +492,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             Assert.That(enableState.transitions[3].conditions[1].parameter, Is.EqualTo("Voice"));
             Assert.That(enableState.transitions[3].conditions[1].mode, Is.EqualTo(AnimatorConditionMode.Less));
             Assert.That(enableState.transitions[3].conditions[1].threshold, Is.EqualTo(0.01).Within(0.001));
+        }
+
+        private static void AssertLeftGestureSmoothingLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("Hai_GestureSmoothingLeft"));
+            // TODO: Check other properties
+        }
+
+        private static void AssertRightGestureSmoothingLayer(AnimatorControllerLayer layer)
+        {
+            Assert.That(layer.name, Is.EqualTo("Hai_GestureSmoothingRight"));
+            // TODO: Check other properties
         }
 
         private static void AssertBypassLayer(AnimatorControllerLayer layer)
