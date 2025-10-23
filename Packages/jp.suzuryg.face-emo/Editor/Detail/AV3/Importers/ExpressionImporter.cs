@@ -157,7 +157,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             void DivideMode(string prevModeId, int count)
             {
-                if (count > DomainConstants.MenuItemNums) return;
+                if (count > DomainConstants.MenuItemNums || !_menu.CanAddMenuItemTo(Domain.Menu.RegisteredId)) return;
 
                 var currentModeId = _menu.AddMode(Domain.Menu.RegisteredId);
                 _menu.ModifyModeProperties(currentModeId,
