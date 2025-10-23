@@ -9,6 +9,7 @@ using Sync = nadena.dev.modular_avatar.core.ParameterSyncType;
 
 using AnimatorAsCode.V0;
 using AnimatorAsCode.V0.Extensions.VRChat;
+using Hai.ComboGesture.Scripts.Editor.Internal;
 using Suzuryg.FaceEmo.Domain;
 using Suzuryg.FaceEmo.UseCase;
 using Suzuryg.FaceEmo.Components.Settings;
@@ -68,11 +69,12 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 // Copy template FX controller
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Creating fx controller...", 0);
-                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(AV3Constants.Path_FxTemplate) == null)
+                var templatePath = _aV3Setting.SmoothAnalogFist ? AV3Constants.Path_FxTemplate_WithIntegrator : AV3Constants.Path_FxTemplate_Basic;
+                if (AssetDatabase.LoadAssetAtPath<AnimatorController>(templatePath) == null)
                 {
                     throw new FaceEmoException("FX template was not found.");
                 }
-                else if (!AssetDatabase.CopyAsset(AV3Constants.Path_FxTemplate, fxPath))
+                else if (!AssetDatabase.CopyAsset(templatePath, fxPath))
                 {
                     Debug.LogError(fxPath);
                     throw new FaceEmoException("Failed to copy FX template.");
@@ -354,8 +356,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                         var leftAnimation = AV3Utility.GetAnimationClipWithName(branch.LeftHandAnimation);
                         var rightAnimation = AV3Utility.GetAnimationClipWithName(branch.RightHandAnimation);
                         var bothAnimation = AV3Utility.GetAnimationClipWithName(branch.BothHandsAnimation);
-                        var leftWeight = AV3Constants.ParamName_GestureLeftWeight;
-                        var rightWeight = AV3Constants.ParamName_GestureRightWeight;
+                        var leftWeight = aV3Setting.SmoothAnalogFist ? CgeSharedLayerUtils.HaiGestureComboLeftWeightSmoothing : AV3Constants.ParamName_GestureLeftWeight;
+                        var rightWeight = aV3Setting.SmoothAnalogFist ? CgeSharedLayerUtils.HaiGestureComboRightWeightSmoothing : AV3Constants.ParamName_GestureRightWeight;
 
                         // Both triggers used
                         if (branch.CanLeftTriggerUsed && branch.IsLeftTriggerUsed && branch.CanRightTriggerUsed && branch.IsRightTriggerUsed)
