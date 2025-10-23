@@ -506,7 +506,8 @@ namespace Suzuryg.FaceEmo.Detail.View
                     }
                     catch (Exception ex)
                     {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ErrorHandler_Message_ErrorOccured + "\n\n" + ex?.Message, "OK");
+                        ReadableErrorWindow.Open(DomainConstants.SystemName,
+                            _localizationTable.ErrorHandler_Message_ErrorOccured, ex.ToString());
                         Debug.LogException(ex);
                     }
                 }
@@ -571,7 +572,8 @@ namespace Suzuryg.FaceEmo.Detail.View
                     }
                     catch (Exception ex)
                     {
-                        EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.ErrorHandler_Message_ErrorOccured + "\n\n" + ex?.Message, "OK");
+                        ReadableErrorWindow.Open(DomainConstants.SystemName,
+                            _localizationTable.ErrorHandler_Message_ErrorOccured, ex.ToString());
                         Debug.LogException(ex);
                     }
                 }
@@ -602,8 +604,9 @@ namespace Suzuryg.FaceEmo.Detail.View
                         }
                         catch (Exception ex)
                         {
-                            EditorUtility.DisplayDialog(DomainConstants.SystemName, _localizationTable.InspectorView_Message_RestoreError + "\n\n" + ex?.Message, "OK");
-                            Debug.LogError(_localizationTable.InspectorView_Message_RestoreError + ex?.ToString());
+                            ReadableErrorWindow.Open(DomainConstants.SystemName,
+                                _localizationTable.InspectorView_Message_RestoreError, ex.ToString());
+                            Debug.LogError(_localizationTable.InspectorView_Message_RestoreError + ex);
                         }
                     }
                 }
