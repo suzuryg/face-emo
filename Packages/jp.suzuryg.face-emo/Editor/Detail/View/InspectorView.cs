@@ -1247,6 +1247,7 @@ namespace Suzuryg.FaceEmo.Detail.View
                 EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GammaCorrectionValueForExMenuThumbnails)), label);
                 EditorGUIUtility.labelWidth = oldLabelWidth;
             }
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.SmoothAnalogFist)), _localizationTable.InspectorView_SmoothAnalogFist);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddParameterPrefix)), _localizationTable.InspectorView_AddExpressionParameterPrefix);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.ReplaceBlink)), _localizationTable.InspectorView_ReplaceBlink);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.DisableTrackingControls)), _localizationTable.InspectorView_DisableTrackingControls);

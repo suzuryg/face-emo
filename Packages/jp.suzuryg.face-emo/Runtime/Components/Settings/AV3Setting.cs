@@ -50,7 +50,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
         public AnimationClip AfkFace;
         public AnimationClip AfkExitFace;
 
-        [Obsolete] public bool SmoothAnalogFist = true;
+        public bool SmoothAnalogFist = true;
         public double TransitionDurationSeconds = 0.1;
         public bool GenerateExMenuThumbnails = true;
         public float GammaCorrectionValueForExMenuThumbnails = 1.35f;
