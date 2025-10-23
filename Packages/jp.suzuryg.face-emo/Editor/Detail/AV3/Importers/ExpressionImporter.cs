@@ -1,10 +1,8 @@
-﻿using System;
-using Suzuryg.FaceEmo.Components.Settings;
+﻿using Suzuryg.FaceEmo.Components.Settings;
 using Suzuryg.FaceEmo.Detail.Localization;
 using Suzuryg.FaceEmo.Detail.View.Element;
 using Suzuryg.FaceEmo.Domain;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -14,7 +12,6 @@ using VRC.Dynamics;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
-using Object = UnityEngine.Object;
 
 namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 {
@@ -309,7 +306,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                 }
                 else
                 {
-                    branch.SetAnimation(GetDuplicatedAnimation(transition.destinationState.motion), BranchAnimationType.Base);
+                    branch.SetAnimation(GetFaceAnimation(transition.destinationState.motion), BranchAnimationType.Base);
                 }
 
                 if (branch.BaseAnimation is Domain.Animation ||
@@ -443,53 +440,47 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssetDatabase.CreateAsset(clip, _assetDir + "/" + AnimationElement.GetNewAnimationName(_assetDir, name));
         }
 
-        private Domain.Animation GetDuplicatedAnimation(Motion motion)
+        private Domain.Animation GetFaceAnimation(Motion motion)
         {
             if (motion == null) return null;
-            if (_duplicatedAnimations.TryGetValue(motion, out var cached)) return cached;
 
-            if (motion is AnimationClip sourceClip)
+            if (_duplicatedAnimations.TryGetValue(motion, out var existing)) return existing;
+
+            if (motion is BlendTree sourceTree && sourceTree.children.Length > 0)
+                return GetFaceAnimation(sourceTree.children.Last().motion);
+
+            if (motion is not AnimationClip sourceClip) return null;
+
+            var duplicatedClip = Object.Instantiate(sourceClip);
+            var faceDifferenceExists = false;
+
+            foreach (var binding in AnimationUtility.GetCurveBindings(sourceClip))
             {
-                if (sourceClip.name.Contains("blink", StringComparison.OrdinalIgnoreCase)) return null;
-                if (!HasFaceDifferences(sourceClip)) return null;
-
-                if (!AssetDatabase.IsValidFolder(_assetDir)) AV3Utility.CreateFolderRecursively(_assetDir);
-
-                var baseName = string.IsNullOrEmpty(sourceClip.name) ? "NoName" : sourceClip.name;
-                var fileName = AnimationElement.GetNewAnimationName(_assetDir, baseName);
-                var destPath = $"{_assetDir}/{fileName}";
-
-                var duplicatedClip = Object.Instantiate(sourceClip);
-                duplicatedClip.name = Path.GetFileNameWithoutExtension(fileName);
-                AssetDatabase.CreateAsset(duplicatedClip, destPath);
-
-                var guid = AssetDatabase.AssetPathToGUID(destPath);
-                if (!string.IsNullOrEmpty(guid))
+                var curve = AnimationUtility.GetEditorCurve(sourceClip, binding);
+                if (curve == null || curve.keys.Length <= 0)
                 {
-                    var duplicated = new Domain.Animation(guid);
-                    _duplicatedAnimations[motion] = duplicated;
-                    return duplicated;
+                    AnimationUtility.SetEditorCurve(duplicatedClip, binding, null);
+                    continue;
                 }
-            }
 
-            return GetLastFrame(motion);
-
-            bool HasFaceDifferences(AnimationClip animationClip)
-            {
-                var bindings = AnimationUtility.GetCurveBindings(animationClip);
-                foreach (var binding in bindings)
+                var blendShape =
+                    new BlendShape(binding.path, binding.propertyName.Replace("blendShape.", string.Empty));
+                if (!_faceBlendShapesValues.TryGetValue(blendShape, out var faceValue) ||
+                    curve.keys.All(x => Mathf.Approximately(x.value, faceValue)))
                 {
-                    var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
-                    if (curve == null || curve.keys.Length <= 0) continue;
-
-                    var blendShape = new BlendShape(binding.path,
-                        binding.propertyName.Replace("blendShape.", string.Empty));
-                    if (!_faceBlendShapesValues.TryGetValue(blendShape, out var faceValue)) continue;
-
-                    if (curve.keys.Any(x => !Mathf.Approximately(x.value, faceValue))) return true;
+                    AnimationUtility.SetEditorCurve(duplicatedClip, binding, null);
+                    continue;
                 }
-                return false;
+
+                faceDifferenceExists = true;
             }
+            if (!faceDifferenceExists) return null;
+
+            SaveClip(duplicatedClip, string.IsNullOrEmpty(motion.name) ? "NoName" : motion.name);
+            var wrapped =
+                new Domain.Animation(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(duplicatedClip)));
+            _duplicatedAnimations[motion] = wrapped;
+            return wrapped;
         }
 
         private void AddBranch(string modeId, IBranch branch)
@@ -600,7 +591,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                     }
                     else
                     {
-                        branch.SetAnimation(GetDuplicatedAnimation(item.transition.destinationState.motion), BranchAnimationType.Base);
+                        branch.SetAnimation(GetFaceAnimation(item.transition.destinationState.motion), BranchAnimationType.Base);
                     }
 
                     mode.Add(branch);

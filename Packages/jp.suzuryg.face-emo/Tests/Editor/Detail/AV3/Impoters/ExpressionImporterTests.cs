@@ -55,7 +55,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 
             var importedPatterns = _importer.ImportExpressionPatterns(avartarDescriptor);
             Assert.That(importedPatterns.Count, Is.EqualTo(1));
-            Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(12));
+            Assert.That(importedPatterns[0].Branches.Count, Is.EqualTo(13));
 
             // animations
             var dislike = AssertDislikeClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/dislike.anim"));
@@ -67,9 +67,10 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var wink2 = AssertWinkLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink_(2).anim"));
             var zito = AssertZitoClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
             var zito2 = AssertZitoClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito_(2).anim"));
-            var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
-            var subJoy = AssertSubJoy(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sub_joy.anim"));
+            var close = AssertCloseLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
+            var subJoy = AssertSubJoyLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sub_joy.anim"));
             var angry = AssertAngryClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/angry.anim"));
+            var fakeBlink = AssertFakeBlinkClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/blink_2frame.anim"));
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -92,7 +93,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(mode.MouthTrackingControl, Is.EqualTo(MouthTrackingControl.Tracking));
             Assert.That(mode.BlinkEnabled, Is.EqualTo(true));
             Assert.That(mode.MouthMorphCancelerEnabled, Is.EqualTo(true));
-            Assert.That(mode.Branches.Count, Is.EqualTo(12));
+            Assert.That(mode.Branches.Count, Is.EqualTo(13));
 
             // branches
             Assert.That(mode.Branches[0].Conditions.Count, Is.EqualTo(1));
@@ -129,6 +130,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             AssertNormalBranch(mode.Branches[10], Hand.Left, HandGesture.ThumbsUp, wink, false, false);
 
             AssertUnusedBranch(mode.Branches[11], angry, true, true);
+            // TODO: Exclude this branch
+            AssertUnusedBranch(mode.Branches[12], fakeBlink, true, true);
 
             var importedClips = _importer.ImportOptionalClips(avartarDescriptor);
             Assert.That(importedClips.blink, Is.Null);
@@ -173,7 +176,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var surprised = AssertSurprizedClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
             var wink = AssertWinkClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
             var zito = AssertZitoClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/zito.anim"));
-            var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
+            var close = AssertCloseLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -269,9 +272,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             var sorrow = AssertSorrowClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/sorrow.anim"));
             var surprised = AssertSurprizedClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/surprised.anim"));
             var wink = AssertWinkClone(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/wink.anim"));
-            var close = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
-            var closeFromHalf = AssertClose(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half.anim"));
-            var closeFromHalfBase = AssertCloseHalf(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half_Base.anim"));
+            var close = AssertCloseLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close.anim"));
+            var closeFromHalf = AssertCloseLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half.anim"));
+            var closeFromHalfBase = AssertCloseHalfLastFrame(AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDirPath + "/close_from_half_Base.anim"));
 
             // settings
             Assert.That(_av3Setting.UseBlinkClip, Is.EqualTo(false));
@@ -412,7 +415,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_joy")), Is.EqualTo(100));
 
@@ -424,7 +427,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_angry")), Is.EqualTo(100));
 
@@ -436,7 +439,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_sorrow")), Is.EqualTo(100));
 
@@ -448,7 +451,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_fun")), Is.EqualTo(100));
 
@@ -460,7 +463,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_zito")), Is.EqualTo(100));
 
@@ -472,7 +475,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_wink")), Is.EqualTo(100));
 
@@ -496,7 +499,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_surprised")), Is.EqualTo(100));
 
@@ -508,14 +511,14 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             Assert.That(clip.isLooping, Is.EqualTo(true));
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
-            Assert.That(bindings.Length, Is.EqualTo(8));
+            Assert.That(bindings.Length, Is.EqualTo(1));
 
             Assert.That(AV3TestUtility.GetBlendShapeValue(clip, new BlendShape("body_face", "face_dislike")), Is.EqualTo(100));
 
             return clip;
         }
 
-        private static AnimationClip AssertCloseHalf(AnimationClip clip)
+        private static AnimationClip AssertCloseHalfLastFrame(AnimationClip clip)
         {
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
@@ -527,7 +530,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             return clip;
         }
 
-        private static AnimationClip AssertClose(AnimationClip clip)
+        private static AnimationClip AssertCloseLastFrame(AnimationClip clip)
         {
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
@@ -539,7 +542,18 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             return clip;
         }
 
-        private static AnimationClip AssertSubJoy(AnimationClip clip)
+        // TODO: Exclude this clip
+        private static AnimationClip AssertFakeBlinkClone(AnimationClip clip)
+        {
+            Assert.That(clip.isLooping, Is.EqualTo(true));
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            Assert.That(bindings.Length, Is.EqualTo(1));
+
+            return clip;
+        }
+
+        private static AnimationClip AssertSubJoyLastFrame(AnimationClip clip)
         {
             Assert.That(clip.isLooping, Is.EqualTo(false));
 
