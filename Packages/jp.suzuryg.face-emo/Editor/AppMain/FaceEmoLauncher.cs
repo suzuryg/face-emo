@@ -360,6 +360,16 @@ namespace Suzuryg.FaceEmo.AppMain
                 var importedClips = expressionImporter.ImportOptionalClips(avatarDescriptor);
                 var importedContacts = contactImporter.Import(avatarDescriptor);
 
+                // confirm
+                if (importedContacts.Any() && !OptoutableDialog.Show(DomainConstants.SystemName,
+                        LocalizationSetting.InsertLineBreak(localizationTable
+                            .ExpressionImporter_Message_EnableCotactGimmicks),
+                        localizationTable.Common_Enable, localizationTable.Common_DontEnable))
+                {
+                    contactImporter.Clear();
+                    importedContacts = new List<VRCContactReceiver>();
+                }
+
                 var needsPrefix = FxParameterChecker.CheckPrefixNeeds(avatarDescriptor);
                 av3Setting.AddParameterPrefix = needsPrefix;
 

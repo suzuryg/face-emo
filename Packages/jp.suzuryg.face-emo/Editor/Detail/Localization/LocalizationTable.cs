@@ -18,6 +18,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string Common_Enabled = "Enabled";
         public string Common_Disabled = "Disabled";
         public string Common_Colon = ": ";
+        public string Common_Enable = "Enable";
+        public string Common_DontEnable = "Don’t enable";
 
         public string Common_Neutral = "Neutral";
         public string Common_Fist = "Fist";
@@ -390,6 +392,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "For example, facial expressions of the left and right hands are not automatically synthesized, so the post-composite facial expressions must be created in the gesture table.";
         public string ExpressionImporter_Message_OptionalSettingsImported = "The following optional settings were imported from the avatar.";
         public string ExpressionImporter_Message_NoOptionalSettings = "No importable optional settings were found.";
+        public string ExpressionImporter_Message_EnableCotactGimmicks =
+            "Detected contact gimmicks on the avatar. Would you like to enable it?\nIf you want to disable it later, open \"Optional Settings\" -> \"Contact Settings\", and press the \"–\" button to clear the value.";
         public string ExpressionImporter_Info_ChangeOptionalSettings = "If you want to change the optional settings, select the following object in the hierarchy and change the settings from the inspector.";
 
         public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please see the console for more details.";
