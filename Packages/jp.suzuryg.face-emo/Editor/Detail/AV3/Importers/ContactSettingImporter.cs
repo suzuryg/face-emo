@@ -118,6 +118,11 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
             return validContacts;
         }
 
+        public void Clear()
+        {
+            _av3Setting.ContactReceivers.Clear();
+        }
+
         private List<string> GetUsedContactParams(AnimatorStateMachine stateMachine, IEnumerable<string> contactParams)
         {
             IEnumerable<string> usedParams = new List<string>();
