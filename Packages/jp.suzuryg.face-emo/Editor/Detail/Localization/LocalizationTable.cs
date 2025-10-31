@@ -397,6 +397,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionImporter_Info_ChangeOptionalSettings = "If you want to change the optional settings, select the following object in the hierarchy and change the settings from the inspector.";
 
         public string ErrorHandler_Message_ErrorOccured = "An error has occurred. Please see the console for more details.";
+        public string ErrorHandler_Message_CompileErrorExists =
+            "FaceEmo isn’t working properly because there are errors in your project. Please press Clear in the Console tab and fix any remaining errors.";
 
         public string ExMenu_EmoteSelect = "Emote Select";
         public string ExMenu_Setting = "Settings";

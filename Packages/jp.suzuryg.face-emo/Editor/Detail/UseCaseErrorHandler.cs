@@ -118,8 +118,13 @@ namespace Suzuryg.FaceEmo.Detail
             generateFxPresenter.Observable.Synchronize().Subscribe(x =>
             {
                 if (x.generateFxResult == GenerateFxResult.Succeeded) return;
+
+                var message = x.generateFxResult == GenerateFxResult.CompileErrorExists
+                    ? localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_CompileErrorExists
+                    : localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured;
+
                 ReadableErrorWindow.Open(DomainConstants.SystemName,
-                    $"{localizationSetting.GetCurrentLocaleTable().ErrorHandler_Message_ErrorOccured}\n{x.generateFxResult.GetType().Name}: {x.generateFxResult}",
+                    $"{message}\n{x.generateFxResult.GetType().Name}: {x.generateFxResult}",
                     x.errorMessage);
                 if (!string.IsNullOrEmpty(x.errorMessage)) Debug.LogError(x.errorMessage);
             }).AddTo(_disposables);
