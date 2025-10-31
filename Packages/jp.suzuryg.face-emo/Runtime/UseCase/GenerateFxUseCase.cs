@@ -1,6 +1,7 @@
 ﻿using Suzuryg.FaceEmo.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 
 namespace Suzuryg.FaceEmo.UseCase
@@ -38,6 +39,7 @@ namespace Suzuryg.FaceEmo.UseCase
         MenuDoesNotExist,
         ArgumentNull,
         Error,
+        CompileErrorExists,
     }
 
     public class GenerateFxPresenter : IGenerateFxPresenter
@@ -74,6 +76,8 @@ namespace Suzuryg.FaceEmo.UseCase
 
         public void Handle(string menuId, IEnumerable<string> editablePrefabPaths)
         {
+            var errorMessages = new List<string>();
+            UnityEngine.Application.logMessageReceived += OnLogMessageReceived;
             try
             {
                 if (menuId is null)
@@ -97,7 +101,20 @@ namespace Suzuryg.FaceEmo.UseCase
             }
             catch (Exception ex)
             {
-                _generateFxPresenter.Complete(GenerateFxResult.Error, ex.ToString());
+                var compileErrorExists = errorMessages.Any(x =>
+                    x.StartsWith("Please fix compile errors", StringComparison.OrdinalIgnoreCase));
+                var result = compileErrorExists ? GenerateFxResult.CompileErrorExists : GenerateFxResult.Error;
+                _generateFxPresenter.Complete(result, ex.ToString());
+            }
+            finally
+            {
+                UnityEngine.Application.logMessageReceived -= OnLogMessageReceived;
+            }
+            return;
+
+            void OnLogMessageReceived(string condition, string stackTrace, UnityEngine.LogType type)
+            {
+                if (type == UnityEngine.LogType.Error) errorMessages.Add(condition);
             }
         }
     }
