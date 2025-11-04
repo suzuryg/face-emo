@@ -1,16 +1,16 @@
 [submodule "External/combo-gesture-expressions-av3"]
 	path = External/combo-gesture-expressions-av3
-	url = git@github.com:suzuryg/combo-gesture-expressions-av3.git
+	url = https://github.com/suzuryg/combo-gesture-expressions-av3.git
 [submodule "External/av3-animator-as-code"]
 	path = External/av3-animator-as-code
-	url = git@github.com:suzuryg/av3-animator-as-code.git
+	url = https://github.com/suzuryg/av3-animator-as-code.git
 [submodule "External/UniRx"]
 	path = External/UniRx
-	url = git@github.com:suzuryg/UniRx.git
+	url = https://github.com/suzuryg/UniRx.git
 [submodule "External/Extenject"]
 	path = External/Extenject
-	url = git@github.com:suzuryg/Extenject.git
+	url = https://github.com/svermeulen/Extenject.git
 [submodule "External/VPMPackageAutoInstaller"]
 	path = External/VPMPackageAutoInstaller
-	url = git@github.com:suzuryg/VPMPackageAutoInstaller.git
+	url = https://github.com/suzuryg/VPMPackageAutoInstaller.git
 	branch = face-emo
