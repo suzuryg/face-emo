@@ -7,9 +7,6 @@
 [submodule "External/UniRx"]
 	path = External/UniRx
 	url = https://github.com/suzuryg/UniRx.git
-[submodule "External/Extenject"]
-	path = External/Extenject
-	url = https://github.com/svermeulen/Extenject.git
 [submodule "External/VPMPackageAutoInstaller"]
 	path = External/VPMPackageAutoInstaller
 	url = https://github.com/suzuryg/VPMPackageAutoInstaller.git
