@@ -1,35 +1,35 @@
 ---
 sidebar_position: 6
-sidebar_label: 撫でられたときの表情を設定する
+sidebar_label: 设置被抚摸时的表情
 ---
 
-# 撫でられたときの表情を設定する
+# 设置被抚摸时的表情
 
-下記の手順で、特定の場所に触れられたときの表情を設定できます。
+可以按照以下步骤，设置当特定部位被触碰时所触发的表情。
 
-Projectビューで右クリックして「Create」→「FaceEmo_EmoteOverrideExample」を選ぶと、PrefabとAnimatorControllerが作成されます。
+在 Project 视图中右键点击，选择「Create」→「FaceEmo_EmoteOverrideExample」，会生成 Prefab 和 AnimatorController。
 
-![FaceEmo_EmoteOverrideExample実行](create_prefab.png)
+![执行 FaceEmo_EmoteOverrideExample](create_prefab.png)
 
-![PrefabとAnimatorController](create_prefab2.png)
+![Prefab 与 AnimatorController](create_prefab2.png)
 
-作成されたAnimatorControllerを開き、「ACTIVE」をダブルクリックします。
+打开生成的 AnimatorController，双击「ACTIVE」。
 
-![Activeをダブルクリック](select_active.png)
+![双击 Active](select_active.png)
 
-「NadeNade」をクリックし、「Motion」に好きな表情アニメーションをセットします。
+点击「NadeNade」，在「Motion」中设置你想使用的表情动画。
 
-![表情アニメーションをセット](select_nadenade.png)
+![设置表情动画](select_nadenade.png)
 
-Prefabをヒエラルキーに置き、「FaceEmoPrefab」の中に配置します。  
-この状態でアバターをアップロードすると、頭に他プレイヤーの手が触れたときに表情が上書きされます。
+将 Prefab 放入 Hierarchy，并放置在「FaceEmoPrefab」内部。  
+保持此状态上传 Avatar 后，当其他玩家的手触碰到头像部时，表情将会被覆盖。
 
-![Prefabを配置](deploy_prefab.png)
+![放置 Prefab](deploy_prefab.png)
 
 :::tip
-「FaceEmoPrefab」がアバター内に存在しない場合は、先に表情メニューをアバターに適用してください。
+如果 Avatar 中不存在「FaceEmoPrefab」，请先将表情菜单应用到 Avatar 上。
 :::
 
 :::tip
-FaceEmo_EmoteOverrideExampleをベースにして改変することにより、頭以外にもContactを設定することができます。
+以 FaceEmo_EmoteOverrideExample 为基础进行修改，也可以为除头部外的部位设置 Contact。
 :::

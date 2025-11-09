@@ -1,8 +1,8 @@
 ---
 sidebar_position: 3
-sidebar_label: リファレンス
+sidebar_label: 参考资料
 ---
 
-# リファレンス
+# 参考资料
 
-FaceEmoの機能や構成要素の詳細を説明します。
+本节详细说明 **FaceEmo** 的功能与组成要素。

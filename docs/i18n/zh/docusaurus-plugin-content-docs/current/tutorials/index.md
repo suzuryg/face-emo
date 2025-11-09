@@ -1,12 +1,12 @@
 ---
 sidebar_position: 1
-sidebar_label: チュートリアル
+sidebar_label: 教程
 ---
 
-# チュートリアル
+# 教程
 
-FaceEmoの基本的な使い方を説明します。
+本节介绍 **FaceEmo** 的基本使用方法。
 
-* [簡単な表情メニューを作る](simple-menu/)
-* [両手のジェスチャーの組み合わせを設定する](complex-menu/)
-* [たくさんの表情モードを作る](many-modes/)
+* [创建一个简单的表情菜单](simple-menu/)
+* [设置双手手势组合](complex-menu/)
+* [创建多个表情模式](many-modes/)
