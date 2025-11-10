@@ -86,6 +86,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             {
                 return AssetDatabase.LoadAssetAtPath<LocalizationTable>($"{DetailConstants.LocalizationDirectory}/ja_JP.asset");
             }
+            else if (locale == Locale.zh_CN)
+            {
+                return AssetDatabase.LoadAssetAtPath<LocalizationTable>($"{DetailConstants.LocalizationDirectory}/zh_CN.asset");
+            }
             else
             {
                 // en_US has the table in source code, not asset.
@@ -101,6 +105,10 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             if (currentCulture.Name == "ja-JP")
             {
                 return Locale.ja_JP;
+            }
+            else if (currentCulture.Name.StartsWith("zh"))
+            {
+                return Locale.zh_CN;
             }
             else
             {

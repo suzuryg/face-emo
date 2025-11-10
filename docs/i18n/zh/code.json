@@ -1,0 +1,71 @@
+{
+  "Download (BOOTH)": {
+    "message": "ダウンロード (BOOTH)"
+  },
+  "Download (VCC)": {
+    "message": "ダウンロード (VCC)"
+  },
+  "Docs": {
+    "message": "マニュアル"
+  },
+  "Documentation": {
+    "message": "マニュアル"
+  },
+  "Effortless Emote Creation": {
+    "message": "かんたん表情作成"
+  },
+  "Easily create trigger winks.": {
+    "message": "トリガーウィンクもサクッと完了。"
+  },
+  "Switch lip sync on and off with a single click.": {
+    "message": "リップシンクのオンオフもボタン一つ。"
+  },
+  "Of course, editing is a breeze.": {
+    "message": "もちろん、編集もらくちん。"
+  },
+  "Easy Management": {
+    "message": "らくらく管理"
+  },
+  "List display for facial expression patterns.": {
+    "message": "表情パターンをリスト表示。"
+  },
+  "Manage combinations of gestures in a table.": {
+    "message": "ジェスチャーの組み合わせも表管理。"
+  },
+  "Freedom to Switch": {
+    "message": "切り替え自由"
+  },
+  "Easily switch between facial expression patterns.": {
+    "message": "表情パターンは Ex Menu で切り替え簡単。"
+  },
+  "Use different expressions for different occasions!": {
+    "message": "TPOで使い分け！"
+  },
+  "The images in this document are made using the following assets." : {
+    "message": "本ドキュメントの画像には、下記のアセットを使用しています。"
+  },
+  "Moe avatar (by Kyubi closet)" : {
+    "message": "オリジナル3Dモデル「萌」（キュビクローゼット様）"
+  },
+  "The video in this document is made using the following assets." : {
+    "message": "本ドキュメントの動画には、下記のアセットを使用しています。"
+  },
+  "Gesture Manager (by BlackStartx)" : {
+    "message": "Gesture Manager（BlackStartx様）"
+  },
+  "Cross Discs Beach (by NNLogic)" : {
+    "message": "Cross Discs Beach (NNLogic様)"
+  },
+  "Simple (by ryuku)" : {
+    "message": "Simple（リュク様）"
+  },
+  "SappmeBeer (by DEMITASS－KUN)" : {
+    "message": "ぽめぷろっぷシリーズ　さっぽめくろびーる（DEMITASS－KUN様）"
+  },
+  "To the Rainbow's Root (by BGMer)" : {
+    "message": "虹の根本まで（BGMer様）"
+  },
+  "Wave (by VSQ plus+)" : {
+    "message": "波（VSQ plus+様）"
+  }
+}

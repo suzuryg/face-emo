@@ -4,5 +4,6 @@
     {
         ja_JP,
         en_US,
+        zh_CN,
     }
 }
