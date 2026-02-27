@@ -265,15 +265,15 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AddConfig_Default = "Default Value";
         public string InspectorView_AddConfig_BlinkOff = "Blink OFF";
         public string InspectorView_AddConfig_DanceGimmick = "Dance Gimmick";
+        public string InspectorView_AddConfig_EmoteLock = "Gesture Lock";
         public string InspectorView_AddConfig_ContactLock = "Contact Emote Lock";
         public string InspectorView_AddConfig_Override = "Emote Override";
         public string InspectorView_AddConfig_Voice = "Do Not Transition When Speaking";
-        public string InspectorView_AddConfig_EmoteLock = "Gesture Lock";
-        public string InspectorView_AddConfig_ModeSwitch = "Expression Patterns Choice";
         public string InspectorView_AddConfig_HandPattern = "Gesture Settings";
         public string InspectorView_AddConfig_Controller = "Controller Type";
 
         public string InspectorView_AvatarApplicationSetting = "Avatar Application Settings";
+        public string InspectorView_ModeSwitch = "Expression Patterns Choice";
         public string InspectorView_EmoteSelect = "Generate Emote Select Menu";
         public string InspectorView_EmoteSelect_UseFolderInsteadOfPager = "Automatically Create Folders When More Than 8 Expressions";
         public string InspectorView_SmoothAnalogFist = "Smooth Analog Fist";
@@ -315,8 +315,6 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Tooltip_ExMenu = "You can specify which settings to add to the ExpressionMenu. " +
             "You can reduce the usage of Expression Parameter by reducing the settings.";
         public string InspectorView_Tooltip_ExMenu_EmoteLock = "While this is ON, you can fix the expression.";
-        public string InspectorView_Tooltip_ExMenu_ModeSwitch = "While this is ON, toggles for different expression patterns are generated. " + 
-            "This should only be disabled if you plan to switch expression pattern manually";
         public string InspectorView_Tooltip_ExMenu_BlinkOff = "While this is ON, you can disable blinking.";
         public string InspectorView_Tooltip_ExMenu_Dance = "While this is ON, your expression will move in sync with the dance gimmick. " +
             "Since the FX Layer's functions will be disabled, it will return to the default state if you're using costume switches, etc.";
@@ -335,6 +333,8 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_Tooltip_ExMenu_Controller_Quest = "Disable expression changes by the 'Open' gesture (treated as Neutral).";
         public string InspectorView_Tooltip_ExMenu_Controller_Index = "Disable expression changes by the 'Fist' gesture (treated as Neutral).";
         public string InspectorView_Tooltip_Application = "You can change the settings when applying the expression menu to the avatar.";
+        public string InspectorView_Tooltip_ModeSwitch = "While this is ON, toggles for different expression patterns are generated. " + 
+            "This should only be disabled if you plan to switch expression pattern manually";
         public string InspectorView_Tooltip_Application_EmoteSelect = "If disabled, the number of expression patterns that can be registered in the Expression Menu is increased by one.";
         public string InspectorView_Tooltip_Application_EmoteSelect_UseFolderInsteadOfPager = "Automatically creates folders and splits expressions when there are more than 8. When disabled, VRChat automatically divides the menu into pages and uses a “More” button for page navigation.";
         public string InspectorView_Tooltip_Defaults = "You can change the settings values right after creating expression patterns or expressions.";

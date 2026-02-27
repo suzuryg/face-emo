@@ -1230,7 +1230,7 @@ namespace Suzuryg.FaceEmo.Detail.View
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), label);
             EditorGUIUtility.labelWidth = oldLabelWidth;
 
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ModeSwitch)), _localizationTable.InspectorView_AddConfig_ModeSwitch, _localizationTable.InspectorView_Tooltip_ExMenu_ModeSwitch);
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ModeSwitch)), _localizationTable.InspectorView_ModeSwitch, _localizationTable.InspectorView_Tooltip_ModeSwitch);
 
             var emoteSelect = _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteSelect));
             TogglePropertyField(emoteSelect, _localizationTable.InspectorView_EmoteSelect,
