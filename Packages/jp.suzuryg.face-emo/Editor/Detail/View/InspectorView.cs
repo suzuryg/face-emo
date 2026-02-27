@@ -1230,6 +1230,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), label);
             EditorGUIUtility.labelWidth = oldLabelWidth;
 
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ModeSwitch)), _localizationTable.InspectorView_AddConfig_ModeSwitch, _localizationTable.InspectorView_Tooltip_ExMenu_ModeSwitch);
+
             var emoteSelect = _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteSelect));
             TogglePropertyField(emoteSelect, _localizationTable.InspectorView_EmoteSelect,
                 tooltip: _localizationTable.InspectorView_Tooltip_Application_EmoteSelect);
@@ -1239,8 +1241,6 @@ namespace Suzuryg.FaceEmo.Detail.View
                     tooltip: _localizationTable.InspectorView_Tooltip_Application_EmoteSelect_UseFolderInsteadOfPager,
                     space: ToggleWidth);
 
-            
-            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ModeSwitch)), _localizationTable.InspectorView_AddConfig_ModeSwitch, _localizationTable.InspectorView_Tooltip_ExMenu_ModeSwitch);
             TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.GenerateExMenuThumbnails)), _localizationTable.InspectorView_GenerateModeThumbnails);
             using (new EditorGUI.DisabledScope(!_av3Setting.FindProperty(nameof(AV3Setting.GenerateExMenuThumbnails)).boolValue))
             using (new EditorGUILayout.HorizontalScope())
