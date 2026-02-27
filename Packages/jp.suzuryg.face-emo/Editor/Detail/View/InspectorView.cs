@@ -1173,6 +1173,7 @@ namespace Suzuryg.FaceEmo.Detail.View
 
             Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_BlinkOff,      _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_BlinkOff)),        null,                                                                   _localizationTable.InspectorView_Tooltip_ExMenu_BlinkOff,       labelWidth);
             Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_DanceGimmick,  _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_DanceGimmick)),    null,                                                                   _localizationTable.InspectorView_Tooltip_ExMenu_Dance,          labelWidth);
+            Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_EmoteLock,     _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteLock)),       null,                                                                   _localizationTable.InspectorView_Tooltip_ExMenu_EmoteLock,      labelWidth);
             Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_ContactLock,   _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ContactLock)),     _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_ContactLock)),  _localizationTable.InspectorView_Tooltip_ExMenu_ContactLock,    labelWidth);
             Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_Override,      _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Override)),        _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_Override)),     _localizationTable.InspectorView_Tooltip_ExMenu_Override,       labelWidth);
             Field_ExpressionsMenuItem(_localizationTable.InspectorView_AddConfig_Voice,         _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_Voice)),           _av3Setting.FindProperty(nameof(AV3Setting.DefaultValue_Voice)),        _localizationTable.InspectorView_Tooltip_ExMenu_Voice,          labelWidth);
@@ -1228,6 +1229,8 @@ namespace Suzuryg.FaceEmo.Detail.View
             EditorGUIUtility.labelWidth = Math.Max(GUI.skin.label.CalcSize(label).x, EditorGUIUtility.labelWidth);
             EditorGUILayout.PropertyField(_av3Setting.FindProperty(nameof(AV3Setting.TransitionDurationSeconds)), label);
             EditorGUIUtility.labelWidth = oldLabelWidth;
+
+            TogglePropertyField(_av3Setting.FindProperty(nameof(AV3Setting.AddConfig_ModeSwitch)), _localizationTable.InspectorView_ModeSwitch, _localizationTable.InspectorView_Tooltip_ModeSwitch);
 
             var emoteSelect = _av3Setting.FindProperty(nameof(AV3Setting.AddConfig_EmoteSelect));
             TogglePropertyField(emoteSelect, _localizationTable.InspectorView_EmoteSelect,
