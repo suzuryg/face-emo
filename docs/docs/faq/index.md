@@ -39,3 +39,7 @@ If you are experiencing any of the following problems, you may be able to resolv
 
 - Width of each view is not adjusted correctly.
 - Expression thumbnails are not rendered.
+
+## How to automatically organize the emote select menu into folders
+
+Please enable "Optional Settings" -> "Avatar Application Settings" -> "Automatically Create Folders When More Than 8 Expressions".
