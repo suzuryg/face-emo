@@ -229,14 +229,14 @@ MonoBehaviour:
   InspectorView_AddConfig_Default: "\u9ED8\u8BA4\u503C"
   InspectorView_AddConfig_BlinkOff: "\u7728\u773COFF"
   InspectorView_AddConfig_DanceGimmick: "\u821E\u8E48Gimmick"
-  InspectorView_AddConfig_EmoteLock: Gesture Lock
+  InspectorView_AddConfig_EmoteLock: "\u8868\u60C5\u9501\u5B9A"
   InspectorView_AddConfig_ContactLock: "Contact\u8868\u60C5\u9501\u5B9A"
   InspectorView_AddConfig_Override: "\u8868\u60C5\u8986\u76D6"
   InspectorView_AddConfig_Voice: "\u8BF4\u8BDD\u65F6\u4E0D\u5207\u6362\u8868\u60C5"
   InspectorView_AddConfig_HandPattern: "\u624B\u52BF\u8BBE\u7F6E"
   InspectorView_AddConfig_Controller: "\u63A7\u5236\u5668\u5207\u6362"
   InspectorView_AvatarApplicationSetting: "\u89D2\u8272\u5E94\u7528\u8BBE\u7F6E"
-  InspectorView_ModeSwitch: Expression Patterns Choice
+  InspectorView_ModeSwitch: "\u751F\u6210\u8868\u60C5\u6A21\u5F0F\u9009\u62E9\u83DC\u5355"
   InspectorView_EmoteSelect: "\u751F\u6210\u8868\u60C5\u9009\u62E9\u83DC\u5355"
   InspectorView_EmoteSelect_UseFolderInsteadOfPager: "\u8868\u60C5\u8D858\u4E2A\u65F6\u81EA\u52A8\u751F\u6210\u6587\u4EF6\u5939"
   InspectorView_SmoothAnalogFist: "\u5E73\u6ED1\u6273\u673A\u6309\u538B\u91CF"
@@ -279,9 +279,7 @@ MonoBehaviour:
   InspectorView_Tooltip_ExMenu_Controller_Quest: "\u7981\u7528Open\u624B\u52BF\u5207\u6362\u8868\u60C5\uFF08\u89C6\u4E3ANeutral\uFF09\u3002"
   InspectorView_Tooltip_ExMenu_Controller_Index: "\u7981\u7528Fist\u624B\u52BF\u5207\u6362\u8868\u60C5\uFF08\u89C6\u4E3ANeutral\uFF09\u3002"
   InspectorView_Tooltip_Application: "\u53EF\u66F4\u6539\u5C06\u8868\u60C5\u83DC\u5355\u5E94\u7528\u5230\u89D2\u8272\u65F6\u7684\u8BBE\u7F6E\u3002"
-  InspectorView_Tooltip_ModeSwitch: While this is ON, toggles for different expression
-    patterns are generated. This should only be disabled if you plan to switch expression
-    pattern manually
+  InspectorView_Tooltip_ModeSwitch: "\u7981\u7528\u540E\uFF0C\u5C06\u4E0D\u518D\u751F\u6210\u8868\u60C5\u6A21\u5F0F\u9009\u62E9\u83DC\u5355\u3002\u8BF7\u4EC5\u5728\u4ECE\u5916\u90E8\u63A7\u5236FaceEmo\u7684\u8868\u60C5\u6A21\u5F0F\u65F6\u5C06\u5176\u7981\u7528\u3002"
   InspectorView_Tooltip_Application_EmoteSelect: "\u7981\u7528\u540E\uFF0C\u8868\u60C5\u83DC\u5355\u53EF\u6CE8\u518C\u7684\u8868\u60C5\u6A21\u5F0F\u6570\u589E\u52A01\u3002"
   InspectorView_Tooltip_Application_EmoteSelect_UseFolderInsteadOfPager: "\u8868\u60C5\u8D858\u4E2A\u65F6\u81EA\u52A8\u5206\u6587\u4EF6\u5939\u3002\u7981\u7528\u65F6VRChat\u4F1A\u81EA\u52A8\u5206\u9875\uFF0C\u901A\u8FC7\u201CMore\u201D\u6309\u94AE\u5207\u6362\u3002"
   InspectorView_Tooltip_Defaults: "\u53EF\u66F4\u6539\u65B0\u5EFA\u8868\u60C5\u6A21\u5F0F\u6216\u8868\u60C5\u65F6\u7684\u9ED8\u8BA4\u8BBE\u7F6E\u503C\u3002"
