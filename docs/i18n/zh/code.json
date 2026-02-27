@@ -1,71 +1,71 @@
 {
   "Download (BOOTH)": {
-    "message": "ダウンロード (BOOTH)"
+    "message": "下载 (BOOTH)"
   },
   "Download (VCC)": {
-    "message": "ダウンロード (VCC)"
+    "message": "下载 (VCC)"
   },
   "Docs": {
-    "message": "マニュアル"
+    "message": "使用手册"
   },
   "Documentation": {
-    "message": "マニュアル"
+    "message": "使用手册"
   },
   "Effortless Emote Creation": {
-    "message": "かんたん表情作成"
+    "message": "轻松创建表情"
   },
   "Easily create trigger winks.": {
-    "message": "トリガーウィンクもサクッと完了。"
+    "message": "轻松完成触发式 Wink。"
   },
   "Switch lip sync on and off with a single click.": {
-    "message": "リップシンクのオンオフもボタン一つ。"
+    "message": "一键开启/关闭唇形同步。"
   },
   "Of course, editing is a breeze.": {
-    "message": "もちろん、編集もらくちん。"
+    "message": "当然，编辑也十分轻松。"
   },
   "Easy Management": {
-    "message": "らくらく管理"
+    "message": "便捷管理"
   },
   "List display for facial expression patterns.": {
-    "message": "表情パターンをリスト表示。"
+    "message": "列表显示表情模式。"
   },
   "Manage combinations of gestures in a table.": {
-    "message": "ジェスチャーの組み合わせも表管理。"
+    "message": "通过表格管理手势组合。"
   },
   "Freedom to Switch": {
-    "message": "切り替え自由"
+    "message": "自由切换"
   },
   "Easily switch between facial expression patterns.": {
-    "message": "表情パターンは Ex Menu で切り替え簡単。"
+    "message": "通过 Ex Menu 轻松切换表情模式。"
   },
   "Use different expressions for different occasions!": {
-    "message": "TPOで使い分け！"
+    "message": "根据不同场合灵活搭配使用！"
   },
   "The images in this document are made using the following assets." : {
-    "message": "本ドキュメントの画像には、下記のアセットを使用しています。"
+    "message": "本文档的图片使用了以下资产："
   },
   "Moe avatar (by Kyubi closet)" : {
-    "message": "オリジナル3Dモデル「萌」（キュビクローゼット様）"
+    "message": "原创3D模型「萌」（Kyubi closet）"
   },
   "The video in this document is made using the following assets." : {
-    "message": "本ドキュメントの動画には、下記のアセットを使用しています。"
+    "message": "本文档的视频使用了以下资产："
   },
   "Gesture Manager (by BlackStartx)" : {
-    "message": "Gesture Manager（BlackStartx様）"
+    "message": "Gesture Manager（BlackStartx）"
   },
   "Cross Discs Beach (by NNLogic)" : {
-    "message": "Cross Discs Beach (NNLogic様)"
+    "message": "Cross Discs Beach (NNLogic)"
   },
   "Simple (by ryuku)" : {
-    "message": "Simple（リュク様）"
+    "message": "Simple（ryuku）"
   },
   "SappmeBeer (by DEMITASS－KUN)" : {
-    "message": "ぽめぷろっぷシリーズ　さっぽめくろびーる（DEMITASS－KUN様）"
+    "message": "ぽめぷろっぷ系列 さっぽめくろびーる（DEMITASS－KUN）"
   },
   "To the Rainbow's Root (by BGMer)" : {
-    "message": "虹の根本まで（BGMer様）"
+    "message": "虹の根本まで（BGMer）"
   },
   "Wave (by VSQ plus+)" : {
-    "message": "波（VSQ plus+様）"
+    "message": "波（VSQ plus+）"
   }
 }
