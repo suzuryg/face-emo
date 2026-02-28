@@ -17,6 +17,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
 {
     public class ExpressionImporter
     {
+        public bool ForceBlinkDisable { get; set; } = false;
+
         private Domain.Menu _menu;
         private AV3Setting _av3Setting;
         private string _assetDir;
@@ -296,6 +298,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3.Importers
                         break;
                     }
                 }
+                if (ForceBlinkDisable) branch.BlinkEnabled = false;
 
                 // motion
                 if (branch.Conditions.Any(x => x == new Condition(Hand.Left, HandGesture.Fist, ComparisonOperator.Equals)) && transition.destinationState.timeParameterActive)
