@@ -356,8 +356,9 @@ namespace Suzuryg.FaceEmo.AppMain
                 var contactImporter = new ContactSettingImporter(av3Setting);
 
                 // import
-                var importedPatterns = expressionImporter.ImportExpressionPatterns(avatarDescriptor);
                 var importedClips = expressionImporter.ImportOptionalClips(avatarDescriptor);
+                expressionImporter.ForceBlinkDisable = importedClips.blink != null;
+                var importedPatterns = expressionImporter.ImportExpressionPatterns(avatarDescriptor);
                 var importedContacts = contactImporter.Import(avatarDescriptor);
 
                 var fxDisableSwitchExists = FxDisableSwitchDetector.Detect(avatarDescriptor);
