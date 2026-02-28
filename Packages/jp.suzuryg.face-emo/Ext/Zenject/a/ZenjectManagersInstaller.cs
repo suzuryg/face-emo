@@ -1,0 +1,1 @@
+../../../../../External/Extenject/UnityProject/Assets/Plugins/Zenject/Source/Runtime/Install/ZenjectManagersInstaller.cs
