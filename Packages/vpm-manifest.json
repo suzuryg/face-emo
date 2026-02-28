@@ -25,13 +25,13 @@
       "dependencies": {}
     },
     "com.vrchat.base": {
-      "version": "3.10.1",
+      "version": "3.10.2",
       "dependencies": {}
     },
     "com.vrchat.avatars": {
-      "version": "3.10.1",
+      "version": "3.10.2",
       "dependencies": {
-        "com.vrchat.base": "3.10.1"
+        "com.vrchat.base": "3.10.2"
       }
     },
     "vrchat.blackstartx.gesture-manager": {
