@@ -1046,7 +1046,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             if (rootObject == null)
             {
                 rootObject = new GameObject(AV3Constants.MARootObjectName);
-                rootObject.transform.parent = avatarRoot.transform;
+                rootObject.transform.SetParent(avatarRoot.transform, false);
             }
 
             return rootObject;
@@ -1205,7 +1205,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             }
 
             var instantiated = PrefabUtility.InstantiatePrefab(_aV3Setting.MARootObjectPrefab) as GameObject;
-            instantiated.transform.parent = avatarRoot.transform;
+            instantiated.transform.SetParent(avatarRoot.transform, false);
         }
 
         private void InstantiatePrefabs(GameObject rootObject)
@@ -1243,7 +1243,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
 
                 // Instantiate prefab
                 var instantiated = PrefabUtility.InstantiatePrefab(loaded) as GameObject;
-                instantiated.transform.parent = rootObject.transform;
+                instantiated.transform.SetParent(rootObject.transform, false);
                 instantiated.transform.SetAsFirstSibling();
 
 #if USE_MODULAR_AVATAR
