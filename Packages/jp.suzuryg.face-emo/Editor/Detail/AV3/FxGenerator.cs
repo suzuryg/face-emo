@@ -781,6 +781,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var icon = _exMenuThumbnailDrawer.GetThumbnail(animation);
             if (!AssetDatabase.IsMainAsset(icon) && !AssetDatabase.IsSubAsset(icon)) // Do not save icons that have already been generated and error icons
             {
+                icon.wrapMode = TextureWrapMode.Clamp;
                 AssetDatabase.AddObjectToAsset(icon, container);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(container));
