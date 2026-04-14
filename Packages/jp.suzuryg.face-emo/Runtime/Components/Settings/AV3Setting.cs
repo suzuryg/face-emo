@@ -36,6 +36,7 @@ namespace Suzuryg.FaceEmo.Components.Settings
 
         public List<GameObject> AdditionalTransformObjects = new List<GameObject>();
         public List<string> AdditionalTransformObjectPaths = new List<string>();
+        public List<AnimationParameterDefinition> AnimationParameters = new List<AnimationParameterDefinition>();
 
         public bool DisableFxDuringDancing = false;
 

@@ -34,6 +34,11 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             return new TransformDiff(operation, key, value);
         }
 
+        public static ParameterDiff Parameter(OperationType operation, int key, (string name, float value) value)
+        {
+            return new ParameterDiff(operation, key, value);
+        }
+
         internal sealed class BlendShapeDiff : AnimationDifference
         {
             public BlendShape Key { get; }
@@ -66,6 +71,19 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             public TransformProxy Value { get; set; }
 
             internal TransformDiff(OperationType operation, int key, TransformProxy value)
+                : base(operation)
+            {
+                Key = key;
+                Value = value;
+            }
+        }
+
+        internal sealed class ParameterDiff : AnimationDifference
+        {
+            public int Key { get; }
+            public (string name, float value) Value { get; set; }
+
+            internal ParameterDiff(OperationType operation, int key, (string name, float value) value)
                 : base(operation)
             {
                 Key = key;

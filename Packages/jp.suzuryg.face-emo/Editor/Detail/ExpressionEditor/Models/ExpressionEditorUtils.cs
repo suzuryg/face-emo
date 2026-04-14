@@ -79,6 +79,36 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             AnimationUtility.SetEditorCurve(animationClip, binding, null);
         }
 
+        public static float? GetAnimatorParameterValue(AnimationClip animationClip, string parameterName)
+        {
+            if (animationClip == null || string.IsNullOrWhiteSpace(parameterName)) return null;
+            var binding = new EditorCurveBinding
+                { path = string.Empty, propertyName = parameterName, type = typeof(Animator) };
+            var curve = AnimationUtility.GetEditorCurve(animationClip, binding);
+
+            if (curve == null || curve.keys.Length <= 0) return null;
+            return curve.keys[0].value;
+        }
+
+        public static void SetAnimatorParameterValue(AnimationClip animationClip, string parameterName, float value)
+        {
+            if (animationClip == null || string.IsNullOrWhiteSpace(parameterName)) return;
+
+            var curve = new AnimationCurve(new Keyframe(time: 0, value: value));
+            var binding = new EditorCurveBinding
+                { path = string.Empty, propertyName = parameterName, type = typeof(Animator) };
+            AnimationUtility.SetEditorCurve(animationClip, binding, curve);
+        }
+
+        public static void RemoveAnimatorParameterValue(AnimationClip animationClip, string parameterName)
+        {
+            if (animationClip == null || string.IsNullOrWhiteSpace(parameterName)) return;
+
+            var binding = new EditorCurveBinding
+                { path = string.Empty, propertyName = parameterName, type = typeof(Animator) };
+            AnimationUtility.SetEditorCurve(animationClip, binding, null);
+        }
+
         public static TransformProxy GetTransformValue(AnimationClip animationClip, Animator animator, GameObject gameObject)
         {
             var transformPath = AnimationUtility.CalculateTransformPath(gameObject?.transform, animator?.transform);
@@ -191,5 +221,6 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.y", type = typeof(Transform) }, null);
             AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.z", type = typeof(Transform) }, null);
         }
+
     }
 }

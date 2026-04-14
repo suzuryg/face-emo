@@ -18,10 +18,12 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
         public IReadOnlyDictionary<BlendShape, float> FaceBlendShapes => _faceBlendShapes;
         public IReadOnlyDictionary<int, (GameObject target, bool value)> Toggles => _toggles;
         public IReadOnlyDictionary<int, TransformProxy> Transforms => _transforms;
+        public IReadOnlyDictionary<int, string> Parameters => _parameters;
         public IReadOnlyDictionary<BlendShape, float> AnimatedBlendShapes => _animatedBlendShapes;
         public IReadOnlyDictionary<int, (GameObject target, bool value)> AnimatedToggles =>
             _animatedToggles;
         public IReadOnlyDictionary<int, TransformProxy> AnimatedTransforms => _animatedTransforms;
+        public IReadOnlyDictionary<int, (string name, float value)> AnimatedParameters => _animatedParameters;
 
         private readonly AV3Setting _av3Setting;
         private readonly Dictionary<BlendShape, float> _blinkBlendShapes = new();
@@ -29,9 +31,11 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
         private readonly Dictionary<BlendShape, float> _faceBlendShapes = new();
         private readonly Dictionary<int, (GameObject target, bool value)> _toggles = new();
         private readonly Dictionary<int, TransformProxy> _transforms = new();
+        private readonly Dictionary<int, string> _parameters = new();
         private readonly Dictionary<BlendShape, float> _animatedBlendShapes = new();
         private readonly Dictionary<int, (GameObject target, bool value)> _animatedToggles = new();
         private readonly Dictionary<int, TransformProxy> _animatedTransforms = new();
+        private readonly Dictionary<int, (string name, float value)> _animatedParameters = new();
 
         [CanBeNull] private Animator _animator;
         [CanBeNull] private AnimationClip _targetClip;
@@ -55,6 +59,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _lipSyncBlendShapes.Clear();
             _toggles.Clear();
             _transforms.Clear();
+            _parameters.Clear();
 
             // Face mesh blend shapes
             var faceBlendShapes = AV3Utility.GetFaceMeshBlendShapeValues(avatarDescriptor, false, false);
@@ -114,6 +119,17 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
                 var id = gameObject.GetInstanceID();
                 _transforms[id] = TransformProxy.FromGameObject(gameObject);
             }
+
+            // Animator parameters
+            var parameterId = 0;
+            foreach (var parameterName in _av3Setting.AnimationParameters
+                         .Where(x => x != null && !string.IsNullOrWhiteSpace(x.ParameterName))
+                         .Select(x => x.ParameterName)
+                         .Distinct())
+            {
+                _parameters[parameterId] = parameterName;
+                parameterId++;
+            }
         }
 
         public void OpenTargetClip(AnimationClip targetClip)
@@ -123,6 +139,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _animatedBlendShapes.Clear();
             _animatedToggles.Clear();
             _animatedTransforms.Clear();
+            _animatedParameters.Clear();
 
             // Face mesh blend shapes
             var animatedBlendShapes = ExpressionEditorUtils.GetBlendShapeValues(_targetClip, _faceBlendShapes.Keys);
@@ -149,6 +166,16 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
                 if (ExpressionEditorUtils.GetTransformValue(_targetClip, _animator, kvp.Value.GameObject) is
                     { } transform) _animatedTransforms[kvp.Key] = transform;
             }
+
+            // Animator parameters
+            foreach (var kvp in _parameters)
+            {
+                var value = ExpressionEditorUtils.GetAnimatorParameterValue(_targetClip, kvp.Value);
+                if (value.HasValue)
+                {
+                    _animatedParameters[kvp.Key] = (kvp.Value, value.Value);
+                }
+            }
         }
 
         public List<KeyValuePair<BlendShape, float>> AddAllFaceBlendShapes()
@@ -173,5 +200,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
         public void RemoveToggleValue(int id) => _animatedToggles.Remove(id);
         public void SetTransformValue(int id, TransformProxy val) => _animatedTransforms[id] = val;
         public void RemoveTransformValue(int id) => _animatedTransforms.Remove(id);
+        public void SetParameterValue(int id, (string name, float value) value) => _animatedParameters[id] = value;
+        public void RemoveParameterValue(int id) => _animatedParameters.Remove(id);
     }
 }

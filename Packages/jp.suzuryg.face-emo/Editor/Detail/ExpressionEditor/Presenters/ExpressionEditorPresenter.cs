@@ -39,8 +39,8 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Presenters
             _modelFacade.OnThumbnailUpdateRequested.Subscribe(x => _thumbnailUpdateRequests.Add(x)).AddTo(_disposables);
 
             _viewFacade = new PropertyEditorViewFacade(_modelFacade.BlinkBlendShapes, _modelFacade.LipSyncBlendShapes,
-                _modelFacade.FaceBlendShapes, _modelFacade.Toggles, _modelFacade.Transforms,
-                _modelFacade.AnimatedBlendShapes, _modelFacade.AnimatedToggles, _modelFacade.AnimatedTransforms,
+                _modelFacade.FaceBlendShapes, _modelFacade.Toggles, _modelFacade.Transforms, _modelFacade.Parameters,
+                _modelFacade.AnimatedBlendShapes, _modelFacade.AnimatedToggles, _modelFacade.AnimatedTransforms, _modelFacade.AnimatedParameters,
                 expressionEditorSetting, localizationSetting).AddTo(_disposables);
 
             _viewFacade.OnOpenClipRequested.Subscribe(Open).AddTo(_disposables);
@@ -96,6 +96,21 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Presenters
             _viewFacade.OnTransformRemoved.Subscribe(x =>
             {
                 _modelFacade.RemoveTransformValue(x.id, x.value);
+                _viewFacade.RebuildAnimatedPropertyViews();
+            }).AddTo(_disposables);
+
+            _viewFacade.OnParameterValueChanged.Subscribe(x => _modelFacade.SetParameterValue(x.id, x.value))
+                .AddTo(_disposables);
+
+            _viewFacade.OnParameterAdded.Subscribe(x =>
+            {
+                _modelFacade.SetParameterValue(x.id, x.value);
+                _viewFacade.RebuildAnimatedPropertyViews();
+            }).AddTo(_disposables);
+
+            _viewFacade.OnParameterRemoved.Subscribe(x =>
+            {
+                _modelFacade.RemoveParameterValue(x.id, x.name);
                 _viewFacade.RebuildAnimatedPropertyViews();
             }).AddTo(_disposables);
 

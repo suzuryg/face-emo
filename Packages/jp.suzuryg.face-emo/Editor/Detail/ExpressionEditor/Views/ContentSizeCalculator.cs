@@ -22,7 +22,9 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
         private readonly IReadOnlyDictionary<BlendShape, float> _faceBlendShapes;
         private readonly IReadOnlyDictionary<int, (GameObject target, bool value)> _additionalToggles;
         private readonly IReadOnlyDictionary<int, TransformProxy> _additionalTransforms;
+        private readonly IReadOnlyDictionary<int, string> _parameters;
         private readonly IReadOnlyDictionary<BlendShape, float> _animatedBlendShapes;
+        private readonly IReadOnlyDictionary<int, (string name, float value)> _animatedParameters;
 
         private LocalizationTable _loc;
         private IEnumerable<string> _propertyNames = Array.Empty<string>();
@@ -34,13 +36,17 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
         public ContentSizeCalculator(IReadOnlyDictionary<BlendShape, float> faceBlendShapes,
             IReadOnlyDictionary<int, (GameObject target, bool value)> additionalToggles,
             IReadOnlyDictionary<int, TransformProxy> additionalTransforms,
+            IReadOnlyDictionary<int, string> parameters,
             IReadOnlyDictionary<BlendShape, float> animatedBlendShapes,
+            IReadOnlyDictionary<int, (string name, float value)> animatedParameters,
             IReadOnlyLocalizationSetting localizationSetting)
         {
             _faceBlendShapes = faceBlendShapes;
             _additionalToggles = additionalToggles;
             _additionalTransforms = additionalTransforms;
+            _parameters = parameters;
             _animatedBlendShapes = animatedBlendShapes;
+            _animatedParameters = animatedParameters;
             _loc = localizationSetting.Table;
 
             localizationSetting.OnTableChanged.Subscribe(table => _loc = table).AddTo(_disposable);
@@ -56,12 +62,15 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
             _propertyNames = _faceBlendShapes.Select(blendShape => blendShape.Key.Name)
                 .Concat(_additionalToggles.Select(toggle => toggle.Value.target.name))
                 .Concat(_additionalTransforms.Select(transform => transform.Value?.GameObject?.name))
+                .Concat(_parameters.Select(parameter => parameter.Value))
                 .Concat(new[] {
                     _loc.ExpressionEditorView_UncategorizedBlendShapes,
                     _loc.ExpressionEditorView_AddtionalToggleObjects,
-                    _loc.ExpressionEditorView_AddtionalTransformObjects});
+                    _loc.ExpressionEditorView_AddtionalTransformObjects,
+                    _loc.ExpressionEditorView_AnimationParameters});
 
-            _animatedPropertyNames = _animatedBlendShapes.Select(blendShape => blendShape.Key.Name);
+            _animatedPropertyNames = _animatedBlendShapes.Select(blendShape => blendShape.Key.Name)
+                .Concat(_animatedParameters.Select(parameter => parameter.Value.name));
 
             _labelMaxWidth = null;
             _buttonMaxWidth = null;
