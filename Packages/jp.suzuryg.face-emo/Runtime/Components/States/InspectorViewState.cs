@@ -11,6 +11,7 @@ namespace Suzuryg.FaceEmo.Components.States
         public bool IsAddtionalSkinnedMeshesOpened = false;
         public bool IsAddtionalToggleOpened = false;
         public bool IsAddtionalTransformOpened = false;
+        public bool IsAnimationParametersOpened = false;
         public bool IsDanceGimmickOpened = false;
         public bool IsContactOpened = false;
         public bool IsAFKOpened = false;

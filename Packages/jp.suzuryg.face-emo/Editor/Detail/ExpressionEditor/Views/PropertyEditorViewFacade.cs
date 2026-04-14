@@ -30,6 +30,10 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
             _animatedTransformsView.OnValueChanged;
         public IObservable<(int id, TransformProxy value)> OnTransformAdded => _transformsView.OnAdded;
         public IObservable<(int id, TransformProxy value)> OnTransformRemoved => _animatedTransformsView.OnRemoved;
+        public IObservable<(int id, (string name, float value) value)> OnParameterValueChanged =>
+            _animatedParametersView.OnValueChanged;
+        public IObservable<(int id, (string name, float value) value)> OnParameterAdded => _parametersView.OnAdded;
+        public IObservable<(int id, string name)> OnParameterRemoved => _animatedParametersView.OnRemoved;
 
         public bool IsRepaintRequested { get; set; }
 
@@ -39,12 +43,14 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
         private readonly AnimatedBlendShapesView _animatedBlendShapesView;
         private readonly AnimatedTogglesView _animatedTogglesView;
         private readonly AnimatedTransformsView _animatedTransformsView;
+        private readonly AnimatedParametersView _animatedParametersView;
         private readonly HintView _hintView;
 
         private readonly RightHeaderView _rightHeaderView;
         private readonly FaceBlendShapesView _faceBlendShapesView;
         private readonly TogglesView _togglesView;
         private readonly TransformsView _transformsView;
+        private readonly ParametersView _parametersView;
 
         private readonly SerializedObject _expressionEditorSetting;
         private readonly ExpressionEditorStyles _styles = new();
@@ -59,15 +65,17 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
             IReadOnlyDictionary<BlendShape, float> faceBlendShapes,
             IReadOnlyDictionary<int, (GameObject target, bool value)> toggles,
             IReadOnlyDictionary<int, TransformProxy> transforms,
+            IReadOnlyDictionary<int, string> parameters,
             IReadOnlyDictionary<BlendShape, float> animatedBlendShapes,
             IReadOnlyDictionary<int, (GameObject target, bool value)> animatedToggles,
             IReadOnlyDictionary<int, TransformProxy> animatedTransforms,
+            IReadOnlyDictionary<int, (string name, float value)> animatedParameters,
             ExpressionEditorSetting expressionEditorSetting, IReadOnlyLocalizationSetting loc)
         {
             _expressionEditorSetting = new SerializedObject(expressionEditorSetting);
 
             _contentSizeCalculator = new ContentSizeCalculator(faceBlendShapes, toggles,
-                transforms, animatedBlendShapes, loc).AddTo(_disposables);
+                transforms, parameters, animatedBlendShapes, animatedParameters, loc).AddTo(_disposables);
 
             _leftHeaderView = new LeftHeaderView(loc).AddTo(_disposables);
             _animatedBlendShapesView = new AnimatedBlendShapesView(blinkBlendShapes, lipSyncBlendShapes, faceBlendShapes,
@@ -75,6 +83,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
             _animatedTogglesView = new AnimatedTogglesView(animatedToggles, _styles).AddTo(_disposables);
             _animatedTransformsView = new AnimatedTransformsView(animatedTransforms, _styles)
                 .AddTo(_disposables);
+            _animatedParametersView = new AnimatedParametersView(animatedParameters, _styles).AddTo(_disposables);
             _hintView = new HintView(blinkBlendShapes, lipSyncBlendShapes, animatedBlendShapes, loc)
                 .AddTo(_disposables);
 
@@ -86,6 +95,8 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
             _transformsView =
                 new TransformsView(transforms, animatedTransforms, _styles, loc)
                     .AddTo(_disposables);
+            _parametersView =
+                new ParametersView(parameters, animatedParameters, _styles, loc).AddTo(_disposables);
 
             _animatedBlendShapesView.OnRepaintRequested.Subscribe(_ => IsRepaintRequested = true).AddTo(_disposables);
             _rightHeaderView.OnDelimiterChanged.Subscribe(_ => _faceBlendShapesView.RebuildGUI()).AddTo(_disposables);
@@ -113,6 +124,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
             _contentSizeCalculator.RebuildGUI();
             _animatedBlendShapesView.RebuildGUI();
             _animatedTogglesView.RebuildGUI();
+            _animatedParametersView.RebuildGUI();
         }
 
         public Vector2 OnGUI(float windowWidth, float windowHeight)
@@ -135,6 +147,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
                         _animatedBlendShapesView.OnGUI(scope.scrollPosition, _contentSizeCalculator.ViewportHeight);
                         _animatedTogglesView.OnGUI();
                         _animatedTransformsView.OnGUI();
+                        _animatedParametersView.OnGUI();
                         _hintView.OnGUI();
                         _leftScrollPosition = scope.scrollPosition;
                     }
@@ -154,6 +167,7 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Views
                         _faceBlendShapesView.OnGUI();
                         _togglesView.OnGUI();
                         _transformsView.OnGUI();
+                        _parametersView.OnGUI();
                         _rightScrollPosition = scope.scrollPosition;
                     }
                 }

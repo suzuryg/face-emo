@@ -67,6 +67,12 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
         public void RemoveTransformValue(int id, TransformProxy value) =>
             _animationDifferenceQueue.RemoveTransformValue(id, value);
 
+        public void SetParameterValue(int id, (string name, float value) value) =>
+            _animationDifferenceQueue.SetParameterValue(id, value);
+
+        public void RemoveParameterValue(int id, string name) =>
+            _animationDifferenceQueue.RemoveParameterValue(id, name);
+
         private void FlushAnimationDifferences()
         {
             if (_targetClip == null) return;
@@ -84,6 +90,9 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
                         break;
                     case AnimationDifference.TransformDiff transformDiff:
                         SaveTransformDiff(transformDiff);
+                        break;
+                    case AnimationDifference.ParameterDiff parameterDiff:
+                        SaveParameterDiff(parameterDiff);
                         break;
                 }
                 isDirty = true;
@@ -144,6 +153,23 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
                         Undo.RecordObject(_targetClip, $"Remove Transform of {gameObject.name}");
                         ExpressionEditorUtils.RemoveTransformValue(_targetClip, _animator, gameObject);
                         break;
+                }
+            }
+
+            void SaveParameterDiff(AnimationDifference.ParameterDiff diff)
+            {
+                if (string.IsNullOrWhiteSpace(diff.Value.name)) return;
+
+                switch (diff.Operation)
+                {
+                    case AnimationDifference.OperationType.Set:
+                        Undo.RecordObject(_targetClip, $"Set Parameter {diff.Value.name} to {diff.Value.value}");
+                        ExpressionEditorUtils.SetAnimatorParameterValue(_targetClip, diff.Value.name, diff.Value.value);
+                        return;
+                    case AnimationDifference.OperationType.Remove:
+                        Undo.RecordObject(_targetClip, $"Remove Parameter {diff.Value.name}");
+                        ExpressionEditorUtils.RemoveAnimatorParameterValue(_targetClip, diff.Value.name);
+                        return;
                 }
             }
         }
