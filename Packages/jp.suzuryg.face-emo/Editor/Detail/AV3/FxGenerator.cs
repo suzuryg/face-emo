@@ -1431,8 +1431,6 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R, addPrefix: _aV3Setting.AddParameterPrefix));
 
-            
-
             foreach (var parameter in GetDistinctAnimationParameters())
             {
                 modularAvatarParameters.parameters.Add(NotSyncedMAParam(parameter.ParameterName, addPrefix: false));

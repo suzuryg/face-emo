@@ -221,6 +221,5 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.y", type = typeof(Transform) }, null);
             AnimationUtility.SetEditorCurve(animationClip, new EditorCurveBinding { path = transformPath, propertyName = "m_LocalScale.z", type = typeof(Transform) }, null);
         }
-
     }
 }
