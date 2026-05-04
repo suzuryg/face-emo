@@ -49,6 +49,7 @@ namespace Suzuryg.FaceEmo.Detail.View
         private ReorderableList _additionalSkinnedMeshes;
         private ReorderableList _additionalToggleObjects;
         private ReorderableList _additionalTransformObjects;
+        private ReorderableList _animationParameters;
         private ReorderableList _contactReceivers;
 
         private LocalizationTable _localizationTable;
@@ -186,6 +187,36 @@ namespace Suzuryg.FaceEmo.Detail.View
             _additionalTransformObjects.drawNoneElementCallback = (Rect rect) =>
             {
                 GUI.Label(rect, _localizationTable.InspectorView_EmptyObjects, _centerStyle);
+            };
+
+            _animationParameters = new ReorderableList(_av3Setting, _av3Setting.FindProperty(nameof(AV3Setting.AnimationParameters)));
+            _animationParameters.headerHeight = 0;
+            _animationParameters.elementHeight = EditorGUIUtility.singleLineHeight;
+            _animationParameters.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                var element = _animationParameters.serializedProperty.GetArrayElementAtIndex(index);
+                var parameterName = element.FindPropertyRelative(nameof(AnimationParameterDefinition.ParameterName));
+                var defaultValue = element.FindPropertyRelative(nameof(AnimationParameterDefinition.DefaultValue));
+
+                const float margin = 4f;
+                const float valueWidth = 90f;
+                var nameWidth = Mathf.Max(rect.width - valueWidth - margin, 80f);
+                var x = rect.x;
+
+                parameterName.stringValue = EditorGUI.TextField(
+                    new Rect(x, rect.y, nameWidth, rect.height),
+                    GUIContent.none,
+                    parameterName.stringValue);
+                x += nameWidth + margin;
+
+                defaultValue.floatValue = EditorGUI.FloatField(
+                    new Rect(x, rect.y, valueWidth, rect.height),
+                    GUIContent.none,
+                    defaultValue.floatValue);
+            };
+            _animationParameters.drawNoneElementCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, _localizationTable.InspectorView_EmptyAnimationParameter, _centerStyle);
             };
 
             // Contact receivers
@@ -341,6 +372,17 @@ namespace Suzuryg.FaceEmo.Detail.View
             if (isAddtionalTransformOpened.boolValue)
             {
                 Field_AdditionalTransformObjects();
+            }
+
+            EditorGUILayout.Space(10);
+
+            // Animation controlled parameters
+            var isAnimationParametersOpened = _inspectorViewState.FindProperty(nameof(InspectorViewState.IsAnimationParametersOpened));
+            isAnimationParametersOpened.boolValue = EditorGUILayout.Foldout(isAnimationParametersOpened.boolValue,
+                new GUIContent(_localizationTable.InspectorView_AnimationParameters));
+            if (isAnimationParametersOpened.boolValue)
+            {
+                Field_AnimationParameters();
             }
 
             EditorGUILayout.Space(10);
@@ -916,6 +958,17 @@ namespace Suzuryg.FaceEmo.Detail.View
                     EditorGUILayout.LabelField($"{gameObject.name}{_localizationTable.InspectorView_Message_NotInAvatar}", _warningLabelStyle);
                 }
             }
+        }
+
+        private void Field_AnimationParameters()
+        {
+            var showHints = EditorPrefs.HasKey(DetailConstants.KeyShowHints) ? EditorPrefs.GetBool(DetailConstants.KeyShowHints) : DetailConstants.DefaultShowHints;
+            if (showHints)
+            {
+                HelpBoxDrawer.InfoLayout(_localizationTable.InspectorView_Tooltip_AnimationParameters);
+            }
+
+            _animationParameters.DoLayoutList();
         }
 
         private void Field_DanceGimmick()

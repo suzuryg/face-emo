@@ -80,6 +80,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     throw new FaceEmoException("Failed to copy FX template.");
                 }
                 var animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(fxPath);
+                AddAnimationParameters(animatorController);
 
                 // Generate layers
                 EditorUtility.DisplayProgressBar(DomainConstants.SystemName, $"Generating layers...", 0);
@@ -1430,12 +1431,42 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_L, addPrefix: _aV3Setting.AddParameterPrefix));
             modularAvatarParameters.parameters.Add(NotSyncedMAParam(AV3Constants.ParamName_CNST_TOUCH_EMOTE_LOCK_TRIGGER_R, addPrefix: _aV3Setting.AddParameterPrefix));
 
+            foreach (var parameter in GetDistinctAnimationParameters())
+            {
+                modularAvatarParameters.parameters.Add(NotSyncedMAParam(parameter.ParameterName, addPrefix: false));
+            }
+
             EditorUtility.SetDirty(modularAvatarParameters);
 #else
             Debug.LogError("Please install Modular Avatar!");
 #endif
         }
 
+        private void AddAnimationParameters(AnimatorController animatorController)
+        {
+            if (animatorController == null) return;
+
+            foreach (var parameter in GetDistinctAnimationParameters())
+            {
+                if (animatorController.parameters.Any(x => x != null && x.name == parameter.ParameterName)) continue;
+
+                animatorController.AddParameter(new AnimatorControllerParameter
+                {
+                    name = parameter.ParameterName,
+                    type = AnimatorControllerParameterType.Float,
+                    defaultFloat = parameter.DefaultValue,
+                });
+            }
+        }
+        
+        private IEnumerable<AnimationParameterDefinition> GetDistinctAnimationParameters()
+        {
+            return _aV3Setting.AnimationParameters
+                .Where(x => x != null && !string.IsNullOrWhiteSpace(x.ParameterName))
+                .GroupBy(x => x.ParameterName)
+                .Select(x => x.First());
+        }
+        
         private int GetDefaultModeIndex(IReadOnlyList<ModeEx> modes, IMenu menu)
         {
             int defaultModeIndex = 0;
@@ -1569,6 +1600,19 @@ namespace Suzuryg.FaceEmo.Detail.AV3
                     clip = clip.Rotationing(new[] { gameObject }, gameObject.transform.localEulerAngles);
                     clip = clip.Scaling(new[] { gameObject }, gameObject.transform.localScale);
                 }
+            }
+
+            foreach (var parameter in GetDistinctAnimationParameters())
+            {
+                AnimationUtility.SetEditorCurve(
+                    clip.Clip,
+                    new EditorCurveBinding
+                    {
+                        path = string.Empty,
+                        propertyName = parameter.ParameterName,
+                        type = typeof(Animator)
+                    },
+                    new AnimationCurve(new Keyframe(0f, parameter.DefaultValue)));
             }
 
             return clip;

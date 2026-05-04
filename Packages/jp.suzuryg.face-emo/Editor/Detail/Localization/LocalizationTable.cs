@@ -199,11 +199,13 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string InspectorView_AddtionalSkinnedMeshes = "Addtional Expression Meshes";
         public string InspectorView_AddtionalToggleObjects = "Addtional Expression Objects (Toggle)";
         public string InspectorView_AddtionalTransformObjects = "Addtional Expression Objects (Transform)";
+        public string InspectorView_AnimationParameters = "Animation Controlled Parameters";
         public string InspectorView_GenerateModeThumbnails = "Use expression thumbnails as ExpressionMenu icons";
         public string InspectorView_GammaCorrectionValue = "Gamma correction value for expression thumbnails";
         public string InspectorView_ExcludedBlendShapes = "Excluded Blend Shapes";
         public string InspectorView_EmptyBlendShapes = "Press the + button to add blend shapes.";
         public string InspectorView_EmptyObjects = "Press the + button to add an object.";
+        public string InspectorView_EmptyAnimationParameter = "Press the + button to add a parameter.";
         public string InspectorView_Message_NotInAvatar = " is not an object in the avatar, so animation is not applied.";
         public string InspectorView_Message_ClearMouthMorphBlendShapes = "Delete all mouth morph blend shapes?";
         public string InspectorView_Message_ClearExcludedBlendShapes = "Delete all excluded blend shapes?";
@@ -310,6 +312,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
             "Objects specified here can be used in the expression editor.";
         public string InspectorView_Tooltip_AdditionalTransform = "In conjunction with expressions, you can control the position, rotation, and scale of specific objects (such as beast ears and ahoge). " +
             "Objects specified here can be used in the expression editor.";
+        public string InspectorView_Tooltip_AnimationParameters = "You can specify animator parameter names that are controlled by expression animations. Only float parameters are supported.";
         public string InspectorView_Tooltip_AFK = "You can set expressions for when you are AFK or for when you start/end AFK.";
         public string InspectorView_Tooltip_Thumbnail = "You can set the camera position and angle for the thumbnails displayed in the ExpressionMenu.";
         public string InspectorView_Tooltip_ExMenu = "You can specify which settings to add to the ExpressionMenu. " +
@@ -359,6 +362,7 @@ namespace Suzuryg.FaceEmo.Detail.Localization
         public string ExpressionEditorView_UncategorizedBlendShapes = "Uncategorized Blend Shapes";
         public string ExpressionEditorView_AddtionalToggleObjects = "Addtional Objects (Toggle)";
         public string ExpressionEditorView_AddtionalTransformObjects = "Addtional Objects (Transform)";
+        public string ExpressionEditorView_AnimationParameters = "Animation Parameters";
         public string ExpressionEditorView_NoBlendShapes = "No Blend Shapes";
         public string ExpressionEditorView_NoObjects = "No Objects";
         public string ExpressionEditorView_Message_ClipIsNull = "The animation clip has been deleted. Please open another animation clip.";

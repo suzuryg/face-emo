@@ -15,9 +15,11 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
         public IReadOnlyDictionary<BlendShape, float> FaceBlendShapes => _propertyEditor.FaceBlendShapes;
         public IReadOnlyDictionary<int, (GameObject target, bool value)> Toggles => _propertyEditor.Toggles;
         public IReadOnlyDictionary<int, TransformProxy> Transforms => _propertyEditor.Transforms;
+        public IReadOnlyDictionary<int, string> Parameters => _propertyEditor.Parameters;
         public IReadOnlyDictionary<BlendShape, float> AnimatedBlendShapes => _propertyEditor.AnimatedBlendShapes;
         public IReadOnlyDictionary<int, (GameObject target, bool value)> AnimatedToggles => _propertyEditor.AnimatedToggles;
         public IReadOnlyDictionary<int, TransformProxy> AnimatedTransforms => _propertyEditor.AnimatedTransforms;
+        public IReadOnlyDictionary<int, (string name, float value)> AnimatedParameters => _propertyEditor.AnimatedParameters;
         public IObservable<AnimationClip> OnThumbnailUpdateRequested => _propertyWriter.OnThumbnailUpdateRequested;
 
         private readonly PropertyEditor _propertyEditor;
@@ -114,6 +116,18 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _propertyWriter.RemoveTransformValue(id, value);
             // Revert to default transform
             _previewClipGenerator.SetTransformValue(TransformProxy.FromGameObject(value.GameObject));
+        }
+
+        public void SetParameterValue(int id, (string name, float value) value)
+        {
+            _propertyEditor.SetParameterValue(id, value);
+            _propertyWriter.SetParameterValue(id, value);
+        }
+
+        public void RemoveParameterValue(int id, string name)
+        {
+            _propertyEditor.RemoveParameterValue(id);
+            _propertyWriter.RemoveParameterValue(id, name);
         }
 
         public void StartSampling() => _previewClipSampler.StartSampling();

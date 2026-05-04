@@ -133,6 +133,46 @@ namespace Suzuryg.FaceEmo.Detail.ExpressionEditor.Models
             _latestDifference = AnimationDifference.Transform(AnimationDifference.OperationType.Remove, id, value);
         }
 
+        public void SetParameterValue(int id, (string name, float value) value)
+        {
+            // squash
+            if (_latestDifference is AnimationDifference.ParameterDiff parameterDiff &&
+                parameterDiff.Key.Equals(id))
+            {
+                _latestDifference.Operation = AnimationDifference.OperationType.Set;
+                parameterDiff.Value = value;
+                return;
+            }
+
+            // enqueue
+            if (_latestDifference != null)
+            {
+                _squashedDifferences.Enqueue(_latestDifference);
+            }
+
+            _latestDifference =
+                AnimationDifference.Parameter(AnimationDifference.OperationType.Set, id, value);
+        }
+
+        public void RemoveParameterValue(int id, string name)
+        {
+            // squash
+            if (_latestDifference is AnimationDifference.ParameterDiff parameterDiff &&
+                parameterDiff.Key.Equals(id))
+            {
+                _latestDifference.Operation = AnimationDifference.OperationType.Remove;
+                return;
+            }
+
+            // enqueue
+            if (_latestDifference != null)
+            {
+                _squashedDifferences.Enqueue(_latestDifference);
+            }
+
+            _latestDifference = AnimationDifference.Parameter(AnimationDifference.OperationType.Remove, id, (name, 0f));
+        }
+
         public bool TryDequeue(out AnimationDifference difference)
         {
             if (_squashedDifferences.Any())
