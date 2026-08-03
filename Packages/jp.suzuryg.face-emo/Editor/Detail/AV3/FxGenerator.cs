@@ -40,6 +40,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         private ModeNameProvider _modeNameProvider;
         private ExMenuThumbnailDrawer _exMenuThumbnailDrawer;
         private AV3Setting _aV3Setting;
+        private readonly HashSet<Texture2D> _addedThumbnails = new();
 
         public FxGenerator(IReadOnlyLocalizationSetting localizationSetting, ModeNameProvider modeNameProvider, ExMenuThumbnailDrawer exMenuThumbnailDrawer, AV3Setting aV3Setting)
         {
@@ -653,6 +654,7 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             var loc = _localizationSetting.GetCurrentLocaleTable();
 
             AssetDatabase.DeleteAsset(exMenuPath);
+            _addedThumbnails.Clear();
             var container = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             AssetDatabase.CreateAsset(container, exMenuPath);
 
@@ -731,6 +733,8 @@ namespace Suzuryg.FaceEmo.Detail.AV3
             AssetDatabase.AddObjectToAsset(rootMenu, container);
 
             EditorUtility.SetDirty(container);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.ImportAsset(exMenuPath);
             return container;
         }
 
@@ -779,11 +783,9 @@ namespace Suzuryg.FaceEmo.Detail.AV3
         private Texture2D GetExpressionThumbnail(Domain.Animation animation, VRCExpressionsMenu container)
         {
             var icon = _exMenuThumbnailDrawer.GetThumbnail(animation);
-            if (!AssetDatabase.IsMainAsset(icon) && !AssetDatabase.IsSubAsset(icon)) // Do not save icons that have already been generated and error icons
+            if (!AssetDatabase.IsMainAsset(icon) && !AssetDatabase.IsSubAsset(icon) && _addedThumbnails.Add(icon)) // Do not save icons that have already been generated and error icons
             {
                 AssetDatabase.AddObjectToAsset(icon, container);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(container));
             }
             return icon;
         }
